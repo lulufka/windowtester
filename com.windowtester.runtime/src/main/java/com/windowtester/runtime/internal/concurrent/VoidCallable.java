@@ -16,21 +16,21 @@ import java.util.concurrent.Callable;
  * An alternate form of {@link Callable} that does not return any value from its call method. If an except
  */
 public abstract class VoidCallable {
-    /**
-     * Performs an operation with no return value.
-     *
-     * @throws Exception if unable to compute a result
-     */
-    public abstract void call() throws Exception;
+  /**
+   * Performs an operation with no return value.
+   *
+   * @throws Exception if unable to compute a result
+   */
+  public abstract void call() throws Exception;
 
-    /**
-     * If the {@link #call()} method throws an exception, then this method is called to handle that exception. This
-     * method may either handle the exception and return a value or rethrow the exception. The default implementation
-     * just rethrows the exception. Subclasses may extend or override.
-     *
-     * @param e the exception that occurred during execution of {@link #call()}
-     */
-    public void handleException(Throwable e) throws Throwable {
-        throw e;
-    }
+  /**
+   * If the {@link #call()} method throws an exception, then this method is called to handle that exception. This
+   * method may either handle the exception and return a value or rethrow the exception. The default implementation
+   * just rethrows the exception. Subclasses may extend or override.
+   *
+   * @param e the exception that occurred during execution of {@link #call()}
+   */
+  public void handleException(Throwable e) throws Throwable {
+    throw e;
+  }
 }

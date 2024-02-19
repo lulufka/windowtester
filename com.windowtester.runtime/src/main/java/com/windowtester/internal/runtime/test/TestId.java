@@ -15,21 +15,20 @@ package com.windowtester.internal.runtime.test;
  */
 public class TestId {
 
-    private static final NoRunningTestId NONE = new NoRunningTestId();
-    private static final UnknownTestId UNKNOWN = new UnknownTestId();
+  private static final NoRunningTestId NONE = new NoRunningTestId();
+  private static final UnknownTestId UNKNOWN = new UnknownTestId();
 
-    /**
-     * Not a singleton strictly but a convenience accessor to a single instance.
-     */
-    public static UnknownTestId unknown() {
-        return UNKNOWN;
-    }
+  /**
+   * Not a singleton strictly but a convenience accessor to a single instance.
+   */
+  public static UnknownTestId unknown() {
+    return UNKNOWN;
+  }
 
-    /**
-     * Not a singleton strictly but a convenience accessor to a single instance.
-     */
-    public static NoRunningTestId none() {
-        return NONE;
-    }
-
+  /**
+   * Not a singleton strictly but a convenience accessor to a single instance.
+   */
+  public static NoRunningTestId none() {
+    return NONE;
+  }
 }

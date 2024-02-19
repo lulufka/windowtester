@@ -22,34 +22,29 @@ import com.windowtester.runtime.locator.IWidgetReference;
  */
 public interface IUISelector {
 
-    /**
-     * Perform the click.
-     *
-     * @param ui     the UI context
-     * @param widget the widget reference to click
-     * @param click  a description of the click
-     * @return the clicked widget (as a reference)
-     * @throws WidgetSearchException
-     */
-    IWidgetLocator click(
-            IUIContext ui,
-            IWidgetReference widget,
-            IClickDescription click) throws WidgetSearchException;
+  /**
+   * Perform the click.
+   *
+   * @param ui     the UI context
+   * @param widget the widget reference to click
+   * @param click  a description of the click
+   * @return the clicked widget (as a reference)
+   * @throws WidgetSearchException
+   */
+  IWidgetLocator click(IUIContext ui, IWidgetReference widget, IClickDescription click)
+      throws WidgetSearchException;
 
-    /**
-     * Perform the context click.
-     *
-     * @param ui           the UI context
-     * @param widget       the widget reference to click
-     * @param click        a description of the click
-     * @param menuItemPath the path to the menu item to select
-     * @return the clicked widget (as a reference)
-     * @throws WidgetSearchException
-     */
-    IWidgetLocator contextClick(
-            IUIContext ui,
-            IWidgetReference widget,
-            IClickDescription click,
-            String menuItemPath) throws WidgetSearchException;
-
+  /**
+   * Perform the context click.
+   *
+   * @param ui           the UI context
+   * @param widget       the widget reference to click
+   * @param click        a description of the click
+   * @param menuItemPath the path to the menu item to select
+   * @return the clicked widget (as a reference)
+   * @throws WidgetSearchException
+   */
+  IWidgetLocator contextClick(
+      IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
+      throws WidgetSearchException;
 }

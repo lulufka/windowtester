@@ -16,16 +16,15 @@ import swing.samples.DragListDemo;
 
 public class ListDnDTest extends UITestCaseSwing {
 
-    public ListDnDTest() {
-        super(DragListDemo.class);
-    }
+  public ListDnDTest() {
+    super(DragListDemo.class);
+  }
 
-    public void testListDnD() throws WidgetSearchException {
-//		IUIContext ui = getUI();
-//
-//		ui.click(new JListLocator("1 (list 1)",new NamedWidgetLocator("list1")));
-//		ui.dragTo(new JListLocator("1 (list 2)", new NamedWidgetLocator("list2")));
-//		ui.pause(10000);
-    }
-
+  public void testListDnD() throws WidgetSearchException {
+    //		IUIContext ui = getUI();
+    //
+    //		ui.click(new JListLocator("1 (list 1)",new NamedWidgetLocator("list1")));
+    //		ui.dragTo(new JListLocator("1 (list 2)", new NamedWidgetLocator("list2")));
+    //		ui.pause(10000);
+  }
 }

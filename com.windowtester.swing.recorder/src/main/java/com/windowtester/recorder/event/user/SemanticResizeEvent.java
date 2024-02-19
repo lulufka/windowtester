@@ -15,45 +15,42 @@ package com.windowtester.recorder.event.user;
  */
 public class SemanticResizeEvent extends UISemanticEvent {
 
-    private static final long serialVersionUID = -8325305574265101532L;
+  private static final long serialVersionUID = -8325305574265101532L;
 
-    /**
-     * @serial
-     */
-    private final int _width;
-    /**
-     * @serial
-     */
-    private final int _height;
+  /**
+   * @serial
+   */
+  private final int _width;
 
-    /**
-     * Create an instance.
-     *
-     * @param info
-     * @param width
-     * @param height
-     */
-    public SemanticResizeEvent(
-            EventInfo info,
-            int width,
-            int height) {
-        super(info);
-        _width = width;
-        _height = height;
-    }
+  /**
+   * @serial
+   */
+  private final int _height;
 
-    /**
-     * Get the height of the resize event.
-     */
-    public int getHeight() {
-        return _height;
-    }
+  /**
+   * Create an instance.
+   *
+   * @param info
+   * @param width
+   * @param height
+   */
+  public SemanticResizeEvent(EventInfo info, int width, int height) {
+    super(info);
+    _width = width;
+    _height = height;
+  }
 
-    /**
-     * Get the width of the resize event.
-     */
-    public int getWidth() {
-        return _width;
-    }
+  /**
+   * Get the height of the resize event.
+   */
+  public int getHeight() {
+    return _height;
+  }
 
+  /**
+   * Get the width of the resize event.
+   */
+  public int getWidth() {
+    return _width;
+  }
 }

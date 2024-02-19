@@ -15,14 +15,13 @@ package com.windowtester.internal.runtime.junit.core.launcher;
  */
 public interface ILaunchListener {
 
-    /**
-     * Called before launch.
-     */
-    void preFlight();
+  /**
+   * Called before launch.
+   */
+  void preFlight();
 
-    /**
-     * Called after launch.
-     */
-    void postFlight();
-
+  /**
+   * Called after launch.
+   */
+  void postFlight();
 }

@@ -15,84 +15,77 @@ import java.util.Map;
  * the invocation will be saved in the current {@link abbot.script.Resolver} as a property with the given property
  * name.
  */
-
 public class Sample extends PropertyCall {
-    private static final String USAGE =
-            "<sample property=... component=... method=.../>\n"
-                    + "<sample property=... method=... [class=...]/>";
+  private static final String USAGE =
+      "<sample property=... component=... method=.../>\n"
+          + "<sample property=... method=... [class=...]/>";
 
-    private String propertyName = null;
+  private String propertyName = null;
 
-    public Sample(
-            Resolver resolver,
-            Map attributes) {
-        super(resolver, attributes);
-        propertyName = (String) attributes.get(TAG_PROPERTY);
+  public Sample(Resolver resolver, Map attributes) {
+    super(resolver, attributes);
+    propertyName = (String) attributes.get(TAG_PROPERTY);
+  }
+
+  /**
+   * Component property sample.
+   */
+  public Sample(
+      Resolver resolver, String description, String methodName, String id, String propName) {
+    super(resolver, description, methodName, id);
+    propertyName = propName;
+  }
+
+  /**
+   * Static method property sample.
+   */
+  public Sample(
+      Resolver resolver,
+      String description,
+      String className,
+      String methodName,
+      String[] args,
+      String propName) {
+    super(resolver, description, className, methodName, args);
+    propertyName = propName;
+  }
+
+  public Map getAttributes() {
+    Map map = super.getAttributes();
+    if (propertyName != null) {
+      map.put(TAG_PROPERTY, propertyName);
     }
+    return map;
+  }
 
-    /**
-     * Component property sample.
-     */
-    public Sample(
-            Resolver resolver,
-            String description,
-            String methodName,
-            String id,
-            String propName) {
-        super(resolver, description, methodName, id);
-        propertyName = propName;
-    }
+  public String getDefaultDescription() {
+    return getPropertyName() + "=" + super.getDefaultDescription();
+  }
 
-    /**
-     * Static method property sample.
-     */
-    public Sample(
-            Resolver resolver,
-            String description,
-            String className,
-            String methodName,
-            String[] args,
-            String propName) {
-        super(resolver, description, className, methodName, args);
-        propertyName = propName;
-    }
+  public String getUsage() {
+    return USAGE;
+  }
 
-    public Map getAttributes() {
-        Map map = super.getAttributes();
-        if (propertyName != null) {
-            map.put(TAG_PROPERTY, propertyName);
-        }
-        return map;
-    }
+  public String getXMLTag() {
+    return TAG_SAMPLE;
+  }
 
-    public String getDefaultDescription() {
-        return getPropertyName() + "=" + super.getDefaultDescription();
-    }
+  public void setPropertyName(String name) {
+    propertyName = name;
+  }
 
-    public String getUsage() {
-        return USAGE;
-    }
+  public String getPropertyName() {
+    return propertyName;
+  }
 
-    public String getXMLTag() {
-        return TAG_SAMPLE;
+  /**
+   * Store the results of the invocation in the designated property as a String-encoded value.
+   */
+  protected Object invoke() throws Throwable {
+    Object obj = super.invoke();
+    if (propertyName != null) {
+      getResolver().setProperty(propertyName, obj);
     }
-
-    public void setPropertyName(String name) {
-        propertyName = name;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    /**
-     * Store the results of the invocation in the designated property as a String-encoded value.
-     */
-    protected Object invoke() throws Throwable {
-        Object obj = super.invoke();
-        if (propertyName != null) {
-            getResolver().setProperty(propertyName, obj);
-        }
-        return obj;
-    }
+    return obj;
+  }
 }

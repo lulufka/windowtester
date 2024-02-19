@@ -17,16 +17,16 @@ import com.windowtester.runtime.WT;
  */
 public interface WTInternal {
 
-    // Location constants (to be) used in XYLocator and SWTMouseOperation
-    int CENTER = 0;
-    int LEFT = 1 << 0;
-    int RIGHT = 1 << 1;
-    int TOP = 1 << 2;
-    int BOTTOM = 1 << 3;
+  // Location constants (to be) used in XYLocator and SWTMouseOperation
+  int CENTER = 0;
+  int LEFT = 1 << 0;
+  int RIGHT = 1 << 1;
+  int TOP = 1 << 2;
+  int BOTTOM = 1 << 3;
 
-    // Convenience constants
-    int TOPLEFT = TOP | LEFT;
-    int TOPRIGHT = TOP | RIGHT;
-    int BOTTOMLEFT = BOTTOM | LEFT;
-    int BOTTOMRIGHT = BOTTOM | RIGHT;
+  // Convenience constants
+  int TOPLEFT = TOP | LEFT;
+  int TOPRIGHT = TOP | RIGHT;
+  int BOTTOMLEFT = BOTTOM | LEFT;
+  int BOTTOMRIGHT = BOTTOM | RIGHT;
 }

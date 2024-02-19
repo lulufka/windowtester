@@ -15,13 +15,12 @@ package com.windowtester.runtime.locator;
  */
 public interface IWidgetMatcher<T> {
 
-    /**
-     * Check whether the given Widget satisfies the specified criteria.
-     *
-     * @param widget the widget to test
-     * @return <code>true</code> if the widget matches,
-     * <code>false</code> otherwise
-     */
-    boolean matches(T widget);
-
+  /**
+   * Check whether the given Widget satisfies the specified criteria.
+   *
+   * @param widget the widget to test
+   * @return <code>true</code> if the widget matches,
+   * <code>false</code> otherwise
+   */
+  boolean matches(T widget);
 }

@@ -1,15 +1,14 @@
 package abbot.script;
 
-import java.awt.*;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Map;
-
 import abbot.AssertionFailedError;
 import abbot.Log;
 import abbot.Platform;
 import abbot.finder.Hierarchy;
 import abbot.i18n.Strings;
+import java.awt.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Provides scripted static method invocation.  Usage:<br>
@@ -37,278 +36,265 @@ import abbot.i18n.Strings;
  * extensions should be included in the Launch class path.<p>
  */
 public class Launch extends Call implements UIContext {
-    /**
-     * Allow only one active launch at a time.
-     */
-    private static Launch currentLaunch = null;
+  /**
+   * Allow only one active launch at a time.
+   */
+  private static Launch currentLaunch = null;
 
-    private String classpath = null;
-    private boolean threaded = false;
-    private transient AppClassLoader classLoader;
-    private transient ThreadedLaunchListener listener;
+  private String classpath = null;
+  private boolean threaded = false;
+  private transient AppClassLoader classLoader;
+  private transient ThreadedLaunchListener listener;
 
-    private static final String USAGE =
-            "<launch class=\"...\" method=\"...\" args=\"...\" "
-                    + "[threaded=true]>";
+  private static final String USAGE =
+      "<launch class=\"...\" method=\"...\" args=\"...\" " + "[threaded=true]>";
 
-    public Launch(
-            Resolver resolver,
-            Map attributes) {
-        super(resolver, attributes);
-        classpath = (String) attributes.get(TAG_CLASSPATH);
-        String thr = (String) attributes.get(TAG_THREADED);
-        if (thr != null) {
-            threaded = Boolean.valueOf(thr).booleanValue();
-        }
+  public Launch(Resolver resolver, Map attributes) {
+    super(resolver, attributes);
+    classpath = (String) attributes.get(TAG_CLASSPATH);
+    String thr = (String) attributes.get(TAG_THREADED);
+    if (thr != null) {
+      threaded = Boolean.valueOf(thr).booleanValue();
     }
+  }
 
-    public Launch(
-            Resolver resolver,
-            String description,
-            String className,
-            String methodName,
-            String[] args) {
-        this(resolver, description, className, methodName, args, null, false);
+  public Launch(
+      Resolver resolver, String description, String className, String methodName, String[] args) {
+    this(resolver, description, className, methodName, args, null, false);
+  }
+
+  public Launch(
+      Resolver resolver,
+      String description,
+      String className,
+      String methodName,
+      String[] args,
+      String classpath,
+      boolean threaded) {
+    super(resolver, description, className, methodName, args);
+    this.classpath = classpath;
+    this.threaded = threaded;
+  }
+
+  public String getClasspath() {
+    return classpath;
+  }
+
+  public void setClasspath(String cp) {
+    classpath = cp;
+    // invalidate class loader
+    classLoader = null;
+  }
+
+  public boolean isThreaded() {
+    return threaded;
+  }
+
+  public void setThreaded(boolean thread) {
+    threaded = thread;
+  }
+
+  protected AppClassLoader createClassLoader() {
+    return new AppClassLoader(classpath);
+  }
+
+  /**
+   * Install the class loader context for the code being launched.  The context class loader for the current thread is
+   * modified.
+   */
+  protected void install() {
+    ClassLoader loader = getContextClassLoader();
+    // Everything else loaded on the same thread as this
+    // launch should be loaded by this custom loader.
+    if (loader instanceof AppClassLoader && !((AppClassLoader) loader).isInstalled()) {
+      ((AppClassLoader) loader).install();
     }
+  }
 
-    public Launch(
-            Resolver resolver,
-            String description,
-            String className,
-            String methodName,
-            String[] args,
-            String classpath,
-            boolean threaded) {
-        super(resolver, description, className, methodName, args);
-        this.classpath = classpath;
-        this.threaded = threaded;
+  protected void synchronizedRunStep() throws Throwable {
+    // A bug in pre-1.4 VMs locks the toolkit prior to notifying AWT event
+    // listeners.  This causes a deadlock when the main method invokes
+    // "show" on a component which triggers AWT events for which there are
+    // listeners.  To avoid this, grab the toolkit lock first so that the
+    // locks are acquired in the same order by either sequence.
+    // (Unfortunately, some swing code locks the tree prior to
+    // grabbing the toolkit lock, so there's still opportunity for
+    // deadlock).  One alternative (although very heavyweight) is to
+    // always fork a separate VM.
+    //
+    // If threaded, take the danger of deadlock over the possibility that
+    // the main method will never return and leave the lock forever held.
+    // NOTE: this is guaranteed to deadlock if "main" calls
+    // EventQueue.invokeAndWait.
+    if (Platform.JAVA_VERSION < Platform.JAVA_1_4 && !isThreaded()) {
+      synchronized (java.awt.Toolkit.getDefaultToolkit()) {
+        super.runStep();
+      }
+    } else {
+      super.runStep();
     }
+  }
 
-    public String getClasspath() {
-        return classpath;
-    }
-
-    public void setClasspath(String cp) {
-        classpath = cp;
-        // invalidate class loader
+  /**
+   * Perform steps necessary to remove any setup performed by this <code>Launch</code> step.
+   */
+  public void terminate() {
+    Log.debug("launch terminate");
+    if (currentLaunch == this) {
+      // Nothing special to do, dispose windows normally
+      Iterator iter = getHierarchy().getRoots().iterator();
+      while (iter.hasNext()) getHierarchy().dispose((Window) iter.next());
+      if (classLoader != null) {
+        classLoader.uninstall();
         classLoader = null;
+      }
+      currentLaunch = null;
     }
+  }
 
-    public boolean isThreaded() {
-        return threaded;
+  /**
+   * Launches the UI described by this <code>Launch</code> step, using the given runner as controller/monitor.
+   */
+  public void launch(StepRunner runner) throws Throwable {
+    runner.run(this);
+  }
+
+  /**
+   * @return Whether the code described by this launch step is currently active.
+   */
+  public boolean isLaunched() {
+    return currentLaunch == this;
+  }
+
+  public Hierarchy getHierarchy() {
+    return getResolver().getHierarchy();
+  }
+
+  public void runStep() throws Throwable {
+    if (currentLaunch != null) {
+      currentLaunch.terminate();
     }
-
-    public void setThreaded(boolean thread) {
-        threaded = thread;
-    }
-
-    protected AppClassLoader createClassLoader() {
-        return new AppClassLoader(classpath);
-    }
-
-    /**
-     * Install the class loader context for the code being launched.  The context class loader for the current thread is
-     * modified.
-     */
-    protected void install() {
-        ClassLoader loader = getContextClassLoader();
-        // Everything else loaded on the same thread as this 
-        // launch should be loaded by this custom loader.  
-        if (loader instanceof AppClassLoader
-                && !((AppClassLoader) loader).isInstalled()) {
-            ((AppClassLoader) loader).install();
-        }
-    }
-
-    protected void synchronizedRunStep() throws Throwable {
-        // A bug in pre-1.4 VMs locks the toolkit prior to notifying AWT event
-        // listeners.  This causes a deadlock when the main method invokes
-        // "show" on a component which triggers AWT events for which there are
-        // listeners.  To avoid this, grab the toolkit lock first so that the
-        // locks are acquired in the same order by either sequence.
-        // (Unfortunately, some swing code locks the tree prior to
-        // grabbing the toolkit lock, so there's still opportunity for
-        // deadlock).  One alternative (although very heavyweight) is to
-        // always fork a separate VM.
-        //
-        // If threaded, take the danger of deadlock over the possibility that
-        // the main method will never return and leave the lock forever held.
-        // NOTE: this is guaranteed to deadlock if "main" calls
-        // EventQueue.invokeAndWait. 
-        if (Platform.JAVA_VERSION < Platform.JAVA_1_4
-                && !isThreaded()) {
-            synchronized (java.awt.Toolkit.getDefaultToolkit()) {
-                super.runStep();
-            }
-        } else {
-            super.runStep();
-        }
-    }
-
-    /**
-     * Perform steps necessary to remove any setup performed by this <code>Launch</code> step.
-     */
-    public void terminate() {
-        Log.debug("launch terminate");
-        if (currentLaunch == this) {
-            // Nothing special to do, dispose windows normally
-            Iterator iter = getHierarchy().getRoots().iterator();
-            while (iter.hasNext())
-                getHierarchy().dispose((Window) iter.next());
-            if (classLoader != null) {
-                classLoader.uninstall();
-                classLoader = null;
-            }
-            currentLaunch = null;
-        }
-    }
-
-    /**
-     * Launches the UI described by this <code>Launch</code> step, using the given runner as controller/monitor.
-     */
-    public void launch(StepRunner runner) throws Throwable {
-        runner.run(this);
-    }
-
-    /**
-     * @return Whether the code described by this launch step is currently active.
-     */
-    public boolean isLaunched() {
-        return currentLaunch == this;
-    }
-
-    public Hierarchy getHierarchy() {
-        return getResolver().getHierarchy();
-    }
-
-    public void runStep() throws Throwable {
-        if (currentLaunch != null) {
-            currentLaunch.terminate();
-        }
-        currentLaunch = this;
-        install();
-        System.setProperty("abbot.framework.launched", "true");
-        if (isThreaded()) {
-            Thread threaded = new Thread("Threaded " + this) {
-                public void run() {
-                    try {
-                        synchronizedRunStep();
-                    } catch (AssertionFailedError e) {
-                        if (listener != null) {
-                            listener.stepFailure(Launch.this, e);
-                        }
-                    } catch (Throwable t) {
-                        if (listener != null) {
-                            listener.stepError(Launch.this, t);
-                        }
-                    }
+    currentLaunch = this;
+    install();
+    System.setProperty("abbot.framework.launched", "true");
+    if (isThreaded()) {
+      Thread threaded =
+          new Thread("Threaded " + this) {
+            public void run() {
+              try {
+                synchronizedRunStep();
+              } catch (AssertionFailedError e) {
+                if (listener != null) {
+                  listener.stepFailure(Launch.this, e);
                 }
-            };
-            threaded.setDaemon(true);
-            threaded.setContextClassLoader(classLoader);
-            threaded.start();
-        } else {
-            synchronizedRunStep();
-        }
+              } catch (Throwable t) {
+                if (listener != null) {
+                  listener.stepError(Launch.this, t);
+                }
+              }
+            }
+          };
+      threaded.setDaemon(true);
+      threaded.setContextClassLoader(classLoader);
+      threaded.start();
+    } else {
+      synchronizedRunStep();
     }
+  }
 
-    /**
-     * Overrides the default implementation to always use the class loader defined by this step.  This works in cases
-     * where the Launch step has not yet been added to a Script; otherwise the Script will provide an implementation
-     * equivalent to this one.
-     */
-    public Class resolveClass(String className) throws ClassNotFoundException {
-        return Class.forName(className, true, getContextClassLoader());
+  /**
+   * Overrides the default implementation to always use the class loader defined by this step.  This works in cases
+   * where the Launch step has not yet been added to a Script; otherwise the Script will provide an implementation
+   * equivalent to this one.
+   */
+  public Class resolveClass(String className) throws ClassNotFoundException {
+    return Class.forName(className, true, getContextClassLoader());
+  }
+
+  /**
+   * Return the class loader that uses the classpath defined in this step.
+   */
+  public ClassLoader getContextClassLoader() {
+    if (classLoader == null) {
+      // Use a custom class loader so that we can provide additional
+      // classpath and also optionally reload the class on each run.
+      // FIXME maybe classpath should be relative to the script?  In this
+      // case, it's relative to user.dir
+      classLoader = createClassLoader();
     }
+    return classLoader;
+  }
 
-    /**
-     * Return the class loader that uses the classpath defined in this step.
-     */
-    public ClassLoader getContextClassLoader() {
-        if (classLoader == null) {
-            // Use a custom class loader so that we can provide additional
-            // classpath and also optionally reload the class on each run.
-            // FIXME maybe classpath should be relative to the script?  In this
-            // case, it's relative to user.dir
-            classLoader = createClassLoader();
-        }
-        return classLoader;
+  public Class getTargetClass() throws ClassNotFoundException {
+    Class cls = resolveClass(getTargetClassName());
+    Log.debug("Target class is " + cls.getName());
+    return cls;
+  }
+
+  /**
+   * Return the target for the method invocation.  All launch invocations must be static, so this always returns
+   * null.
+   */
+  protected Object getTarget(Method m) {
+    return null;
+  }
+
+  /**
+   * Return the method to be used for invocation.
+   */
+  public Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
+    return resolveMethod(getMethodName(), getTargetClass(), null);
+  }
+
+  public Map getAttributes() {
+    Map map = super.getAttributes();
+    if (classpath != null) {
+      map.put(TAG_CLASSPATH, classpath);
     }
-
-    public Class getTargetClass() throws ClassNotFoundException {
-        Class cls = resolveClass(getTargetClassName());
-        Log.debug("Target class is " + cls.getName());
-        return cls;
+    if (threaded) {
+      map.put(TAG_THREADED, "true");
     }
+    return map;
+  }
 
-    /**
-     * Return the target for the method invocation.  All launch invocations must be static, so this always returns
-     * null.
-     */
-    protected Object getTarget(Method m) {
-        return null;
-    }
+  public String getDefaultDescription() {
+    String desc =
+        Strings.get(
+            "launch.desc",
+            new Object[] {
+              getTargetClassName() + "." + getMethodName() + "(" + getEncodedArguments() + ")"
+            });
+    return desc;
+  }
 
-    /**
-     * Return the method to be used for invocation.
-     */
-    public Method getMethod()
-            throws ClassNotFoundException, NoSuchMethodException {
-        return resolveMethod(getMethodName(), getTargetClass(), null);
-    }
+  public String getUsage() {
+    return USAGE;
+  }
 
-    public Map getAttributes() {
-        Map map = super.getAttributes();
-        if (classpath != null) {
-            map.put(TAG_CLASSPATH, classpath);
-        }
-        if (threaded) {
-            map.put(TAG_THREADED, "true");
-        }
-        return map;
-    }
+  public String getXMLTag() {
+    return TAG_LAUNCH;
+  }
 
-    public String getDefaultDescription() {
-        String desc = Strings.get("launch.desc",
-                new Object[]{getTargetClassName()
-                        + "." + getMethodName()
-                        + "(" + getEncodedArguments()
-                        + ")"});
-        return desc;
-    }
+  /**
+   * Set a listener to respond to events when the launch step is threaded.
+   */
+  public void setThreadedLaunchListener(ThreadedLaunchListener l) {
+    listener = l;
+  }
 
-    public String getUsage() {
-        return USAGE;
-    }
+  public interface ThreadedLaunchListener {
+    void stepFailure(Launch launch, AssertionFailedError error);
 
-    public String getXMLTag() {
-        return TAG_LAUNCH;
-    }
+    void stepError(Launch launch, Throwable throwable);
+  }
 
-    /**
-     * Set a listener to respond to events when the launch step is threaded.
-     */
-    public void setThreadedLaunchListener(ThreadedLaunchListener l) {
-        listener = l;
-    }
-
-    public interface ThreadedLaunchListener {
-        void stepFailure(
-                Launch launch,
-                AssertionFailedError error);
-
-        void stepError(
-                Launch launch,
-                Throwable throwable);
-    }
-
-    /**
-     * No two launches are ever considered equivalent.  If you want a shared {@link UIContext}, use a {@link Fixture}.
-     *
-     * @see abbot.script.UIContext#equivalent(abbot.script.UIContext)
-     * @see abbot.script.StepRunner#run(Step)
-     */
-    public boolean equivalent(UIContext context) {
-        return false;
-    }
+  /**
+   * No two launches are ever considered equivalent.  If you want a shared {@link UIContext}, use a {@link Fixture}.
+   *
+   * @see abbot.script.UIContext#equivalent(abbot.script.UIContext)
+   * @see abbot.script.StepRunner#run(Step)
+   */
+  public boolean equivalent(UIContext context) {
+    return false;
+  }
 }

@@ -17,13 +17,12 @@ import com.windowtester.runtime.locator.ILocator;
  * has bounds should implement this interface so that it can be used when resolving {@link
  * com.windowtester.runtime.locator.XYLocator}
  */
-public interface IAreaLocator
-        extends ILocator {
-    int left();
+public interface IAreaLocator extends ILocator {
+  int left();
 
-    int top();
+  int top();
 
-    int width();
+  int width();
 
-    int height();
+  int height();
 }

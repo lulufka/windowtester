@@ -20,19 +20,18 @@ package com.windowtester.runtime;
  */
 public interface IClickDescription {
 
-    //sentinel constant for marking center clicks
-    int DEFAULT_CENTER_CLICK = -1;
+  // sentinel constant for marking center clicks
+  int DEFAULT_CENTER_CLICK = -1;
 
-    int clicks();
+  int clicks();
 
-    int x();
+  int x();
 
-    int y();
+  int y();
 
-    int relative();
+  int relative();
 
-    int modifierMask();
+  int modifierMask();
 
-    boolean isDefaultCenterClick();
-
+  boolean isDefaultCenterClick();
 }

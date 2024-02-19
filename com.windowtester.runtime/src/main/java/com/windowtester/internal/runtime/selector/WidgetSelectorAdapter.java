@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime.selector;
 
-import java.awt.*;
-
 import com.windowtester.runtime.IWidgetSelectorDelegate;
 import com.windowtester.runtime.MultipleWidgetsFoundException;
 import com.windowtester.runtime.WidgetNotFoundException;
+import java.awt.*;
 
 /**
  * A base <code>IWidgetSelectorDelegate</code> implementation that defaults to throwing an UnsupportedOperationException
@@ -22,71 +21,49 @@ import com.windowtester.runtime.WidgetNotFoundException;
  */
 public class WidgetSelectorAdapter implements IWidgetSelectorDelegate {
 
-    public Object click(
-            Object w,
-            int x,
-            int y,
-            int mask) {
-        throw new UnsupportedOperationException();
-    }
+  public Object click(Object w, int x, int y, int mask) {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object click(
-            Object w,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object click(Object w, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object click(
-            Object w,
-            String itemLabelOrPath,
-            int mask) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object click(Object w, String itemLabelOrPath, int mask)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object doubleClick(
-            Object w,
-            String itemLabel) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object doubleClick(Object w, String itemLabel)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object doubleClick(
-            Object w,
-            int x,
-            int y,
-            int mask) {
-        throw new UnsupportedOperationException();
-    }
+  public Object doubleClick(Object w, int x, int y, int mask) {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object doubleClick(
-            Object w,
-            String itemLabelOrPath,
-            int mask) {
-        throw new UnsupportedOperationException();
-    }
+  public Object doubleClick(Object w, String itemLabelOrPath, int mask) {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object contextClick(
-            Object w,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object contextClick(Object w, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object contextClick(
-            Object w,
-            String itemPath,
-            String menuPath) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object contextClick(Object w, String itemPath, String menuPath)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Object contextClick(
-            Object w,
-            int x,
-            int y,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException {
-        throw new UnsupportedOperationException();
-    }
+  public Object contextClick(Object w, int x, int y, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException {
+    throw new UnsupportedOperationException();
+  }
 
-    public Point getClickOffset(Object w) {
-        throw new UnsupportedOperationException();
-    }
-
+  public Point getClickOffset(Object w) {
+    throw new UnsupportedOperationException();
+  }
 }

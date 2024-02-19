@@ -19,87 +19,86 @@ import java.lang.reflect.Method;
  */
 public class ReflectionUtils {
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(T obj) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Object newObj = obj.getClass().getConstructor().newInstance();
-        return (T) newObj;
-    }
+  @SuppressWarnings("unchecked")
+  public static <T> T newInstance(T obj)
+      throws IllegalArgumentException,
+          SecurityException,
+          InstantiationException,
+          IllegalAccessException,
+          InvocationTargetException,
+          NoSuchMethodException {
+    Object newObj = obj.getClass().getConstructor().newInstance();
+    return (T) newObj;
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(
-            T obj,
-            Class<?> argType,
-            Object arg) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Object newObj = obj.getClass().getConstructor(argType).newInstance(arg);
-        return (T) newObj;
-    }
+  @SuppressWarnings("unchecked")
+  public static <T> T newInstance(T obj, Class<?> argType, Object arg)
+      throws IllegalArgumentException,
+          SecurityException,
+          InstantiationException,
+          IllegalAccessException,
+          InvocationTargetException,
+          NoSuchMethodException {
+    Object newObj = obj.getClass().getConstructor(argType).newInstance(arg);
+    return (T) newObj;
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(
-            Class<?> instanceClass,
-            Class<?> argType,
-            Object arg) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Object newObj = instanceClass.getConstructor(argType).newInstance(arg);
-        return (T) newObj;
-    }
+  @SuppressWarnings("unchecked")
+  public static <T> T newInstance(Class<?> instanceClass, Class<?> argType, Object arg)
+      throws IllegalArgumentException,
+          SecurityException,
+          InstantiationException,
+          IllegalAccessException,
+          InvocationTargetException,
+          NoSuchMethodException {
+    Object newObj = instanceClass.getConstructor(argType).newInstance(arg);
+    return (T) newObj;
+  }
 
-    public static <T> T[] newArray(
-            T[] a,
-            int size) {
-        return newArray(getComponentType(a), size);
-    }
+  public static <T> T[] newArray(T[] a, int size) {
+    return newArray(getComponentType(a), size);
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Class<? extends T> getComponentType(T[] a) {
-        Class<?> k = a.getClass().getComponentType();
-        return (Class<? extends T>) k;
-    }
+  @SuppressWarnings("unchecked")
+  public static <T> Class<? extends T> getComponentType(T[] a) {
+    Class<?> k = a.getClass().getComponentType();
+    return (Class<? extends T>) k;
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T[] newArray(
-            Class<? extends T> k,
-            int size) {
-        if (k.isPrimitive()) {
-            throw new IllegalArgumentException("Argument cannot be primitive: " + k);
-        }
-        Object a = Array.newInstance(k, size);
-        return (T[]) a;
+  @SuppressWarnings("unchecked")
+  public static <T> T[] newArray(Class<? extends T> k, int size) {
+    if (k.isPrimitive()) {
+      throw new IllegalArgumentException("Argument cannot be primitive: " + k);
     }
+    Object a = Array.newInstance(k, size);
+    return (T[]) a;
+  }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T castTo(
-            Object o,
-            Class<T> cls) {
-        Class<? extends Object> oc = o.getClass();
-        if (cls.isAssignableFrom(oc)) {
-            return (T) o;
-        }
-        System.out.println("ReflectionUtils.castTo() -- returning null");
-        return null;
+  @SuppressWarnings("unchecked")
+  public static <T> T castTo(Object o, Class<T> cls) {
+    Class<? extends Object> oc = o.getClass();
+    if (cls.isAssignableFrom(oc)) {
+      return (T) o;
     }
+    System.out.println("ReflectionUtils.castTo() -- returning null");
+    return null;
+  }
 
-    public static boolean instanceOf(
-            Object o,
-            Class<?> cls) {
-        Invariants.notNull(o, cls);
-        return cls.isInstance(o);
+  public static boolean instanceOf(Object o, Class<?> cls) {
+    Invariants.notNull(o, cls);
+    return cls.isInstance(o);
+  }
+
+  public static Object invoke(Object object, String methodName)
+      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    Class<?> objectClass = object.getClass();
+    Method method;
+    try {
+      method = objectClass.getMethod(methodName);
+    } catch (NoSuchMethodException e) {
+      method = objectClass.getDeclaredMethod(methodName);
+      method.setAccessible(true);
     }
-
-    public static Object invoke(
-            Object object,
-            String methodName)
-            throws NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
-        Class<?> objectClass = object.getClass();
-        Method method;
-        try {
-            method = objectClass.getMethod(methodName);
-        } catch (NoSuchMethodException e) {
-            method = objectClass.getDeclaredMethod(methodName
-            );
-            method.setAccessible(true);
-        }
-        return method.invoke(object);
-    }
-
+    return method.invoke(object);
+  }
 }

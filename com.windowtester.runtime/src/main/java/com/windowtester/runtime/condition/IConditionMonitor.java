@@ -80,67 +80,65 @@ import com.windowtester.runtime.IUIContext;
  * IConditionMonitor} calls {@link #testUI(IUIContext)} rather than {@link ICondition#test()}.
  */
 public interface IConditionMonitor {
-    /**
-     * A flag returned by {@link #process()} indicating that the conditions were processed and no conditions were
-     * satisified.
-     */
-    int PROCESS_NONE = 0;
+  /**
+   * A flag returned by {@link #process()} indicating that the conditions were processed and no conditions were
+   * satisified.
+   */
+  int PROCESS_NONE = 0;
 
-    /**
-     * A flag returned by {@link #process()} indicating that the conditions were processed and at least one condition
-     * was satisfied.
-     */
-    int PROCESS_ONE_OR_MORE = 1;
+  /**
+   * A flag returned by {@link #process()} indicating that the conditions were processed and at least one condition
+   * was satisfied.
+   */
+  int PROCESS_ONE_OR_MORE = 1;
 
-    /**
-     * A flag returned by {@link #process()} indicating that conditions are already being processed and that the call
-     * returned immediately
-     */
-    int PROCESS_RECURSIVE = 2;
+  /**
+   * A flag returned by {@link #process()} indicating that conditions are already being processed and that the call
+   * returned immediately
+   */
+  int PROCESS_RECURSIVE = 2;
 
-    /**
-     * A flag returned by {@link #process()} indicating that no conditions were processed because the application is
-     * interacting with native OS functionality and that the call returned immediately.  Since conditions might access
-     * the UI thread during processing, it is necessary to skip them when the application goes native lest the test
-     * thread be blocked.
-     */
-    int PROCESS_NATIVE = 3;
+  /**
+   * A flag returned by {@link #process()} indicating that no conditions were processed because the application is
+   * interacting with native OS functionality and that the call returned immediately.  Since conditions might access
+   * the UI thread during processing, it is necessary to skip them when the application goes native lest the test
+   * thread be blocked.
+   */
+  int PROCESS_NATIVE = 3;
 
-    /**
-     * Add the specified condition and associated handler to the receiver so that it is included the next time that
-     * conditions are processed. WARNING! No checking is performed to prevent condition/handler pairs from being added
-     * multiple times.
-     *
-     * @param condition the condition to be tested (not <code>null</code>)
-     * @param handler   the handler to be activated if the condition is satisified
-     */
-    void add(
-            ICondition condition,
-            IHandler handler);
+  /**
+   * Add the specified condition and associated handler to the receiver so that it is included the next time that
+   * conditions are processed. WARNING! No checking is performed to prevent condition/handler pairs from being added
+   * multiple times.
+   *
+   * @param condition the condition to be tested (not <code>null</code>)
+   * @param handler   the handler to be activated if the condition is satisified
+   */
+  void add(ICondition condition, IHandler handler);
 
-    /**
-     * Add a handler that is called when a dialog matching the specified condition becomes visible. The handler's
-     * <code>test</code> method is called on the UI thread and the <code>handle</code> is called on the WindowTester
-     * test.
-     *
-     * @param conditionHandler the condition handler to match (not <code>null</code>)
-     */
-    void add(IConditionHandler conditionHandler);
+  /**
+   * Add a handler that is called when a dialog matching the specified condition becomes visible. The handler's
+   * <code>test</code> method is called on the UI thread and the <code>handle</code> is called on the WindowTester
+   * test.
+   *
+   * @param conditionHandler the condition handler to match (not <code>null</code>)
+   */
+  void add(IConditionHandler conditionHandler);
 
-    /**
-     * Remove all the registered handlers from this monitor.
-     */
-    void removeAll();
+  /**
+   * Remove all the registered handlers from this monitor.
+   */
+  void removeAll();
 
-    /**
-     * Process all condition/handler pairs by checking each condition and calling the associated handlers for any
-     * conditions that are satisfied. Nested calls to this method return immediately without taking any action.
-     *
-     * @param ui the UIContext instance for use in condition handling
-     * @return one of the following flags indicating what was processed: {@link #PROCESS_NONE} if conditions were
-     * processed but no conditions were satisified, {@link #PROCESS_ONE_OR_MORE} if conditions were processed and at
-     * least on condition was satisified, {@link #PROCESS_RECURSIVE} if conditions were already being processed and no
-     * additional action was taken.
-     */
-    int process(IUIContext ui);
+  /**
+   * Process all condition/handler pairs by checking each condition and calling the associated handlers for any
+   * conditions that are satisfied. Nested calls to this method return immediately without taking any action.
+   *
+   * @param ui the UIContext instance for use in condition handling
+   * @return one of the following flags indicating what was processed: {@link #PROCESS_NONE} if conditions were
+   * processed but no conditions were satisified, {@link #PROCESS_ONE_OR_MORE} if conditions were processed and at
+   * least on condition was satisified, {@link #PROCESS_RECURSIVE} if conditions were already being processed and no
+   * additional action was taken.
+   */
+  int process(IUIContext ui);
 }

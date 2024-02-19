@@ -17,12 +17,11 @@ import com.windowtester.runtime.WidgetLocator;
  */
 public interface IKeyGenerator {
 
-    /**
-     * Generate a key value based on this info object.
-     *
-     * @param info - the object to describe.
-     * @return a key based on the info object
-     */
-    String generate(WidgetLocator info);
-
+  /**
+   * Generate a key value based on this info object.
+   *
+   * @param info - the object to describe.
+   * @return a key based on the info object
+   */
+  String generate(WidgetLocator info);
 }

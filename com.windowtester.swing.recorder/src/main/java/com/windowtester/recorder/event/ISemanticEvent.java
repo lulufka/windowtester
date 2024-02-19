@@ -21,11 +21,10 @@ import java.io.Serializable;
  */
 public interface ISemanticEvent extends Serializable {
 
-    /**
-     * Accept this event handler.
-     *
-     * @param handler - the handler
-     */
-    void accept(ISemanticEventHandler handler);
-
+  /**
+   * Accept this event handler.
+   *
+   * @param handler - the handler
+   */
+  void accept(ISemanticEventHandler handler);
 }

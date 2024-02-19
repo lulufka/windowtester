@@ -12,6 +12,5 @@ package com.windowtester.internal.runtime;
 
 public interface ICodegenParticipant {
 
-    void describeTo(ICodeGenerator generator);
-
+  void describeTo(ICodeGenerator generator);
 }

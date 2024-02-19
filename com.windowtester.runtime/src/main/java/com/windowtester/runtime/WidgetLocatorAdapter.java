@@ -15,11 +15,10 @@ package com.windowtester.runtime;
  */
 public abstract class WidgetLocatorAdapter implements IWidgetLocatorVisitor {
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.IWidgetLocatorVisitor#visit(com.windowtester.runtime.WidgetLocator)
-     */
-    public void visit(WidgetLocator locator) {
-        //no-op
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.IWidgetLocatorVisitor#visit(com.windowtester.runtime.WidgetLocator)
+   */
+  public void visit(WidgetLocator locator) {
+    // no-op
+  }
 }

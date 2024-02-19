@@ -14,34 +14,32 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.swing.UITestCaseSwing;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JTextComponentLocator;
-
-import javax.swing.JTextPane;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import javax.swing.JTextPane;
 
 public class TextComponentTest extends UITestCaseSwing {
 
-    public TextComponentTest() {
-        super(swing.samples.TextComponentDemo.class);
-    }
+  public TextComponentTest() {
+    super(swing.samples.TextComponentDemo.class);
+  }
 
-    public void testMain() throws Exception {
-		IUIContext ui = getUI();
+  public void testMain() throws Exception {
+    IUIContext ui = getUI();
 
-		ui.wait(new WindowShowingCondition("Text Component Demo"));
-		JTextComponentLocator textComponentLocator = new JTextComponentLocator(253,JTextPane.class);
-		ui.assertThat(textComponentLocator.isEnabled());
-		ui.click(textComponentLocator);
-		ui.keyClick(InputEvent.CTRL_DOWN_MASK, 'b');
-		ui.enterText("the ");
-		ui.click(new JTextComponentLocator(89, JTextPane.class));
-		ui.enterText("from ");
-		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
-		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
-		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
-//		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
-//		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
-		ui.pause(1000);
-    }
-
+    ui.wait(new WindowShowingCondition("Text Component Demo"));
+    JTextComponentLocator textComponentLocator = new JTextComponentLocator(253, JTextPane.class);
+    ui.assertThat(textComponentLocator.isEnabled());
+    ui.click(textComponentLocator);
+    ui.keyClick(InputEvent.CTRL_DOWN_MASK, 'b');
+    ui.enterText("the ");
+    ui.click(new JTextComponentLocator(89, JTextPane.class));
+    ui.enterText("from ");
+    ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
+    ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
+    ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
+    //		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
+    //		ui.keyClick(InputEvent.SHIFT_DOWN_MASK | KeyEvent.VK_LEFT);
+    ui.pause(1000);
+  }
 }

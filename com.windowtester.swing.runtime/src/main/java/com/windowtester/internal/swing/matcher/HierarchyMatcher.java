@@ -18,24 +18,21 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class HierarchyMatcher {
 
-    public static IWidgetMatcher create(
-            IWidgetMatcher targetMatcher,
-            IWidgetMatcher parentMatcher) {
-        return new AdapterFactory().adapt(
-                new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(
-                        new AdapterFactory().adapt(targetMatcher),
-                        new AdapterFactory().adapt(parentMatcher)));
-    }
+  public static IWidgetMatcher create(IWidgetMatcher targetMatcher, IWidgetMatcher parentMatcher) {
+    return new AdapterFactory()
+        .adapt(
+            new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(
+                new AdapterFactory().adapt(targetMatcher),
+                new AdapterFactory().adapt(parentMatcher)));
+  }
 
-    public static IWidgetMatcher create(
-            IWidgetMatcher targetMatcher,
-            IWidgetMatcher parentMatcher,
-            int index) {
-        return new AdapterFactory().adapt(
-                new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(
-                        new AdapterFactory().adapt(targetMatcher),
-                        index,
-                        new AdapterFactory().adapt(parentMatcher)));
-    }
-
+  public static IWidgetMatcher create(
+      IWidgetMatcher targetMatcher, IWidgetMatcher parentMatcher, int index) {
+    return new AdapterFactory()
+        .adapt(
+            new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(
+                new AdapterFactory().adapt(targetMatcher),
+                index,
+                new AdapterFactory().adapt(parentMatcher)));
+  }
 }

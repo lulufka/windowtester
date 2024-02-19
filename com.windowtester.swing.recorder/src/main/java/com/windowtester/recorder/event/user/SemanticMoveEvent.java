@@ -15,15 +15,14 @@ package com.windowtester.recorder.event.user;
  */
 public class SemanticMoveEvent extends UISemanticEvent {
 
-    private static final long serialVersionUID = 7247278664202263173L;
+  private static final long serialVersionUID = 7247278664202263173L;
 
-    /**
-     * Create an instance.
-     *
-     * @param info
-     */
-    public SemanticMoveEvent(EventInfo info) {
-        super(info);
-    }
-
+  /**
+   * Create an instance.
+   *
+   * @param info
+   */
+  public SemanticMoveEvent(EventInfo info) {
+    super(info);
+  }
 }

@@ -15,13 +15,12 @@ import java.util.concurrent.Callable;
 /**
  * A subinterface of {@link Callable} that returns a type of result of type T and can handle exceptions if they occur.
  */
-public interface SafeCallable<T>
-        extends Callable<T> {
-    /**
-     * If the {@link #call()} method throws an exception, then this method is called to handle that exception. This
-     * method may either handle the exception and return a value or rethrow the exception
-     *
-     * @param e the exception that occurred during execution of {@link #call()}
-     */
-    T handleException(Throwable e) throws Throwable;
+public interface SafeCallable<T> extends Callable<T> {
+  /**
+   * If the {@link #call()} method throws an exception, then this method is called to handle that exception. This
+   * method may either handle the exception and return a value or rethrow the exception
+   *
+   * @param e the exception that occurred during execution of {@link #call()}
+   */
+  T handleException(Throwable e) throws Throwable;
 }

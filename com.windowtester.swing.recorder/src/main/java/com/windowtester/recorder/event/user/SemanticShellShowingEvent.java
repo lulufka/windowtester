@@ -12,29 +12,25 @@ package com.windowtester.recorder.event.user;
 
 public class SemanticShellShowingEvent extends SemanticShellEvent {
 
-    private static final long serialVersionUID = 4937755968438502106L;
-    private final String _shellTitle;
+  private static final long serialVersionUID = 4937755968438502106L;
+  private final String _shellTitle;
 
-    public SemanticShellShowingEvent(
-            EventInfo info,
-            String shellTitle) {
-        super(info);
-        _shellTitle = shellTitle;
+  public SemanticShellShowingEvent(EventInfo info, String shellTitle) {
+    super(info);
+    _shellTitle = shellTitle;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.SemanticShellEvent#getName()
+   */
+  public String getName() {
+    if (_shellTitle != null) {
+      return _shellTitle;
     }
+    return super.getName();
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.SemanticShellEvent#getName()
-     */
-    public String getName() {
-        if (_shellTitle != null) {
-            return _shellTitle;
-        }
-        return super.getName();
-    }
-
-    public String toString() {
-        return "Shell: '" + getName() + "' shown";
-
-    }
-
+  public String toString() {
+    return "Shell: '" + getName() + "' shown";
+  }
 }

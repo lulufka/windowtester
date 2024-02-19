@@ -1,7 +1,6 @@
 package abbot.tester;
 
 import abbot.i18n.Strings;
-
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -41,140 +40,132 @@ import java.util.StringTokenizer;
  */
 public class ComponentLocation {
 
-    /**
-     * Special <code>ComponentLocation</code> encoding which represents the center of the component.
-     */
-    public static final String CENTER = "(center)";
+  /**
+   * Special <code>ComponentLocation</code> encoding which represents the center of the component.
+   */
+  public static final String CENTER = "(center)";
 
-    private Point where = null;
+  private Point where = null;
 
-    /**
-     * Create a simple location which represents the center of a component.
-     */
-    public ComponentLocation() {
+  /**
+   * Create a simple location which represents the center of a component.
+   */
+  public ComponentLocation() {}
+
+  /**
+   * Create a simple location.
+   */
+  public ComponentLocation(Point where) {
+    this.where = new Point(where);
+  }
+
+  /**
+   * Convert the abstract location into a concrete one.  Returns a {@link Point} relative to the given {@link
+   * Component}.
+   */
+  public Point getPoint(Component c) throws LocationUnavailableException {
+    if (where != null) {
+      return new Point(where);
     }
+    return new Point(c.getWidth() / 2, c.getHeight() / 2);
+  }
 
-    /**
-     * Create a simple location.
-     */
-    public ComponentLocation(Point where) {
-        this.where = new Point(where);
+  /**
+   * Convert the abstract location into a concrete area, relative to the given <code>Component</code>.  If a point has
+   * been specified, returns a 1x1 rectangle, otherwise returns the rectangle at (0, 0) of the Component's size.
+   */
+  public Rectangle getBounds(Component c) throws LocationUnavailableException {
+    if (where == null) {
+      return new Rectangle(0, 0, c.getWidth(), c.getHeight());
     }
+    return new Rectangle(where.x, where.y, 1, 1);
+  }
 
-    /**
-     * Convert the abstract location into a concrete one.  Returns a {@link Point} relative to the given {@link
-     * Component}.
-     */
-    public Point getPoint(Component c)
-            throws LocationUnavailableException {
-        if (where != null) {
-            return new Point(where);
-        }
-        return new Point(c.getWidth() / 2, c.getHeight() / 2);
+  /**
+   * Returns whether the given object is an equivalent
+   * <code>ComponentLocation</code>.
+   */
+  public boolean equals(Object o) {
+    if (o instanceof ComponentLocation) {
+      ComponentLocation loc = (ComponentLocation) o;
+      return (where == null && loc.where == null) || (where != null && where.equals(loc.where));
     }
+    return false;
+  }
 
-    /**
-     * Convert the abstract location into a concrete area, relative to the given <code>Component</code>.  If a point has
-     * been specified, returns a 1x1 rectangle, otherwise returns the rectangle at (0, 0) of the Component's size.
-     */
-    public Rectangle getBounds(Component c)
-            throws LocationUnavailableException {
-        if (where == null) {
-            return new Rectangle(0, 0, c.getWidth(), c.getHeight());
-        }
-        return new Rectangle(where.x, where.y, 1, 1);
+  public String toString() {
+    if (where != null) {
+      return "(" + where.x + "," + where.y + ")";
     }
+    return CENTER;
+  }
 
-    /**
-     * Returns whether the given object is an equivalent
-     * <code>ComponentLocation</code>.
-     */
-    public boolean equals(Object o) {
-        if (o instanceof ComponentLocation) {
-            ComponentLocation loc = (ComponentLocation) o;
-            return (where == null && loc.where == null)
-                    || (where != null && where.equals(loc.where));
-        }
-        return false;
+  protected String badFormat(String encoded) {
+    return Strings.get("location.component.bad_format", new Object[] {encoded});
+  }
+
+  protected String encodeIndex(int index) {
+    return "[" + index + "]";
+  }
+
+  /**
+   * Returns whether the given (trimmed) <code>String</code> is an encoded index.
+   */
+  protected boolean isIndex(String encoded) {
+    return encoded.startsWith("[") && encoded.endsWith("]");
+  }
+
+  /**
+   * Extract the encoded index.
+   */
+  protected int parseIndex(String encoded) {
+    try {
+      return Integer.parseInt(encoded.substring(1, encoded.length() - 1).trim());
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException(badFormat(encoded));
     }
+  }
 
-    public String toString() {
-        if (where != null) {
-            return "(" + where.x + "," + where.y + ")";
-        }
-        return CENTER;
+  protected String encodeValue(String value) {
+    return "\"" + value + "\"";
+  }
+
+  /**
+   * Returns whether the given (trimmed) <code>String</code> is an encoded value.
+   */
+  protected boolean isValue(String encoded) {
+    return encoded.startsWith("\"") && encoded.endsWith("\"");
+  }
+
+  /**
+   * Extract the encoded value.
+   */
+  protected String parseValue(String encoded) {
+    return encoded.substring(1, encoded.length() - 1);
+  }
+
+  /**
+   * Convert the given encoding into the proper location. Allowed formats: (x, y)
+   * <p>
+   */
+  public ComponentLocation parse(String encoded) {
+    encoded = encoded.trim();
+    if (encoded.equals(CENTER)) {
+      where = null;
+      return this;
     }
-
-    protected String badFormat(String encoded) {
-        return Strings.get("location.component.bad_format",
-                new Object[]{encoded});
-    }
-
-    protected String encodeIndex(int index) {
-        return "[" + index + "]";
-    }
-
-    /**
-     * Returns whether the given (trimmed) <code>String</code> is an encoded index.
-     */
-    protected boolean isIndex(String encoded) {
-        return encoded.startsWith("[") && encoded.endsWith("]");
-    }
-
-    /**
-     * Extract the encoded index.
-     */
-    protected int parseIndex(String encoded) {
+    if (encoded.startsWith("(") && encoded.endsWith(")")) {
+      StringTokenizer st = new StringTokenizer(encoded.substring(1, encoded.length() - 1), ",");
+      if (st.countTokens() == 2) {
         try {
-            return Integer.parseInt(encoded.
-                    substring(1, encoded.length() - 1).trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(badFormat(encoded));
+          int x = Integer.parseInt(st.nextToken().trim());
+          int y = Integer.parseInt(st.nextToken().trim());
+          where = new Point(x, y);
+          return this;
+        } catch (NumberFormatException nfe) {
         }
+      }
     }
-
-    protected String encodeValue(String value) {
-        return "\"" + value + "\"";
-    }
-
-    /**
-     * Returns whether the given (trimmed) <code>String</code> is an encoded value.
-     */
-    protected boolean isValue(String encoded) {
-        return encoded.startsWith("\"") && encoded.endsWith("\"");
-    }
-
-    /**
-     * Extract the encoded value.
-     */
-    protected String parseValue(String encoded) {
-        return encoded.substring(1, encoded.length() - 1);
-    }
-
-    /**
-     * Convert the given encoding into the proper location. Allowed formats: (x, y)
-     * <p>
-     */
-    public ComponentLocation parse(String encoded) {
-        encoded = encoded.trim();
-        if (encoded.equals(CENTER)) {
-            where = null;
-            return this;
-        }
-        if (encoded.startsWith("(") && encoded.endsWith(")")) {
-            StringTokenizer st =
-                    new StringTokenizer(encoded.substring(1, encoded.length() - 1),
-                            ",");
-            if (st.countTokens() == 2) {
-                try {
-                    int x = Integer.parseInt(st.nextToken().trim());
-                    int y = Integer.parseInt(st.nextToken().trim());
-                    where = new Point(x, y);
-                    return this;
-                } catch (NumberFormatException nfe) {
-                }
-            }
-        }
-        throw new IllegalArgumentException(badFormat(encoded));
-    }
+    throw new IllegalArgumentException(badFormat(encoded));
+  }
 }

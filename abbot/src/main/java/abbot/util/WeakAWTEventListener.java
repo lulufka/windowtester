@@ -11,29 +11,27 @@ import java.lang.ref.WeakReference;
  */
 public class WeakAWTEventListener implements AWTEventListener {
 
-    private final WeakReference listener;
+  private final WeakReference listener;
 
-    public WeakAWTEventListener(
-            AWTEventListener l,
-            long mask) {
-        listener = new WeakReference(l);
-        Toolkit.getDefaultToolkit().addAWTEventListener(this, mask);
-    }
+  public WeakAWTEventListener(AWTEventListener l, long mask) {
+    listener = new WeakReference(l);
+    Toolkit.getDefaultToolkit().addAWTEventListener(this, mask);
+  }
 
-    public void dispose() {
-        Toolkit.getDefaultToolkit().removeAWTEventListener(this);
-    }
+  public void dispose() {
+    Toolkit.getDefaultToolkit().removeAWTEventListener(this);
+  }
 
-    public void eventDispatched(AWTEvent e) {
-        AWTEventListener l = (AWTEventListener) listener.get();
-        if (l != null) {
-            try {
-                l.eventDispatched(e);
-            } catch (RuntimeException ex) {
-                throw ex;
-            }
-        } else {
-            dispose();
-        }
+  public void eventDispatched(AWTEvent e) {
+    AWTEventListener l = (AWTEventListener) listener.get();
+    if (l != null) {
+      try {
+        l.eventDispatched(e);
+      } catch (RuntimeException ex) {
+        throw ex;
+      }
+    } else {
+      dispose();
     }
+  }
 }

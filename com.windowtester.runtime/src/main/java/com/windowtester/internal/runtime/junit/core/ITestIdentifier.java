@@ -15,10 +15,9 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public interface ITestIdentifier {
 
-    /**
-     * Get a String representation of this running test for use in giving feedback to the user, naming screenshots,
-     * etc.
-     */
-    String getName();
-
+  /**
+   * Get a String representation of this running test for use in giving feedback to the user, naming screenshots,
+   * etc.
+   */
+  String getName();
 }

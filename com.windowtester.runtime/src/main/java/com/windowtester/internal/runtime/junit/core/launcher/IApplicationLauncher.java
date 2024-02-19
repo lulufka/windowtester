@@ -15,8 +15,7 @@ package com.windowtester.internal.runtime.junit.core.launcher;
  */
 public interface IApplicationLauncher {
 
-    void launch();
+  void launch();
 
-    void addListener(ILaunchListener listener);
-
+  void addListener(ILaunchListener listener);
 }

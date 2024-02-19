@@ -15,21 +15,20 @@ import com.windowtester.runtime.swing.UITestCaseSwing;
 
 public class TreeDnDTest extends UITestCaseSwing {
 
-    public TreeDnDTest() {
-        super(TreeDnD.class);
-    }
+  public TreeDnDTest() {
+    super(TreeDnD.class);
+  }
 
-    public void testTreeDnD() throws WidgetSearchException {
+  public void testTreeDnD() throws WidgetSearchException {
 
-//		IUIContext ui = getUI();
-//
-//		ui.click(new JTreeItemLocator("JTree/colors/blue", new NamedWidgetLocator("tree1")));
-//		ui.dragTo(new JTreeItemLocator("JTree/sports",new NamedWidgetLocator("tree2")));
-//
-//		ui.click(new JTreeItemLocator("JTree/food/hot dogs", new NamedWidgetLocator("tree2")));
-//		ui.dragTo(new JTreeItemLocator("JTree/colors",new NamedWidgetLocator("tree1")));
-//		ui.pause(10000);
+    //		IUIContext ui = getUI();
+    //
+    //		ui.click(new JTreeItemLocator("JTree/colors/blue", new NamedWidgetLocator("tree1")));
+    //		ui.dragTo(new JTreeItemLocator("JTree/sports",new NamedWidgetLocator("tree2")));
+    //
+    //		ui.click(new JTreeItemLocator("JTree/food/hot dogs", new NamedWidgetLocator("tree2")));
+    //		ui.dragTo(new JTreeItemLocator("JTree/colors",new NamedWidgetLocator("tree1")));
+    //		ui.pause(10000);
 
-    }
-
+  }
 }

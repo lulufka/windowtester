@@ -18,87 +18,75 @@ import java.lang.reflect.Method;
  */
 public class Reflector {
 
-    public static Reflector forObject(Object o) {
-        return new Reflector(o);
+  public static Reflector forObject(Object o) {
+    return new Reflector(o);
+  }
+
+  private final Object object;
+
+  private Reflector(Object object) {
+    this.object = object;
+  }
+
+  public boolean supports(String methodName, Class[] argTypes) {
+    return getMethod(methodName, argTypes) != null;
+  }
+
+  public boolean supports(String methodName) {
+    return supports(methodName, null);
+  }
+
+  private Method getMethod(String methodName, Class[] argTypes) {
+    Method method = getPublicMethod(methodName, argTypes);
+    if (method != null) {
+      return method;
     }
+    return getDeclaredMethod(methodName, argTypes);
+  }
 
-    private final Object object;
-
-    private Reflector(Object object) {
-        this.object = object;
+  private Method getPublicMethod(String methodName, Class[] argTypes) {
+    if (object == null) {
+      return null;
     }
-
-    public boolean supports(
-            String methodName,
-            Class[] argTypes) {
-        return getMethod(methodName, argTypes) != null;
+    try {
+      return object.getClass().getMethod(methodName, argTypes);
+    } catch (SecurityException e) {
+    } catch (NoSuchMethodException e) {
     }
+    return null;
+  }
 
-    public boolean supports(String methodName) {
-        return supports(methodName, null);
+  private Method getDeclaredMethod(String methodName, Class[] argTypes) {
+    if (object == null) {
+      return null;
     }
-
-    private Method getMethod(
-            String methodName,
-            Class[] argTypes) {
-        Method method = getPublicMethod(methodName, argTypes);
-        if (method != null) {
-            return method;
-        }
-        return getDeclaredMethod(methodName, argTypes);
+    try {
+      return object.getClass().getDeclaredMethod(methodName, null);
+    } catch (SecurityException e) {
+    } catch (NoSuchMethodException e) {
     }
+    return null;
+  }
 
-    private Method getPublicMethod(
-            String methodName,
-            Class[] argTypes) {
-        if (object == null) {
-            return null;
-        }
-        try {
-            return object.getClass().getMethod(methodName, argTypes);
-        } catch (SecurityException e) {
-        } catch (NoSuchMethodException e) {
-        }
+  public Object invoke(String methodName) {
+    return invoke(methodName, null, null);
+  }
+
+  public Object invoke(String methodName, Class[] argTypes, Object[] args) {
+    if (object == null) {
+      return null;
+    }
+    try {
+      Method method = getMethod(methodName, argTypes);
+      if (method == null) {
         return null;
+      }
+      method.setAccessible(true);
+      return method.invoke(object, args);
+    } catch (IllegalArgumentException e) {
+    } catch (IllegalAccessException e) {
+    } catch (InvocationTargetException e) {
     }
-
-    private Method getDeclaredMethod(
-            String methodName,
-            Class[] argTypes) {
-        if (object == null) {
-            return null;
-        }
-        try {
-            return object.getClass().getDeclaredMethod(methodName, null);
-        } catch (SecurityException e) {
-        } catch (NoSuchMethodException e) {
-        }
-        return null;
-    }
-
-    public Object invoke(String methodName) {
-        return invoke(methodName, null, null);
-    }
-
-    public Object invoke(
-            String methodName,
-            Class[] argTypes,
-            Object[] args) {
-        if (object == null) {
-            return null;
-        }
-        try {
-            Method method = getMethod(methodName, argTypes);
-            if (method == null) {
-                return null;
-            }
-            method.setAccessible(true);
-            return method.invoke(object, args);
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

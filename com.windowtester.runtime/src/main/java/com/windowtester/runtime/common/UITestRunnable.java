@@ -17,5 +17,5 @@ package com.windowtester.runtime.common;
  * @deprecated
  */
 public interface UITestRunnable {
-    void run() throws Throwable;
+  void run() throws Throwable;
 }

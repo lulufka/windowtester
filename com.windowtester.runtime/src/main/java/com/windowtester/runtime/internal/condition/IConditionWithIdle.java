@@ -20,8 +20,8 @@ import com.windowtester.runtime.condition.ICondition;
  */
 public interface IConditionWithIdle extends ICondition {
 
-    /**
-     * Call {@link #test()} and then perform a wait for idle before returning.
-     */
-    boolean testAndWaitForIdle();
+  /**
+   * Call {@link #test()} and then perform a wait for idle before returning.
+   */
+  boolean testAndWaitForIdle();
 }

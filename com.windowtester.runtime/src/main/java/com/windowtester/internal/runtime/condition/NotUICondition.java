@@ -19,24 +19,23 @@ import com.windowtester.runtime.condition.UICondition;
  */
 public class NotUICondition extends UICondition {
 
-    private final IUICondition toNegate;
+  private final IUICondition toNegate;
 
-    public NotUICondition(IUICondition toNegate) {
-        this.toNegate = toNegate;
-    }
+  public NotUICondition(IUICondition toNegate) {
+    this.toNegate = toNegate;
+  }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return toNegate.toString() + " to be FALSE";
-    }
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return toNegate.toString() + " to be FALSE";
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-     */
-    public boolean testUI(IUIContext ui) {
-        return !toNegate.testUI(ui);
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
+   */
+  public boolean testUI(IUIContext ui) {
+    return !toNegate.testUI(ui);
+  }
 }

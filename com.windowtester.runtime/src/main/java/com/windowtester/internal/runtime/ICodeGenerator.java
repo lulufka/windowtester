@@ -12,18 +12,16 @@ package com.windowtester.internal.runtime;
 
 public interface ICodeGenerator {
 
-    class JavaVersion {
-    }
+  class JavaVersion {}
 
-    JavaVersion JAVA5 = new JavaVersion();
-    JavaVersion JAVA4 = new JavaVersion();
+  JavaVersion JAVA5 = new JavaVersion();
+  JavaVersion JAVA4 = new JavaVersion();
 
-    JavaVersion getJavaVersion();
+  JavaVersion getJavaVersion();
 
-    ICodeGenerator append(String body);
+  ICodeGenerator append(String body);
 
-    ICodeGenerator addImport(String importString);
+  ICodeGenerator addImport(String importString);
 
-    String toCodeString();
-
+  String toCodeString();
 }

@@ -1,7 +1,6 @@
 package abbot.tester;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 /**
@@ -9,20 +8,18 @@ import javax.swing.*;
  */
 public class JTextFieldTester extends JTextComponentTester {
 
-    /**
-     * Enter and commit the given text.
-     */
-    public void actionCommitText(
-            Component c,
-            String text) {
-        actionEnterText(c, text);
-        actionCommit(c);
-    }
+  /**
+   * Enter and commit the given text.
+   */
+  public void actionCommitText(Component c, String text) {
+    actionEnterText(c, text);
+    actionCommit(c);
+  }
 
-    /**
-     * Cause the text field's notify action to be triggered.
-     */
-    public void actionCommit(Component c) {
-        actionActionMap(c, JTextField.notifyAction);
-    }
+  /**
+   * Cause the text field's notify action to be triggered.
+   */
+  public void actionCommit(Component c) {
+    actionActionMap(c, JTextField.notifyAction);
+  }
 }

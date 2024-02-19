@@ -18,8 +18,7 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class NameMatcher {
 
-    public static IWidgetMatcher create(String name) {
-        return new AdapterFactory().adapt(new abbot.finder.matchers.NameMatcher(name));
-    }
-
+  public static IWidgetMatcher create(String name) {
+    return new AdapterFactory().adapt(new abbot.finder.matchers.NameMatcher(name));
+  }
 }

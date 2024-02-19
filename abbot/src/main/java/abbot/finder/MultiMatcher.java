@@ -29,9 +29,8 @@ import java.awt.*;
  * @see ComponentFinder
  */
 public interface MultiMatcher extends Matcher {
-    /**
-     * Returns the best match among all the given candidates, or throws an exception if there is no best match.
-     */
-    Component bestMatch(Component[] candidates)
-            throws MultipleComponentsFoundException;
+  /**
+   * Returns the best match among all the given candidates, or throws an exception if there is no best match.
+   */
+  Component bestMatch(Component[] candidates) throws MultipleComponentsFoundException;
 }

@@ -10,32 +10,27 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime.selector;
 
+import com.windowtester.runtime.IWidgetSelectorDelegate;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.windowtester.runtime.IWidgetSelectorDelegate;
-
 public class WidgetSelectorService implements IWidgetSelectorService {
 
-    private static final WidgetSelectorService INSTANCE = new WidgetSelectorService();
+  private static final WidgetSelectorService INSTANCE = new WidgetSelectorService();
 
-    Map _map = new HashMap();
+  Map _map = new HashMap();
 
-    private WidgetSelectorService() {
-    }
+  private WidgetSelectorService() {}
 
-    public void set(
-            Class widgetClass,
-            IWidgetSelectorDelegate selector) {
-        _map.put(widgetClass, selector);
-    }
+  public void set(Class widgetClass, IWidgetSelectorDelegate selector) {
+    _map.put(widgetClass, selector);
+  }
 
-    public IWidgetSelectorDelegate get(Class widgetClass) {
-        return (IWidgetSelectorDelegate) _map.get(widgetClass);
-    }
+  public IWidgetSelectorDelegate get(Class widgetClass) {
+    return (IWidgetSelectorDelegate) _map.get(widgetClass);
+  }
 
-    public static IWidgetSelectorService getInstance() {
-        return INSTANCE;
-    }
-
+  public static IWidgetSelectorService getInstance() {
+    return INSTANCE;
+  }
 }

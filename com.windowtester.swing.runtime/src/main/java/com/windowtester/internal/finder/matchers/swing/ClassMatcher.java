@@ -10,36 +10,31 @@
  *******************************************************************************/
 package com.windowtester.internal.finder.matchers.swing;
 
-import java.awt.*;
-
 import abbot.finder.matchers.AbstractMatcher;
+import java.awt.*;
 
 /**
  * Provides matching of components by class.
  */
 public class ClassMatcher extends AbstractMatcher {
-    private final Class cls;
+  private final Class cls;
 
-    public ClassMatcher(Class cls) {
-        this(cls, false);
+  public ClassMatcher(Class cls) {
+    this(cls, false);
+  }
+
+  public ClassMatcher(Class cls, boolean mustBeShowing) {
+    this.cls = cls;
+  }
+
+  public boolean matches(Component c) {
+    if (c == null) {
+      return false;
     }
+    return cls.isAssignableFrom(c.getClass());
+  }
 
-    public ClassMatcher(
-            Class cls,
-            boolean mustBeShowing) {
-        this.cls = cls;
-
-    }
-
-    public boolean matches(Component c) {
-        if (c == null) {
-            return false;
-        }
-        return cls.isAssignableFrom(c.getClass());
-
-    }
-
-    public String toString() {
-        return "Class matcher (" + cls.getName() + ")";
-    }
+  public String toString() {
+    return "Class matcher (" + cls.getName() + ")";
+  }
 }

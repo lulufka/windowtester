@@ -15,6 +15,5 @@ package com.windowtester.runtime.locator;
  */
 public interface IItemLocator {
 
-    String getPath();
-
+  String getPath();
 }

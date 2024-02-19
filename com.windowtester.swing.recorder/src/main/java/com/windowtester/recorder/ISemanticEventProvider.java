@@ -17,14 +17,13 @@ import com.windowtester.recorder.event.ISemanticEventListener;
  */
 public interface ISemanticEventProvider {
 
-    /**
-     * Add the given semantic event listener to this recorder.  Event listeners are notified of all semantic events.
-     */
-    void addListener(ISemanticEventListener listener);
+  /**
+   * Add the given semantic event listener to this recorder.  Event listeners are notified of all semantic events.
+   */
+  void addListener(ISemanticEventListener listener);
 
-    /**
-     * Removes the given semantic event listener from this recorder.
-     */
-    void removeListener(ISemanticEventListener listener);
-
+  /**
+   * Removes the given semantic event listener from this recorder.
+   */
+  void removeListener(ISemanticEventListener listener);
 }

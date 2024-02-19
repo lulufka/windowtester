@@ -10,10 +10,9 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime.matcher;
 
-import java.awt.*;
-
 import abbot.finder.Matcher;
 import com.windowtester.runtime.locator.IWidgetMatcher;
+import java.awt.*;
 
 /**
  * An adapter from an {@link IWidgetMatcher} to an Abbot {@link Matcher}.
@@ -22,22 +21,21 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 /*package */ class AbbotFinderMatcherAdapter implements Matcher {
 
-    private final IWidgetMatcher _matcher;
+  private final IWidgetMatcher _matcher;
 
-    /**
-     * Create an instance.
-     *
-     * @param wm the matcher to adapt.
-     */
-    AbbotFinderMatcherAdapter(IWidgetMatcher wm) {
-        _matcher = wm;
-    }
+  /**
+   * Create an instance.
+   *
+   * @param wm the matcher to adapt.
+   */
+  AbbotFinderMatcherAdapter(IWidgetMatcher wm) {
+    _matcher = wm;
+  }
 
-    /* (non-Javadoc)
-     * @see abbot.finder.Matcher#matches(java.awt.Component)
-     */
-    public boolean matches(Component c) {
-        return _matcher.matches(c);
-    }
-
+  /* (non-Javadoc)
+   * @see abbot.finder.Matcher#matches(java.awt.Component)
+   */
+  public boolean matches(Component c) {
+    return _matcher.matches(c);
+  }
 }

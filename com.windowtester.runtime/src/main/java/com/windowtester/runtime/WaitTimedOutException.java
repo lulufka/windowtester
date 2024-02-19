@@ -14,16 +14,14 @@ package com.windowtester.runtime;
  * Thrown when a wait condition time limit is exceeded.
  */
 public class WaitTimedOutException extends RuntimeException {
-    private static final long serialVersionUID = -8129128536949106306L;
+  private static final long serialVersionUID = -8129128536949106306L;
 
-    public WaitTimedOutException(String msg) {
-        super(msg);
-    }
+  public WaitTimedOutException(String msg) {
+    super(msg);
+  }
 
-    public WaitTimedOutException(
-            String msg,
-            Throwable cause) {
-        super(msg);
-        initCause(cause);
-    }
+  public WaitTimedOutException(String msg, Throwable cause) {
+    super(msg);
+    initCause(cause);
+  }
 }

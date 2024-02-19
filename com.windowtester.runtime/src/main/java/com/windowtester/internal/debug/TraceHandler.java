@@ -15,23 +15,20 @@ package com.windowtester.internal.debug;
  */
 public class TraceHandler {
 
-    //TODO: we need a proper log handling scheme for the non-platform case
-    private static final boolean sendToConsole = false;
+  // TODO: we need a proper log handling scheme for the non-platform case
+  private static final boolean sendToConsole = false;
 
-    /**
-     * If trace messages associated with the given trace option have been enabled, log the given message to the
-     * debugging log file.
-     *
-     * @param optionName the name of the trace option used to determine whether the trace message should be written.
-     *                   Typically, the optionName takes the form "plug-in-id/trace-option"
-     * @param message    the trace message to be written
-     */
-    public static void trace(
-            String optionName,
-            String message) {
-        if (sendToConsole) {
-            System.out.println("trace[" + optionName + "]: " + message);
-        }
+  /**
+   * If trace messages associated with the given trace option have been enabled, log the given message to the
+   * debugging log file.
+   *
+   * @param optionName the name of the trace option used to determine whether the trace message should be written.
+   *                   Typically, the optionName takes the form "plug-in-id/trace-option"
+   * @param message    the trace message to be written
+   */
+  public static void trace(String optionName, String message) {
+    if (sendToConsole) {
+      System.out.println("trace[" + optionName + "]: " + message);
     }
-
+  }
 }

@@ -15,9 +15,8 @@ package com.windowtester.internal.runtime;
  */
 public class WTLocale {
 
-    /**
-     * isCurrent = false - use US Keyboard (default) isCurrent = true - use current locale keyboard
-     */
-    public static boolean isCurrent = false;
-
+  /**
+   * isCurrent = false - use US Keyboard (default) isCurrent = true - use current locale keyboard
+   */
+  public static boolean isCurrent = false;
 }

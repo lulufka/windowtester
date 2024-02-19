@@ -17,18 +17,17 @@ import com.windowtester.runtime.IUIContext;
  */
 public class ExecutionMonitor {
 
-    private static IExecutionContext _execContext;
+  private static IExecutionContext _execContext;
 
-    public static void setContext(IExecutionContext execContext) {
-        _execContext = execContext;
-    }
+  public static void setContext(IExecutionContext execContext) {
+    _execContext = execContext;
+  }
 
-    public static IUIContext getUI() {
-        return getContext().getUI();
-    }
+  public static IUIContext getUI() {
+    return getContext().getUI();
+  }
 
-    public static IExecutionContext getContext() {
-        return _execContext;
-    }
-
+  public static IExecutionContext getContext() {
+    return _execContext;
+  }
 }

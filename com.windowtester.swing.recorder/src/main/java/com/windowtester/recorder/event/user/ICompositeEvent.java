@@ -17,6 +17,5 @@ import com.windowtester.recorder.event.ISemanticEvent;
  */
 public interface ICompositeEvent {
 
-    ISemanticEvent[] getComponents();
-
+  ISemanticEvent[] getComponents();
 }

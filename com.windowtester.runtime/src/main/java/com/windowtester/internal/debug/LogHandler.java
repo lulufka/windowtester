@@ -17,37 +17,36 @@ import com.windowtester.internal.runtime.Platform;
  */
 public class LogHandler {
 
-    //TODO: we need a proper log handling scheme for the non-platform case
-    private static final boolean sendToConsole = false;
+  // TODO: we need a proper log handling scheme for the non-platform case
+  private static final boolean sendToConsole = false;
 
-    /**
-     * Log the specified exception.
-     *
-     * @param ex the exception to be logged.
-     */
-    public static void log(Throwable e) {
-        if (Platform.isRunning()) {
-            Logger.log(e);
-        } else {
-            if (sendToConsole) {
-                e.printStackTrace();
-            }
-        }
+  /**
+   * Log the specified exception.
+   *
+   * @param ex the exception to be logged.
+   */
+  public static void log(Throwable e) {
+    if (Platform.isRunning()) {
+      Logger.log(e);
+    } else {
+      if (sendToConsole) {
+        e.printStackTrace();
+      }
     }
+  }
 
-    /**
-     * Log the specified message and object
-     *
-     * @param aMessage the message to be logged
-     */
-    public static void log(String message) {
-        if (Platform.isRunning()) {
-            Logger.log(message);
-        } else {
-            if (sendToConsole) {
-                System.out.println(message);
-            }
-        }
+  /**
+   * Log the specified message and object
+   *
+   * @param aMessage the message to be logged
+   */
+  public static void log(String message) {
+    if (Platform.isRunning()) {
+      Logger.log(message);
+    } else {
+      if (sendToConsole) {
+        System.out.println(message);
+      }
     }
-
+  }
 }

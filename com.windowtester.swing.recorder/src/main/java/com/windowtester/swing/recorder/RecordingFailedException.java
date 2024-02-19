@@ -11,18 +11,18 @@
 package com.windowtester.swing.recorder;
 
 public class RecordingFailedException extends RuntimeException {
-    private Throwable reason = null;
+  private Throwable reason = null;
 
-    public RecordingFailedException(String msg) {
-        super(msg);
-    }
+  public RecordingFailedException(String msg) {
+    super(msg);
+  }
 
-    public RecordingFailedException(Throwable thr) {
-        super(thr.getMessage());
-        reason = thr;
-    }
+  public RecordingFailedException(Throwable thr) {
+    super(thr.getMessage());
+    reason = thr;
+  }
 
-    public Throwable getReason() {
-        return reason != null ? reason : this;
-    }
+  public Throwable getReason() {
+    return reason != null ? reason : this;
+  }
 }

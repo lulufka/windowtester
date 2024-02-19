@@ -10,59 +10,61 @@
  *******************************************************************************/
 package w2.testcases;
 
-import javax.swing.*;
-
 import com.windowtester.runtime.IUIContext;
-import com.windowtester.runtime.WaitTimedOutException;
 import com.windowtester.runtime.swing.UITestCaseSwing;
+import javax.swing.*;
 import swing.samples.ComboBoxes;
 
 public class JComboBoxTest extends UITestCaseSwing {
 
-    JComboBox cBox;
+  JComboBox cBox;
 
-    private IUIContext ui;
+  private IUIContext ui;
 
-    public JComboBoxTest() {
-        super(ComboBoxes.class);
-    }
+  public JComboBoxTest() {
+    super(ComboBoxes.class);
+  }
 
-    protected void setUp() throws Exception {
-        ui = getUI();
-    }
+  protected void setUp() throws Exception {
+    ui = getUI();
+  }
 
-    public void testComboClicks() throws Exception {
+  public void testComboClicks() throws Exception {
 
-//		IWidgetLocator locator;
-//		ui.wait(new WindowShowingCondition("Swing Combo Boxes"));
-//		locator = ui.click(new JComboBoxLocator("Cat",new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 0, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
-//		cBox = (JComboBox)((IWidgetReference)locator).getWidget();
-//		assertEquals("Cat",cBox.getSelectedItem());
-//		JComboBoxLocator comboBoxLocator = new JComboBoxLocator("Rabbit",new NamedWidgetLocator("pets"));
-//		ui.assertThat(comboBoxLocator.isEnabled());
-//	//	ui.ensureThat(comboBoxLocator.hasFocus());
-//		ui.click(comboBoxLocator);
-//		assertEquals("Rabbit",cBox.getSelectedItem());
-//
-//		locator = ui.click(new JComboBoxLocator("yellow",new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
-//		cBox = (JComboBox)((IWidgetReference)locator).getWidget();
-//		assertEquals("yellow",cBox.getSelectedItem());
+    //		IWidgetLocator locator;
+    //		ui.wait(new WindowShowingCondition("Swing Combo Boxes"));
+    //		locator = ui.click(new JComboBoxLocator("Cat",new
+    // com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 0, new
+    // com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
+    //		cBox = (JComboBox)((IWidgetReference)locator).getWidget();
+    //		assertEquals("Cat",cBox.getSelectedItem());
+    //		JComboBoxLocator comboBoxLocator = new JComboBoxLocator("Rabbit",new
+    // NamedWidgetLocator("pets"));
+    //		ui.assertThat(comboBoxLocator.isEnabled());
+    //	//	ui.ensureThat(comboBoxLocator.hasFocus());
+    //		ui.click(comboBoxLocator);
+    //		assertEquals("Rabbit",cBox.getSelectedItem());
+    //
+    //		locator = ui.click(new JComboBoxLocator("yellow",new
+    // com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new
+    // com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
+    //		cBox = (JComboBox)((IWidgetReference)locator).getWidget();
+    //		assertEquals("yellow",cBox.getSelectedItem());
 
-    }
-	
-	
-/*	public void testComboEnterTextFails() throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
+  }
 
-		IWidgetLocator locator;
-		ui.click(2,new JComboBoxLocator(new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
-		ui.enterText("pink\n");		
-		ui.pause(300);
-		locator = ui.click(new JComboBoxLocator("pink",new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
-		cBox = (JComboBox)((IWidgetReference)locator).getWidget();
-		assertEquals("pink",cBox.getSelectedItem());
-		
-	}
-	
-	*/
+  /*	public void testComboEnterTextFails() throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
+
+  	IWidgetLocator locator;
+  	ui.click(2,new JComboBoxLocator(new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
+  	ui.enterText("pink\n");
+  	ui.pause(300);
+  	locator = ui.click(new JComboBoxLocator("pink",new com.windowtester.runtime.swing.SwingWidgetLocator(javax.swing.Box.class, 1, new com.windowtester.runtime.swing.SwingWidgetLocator(ComboBoxes.class))));
+  	cBox = (JComboBox)((IWidgetReference)locator).getWidget();
+  	assertEquals("pink",cBox.getSelectedItem());
+
+  }
+
+  */
 
 }

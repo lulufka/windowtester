@@ -10,11 +10,9 @@
  *******************************************************************************/
 package com.windowtester.internal.tester.swing;
 
-import java.awt.*;
-
-import javax.swing.*;
-
 import abbot.tester.JTableLocation;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * Provide user actions on a JTable. The JTable substructure is a "Cell", and JTableLocation provides different
@@ -28,55 +26,40 @@ import abbot.tester.JTableLocation;
  * <p>
  * Added multi select support
  */
-
 public class JTableTester extends abbot.tester.JTableTester {
 
-    /**
-     * Select the given cell, if not already.
-     */
-    public void actionSelectCell(
-            Component c,
-            JTableLocation loc,
-            int mask) {
-        JTable table = (JTable) c;
-        JTableLocation.Cell cell = loc.getCell(table);
-        if (table.isRowSelected(cell.row)
-                && table.isColumnSelected(cell.col)
-                && table.getSelectedRowCount() == 1) {
-            return;
-        }
-        actionClick(c, loc, mask);
-
+  /**
+   * Select the given cell, if not already.
+   */
+  public void actionSelectCell(Component c, JTableLocation loc, int mask) {
+    JTable table = (JTable) c;
+    JTableLocation.Cell cell = loc.getCell(table);
+    if (table.isRowSelected(cell.row)
+        && table.isColumnSelected(cell.col)
+        && table.getSelectedRowCount() == 1) {
+      return;
     }
+    actionClick(c, loc, mask);
+  }
 
-    /**
-     * double click the given cell, if not already.
-     */
-    public void actionSelectCell(
-            int count,
-            Component c,
-            JTableLocation loc,
-            int mask) {
-        JTable table = (JTable) c;
-        JTableLocation.Cell cell = loc.getCell(table);
-        if (table.isRowSelected(cell.row)
-                && table.isColumnSelected(cell.col)
-                && table.getSelectedRowCount() == 1) {
-            return;
-        }
-        actionClick(c, loc, mask, count);
-
+  /**
+   * double click the given cell, if not already.
+   */
+  public void actionSelectCell(int count, Component c, JTableLocation loc, int mask) {
+    JTable table = (JTable) c;
+    JTableLocation.Cell cell = loc.getCell(table);
+    if (table.isRowSelected(cell.row)
+        && table.isColumnSelected(cell.col)
+        && table.getSelectedRowCount() == 1) {
+      return;
     }
+    actionClick(c, loc, mask, count);
+  }
 
-    /**
-     * Select the given cell, if not already. Equivalent to actionSelectCell(c, new JTableLocation(row, col)).
-     */
-    public void actionSelectCell(
-            Component c,
-            int row,
-            int col,
-            int mask) {
-        actionSelectCell(c, new JTableLocation(row, col), mask);
-    }
-
+  /**
+   * Select the given cell, if not already. Equivalent to actionSelectCell(c, new JTableLocation(row, col)).
+   */
+  public void actionSelectCell(Component c, int row, int col, int mask) {
+    actionSelectCell(c, new JTableLocation(row, col), mask);
+  }
 }

@@ -17,8 +17,7 @@ import com.windowtester.runtime.locator.ILocator;
  */
 public interface IContextMenuItemLocator {
 
-    ILocator getOwner();
+  ILocator getOwner();
 
-    String getMenuPath();
-
+  String getMenuPath();
 }

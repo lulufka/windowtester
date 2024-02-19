@@ -10,43 +10,39 @@
  *******************************************************************************/
 package com.windowtester.runtime.swing.locator;
 
-import javax.swing.*;
-
 import com.windowtester.runtime.swing.SwingWidgetLocator;
+import javax.swing.*;
 
 /**
  * A locator for JMenus.
  */
 public class JMenuLocator extends JMenuItemLocator {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1369029475541129631L;
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1369029475541129631L;
 
-    /**
-     * Creates an instance of a JMenuLocator
-     *
-     * @param path a String that specifies the complete path to the JMenu
-     */
-    public JMenuLocator(String path) {
-        this(path, null);
-    }
+  /**
+   * Creates an instance of a JMenuLocator
+   *
+   * @param path a String that specifies the complete path to the JMenu
+   */
+  public JMenuLocator(String path) {
+    this(path, null);
+  }
 
-    /**
-     * Creates an instance of a JMenuLocator
-     *
-     * @param path   a String that specifies the complete path to the JMenu
-     * @param parent locator of the parent
-     */
-    public JMenuLocator(
-            String path,
-            SwingWidgetLocator parent) {
-        super(JMenu.class, path, parent);
-    }
+  /**
+   * Creates an instance of a JMenuLocator
+   *
+   * @param path   a String that specifies the complete path to the JMenu
+   * @param parent locator of the parent
+   */
+  public JMenuLocator(String path, SwingWidgetLocator parent) {
+    super(JMenu.class, path, parent);
+  }
 
-    protected String getWidgetLocatorStringName() {
-        return "JMenuLocator";
-    }
-
+  protected String getWidgetLocatorStringName() {
+    return "JMenuLocator";
+  }
 }

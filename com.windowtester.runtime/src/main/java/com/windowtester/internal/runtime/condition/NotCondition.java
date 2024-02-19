@@ -17,21 +17,20 @@ import com.windowtester.runtime.condition.ICondition;
  */
 public class NotCondition implements ICondition {
 
-    private final ICondition toNegate;
+  private final ICondition toNegate;
 
-    public NotCondition(ICondition toNegate) {
-        this.toNegate = toNegate;
-    }
+  public NotCondition(ICondition toNegate) {
+    this.toNegate = toNegate;
+  }
 
-    public boolean test() {
-        return !toNegate.test();
-    }
+  public boolean test() {
+    return !toNegate.test();
+  }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return toNegate.toString() + " to be FALSE";
-    }
-
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return toNegate.toString() + " to be FALSE";
+  }
 }

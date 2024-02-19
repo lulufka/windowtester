@@ -17,40 +17,39 @@ import com.windowtester.recorder.event.ISemanticEvent;
  */
 public class SemanticTextEntryEvent extends UISemanticEvent implements ICompositeEvent {
 
-    private static final long serialVersionUID = -5072454186777054746L;
-    private final SemanticKeyDownEvent[] keys;
+  private static final long serialVersionUID = -5072454186777054746L;
+  private final SemanticKeyDownEvent[] keys;
 
-    public SemanticTextEntryEvent(SemanticKeyDownEvent[] keys) {
-        super(new EventInfo()); //NOTE: ignored
-        this.keys = keys;
+  public SemanticTextEntryEvent(SemanticKeyDownEvent[] keys) {
+    super(new EventInfo()); // NOTE: ignored
+    this.keys = keys;
+  }
+
+  /**
+   * Get the sequence of keys that make up this text entry event.
+   */
+  public SemanticKeyDownEvent[] getKeys() {
+    return keys;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.ICompositeEvent#getComponents()
+   */
+  public ISemanticEvent[] getComponents() {
+    return getKeys();
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.UISemanticEvent#toString()
+   */
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < keys.length; i++) {
+      sb.append(keys[i].toString());
+      if (i + 1 < keys.length) {
+        sb.append(", ");
+      }
     }
-
-    /**
-     * Get the sequence of keys that make up this text entry event.
-     */
-    public SemanticKeyDownEvent[] getKeys() {
-        return keys;
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.ICompositeEvent#getComponents()
-     */
-    public ISemanticEvent[] getComponents() {
-        return getKeys();
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.UISemanticEvent#toString()
-     */
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < keys.length; i++) {
-            sb.append(keys[i].toString());
-            if (i + 1 < keys.length) {
-                sb.append(", ");
-            }
-        }
-        return "TextEntry [" + sb + "]";
-    }
-
+    return "TextEntry [" + sb + "]";
+  }
 }

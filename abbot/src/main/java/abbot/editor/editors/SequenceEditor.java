@@ -7,7 +7,7 @@ import abbot.script.Sequence;
  */
 public class SequenceEditor extends StepEditor {
 
-    public SequenceEditor(Sequence seq) {
-        super(seq);
-    }
+  public SequenceEditor(Sequence seq) {
+    super(seq);
+  }
 }

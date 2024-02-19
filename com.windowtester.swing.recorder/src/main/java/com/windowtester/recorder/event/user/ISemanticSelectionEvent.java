@@ -13,6 +13,4 @@ package com.windowtester.recorder.event.user;
 /**
  * A selection event marker interface.
  */
-public interface ISemanticSelectionEvent {
-
-}
+public interface ISemanticSelectionEvent {}

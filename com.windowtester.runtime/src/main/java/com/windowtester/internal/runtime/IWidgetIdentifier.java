@@ -15,19 +15,18 @@ package com.windowtester.internal.runtime;
  */
 public interface IWidgetIdentifier {
 
-    /**
-     * Minimally locators tend to have a name or label.  (Note this may be <code>null</code>.)
-     */
-    String getNameOrLabel();
+  /**
+   * Minimally locators tend to have a name or label.  (Note this may be <code>null</code>.)
+   */
+  String getNameOrLabel();
 
-    /**
-     * The target widget's class or <code>null</null> if unknown.
-     */
-    Class<?> getTargetClass();
+  /**
+   * The target widget's class or <code>null</null> if unknown.
+   */
+  Class<?> getTargetClass();
 
-    /**
-     * The target widget's class name or <code>null</null> if unknown.
-     */
-    String getTargetClassName();
-
+  /**
+   * The target widget's class name or <code>null</null> if unknown.
+   */
+  String getTargetClassName();
 }

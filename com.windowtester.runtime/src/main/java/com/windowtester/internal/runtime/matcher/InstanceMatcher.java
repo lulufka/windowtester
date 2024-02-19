@@ -17,16 +17,16 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class InstanceMatcher implements IWidgetMatcher {
 
-    private final Object _instance;
+  private final Object _instance;
 
-    public InstanceMatcher(Object instance) {
-        _instance = instance;
-    }
+  public InstanceMatcher(Object instance) {
+    _instance = instance;
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-     */
-    public boolean matches(Object widget) {
-        return widget == _instance;
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
+   */
+  public boolean matches(Object widget) {
+    return widget == _instance;
+  }
 }

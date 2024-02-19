@@ -17,11 +17,10 @@ import com.windowtester.internal.runtime.junit.core.ITestIdentifier;
  */
 public class NoRunningTestId implements ITestIdentifier {
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.util.ITestIdentifier#getName()
-     */
-    public String getName() {
-        return "No Running TestCase";
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.util.ITestIdentifier#getName()
+   */
+  public String getName() {
+    return "No Running TestCase";
+  }
 }

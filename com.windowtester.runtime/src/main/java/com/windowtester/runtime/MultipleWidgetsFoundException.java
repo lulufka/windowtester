@@ -15,26 +15,24 @@ package com.windowtester.runtime;
  */
 public class MultipleWidgetsFoundException extends WidgetSearchException {
 
-    private static final long serialVersionUID = 4381140981836391058L;
+  private static final long serialVersionUID = 4381140981836391058L;
 
-    /**
-     * Create an instance with no specified detail message.
-     */
-    public MultipleWidgetsFoundException() {
-    }
+  /**
+   * Create an instance with no specified detail message.
+   */
+  public MultipleWidgetsFoundException() {}
 
-    /**
-     * Create an instance with the specified detail message.
-     */
-    public MultipleWidgetsFoundException(String msg) {
-        super(msg);
-    }
+  /**
+   * Create an instance with the specified detail message.
+   */
+  public MultipleWidgetsFoundException(String msg) {
+    super(msg);
+  }
 
-    /**
-     * Create an instance with the given cause.
-     */
-    public MultipleWidgetsFoundException(Throwable cause) {
-        super(cause);
-    }
-
+  /**
+   * Create an instance with the given cause.
+   */
+  public MultipleWidgetsFoundException(Throwable cause) {
+    super(cause);
+  }
 }

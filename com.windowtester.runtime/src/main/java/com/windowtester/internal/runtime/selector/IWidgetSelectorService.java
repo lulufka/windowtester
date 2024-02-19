@@ -24,25 +24,21 @@ import com.windowtester.runtime.IWidgetSelectorDelegate;
  *
  * @see com.windowtester.runtime.IWidgetSelectorDelegate
  */
-
 public interface IWidgetSelectorService {
 
-    /**
-     * Set this class, selector association.
-     *
-     * @param widgetClass the widget class
-     * @param selector    the associated selector delegate
-     */
-    void set(
-            Class widgetClass,
-            IWidgetSelectorDelegate selector);
+  /**
+   * Set this class, selector association.
+   *
+   * @param widgetClass the widget class
+   * @param selector    the associated selector delegate
+   */
+  void set(Class widgetClass, IWidgetSelectorDelegate selector);
 
-    /**
-     * Get the widget selector associated with the given type.  If none has been registered, return <code>null</code>.
-     *
-     * @param widgetClass the widget class in question
-     * @return the associated widget selector (or <code>null</code>)
-     */
-    IWidgetSelectorDelegate get(Class widgetClass);
-
+  /**
+   * Get the widget selector associated with the given type.  If none has been registered, return <code>null</code>.
+   *
+   * @param widgetClass the widget class in question
+   * @return the associated widget selector (or <code>null</code>)
+   */
+  IWidgetSelectorDelegate get(Class widgetClass);
 }

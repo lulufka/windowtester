@@ -15,13 +15,12 @@ package com.windowtester.internal.runtime.event;
  */
 public class StyleBits {
 
-    /**
-     * Pull down menu selection.
-     */
-    public static final int PULL_DOWN = 1 << 4;
+  /**
+   * Pull down menu selection.
+   */
+  public static final int PULL_DOWN = 1 << 4;
 
-    public static boolean isPullDown(int style) {
-        return (style & PULL_DOWN) == PULL_DOWN;
-    }
-
+  public static boolean isPullDown(int style) {
+    return (style & PULL_DOWN) == PULL_DOWN;
+  }
 }

@@ -32,30 +32,29 @@ import w2.testcases.JButtonTest;
 import w2.testcases.JComboBoxTest;
 
 public class WTSwingRuntimeScenario {
-    public static Test suite() {
-        TestSuite suite = new TestSuite("WTSwingRuntimeScenario");
+  public static Test suite() {
+    TestSuite suite = new TestSuite("WTSwingRuntimeScenario");
 
-        suite.addTestSuite(JComboBoxTest.class);
-        suite.addTestSuite(JButtonTest.class);
-        suite.addTestSuite(JListTest.class);
-        suite.addTestSuite(NamedListTest.class);
-        suite.addTestSuite(JTableTest.class);
-        suite.addTestSuite(JTableTest2.class);
-        suite.addTestSuite(NamedTableTest.class);
-        suite.addTestSuite(JTreeTest.class);
-        suite.addTestSuite(SwingTreeTest.class);
-        suite.addTestSuite(SwingTreeTest2.class);
-        suite.addTestSuite(NamedTreeTest.class);
-        suite.addTestSuite(SwingMenuTest.class);
-        suite.addTestSuite(SwingTextTest.class);
-        suite.addTestSuite(NamedWidgetLocatorTest.class);
-        suite.addTestSuite(IUIConditionSwingTest.class);
-        suite.addTestSuite(ListDnDTest.class);
-        suite.addTestSuite(TreeDnDTest.class);
+    suite.addTestSuite(JComboBoxTest.class);
+    suite.addTestSuite(JButtonTest.class);
+    suite.addTestSuite(JListTest.class);
+    suite.addTestSuite(NamedListTest.class);
+    suite.addTestSuite(JTableTest.class);
+    suite.addTestSuite(JTableTest2.class);
+    suite.addTestSuite(NamedTableTest.class);
+    suite.addTestSuite(JTreeTest.class);
+    suite.addTestSuite(SwingTreeTest.class);
+    suite.addTestSuite(SwingTreeTest2.class);
+    suite.addTestSuite(NamedTreeTest.class);
+    suite.addTestSuite(SwingMenuTest.class);
+    suite.addTestSuite(SwingTextTest.class);
+    suite.addTestSuite(NamedWidgetLocatorTest.class);
+    suite.addTestSuite(IUIConditionSwingTest.class);
+    suite.addTestSuite(ListDnDTest.class);
+    suite.addTestSuite(TreeDnDTest.class);
 
-        suite.addTestSuite(SwingWidgetLocatorsSerailizationTest.class);
+    suite.addTestSuite(SwingWidgetLocatorsSerailizationTest.class);
 
-        return suite;
-    }
-
+    return suite;
+  }
 }

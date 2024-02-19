@@ -12,7 +12,6 @@ package com.windowtester.recorder.event.user;
 
 import com.windowtester.internal.runtime.PropertySet;
 import com.windowtester.runtime.locator.ILocator;
-
 import java.awt.Point;
 
 /**
@@ -20,16 +19,16 @@ import java.awt.Point;
  */
 public interface IWidgetDescription {
 
-    ILocator getLocator();
+  ILocator getLocator();
 
-    PropertySet getProperties();
+  PropertySet getProperties();
 
-    Point getHoverPoint();
+  Point getHoverPoint();
 
-    boolean isSame(IWidgetDescription event);
+  boolean isSame(IWidgetDescription event);
 
-    /**
-     * Return a string that can be used to label this description in the UI. (Can be null.)
-     */
-    String getDescriptionLabel();
+  /**
+   * Return a string that can be used to label this description in the UI. (Can be null.)
+   */
+  String getDescriptionLabel();
 }

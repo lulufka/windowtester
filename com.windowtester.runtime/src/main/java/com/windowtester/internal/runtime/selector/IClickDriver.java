@@ -21,25 +21,17 @@ import com.windowtester.runtime.locator.IWidgetLocator;
  */
 public interface IClickDriver {
 
-    interface Listener {
-        void contextClicked(
-                IClickDescription click,
-                IWidgetLocator clicked);
+  interface Listener {
+    void contextClicked(IClickDescription click, IWidgetLocator clicked);
 
-        void clicked(
-                IClickDescription click,
-                IWidgetLocator clicked);
-    }
+    void clicked(IClickDescription click, IWidgetLocator clicked);
+  }
 
-    IWidgetLocator click(
-            int clickCount,
-            ILocator locator,
-            int buttonMask) throws WidgetSearchException;
+  IWidgetLocator click(int clickCount, ILocator locator, int buttonMask)
+      throws WidgetSearchException;
 
-    IWidgetLocator contextClick(
-            ILocator locator,
-            IMenuItemLocator menuItem) throws WidgetSearchException;
+  IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem)
+      throws WidgetSearchException;
 
-    void addClickListener(Listener listener);
-
+  void addClickListener(Listener listener);
 }

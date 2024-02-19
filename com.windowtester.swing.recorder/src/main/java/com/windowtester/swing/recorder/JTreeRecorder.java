@@ -10,12 +10,6 @@
  *******************************************************************************/
 package com.windowtester.swing.recorder;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import javax.swing.*;
-
 import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
@@ -23,6 +17,10 @@ import abbot.script.Step;
 import abbot.tester.JTreeTester;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * Record basic semantic events you might find on an JTree. <p>
@@ -32,84 +30,70 @@ import com.windowtester.recorder.event.UISemanticEventFactory;
  * Added windowtester semantic event generation
  */
 public class JTreeRecorder extends JComponentRecorder {
-    public JTreeRecorder(Resolver resolver) {
-        super(resolver);
+  public JTreeRecorder(Resolver resolver) {
+    super(resolver);
+  }
+
+  /**
+   * Normally, a click in a tree results in selection of a given row.
+   */
+  protected Step createClick(Component target, int x, int y, int mods, int count) {
+
+    String mask = null;
+
+    JTree tree = (JTree) target;
+    ComponentReference cr = getResolver().addComponent(target);
+    String methodName = "actionSelectRow";
+    ArrayList args = new ArrayList();
+    args.add(cr.getID());
+    args.add(getLocationArgument(target, x, y));
+    if (tree.getRowForLocation(x, y) == -1) {
+      if (JTreeTester.isLocationInExpandControl(tree, x, y) && count == 1) {
+        methodName = "actionToggleRow";
+      } else {
+        methodName = "actionClick";
+      }
+    }
+    if ((mods != 0 && mods != MouseEvent.BUTTON1_MASK) || count > 1) {
+      // using methodName as indication for generation
+      // of windowtester semantic events
+      // methodName = "actionClick";
+      mask = abbot.util.AWT.getMouseModifiers(mods);
+      args.add(mask);
+      if (count > 1) {
+        args.add(String.valueOf(count));
+      }
+    }
+    // create semantic event
+    if (methodName.equals("actionToggleRow")) {
+      // do nothing, ignore tree expand/collapse
+    } else if (!methodName.equals("actionClick")) {
+      //  else {
+      IUISemanticEvent semanticEvent =
+          UISemanticEventFactory.createTreeItemSelectionEvent(
+              (JTree) target, x, y, mask, count, getButton());
+      notify(semanticEvent);
     }
 
-    /**
-     * Normally, a click in a tree results in selection of a given row.
-     */
-    protected Step createClick(
-            Component target,
-            int x,
-            int y,
-            int mods,
-            int count) {
+    return new Action(
+        getResolver(),
+        null,
+        methodName,
+        (String[]) args.toArray(new String[args.size()]),
+        javax.swing.JTree.class);
+  }
 
-        String mask = null;
+  /**
+   * Override Handle context menu selections
+   */
+  protected Step createPopupMenuSelection(Component invoker, int x, int y, Component menuItem) {
 
-        JTree tree = (JTree) target;
-        ComponentReference cr = getResolver().addComponent(target);
-        String methodName = "actionSelectRow";
-        ArrayList args = new ArrayList();
-        args.add(cr.getID());
-        args.add(getLocationArgument(target, x, y));
-        if (tree.getRowForLocation(x, y) == -1) {
-            if (JTreeTester.isLocationInExpandControl(tree, x, y)
-                    && count == 1) {
-                methodName = "actionToggleRow";
-            } else {
-                methodName = "actionClick";
-            }
-        }
-        if ((mods != 0 && mods != MouseEvent.BUTTON1_MASK)
-                || count > 1) {
-            // using methodName as indication for generation
-            // of windowtester semantic events
-            //methodName = "actionClick";
-            mask = abbot.util.AWT.getMouseModifiers(mods);
-            args.add(mask);
-            if (count > 1) {
-                args.add(String.valueOf(count));
-            }
-        }
-        // create semantic event
-        if (methodName.equals("actionToggleRow")) {
-            // do nothing, ignore tree expand/collapse
-        } else if (!methodName.equals("actionClick")) {
-            //  else {
-            IUISemanticEvent semanticEvent = UISemanticEventFactory.createTreeItemSelectionEvent((JTree) target,
-                    x,
-                    y,
-                    mask,
-                    count,
-                    getButton());
-            notify(semanticEvent);
-        }
-
-        return new Action(getResolver(), null, methodName,
-                (String[]) args.toArray(new String[args.size()]),
-                javax.swing.JTree.class);
-    }
-
-    /**
-     * Override Handle context menu selections
-     */
-    protected Step createPopupMenuSelection(
-            Component invoker,
-            int x,
-            int y,
-            Component menuItem) {
-
-        IUISemanticEvent semanticEvent =
-                UISemanticEventFactory.createTreeItemContextMenuSelectionEvent((JTree) invoker,
-                        x,
-                        y,
-                        (JMenuItem) menuItem);
-        notify(semanticEvent);
-        //semantic event has been generated
-        doneEventGeneration = true;
-        return super.createPopupMenuSelection(invoker, x, y, menuItem);
-    }
-
+    IUISemanticEvent semanticEvent =
+        UISemanticEventFactory.createTreeItemContextMenuSelectionEvent(
+            (JTree) invoker, x, y, (JMenuItem) menuItem);
+    notify(semanticEvent);
+    // semantic event has been generated
+    doneEventGeneration = true;
+    return super.createPopupMenuSelection(invoker, x, y, menuItem);
+  }
 }

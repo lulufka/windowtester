@@ -10,95 +10,90 @@
  *******************************************************************************/
 package test.locators;
 
+import com.windowtester.runtime.swing.SwingWidgetLocator;
+import com.windowtester.runtime.swing.locator.JButtonLocator;
+import com.windowtester.runtime.swing.locator.JComboBoxLocator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import javax.swing.*;
-
-import com.windowtester.runtime.swing.SwingWidgetLocator;
-import com.windowtester.runtime.swing.locator.JButtonLocator;
-import com.windowtester.runtime.swing.locator.JComboBoxLocator;
 import junit.framework.TestCase;
 
 public class SwingWidgetLocatorsSerailizationTest extends TestCase {
 
-    /*
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+  /*
+   * @see TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-    /*
-     * @see TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+  }
 
-    /**
-     * verify that JButtonLocators can serialize out and back in without corruption.
-     */
+  /**
+   * verify that JButtonLocators can serialize out and back in without corruption.
+   */
+  public void testJButtonLocaotorSerializes() throws Exception {
+    // create locator
+    JButtonLocator locator = new JButtonLocator("Button", 0, new SwingWidgetLocator(JPanel.class));
 
-    public void testJButtonLocaotorSerializes() throws Exception {
-        // create locator
-        JButtonLocator locator = new JButtonLocator("Button", 0, new SwingWidgetLocator(JPanel.class));
+    // send it and read it back
+    JButtonLocator copy = (JButtonLocator) streamOutAndBackIn(locator);
+    assertEquals(locator.getTargetClass(), copy.getTargetClass());
+    assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
+    assertEquals(locator.getIndex(), copy.getIndex());
+  }
 
-        // send it and read it back
-        JButtonLocator copy = (JButtonLocator) streamOutAndBackIn(locator);
-        assertEquals(locator.getTargetClass(), copy.getTargetClass());
-        assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
-        assertEquals(locator.getIndex(), copy.getIndex());
+  /**
+   * verify that JComboBoxLocators can serialize out and back in without corruption.
+   */
+  public void testJComboBoxLocaotorSerializes() throws Exception {
+    // create locator
+    JComboBoxLocator locator =
+        new JComboBoxLocator("ValueNo1", 0, new SwingWidgetLocator(JPanel.class));
 
-    }
+    // send it and read it back
+    JComboBoxLocator copy = (JComboBoxLocator) streamOutAndBackIn(locator);
+    assertEquals(locator.getTargetClass(), copy.getTargetClass());
+    assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
+    assertEquals(locator.getIndex(), copy.getIndex());
+  }
 
-    /**
-     * verify that JComboBoxLocators can serialize out and back in without corruption.
-     */
+  /*	public void testJTextComponentLocatorSerializes() throws Exception{
+  	JTextComponentLocator locator = new JTextComponentLocator(JTextField.class, 23,
+  			new SwingWidgetLocator(DatePicker.class));
+  	JTextComponentLocator copy = (JTextComponentLocator)streamOutAndBackIn(locator);
+  	assertEquals(locator.getTargetClass(), copy.getTargetClass());
+  	assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
+  	assertEquals(locator.getIndex(), copy.getIndex());
+  }
+  */
 
-    public void testJComboBoxLocaotorSerializes() throws Exception {
-        // create locator
-        JComboBoxLocator locator = new JComboBoxLocator("ValueNo1", 0, new SwingWidgetLocator(JPanel.class));
+  /**
+   * @param locator
+   * @return
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
+  private SwingWidgetLocator streamOutAndBackIn(Object locator)
+      throws IOException, ClassNotFoundException {
 
-        // send it and read it back
-        JComboBoxLocator copy = (JComboBoxLocator) streamOutAndBackIn(locator);
-        assertEquals(locator.getTargetClass(), copy.getTargetClass());
-        assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
-        assertEquals(locator.getIndex(), copy.getIndex());
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    ObjectOutputStream out = new ObjectOutputStream(bout);
 
-    }
-	
-/*	public void testJTextComponentLocatorSerializes() throws Exception{
-		JTextComponentLocator locator = new JTextComponentLocator(JTextField.class, 23,
-				new SwingWidgetLocator(DatePicker.class));
-		JTextComponentLocator copy = (JTextComponentLocator)streamOutAndBackIn(locator);
-		assertEquals(locator.getTargetClass(), copy.getTargetClass());
-		assertEquals(locator.getNameOrLabel(), copy.getNameOrLabel());
-		assertEquals(locator.getIndex(), copy.getIndex());
-	}
-	*/
+    out.writeObject(locator);
+    out.flush();
 
-    /**
-     * @param locator
-     * @return
-     * @throws IOException
-     * @throws ClassNotFoundException
-     */
-    private SwingWidgetLocator streamOutAndBackIn(Object locator) throws IOException, ClassNotFoundException {
+    ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
+    ObjectInputStream in = new ObjectInputStream(bin);
 
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bout);
-
-        out.writeObject(locator);
-        out.flush();
-
-        ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
-        ObjectInputStream in = new ObjectInputStream(bin);
-
-        return (SwingWidgetLocator) in.readObject();
-    }
-
+    return (SwingWidgetLocator) in.readObject();
+  }
 }

@@ -13,63 +13,63 @@ package com.windowtester.recorder.event.user;
 /**
  * A semantic event that corresponds to an underlying list selection event.
  */
-public class SemanticListSelectionEvent extends UISemanticEvent implements ISemanticSelectionEvent, IMaskable {
+public class SemanticListSelectionEvent extends UISemanticEvent
+    implements ISemanticSelectionEvent, IMaskable {
 
-    private static final long serialVersionUID = 1546631055884987253L;
+  private static final long serialVersionUID = 1546631055884987253L;
 
-    /**
-     * The selected item's label
-     */
-    private String _item;
+  /**
+   * The selected item's label
+   */
+  private String _item;
 
-    /**
-     * The selection's mouse mask (e.g., InputEvent.CTRL_DOWN_MASK or InputEvent.SHIFT_DOWN_MASK)
-     */
-    private String _mask;
+  /**
+   * The selection's mouse mask (e.g., InputEvent.CTRL_DOWN_MASK or InputEvent.SHIFT_DOWN_MASK)
+   */
+  private String _mask;
 
-    /**
-     * Create an instance.
-     *
-     * @param info
-     */
-    public SemanticListSelectionEvent(EventInfo info) {
-        super(info);
-    }
+  /**
+   * Create an instance.
+   *
+   * @param info
+   */
+  public SemanticListSelectionEvent(EventInfo info) {
+    super(info);
+  }
 
-    /**
-     * Set the selected item.
-     *
-     * @param item
-     */
-    public void setItem(String item) {
-        _item = item;
-    }
+  /**
+   * Set the selected item.
+   *
+   * @param item
+   */
+  public void setItem(String item) {
+    _item = item;
+  }
 
-    /**
-     * @return the selected item.
-     */
-    public String getItem() {
-        return _item;
-    }
+  /**
+   * @return the selected item.
+   */
+  public String getItem() {
+    return _item;
+  }
 
-    /**
-     * Set the selection buton mask String.
-     *
-     * @param mask
-     */
-    public void setMask(String mask) {
-        _mask = mask;
-    }
+  /**
+   * Set the selection buton mask String.
+   *
+   * @param mask
+   */
+  public void setMask(String mask) {
+    _mask = mask;
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.IMaskable#getMask()
-     */
-    public String getMask() {
-        return _mask;
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.IMaskable#getMask()
+   */
+  public String getMask() {
+    return _mask;
+  }
 
-    public String toString() {
-        return "List Item selection: " + getItem() + " , " + getClicks();
-    }
-
+  public String toString() {
+    return "List Item selection: " + getItem() + " , " + getClicks();
+  }
 }

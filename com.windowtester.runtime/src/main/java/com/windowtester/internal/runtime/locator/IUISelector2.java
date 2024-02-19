@@ -20,12 +20,7 @@ import com.windowtester.runtime.locator.IWidgetLocator;
  */
 public interface IUISelector2 extends IUISelector {
 
-    IWidgetLocator mouseMove(
-            IUIContext ui,
-            ISelectionTarget target) throws WidgetSearchException;
+  IWidgetLocator mouseMove(IUIContext ui, ISelectionTarget target) throws WidgetSearchException;
 
-    IWidgetLocator dragTo(
-            IUIContext ui,
-            ISelectionTarget target) throws WidgetSearchException;
-
+  IWidgetLocator dragTo(IUIContext ui, ISelectionTarget target) throws WidgetSearchException;
 }

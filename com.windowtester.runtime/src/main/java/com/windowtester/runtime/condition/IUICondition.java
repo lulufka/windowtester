@@ -20,7 +20,6 @@ import com.windowtester.runtime.IUIContext;
  * Note that conditions should be designed to <em>test</em> and not to <em>modify</em> the User Interface.
  * <p>
  */
-public interface IUICondition
-        extends ICondition {
-    boolean testUI(IUIContext ui);
+public interface IUICondition extends ICondition {
+  boolean testUI(IUIContext ui);
 }

@@ -16,47 +16,44 @@ import java.security.Permission;
  * WindowTester Security Manager used during recording to intercept System.exit() and gracefully exit recording.
  */
 public class WindowTesterSecurityManager extends SecurityManager {
-    /**
-     * Install our security manager.
-     */
-    public static void install() {
+  /**
+   * Install our security manager.
+   */
+  public static void install() {
 
-//		if (System.getSecurityManager() == null) {
-//			System.setSecurityManager(new WindowTesterSecurityManager());
-//			System.out.println("Install WindowTesterSecurityManager");
-//		}
-//		else {
-//			System.out.println("Failed to install WindowTesterSecurityManager");
-//		}
+    //		if (System.getSecurityManager() == null) {
+    //			System.setSecurityManager(new WindowTesterSecurityManager());
+    //			System.out.println("Install WindowTesterSecurityManager");
+    //		}
+    //		else {
+    //			System.out.println("Failed to install WindowTesterSecurityManager");
+    //		}
+  }
+
+  /**
+   * Intercept System.exit() and gracefully exit recording.
+   */
+  public void checkExit(int status) {
+    System.out.println("System.exit() called... need to gracefully exit recording.");
+    try {
+      throw new RuntimeException("Informational Stack Trace");
+    } catch (RuntimeException e) {
+      e.printStackTrace(System.out);
     }
+    super.checkExit(status);
+  }
 
-    /**
-     * Intercept System.exit() and gracefully exit recording.
-     */
-    public void checkExit(int status) {
-        System.out.println("System.exit() called... need to gracefully exit recording.");
-        try {
-            throw new RuntimeException("Informational Stack Trace");
-        } catch (RuntimeException e) {
-            e.printStackTrace(System.out);
-        }
-        super.checkExit(status);
-    }
+  /**
+   * Override superclass implementation to allow everything during recording
+   */
+  public void checkPermission(Permission perm) {
+    // super.checkPermission(perm);
+  }
 
-    /**
-     * Override superclass implementation to allow everything during recording
-     */
-    public void checkPermission(Permission perm) {
-        // super.checkPermission(perm);
-    }
-
-    /**
-     * Override superclass implementation to allow everything during recording
-     */
-
-    public void checkPermission(
-            Permission perm,
-            Object context) {
-        // super.checkPermission(perm, context);
-    }
+  /**
+   * Override superclass implementation to allow everything during recording
+   */
+  public void checkPermission(Permission perm, Object context) {
+    // super.checkPermission(perm, context);
+  }
 }

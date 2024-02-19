@@ -10,29 +10,27 @@
  *******************************************************************************/
 package com.windowtester.internal.finder.matchers.swing;
 
-import java.awt.*;
-
 import abbot.finder.matchers.AbstractMatcher;
+import java.awt.*;
 
 /**
  * A matcher that matches objects based on their class (by name).
  */
 public class ClassByNameMatcher extends AbstractMatcher {
 
-    private final String _className;
+  private final String _className;
 
-    public ClassByNameMatcher(String className) {
-        if (className == null) {
-            throw new IllegalArgumentException("Argument cannot be null");
-        }
-        _className = className;
+  public ClassByNameMatcher(String className) {
+    if (className == null) {
+      throw new IllegalArgumentException("Argument cannot be null");
     }
+    _className = className;
+  }
 
-    public boolean matches(Component toTest) {
-        if (toTest == null) {
-            return false;
-        }
-        return toTest.getClass().getName().equals(_className);
+  public boolean matches(Component toTest) {
+    if (toTest == null) {
+      return false;
     }
-
+    return toTest.getClass().getName().equals(_className);
+  }
 }

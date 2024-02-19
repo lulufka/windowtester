@@ -21,68 +21,68 @@ import com.windowtester.recorder.event.meta.RecorderTraceEvent;
  **/
 public class SemanticEventAdapter implements ISemanticEventListener {
 
-    public void notify(IUISemanticEvent event) {
-        //no-op
+  public void notify(IUISemanticEvent event) {
+    // no-op
 
-    }
+  }
 
-    public void notifyStart() {
-        //no-op
+  public void notifyStart() {
+    // no-op
 
-    }
+  }
 
-    public void notifyStop() {
-        //no-op
+  public void notifyStop() {
+    // no-op
 
-    }
+  }
 
-    public void notifyWrite() {
-        //no-op
+  public void notifyWrite() {
+    // no-op
 
-    }
+  }
 
-    public void notifyDispose() {
-        //no-op
+  public void notifyDispose() {
+    // no-op
 
-    }
+  }
 
-    public void notifyRestart() {
-        //no-op
+  public void notifyRestart() {
+    // no-op
 
-    }
+  }
 
-    public void notifyPause() {
-        //no-op
+  public void notifyPause() {
+    // no-op
 
-    }
+  }
 
-    public void notifyError(RecorderErrorEvent event) {
-        //no-op
+  public void notifyError(RecorderErrorEvent event) {
+    // no-op
 
-    }
+  }
 
-    public void notifyTrace(RecorderTraceEvent event) {
-        //no-op
+  public void notifyTrace(RecorderTraceEvent event) {
+    // no-op
 
-    }
+  }
 
-    public void notifyAssertionHookAdded(String hookName) {
-        //no-op
+  public void notifyAssertionHookAdded(String hookName) {
+    // no-op
 
-    }
+  }
 
-    public void notifyControllerStart(int port) {
-        //no-op
+  public void notifyControllerStart(int port) {
+    // no-op
 
-    }
+  }
 
-    public void notifyDisplayNotFound() {
-        //no-op
+  public void notifyDisplayNotFound() {
+    // no-op
 
-    }
+  }
 
-    public void notifySpyModeToggle() {
-        //no-op
+  public void notifySpyModeToggle() {
+    // no-op
 
-    }
+  }
 }

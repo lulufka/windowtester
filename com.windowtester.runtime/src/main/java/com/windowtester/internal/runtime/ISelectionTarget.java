@@ -18,8 +18,7 @@ import com.windowtester.runtime.locator.IWidgetLocator;
  */
 public interface ISelectionTarget {
 
-    IClickDescription getClickDescription();
+  IClickDescription getClickDescription();
 
-    IWidgetLocator getWidgetLocator();
-
+  IWidgetLocator getWidgetLocator();
 }

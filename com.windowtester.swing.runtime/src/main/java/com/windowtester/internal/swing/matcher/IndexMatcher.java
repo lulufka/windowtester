@@ -18,12 +18,10 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class IndexMatcher {
 
-    public static IWidgetMatcher create(
-            IWidgetMatcher matcher,
-            int index) {
-        return new AdapterFactory().adapt(
-                new com.windowtester.internal.finder.matchers.swing.IndexMatcher(
-                        new AdapterFactory().adapt(matcher), index));
-    }
-
+  public static IWidgetMatcher create(IWidgetMatcher matcher, int index) {
+    return new AdapterFactory()
+        .adapt(
+            new com.windowtester.internal.finder.matchers.swing.IndexMatcher(
+                new AdapterFactory().adapt(matcher), index));
+  }
 }

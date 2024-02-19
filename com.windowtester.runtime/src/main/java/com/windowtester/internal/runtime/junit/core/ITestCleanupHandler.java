@@ -15,9 +15,8 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public interface ITestCleanupHandler {
 
-    /**
-     * Perform test cleanup (like closing windows, menus, etc.)
-     */
-    void cleanUp();
-
+  /**
+   * Perform test cleanup (like closing windows, menus, etc.)
+   */
+  void cleanUp();
 }

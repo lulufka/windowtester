@@ -10,140 +10,137 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime;
 
-import java.io.Serializable;
-
 import com.windowtester.internal.debug.Logger;
+import java.io.Serializable;
 
 /**
  * A class that stores the class information for a widget in the form of a string.
  */
 public class ClassReference implements Serializable {
 
-    public static ClassReference forClass(Class<?> cls) {
-        return new ClassReference(cls);
+  public static ClassReference forClass(Class<?> cls) {
+    return new ClassReference(cls);
+  }
+
+  /**
+   * @since 3.8.1
+   */
+  public static ClassReference forName(String className) {
+    return new ClassReference(className);
+  }
+
+  /**
+   * A class that is used as a sentinel when class resolution in {@link ClassReference#getClassForName()} fails.
+   */
+  public static final class UnresolvableClass {}
+
+  private static final long serialVersionUID = -5522094418456665521L;
+
+  /**
+   * name of the class
+   **/
+  private final String name;
+
+  /**
+   * the class  -- transient to avoid serialization
+   **/
+  private transient Class<?> cls;
+
+  /**
+   * Constructor
+   *
+   * @param cls the class
+   */
+  public ClassReference(Class<?> cls) {
+    if (cls == null) {
+      throw new IllegalArgumentException("class must not be null");
     }
+    this.cls = cls;
+    this.name = cls.getName();
+  }
 
-    /**
-     * @since 3.8.1
-     */
-    public static ClassReference forName(String className) {
-        return new ClassReference(className);
+  /**
+   * Constructor
+   *
+   * @param className the class name
+   */
+  public ClassReference(String className) {
+    if (className == null) {
+      throw new IllegalArgumentException("class name must not be null");
     }
+    name = className;
+  }
 
-    /**
-     * A class that is used as a sentinel when class resolution in {@link ClassReference#getClassForName()} fails.
-     */
-    public static final class UnresolvableClass {
+  /**
+   * @return the class corresponding to the name
+   */
+  public Class<?> getClassForName() {
+    if (!isResolved()) {
+      cls = resolveClass();
     }
+    return cls;
+  }
 
-    private static final long serialVersionUID = -5522094418456665521L;
-
-    /**
-     * name of the class
-     **/
-    private final String name;
-
-    /**
-     * the class  -- transient to avoid serialization
-     **/
-    private transient Class<?> cls;
-
-    /**
-     * Constructor
-     *
-     * @param cls the class
-     */
-    public ClassReference(Class<?> cls) {
-        if (cls == null) {
-            throw new IllegalArgumentException("class must not be null");
-        }
-        this.cls = cls;
-        this.name = cls.getName();
+  private Class<?> resolveClass() {
+    try {
+      return Class.forName(getName());
+    } catch (ClassNotFoundException e) {
+      Logger.log(e);
+      /*
+       * I'd like to throw an exception here but there are lots
+       * of clients that call this code and don't expect an exception...
+       * As a an interim solution, we return a sentinel value that indicates
+       * that the class could not be resolved.
+       */
+      return UnresolvableClass.class;
     }
+  }
 
-    /**
-     * Constructor
-     *
-     * @param className the class name
-     */
-    public ClassReference(String className) {
-        if (className == null) {
-            throw new IllegalArgumentException("class name must not be null");
-        }
-        name = className;
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
     }
-
-    /**
-     * @return the class corresponding to the name
-     */
-    public Class<?> getClassForName() {
-        if (!isResolved()) {
-            cls = resolveClass();
-        }
-        return cls;
+    if (!(obj instanceof ClassReference)) {
+      return false;
     }
+    ClassReference other = (ClassReference) obj;
+    // just test by string names
+    return other.name.equals(this.name);
+  }
 
-    private Class<?> resolveClass() {
-        try {
-            return Class.forName(getName());
-        } catch (ClassNotFoundException e) {
-            Logger.log(e);
-            /*
-             * I'd like to throw an exception here but there are lots
-             * of clients that call this code and don't expect an exception...
-             * As a an interim solution, we return a sentinel value that indicates
-             * that the class could not be resolved.
-             */
-            return UnresolvableClass.class;
-        }
+  /**
+   * @return the name of the class
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Test whether this class reference refers to the given class.
+   * <p>
+   * Note: this test <b>will not</b> force the class to be resolved.
+   */
+  public boolean refersTo(Class<?> cls) {
+    if (cls == null) {
+      throw new IllegalArgumentException("class must not be null");
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ClassReference)) {
-            return false;
-        }
-        ClassReference other = (ClassReference) obj;
-        //just test by string names
-        return other.name.equals(this.name);
+    if (isResolved()) {
+      return getClassForName().equals(cls);
     }
+    return cls.getName().equals(getName());
+  }
 
-    /**
-     * @return the name of the class
-     */
-    public String getName() {
-        return name;
-    }
+  private boolean isResolved() {
+    return cls != null;
+  }
 
-    /**
-     * Test whether this class reference refers to the given class.
-     * <p>
-     * Note: this test <b>will not</b> force the class to be resolved.
-     */
-    public boolean refersTo(Class<?> cls) {
-        if (cls == null) {
-            throw new IllegalArgumentException("class must not be null");
-        }
-        if (isResolved()) {
-            return getClassForName().equals(cls);
-        }
-        return cls.getName().equals(getName());
-    }
-
-    private boolean isResolved() {
-        return cls != null;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "ClassReference(" + getName() + ")";
-    }
-
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return "ClassReference(" + getName() + ")";
+  }
 }

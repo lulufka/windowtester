@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * object. See {@link HasMaximumCondition} for typical usage.
  */
 public interface HasMaximum {
-    /**
-     * Resolve the locator to a single object and answer the maximum value associated with it.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return the maximum value associated with that object
-     */
-    int getMaximum(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and answer the maximum value associated with it.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return the maximum value associated with that object
+   */
+  int getMaximum(IUIContext ui) throws WidgetSearchException;
 }

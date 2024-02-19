@@ -30,83 +30,81 @@ import com.windowtester.runtime.WidgetSearchException;
  */
 public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition {
 
-    private final IsChecked locator;
-    private final boolean expected;
-    private boolean actual;
-    private WidgetSearchException exception;
+  private final IsChecked locator;
+  private final boolean expected;
+  private boolean actual;
+  private WidgetSearchException exception;
 
-    /**
-     * Construct a new instance that will test if the widget which is specified by the locator is checked. This is a
-     * convenience constructor that is fully equivalent to
-     *
-     * <pre>
-     * new IsCheckedCondition(locator, true)
-     * </pre>
-     *
-     * @param locator the locator for the widget to be tested
-     */
-    public IsCheckedCondition(IsChecked locator) {
-        this(locator, true);
+  /**
+   * Construct a new instance that will test if the widget which is specified by the locator is checked. This is a
+   * convenience constructor that is fully equivalent to
+   *
+   * <pre>
+   * new IsCheckedCondition(locator, true)
+   * </pre>
+   *
+   * @param locator the locator for the widget to be tested
+   */
+  public IsCheckedCondition(IsChecked locator) {
+    this(locator, true);
+  }
+
+  /**
+   * Construct a new instance that will test if the widget which is specified by the locator is checked.
+   *
+   * @param locator  the locator for the widget to be tested
+   * @param expected <code>true</code> if the widget is expected to be checked, else
+   *                 <code>false</code>
+   */
+  public IsCheckedCondition(IsChecked locator, boolean expected) {
+    if (locator == null) {
+      throw new IllegalArgumentException("locator cannot be null");
     }
+    this.locator = locator;
+    this.expected = expected;
+  }
 
-    /**
-     * Construct a new instance that will test if the widget which is specified by the locator is checked.
-     *
-     * @param locator  the locator for the widget to be tested
-     * @param expected <code>true</code> if the widget is expected to be checked, else
-     *                 <code>false</code>
-     */
-    public IsCheckedCondition(
-            IsChecked locator,
-            boolean expected) {
-        if (locator == null) {
-            throw new IllegalArgumentException("locator cannot be null");
-        }
-        this.locator = locator;
-        this.expected = expected;
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.condition.ICondition#test()
+   */
+  public boolean test() {
+    throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
+   */
+  public boolean testUI(IUIContext ui) {
+    try {
+      actual = locator.isChecked(ui);
+      return (actual == expected);
+    } catch (WidgetSearchException e) {
+      exception = e;
+      return false;
     }
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.condition.ICondition#test()
-     */
-    public boolean test() {
-        throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
+  public boolean testCheckStyleBit(IUIContext ui) {
+    try {
+      return locator.isCheckStyleBitSet(ui);
+    } catch (WidgetSearchException e) {
+      exception = e;
+      return false;
     }
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-     */
-    public boolean testUI(IUIContext ui) {
-        try {
-            actual = locator.isChecked(ui);
-            return (actual == expected);
-        } catch (WidgetSearchException e) {
-            exception = e;
-            return false;
-        }
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  // IDiagnosticParticipant
+  //
+  ////////////////////////////////////////////////////////////////////////////
+
+  public void diagnose(IDiagnostic diagnostic) {
+    diagnostic.attribute("class", getClass().getName());
+    diagnostic.attribute("expected", expected);
+    diagnostic.attribute("actual", actual);
+    if (exception != null) {
+      diagnostic.diagnose("exception", exception);
     }
-
-    public boolean testCheckStyleBit(IUIContext ui) {
-        try {
-            return locator.isCheckStyleBitSet(ui);
-        } catch (WidgetSearchException e) {
-            exception = e;
-            return false;
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    // IDiagnosticParticipant
-    //
-    ////////////////////////////////////////////////////////////////////////////
-
-    public void diagnose(IDiagnostic diagnostic) {
-        diagnostic.attribute("class", getClass().getName());
-        diagnostic.attribute("expected", expected);
-        diagnostic.attribute("actual", actual);
-        if (exception != null) {
-            diagnostic.diagnose("exception", exception);
-        }
-    }
+  }
 }

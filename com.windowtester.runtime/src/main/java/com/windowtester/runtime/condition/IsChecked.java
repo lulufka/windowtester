@@ -20,19 +20,19 @@ import com.windowtester.runtime.locator.ILocator;
  */
 public interface IsChecked extends ILocator {
 
-    /**
-     * Resolve the locator to a single object and determine if that object is checked.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return <code>true</code> if the object is checked, else false
-     */
-    boolean isChecked(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and determine if that object is checked.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return <code>true</code> if the object is checked, else false
+   */
+  boolean isChecked(IUIContext ui) throws WidgetSearchException;
 
-    /**
-     * Resolve the locator to a single object and determine if the parent tree/table uses the SWT.CHECK style bit
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return <code>true</code> if the SWT.CHECK style bit is set in the parent tree/table, else false
-     */
-    boolean isCheckStyleBitSet(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and determine if the parent tree/table uses the SWT.CHECK style bit
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return <code>true</code> if the SWT.CHECK style bit is set in the parent tree/table, else false
+   */
+  boolean isCheckStyleBitSet(IUIContext ui) throws WidgetSearchException;
 }

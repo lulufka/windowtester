@@ -25,17 +25,16 @@ import com.windowtester.runtime.IUIContext;
  * <p>
  * <p/>
  */
-public abstract class UICondition
-        implements IUICondition {
+public abstract class UICondition implements IUICondition {
 
-    /**
-     * Unsupported method.  Call {@link #testUI(IUIContext)} instead.
-     *
-     * @throws UnsupportedOperationException
-     * @see com.windowtester.runtime.condition.ICondition#test()
-     */
-    public final boolean test() {
-        throw new UnsupportedOperationException("unsupported method - should call testUI(IUIContext) instead");
-    }
-
+  /**
+   * Unsupported method.  Call {@link #testUI(IUIContext)} instead.
+   *
+   * @throws UnsupportedOperationException
+   * @see com.windowtester.runtime.condition.ICondition#test()
+   */
+  public final boolean test() {
+    throw new UnsupportedOperationException(
+        "unsupported method - should call testUI(IUIContext) instead");
+  }
 }

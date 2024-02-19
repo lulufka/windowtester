@@ -15,28 +15,23 @@ package com.windowtester.runtime.internal.properties;
  */
 public class Property {
 
-    public static Property forKeyValue(
-            Object key,
-            Object value) {
-        return new Property(key, value);
-    }
+  public static Property forKeyValue(Object key, Object value) {
+    return new Property(key, value);
+  }
 
-    private final Object key;
-    private final Object value;
+  private final Object key;
+  private final Object value;
 
-    public Property(
-            Object key,
-            Object value) {
-        this.key = key;
-        this.value = value;
-    }
+  public Property(Object key, Object value) {
+    this.key = key;
+    this.value = value;
+  }
 
-    public Object getKey() {
-        return key;
-    }
+  public Object getKey() {
+    return key;
+  }
 
-    public Object getValue() {
-        return value;
-    }
-
+  public Object getValue() {
+    return value;
+  }
 }

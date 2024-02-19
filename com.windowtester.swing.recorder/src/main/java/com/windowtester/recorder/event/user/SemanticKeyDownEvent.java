@@ -17,109 +17,108 @@ import com.windowtester.recorder.event.ISemanticEventHandler;
  */
 public class SemanticKeyDownEvent extends UISemanticEvent {
 
-    //created by serialver
-    static final long serialVersionUID = -3945340122627429093L;
+  // created by serialver
+  static final long serialVersionUID = -3945340122627429093L;
 
-    /**
-     * The pressed key
-     *
-     * @serial
-     */
-    private char _key;
+  /**
+   * The pressed key
+   *
+   * @serial
+   */
+  private char _key;
 
-    /**
-     * Whether this is a control char sequence.
-     *
-     * @serial
-     */
-    private boolean _isControl;
+  /**
+   * Whether this is a control char sequence.
+   *
+   * @serial
+   */
+  private boolean _isControl;
 
-    private int _keyCode;
+  private int _keyCode;
 
-    /**
-     * Create an instance based on the given event info.
-     *
-     * @param info
-     */
-    public SemanticKeyDownEvent(EventInfo info) {
-        super(info);
+  /**
+   * Create an instance based on the given event info.
+   *
+   * @param info
+   */
+  public SemanticKeyDownEvent(EventInfo info) {
+    super(info);
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.UISemanticEvent#toString()
+   */
+  public String toString() {
+    return "KeyDown (" + getKey() + ")";
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.UISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
+   */
+  public void accept(ISemanticEventHandler visitor) {
+    visitor.handle(this);
+  }
+
+  /**
+   * @return the key associated with this keydown event
+   */
+  public String getKey() {
+    return Character.toString(_key);
+  }
+
+  /**
+   * Set the key character.
+   *
+   * @param key - the key to set.
+   */
+  public void setKey(char key) {
+    _key = key;
+  }
+
+  /**
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
     }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.UISemanticEvent#toString()
-     */
-    public String toString() {
-        return "KeyDown (" + getKey() + ")";
+    if (!(o instanceof SemanticKeyDownEvent)) {
+      return false;
     }
+    SemanticKeyDownEvent other = (SemanticKeyDownEvent) o;
+    return _key == other._key && _isControl == other.isControlSequence();
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.UISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
-     */
-    public void accept(ISemanticEventHandler visitor) {
-        visitor.handle(this);
-    }
+  /**
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    int result = 13;
+    result = 37 * (result + _key + (_isControl ? 2048 : 0));
+    return result;
+  }
 
-    /**
-     * @return the key associated with this keydown event
-     */
-    public String getKey() {
-        return Character.toString(_key);
-    }
+  /**
+   * Set whether this is a control character key sequence.
+   *
+   * @param isControl
+   */
+  public void setIsControlSequence(boolean isControl) {
+    _isControl = isControl;
+  }
 
-    /**
-     * Set the key character.
-     *
-     * @param key - the key to set.
-     */
-    public void setKey(char key) {
-        _key = key;
-    }
+  /**
+   * Check whether this is a control character key sequence.
+   */
+  public boolean isControlSequence() {
+    return _isControl;
+  }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof SemanticKeyDownEvent)) {
-            return false;
-        }
-        SemanticKeyDownEvent other = (SemanticKeyDownEvent) o;
-        return _key == other._key && _isControl == other.isControlSequence();
-    }
+  public void setKeyCode(int keyCode) {
+    _keyCode = keyCode;
+  }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int result = 13;
-        result = 37 * (result + _key + (_isControl ? 2048 : 0));
-        return result;
-    }
-
-    /**
-     * Set whether this is a control character key sequence.
-     *
-     * @param isControl
-     */
-    public void setIsControlSequence(boolean isControl) {
-        _isControl = isControl;
-    }
-
-    /**
-     * Check whether this is a control character key sequence.
-     */
-    public boolean isControlSequence() {
-        return _isControl;
-    }
-
-    public void setKeyCode(int keyCode) {
-        _keyCode = keyCode;
-    }
-
-    public int getKeyCode() {
-        return _keyCode;
-    }
-
+  public int getKeyCode() {
+    return _keyCode;
+  }
 }

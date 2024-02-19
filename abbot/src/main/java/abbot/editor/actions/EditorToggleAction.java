@@ -5,27 +5,26 @@ import java.awt.event.ActionEvent;
 /**
  * Encapsulate GUI attributes for an editor action.
  */
-
 public class EditorToggleAction extends EditorAction {
 
-    public static final String STATE = "STATE";
+  public static final String STATE = "STATE";
 
-    public EditorToggleAction(String base) {
-        super(base);
-        setSelected(false);
-    }
+  public EditorToggleAction(String base) {
+    super(base);
+    setSelected(false);
+  }
 
-    // FIXME
-    public void actionPerformed(ActionEvent ev) {
-        setSelected(!isSelected());
-        //super.actionPerformed(ev);
-    }
+  // FIXME
+  public void actionPerformed(ActionEvent ev) {
+    setSelected(!isSelected());
+    // super.actionPerformed(ev);
+  }
 
-    public boolean isSelected() {
-        return getValue(STATE) == Boolean.TRUE;
-    }
+  public boolean isSelected() {
+    return getValue(STATE) == Boolean.TRUE;
+  }
 
-    public void setSelected(boolean state) {
-        putValue(STATE, state ? Boolean.TRUE : Boolean.FALSE);
-    }
+  public void setSelected(boolean state) {
+    putValue(STATE, state ? Boolean.TRUE : Boolean.FALSE);
+  }
 }

@@ -19,12 +19,9 @@ import com.windowtester.runtime.condition.IConditionHandler;
  */
 public interface IAssertionHandler {
 
-    void assertThat(ICondition condition);
+  void assertThat(ICondition condition);
 
-    void ensureThat(IConditionHandler conditionHandler) throws Exception;
+  void ensureThat(IConditionHandler conditionHandler) throws Exception;
 
-    void assertThat(
-            String message,
-            ICondition condition) throws WaitTimedOutException;
-
+  void assertThat(String message, ICondition condition) throws WaitTimedOutException;
 }

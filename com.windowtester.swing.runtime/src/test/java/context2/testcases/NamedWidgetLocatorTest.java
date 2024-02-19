@@ -15,30 +15,30 @@ import com.windowtester.runtime.swing.UITestCaseSwing;
 import swing.samples.TextInputDemo;
 
 public class NamedWidgetLocatorTest extends UITestCaseSwing {
-    IUIContext ui;
+  IUIContext ui;
 
-    public NamedWidgetLocatorTest() {
-        super(TextInputDemo.class);
-    }
+  public NamedWidgetLocatorTest() {
+    super(TextInputDemo.class);
+  }
 
-    public void testTextEntry() throws Exception {
+  public void testTextEntry() throws Exception {
 
-//		ui = getUI();
-//		ui.wait(new WindowShowingCondition("TextInputDemo"));
-//		ui.enterText("337 Bull Mountain Rd");
-//		NamedWidgetLocator namedWidgetLocator = new NamedWidgetLocator("city");
-//		ui.click(namedWidgetLocator);
-//		ui.enterText("Tigard");
-//		ui.assertThat(namedWidgetLocator.hasText("Tigard"));
-//
-//		// TODO [author=Dan] Apparently, spinners do not have a default name on Windows
-//		// but appear to have one on Linux so maybe this is JDK dependent.
-//		// commenting out for now for further research
-//		//		ui.click(new NamedWidgetLocator("Spinner.nextButton"));
-//		//		ui.click(new NamedWidgetLocator("Spinner.nextButton"));
-//
-//		ui.click(new JButtonLocator("Set address"));
-//		ui.click(new NamedWidgetLocator("clear"));
+    //		ui = getUI();
+    //		ui.wait(new WindowShowingCondition("TextInputDemo"));
+    //		ui.enterText("337 Bull Mountain Rd");
+    //		NamedWidgetLocator namedWidgetLocator = new NamedWidgetLocator("city");
+    //		ui.click(namedWidgetLocator);
+    //		ui.enterText("Tigard");
+    //		ui.assertThat(namedWidgetLocator.hasText("Tigard"));
+    //
+    //		// TODO [author=Dan] Apparently, spinners do not have a default name on Windows
+    //		// but appear to have one on Linux so maybe this is JDK dependent.
+    //		// commenting out for now for further research
+    //		//		ui.click(new NamedWidgetLocator("Spinner.nextButton"));
+    //		//		ui.click(new NamedWidgetLocator("Spinner.nextButton"));
+    //
+    //		ui.click(new JButtonLocator("Set address"));
+    //		ui.click(new NamedWidgetLocator("clear"));
 
-    }
+  }
 }

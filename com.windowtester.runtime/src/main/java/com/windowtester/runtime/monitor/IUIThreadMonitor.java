@@ -18,28 +18,28 @@ package com.windowtester.runtime.monitor;
  * is notified.
  */
 public interface IUIThreadMonitor {
-    /**
-     * Set the listener to be notified if the user interface thread becomes idle or unresponsive for a period longer
-     * than expected
-     *
-     * @param newListener the listener or <code>null</code> if no listener
-     */
-    void setListener(IUIThreadMonitorListener newListener);
+  /**
+   * Set the listener to be notified if the user interface thread becomes idle or unresponsive for a period longer
+   * than expected
+   *
+   * @param newListener the listener or <code>null</code> if no listener
+   */
+  void setListener(IUIThreadMonitorListener newListener);
 
-    /**
-     * Called to indicate that the UI thread may be idle or unresponsive from this moment for some specified number of
-     * milliseconds due some long running operation either on a background thread or in the UI thread itself.
-     *
-     * @param millis the expected delay in milliseconds from this point in time
-     */
-    void expectDelay(long millis);
+  /**
+   * Called to indicate that the UI thread may be idle or unresponsive from this moment for some specified number of
+   * milliseconds due some long running operation either on a background thread or in the UI thread itself.
+   *
+   * @param millis the expected delay in milliseconds from this point in time
+   */
+  void expectDelay(long millis);
 
-    /**
-     * Set the minimum expected delay between user interface events. If the user interface thread has not processed an
-     * event in the specified number of milliseconds, then it is considered either idle or unresponsive too long and an
-     * event is triggered.
-     *
-     * @param millis the expected delay in milliseconds
-     */
-    void setDefaultExpectedDelay(long millis);
+  /**
+   * Set the minimum expected delay between user interface events. If the user interface thread has not processed an
+   * event in the specified number of milliseconds, then it is considered either idle or unresponsive too long and an
+   * event is triggered.
+   *
+   * @param millis the expected delay in milliseconds
+   */
+  void setDefaultExpectedDelay(long millis);
 }

@@ -17,60 +17,59 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class TestExceptionCache {
 
-    // Cached exceptions for re-throwing
-    private InvocationTargetException _ite;
-    private IllegalAccessException _iae;
+  // Cached exceptions for re-throwing
+  private InvocationTargetException _ite;
+  private IllegalAccessException _iae;
 
-    /**
-     * Check if there is an exception cached.
-     *
-     * @return <code>true</code> if there is a cached exception, <code>false</code> otherwise
-     */
-    public boolean hasException() {
-        return _ite != null || _iae != null;
+  /**
+   * Check if there is an exception cached.
+   *
+   * @return <code>true</code> if there is a cached exception, <code>false</code> otherwise
+   */
+  public boolean hasException() {
+    return _ite != null || _iae != null;
+  }
+
+  /**
+   * Cache the given exception for later throwing.
+   */
+  public void cache(Throwable e) {
+    if (e instanceof InvocationTargetException) {
+      // e.printStackTrace();
+      e.fillInStackTrace();
+      _ite = (InvocationTargetException) e;
+    } else if (e instanceof IllegalAccessException) {
+      // e.printStackTrace();
+      e.fillInStackTrace();
+      _iae = (IllegalAccessException) e;
+    } else {
+      // e.printStackTrace();
+      // e.fillInStackTrace();
+      _ite = new InvocationTargetException(e);
     }
+  }
 
-    /**
-     * Cache the given exception for later throwing.
-     */
-    public void cache(Throwable e) {
-        if (e instanceof InvocationTargetException) {
-            // e.printStackTrace();
-            e.fillInStackTrace();
-            _ite = (InvocationTargetException) e;
-        } else if (e instanceof IllegalAccessException) {
-            // e.printStackTrace();
-            e.fillInStackTrace();
-            _iae = (IllegalAccessException) e;
-        } else {
-            // e.printStackTrace();
-            //e.fillInStackTrace();
-            _ite = new InvocationTargetException(e);
-        }
+  /**
+   * Throw the cached exception (if there is one).
+   */
+  public void throwException() throws Throwable {
+    if (_ite != null) {
+      // Extract the wrappered exception as appropriate
+      if (_ite.getCause() != null) {
+        throw _ite.getCause();
+      }
+      throw _ite;
     }
-
-    /**
-     * Throw the cached exception (if there is one).
-     */
-    public void throwException() throws Throwable {
-        if (_ite != null) {
-            // Extract the wrappered exception as appropriate
-            if (_ite.getCause() != null) {
-                throw _ite.getCause();
-            }
-            throw _ite;
-        }
-        if (_iae != null) {
-            throw _iae;
-        }
+    if (_iae != null) {
+      throw _iae;
     }
+  }
 
-    /**
-     * Clear the exception cache.
-     */
-    public void clear() {
-        _iae = null;
-        _ite = null;
-    }
-
+  /**
+   * Clear the exception cache.
+   */
+  public void clear() {
+    _iae = null;
+    _ite = null;
+  }
 }

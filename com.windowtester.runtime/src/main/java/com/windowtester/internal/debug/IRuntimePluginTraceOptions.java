@@ -10,37 +10,35 @@
  *******************************************************************************/
 package com.windowtester.internal.debug;
 
-import com.windowtester.internal.runtime.Platform;
-
 /**
  * Trace option flag constants for use when running in trace mode.
  */
 public interface IRuntimePluginTraceOptions {
 
-    String ID = "com.windowtester.runtime";
+  String ID = "com.windowtester.runtime";
 
-    /**
-     * The <code>BASIC</code> option enables basic lifecycle event tracing.
-     */
-    String BASIC = ID + "/basic";
+  /**
+   * The <code>BASIC</code> option enables basic lifecycle event tracing.
+   */
+  String BASIC = ID + "/basic";
 
-    /**
-     * The <code>WIDGET_SELECTION</code> option enables verbose tracing of widget selection events.
-     */
-    String WIDGET_SELECTION = ID + "/runtime/widget/selection";
+  /**
+   * The <code>WIDGET_SELECTION</code> option enables verbose tracing of widget selection events.
+   */
+  String WIDGET_SELECTION = ID + "/runtime/widget/selection";
 
-    /**
-     * The <code>HIERARCHY_INFO</code> option enables verbose tracing of hierarchy info creation.
-     */
-    String HIERARCHY_INFO = ID + "/runtime/hierarchy";
+  /**
+   * The <code>HIERARCHY_INFO</code> option enables verbose tracing of hierarchy info creation.
+   */
+  String HIERARCHY_INFO = ID + "/runtime/hierarchy";
 
-    /**
-     * The <code>CONDITIONS</code> option enables verbose tracing of condition handling.
-     */
-    String CONDITIONS = ID + "/runtime/conditions";
+  /**
+   * The <code>CONDITIONS</code> option enables verbose tracing of condition handling.
+   */
+  String CONDITIONS = ID + "/runtime/conditions";
 
-    /**
-     * The <code>UI_THREAD_MONITOR</code> option enables verbose tracing of condition handling.
-     */
-    String UI_THREAD_MONITOR = ID + "/runtime/uiThreadMonitor";
+  /**
+   * The <code>UI_THREAD_MONITOR</code> option enables verbose tracing of condition handling.
+   */
+  String UI_THREAD_MONITOR = ID + "/runtime/uiThreadMonitor";
 }

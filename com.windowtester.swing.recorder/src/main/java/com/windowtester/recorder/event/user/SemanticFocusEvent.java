@@ -15,10 +15,9 @@ package com.windowtester.recorder.event.user;
  */
 public class SemanticFocusEvent extends UISemanticEvent {
 
-    private static final long serialVersionUID = 5546523098986817052L;
+  private static final long serialVersionUID = 5546523098986817052L;
 
-    public SemanticFocusEvent(EventInfo info) {
-        super(info);
-    }
-
+  public SemanticFocusEvent(EventInfo info) {
+    super(info);
+  }
 }

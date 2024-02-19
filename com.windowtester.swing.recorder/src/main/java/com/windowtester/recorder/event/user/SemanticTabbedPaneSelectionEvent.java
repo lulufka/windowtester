@@ -10,45 +10,43 @@
  *******************************************************************************/
 package com.windowtester.recorder.event.user;
 
-public class SemanticTabbedPaneSelectionEvent extends
-        SemanticWidgetSelectionEvent {
+public class SemanticTabbedPaneSelectionEvent extends SemanticWidgetSelectionEvent {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -2957950844051215577L;
+  /**
+   *
+   */
+  private static final long serialVersionUID = -2957950844051215577L;
 
-    /**
-     * The tabbed pane's selected tab title
-     *
-     * @serial
-     */
-    private String _tabLabel;
+  /**
+   * The tabbed pane's selected tab title
+   *
+   * @serial
+   */
+  private String _tabLabel;
 
-    /**
-     * The selected tab's index
-     */
-    private int index;
+  /**
+   * The selected tab's index
+   */
+  private int index;
 
-    public SemanticTabbedPaneSelectionEvent(EventInfo info) {
-        super(info);
-        // TODO Auto-generated constructor stub
-    }
+  public SemanticTabbedPaneSelectionEvent(EventInfo info) {
+    super(info);
+    // TODO Auto-generated constructor stub
+  }
 
-    public String getTabLabel() {
-        return _tabLabel;
-    }
+  public String getTabLabel() {
+    return _tabLabel;
+  }
 
-    public void setTabLabel(String label) {
-        _tabLabel = label;
-    }
+  public void setTabLabel(String label) {
+    _tabLabel = label;
+  }
 
-    public int getIndex() {
-        return index;
-    }
+  public int getIndex() {
+    return index;
+  }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
+  public void setIndex(int index) {
+    this.index = index;
+  }
 }

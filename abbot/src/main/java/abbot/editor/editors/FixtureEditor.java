@@ -11,10 +11,10 @@ import abbot.script.Fixture;
  * @author twall
  */
 public class FixtureEditor extends ScriptEditor {
-    /**
-     * @param script
-     */
-    public FixtureEditor(Fixture script) {
-        super(script);
-    }
+  /**
+   * @param script
+   */
+  public FixtureEditor(Fixture script) {
+    super(script);
+  }
 }

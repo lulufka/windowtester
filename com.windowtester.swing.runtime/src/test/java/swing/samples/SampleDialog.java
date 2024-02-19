@@ -10,7 +10,7 @@
  *******************************************************************************/
 package swing.samples;
 
-//Fri Oct 25 18:07:43 EST 2004
+// Fri Oct 25 18:07:43 EST 2004
 //
 // Written by Sean R. Owens, released to the public
 // domain.  Share and enjoy.  http://darksleep.com/player
@@ -21,61 +21,57 @@ package swing.samples;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 public class SampleDialog extends JDialog {
-    private JPanel myPanel = null;
-    private JButton yesButton = null;
-    private JButton noButton = null;
-    private boolean answer = false;
+  private JPanel myPanel = null;
+  private JButton yesButton = null;
+  private JButton noButton = null;
+  private boolean answer = false;
 
-    public boolean getAnswer() {
-        return answer;
-    }
+  public boolean getAnswer() {
+    return answer;
+  }
 
-    ActionListener actionListener = new ActionListener() {
+  ActionListener actionListener =
+      new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            if (yesButton == e.getSource()) {
-                System.err.println("User chose yes.");
-                answer = true;
-                //   setVisible(false);
-            } else if (noButton == e.getSource()) {
-                System.err.println("User chose no.");
-                answer = false;
-                //   setVisible(false);
-            }
+          if (yesButton == e.getSource()) {
+            System.err.println("User chose yes.");
+            answer = true;
+            //   setVisible(false);
+          } else if (noButton == e.getSource()) {
+            System.err.println("User chose no.");
+            answer = false;
+            //   setVisible(false);
+          }
         }
-    };
+      };
 
-    public SampleDialog(
-            JFrame frame,
-            String myMessage) {
-        super(frame);
-        myPanel = new JPanel();
-        getContentPane().add(myPanel);
-        myPanel.add(new JLabel(myMessage));
-        yesButton = new JButton("Yes");
-        yesButton.addActionListener(actionListener);
-        myPanel.add(yesButton);
-        noButton = new JButton("No");
-        noButton.addActionListener(actionListener);
-        myPanel.add(noButton);
-        setTitle("Question");
-        System.out.println("pack");
-        pack();
-        //setLocationRelativeTo(frame);
-        System.out.println("show");
-        setVisible(true);
-    }
+  public SampleDialog(JFrame frame, String myMessage) {
+    super(frame);
+    myPanel = new JPanel();
+    getContentPane().add(myPanel);
+    myPanel.add(new JLabel(myMessage));
+    yesButton = new JButton("Yes");
+    yesButton.addActionListener(actionListener);
+    myPanel.add(yesButton);
+    noButton = new JButton("No");
+    noButton.addActionListener(actionListener);
+    myPanel.add(noButton);
+    setTitle("Question");
+    System.out.println("pack");
+    pack();
+    // setLocationRelativeTo(frame);
+    System.out.println("show");
+    setVisible(true);
+  }
 
-    public static void main(String[] argv) {
-        JFrame mainFrame = new JFrame();
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        SampleDialog myDialog = new SampleDialog(mainFrame, "Do you like Java?");
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-
-    }
-
+  public static void main(String[] argv) {
+    JFrame mainFrame = new JFrame();
+    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    SampleDialog myDialog = new SampleDialog(mainFrame, "Do you like Java?");
+    mainFrame.pack();
+    mainFrame.setVisible(true);
+  }
 }

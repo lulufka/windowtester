@@ -17,21 +17,19 @@ import com.windowtester.runtime.locator.ILocator;
  */
 public class ContextMenuItemLocator implements ILocator, IContextMenuItemLocator {
 
-    final ILocator owner;
-    final String menuPath;
+  final ILocator owner;
+  final String menuPath;
 
-    public ContextMenuItemLocator(
-            ILocator owner,
-            String menuPath) {
-        this.owner = owner;
-        this.menuPath = menuPath;
-    }
+  public ContextMenuItemLocator(ILocator owner, String menuPath) {
+    this.owner = owner;
+    this.menuPath = menuPath;
+  }
 
-    public String getMenuPath() {
-        return menuPath;
-    }
+  public String getMenuPath() {
+    return menuPath;
+  }
 
-    public ILocator getOwner() {
-        return owner;
-    }
+  public ILocator getOwner() {
+    return owner;
+  }
 }

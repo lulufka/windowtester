@@ -15,10 +15,9 @@ import com.windowtester.recorder.event.ISemanticEventHandler;
 
 public class RecorderDisplayNotFoundEvent implements IRecorderSemanticEvent {
 
-    private static final long serialVersionUID = 4577784320606030890L;
+  private static final long serialVersionUID = 4577784320606030890L;
 
-    public void accept(ISemanticEventHandler handler) {
-        handler.handleDisplayNotFound(this);
-    }
-
+  public void accept(ISemanticEventHandler handler) {
+    handler.handleDisplayNotFound(this);
+  }
 }

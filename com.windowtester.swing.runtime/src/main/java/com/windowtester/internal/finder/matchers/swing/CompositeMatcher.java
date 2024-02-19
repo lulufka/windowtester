@@ -10,10 +10,9 @@
  *******************************************************************************/
 package com.windowtester.internal.finder.matchers.swing;
 
-import java.awt.*;
-
 import abbot.finder.Matcher;
 import abbot.finder.matchers.AbstractMatcher;
+import java.awt.*;
 
 /**
  * This matcher does not have anything to do with org.eclipse.swt.widgets.Composite; rather, it allows searches for
@@ -22,32 +21,31 @@ import abbot.finder.matchers.AbstractMatcher;
  * are ignored
  */
 public class CompositeMatcher extends AbstractMatcher {
-    private final Matcher[] matchers;
+  private final Matcher[] matchers;
 
-    public CompositeMatcher(Matcher[] matchers) {
-        this.matchers = matchers;
+  public CompositeMatcher(Matcher[] matchers) {
+    this.matchers = matchers;
+  }
+
+  public boolean matches(final Component w) {
+    boolean result = true; /* ANDing things together, so start true */
+    boolean atLeastOneMatcherPresent = false; /* If that construction this should be checked! */
+    for (int i = 0; i < matchers.length; i++) {
+      if (matchers[i] != null) {
+        result = result && matchers[i].matches(w);
+        atLeastOneMatcherPresent = true;
+      }
     }
+    result = result && atLeastOneMatcherPresent;
+    return result;
+  }
 
-    public boolean matches(final Component w) {
-        boolean result = true; /* ANDing things together, so start true */
-        boolean atLeastOneMatcherPresent = false; /* If that construction this should be checked! */
-        for (int i = 0; i < matchers.length; i++) {
-            if (matchers[i] != null) {
-                result = result && matchers[i].matches(w);
-                atLeastOneMatcherPresent = true;
-            }
-        }
-        result = result && atLeastOneMatcherPresent;
-        return result;
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("Composite matcher with " + matchers.length + " component matchers:\n");
+    for (int i = 0; i < matchers.length; i++) {
+      buffer.append("[" + i + "] " + matchers[i].toString() + "\n");
     }
-
-    public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("Composite matcher with " + matchers.length + " component matchers:\n");
-        for (int i = 0; i < matchers.length; i++) {
-            buffer.append("[" + i + "] " + matchers[i].toString() + "\n");
-        }
-        return buffer.toString();
-    }
-
+    return buffer.toString();
+  }
 }

@@ -18,21 +18,20 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class ByNameClassMatcher implements IWidgetMatcher {
 
-    private final String _className;
+  private final String _className;
 
-    public ByNameClassMatcher(String fullyQualifiedName) {
-        _className = fullyQualifiedName;
-    }
+  public ByNameClassMatcher(String fullyQualifiedName) {
+    _className = fullyQualifiedName;
+  }
 
-    protected final String getClassName() {
-        return _className;
-    }
+  protected final String getClassName() {
+    return _className;
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-     */
-    public boolean matches(Object widget) {
-        return widget.getClass().getName().equals(getClassName());
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
+   */
+  public boolean matches(Object widget) {
+    return widget.getClass().getName().equals(getClassName());
+  }
 }

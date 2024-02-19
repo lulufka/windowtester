@@ -12,99 +12,89 @@ package swing.samples;
 
 import java.awt.*;
 import java.util.Locale;
-
 import javax.swing.*;
 
 public class JListRendererDemo {
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("JList Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  public static void main(String[] args) {
+    JFrame frame = new JFrame("JList Test");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        DataItem[] items = {
-                new DataItem("EN 1", "DE 1"),
-                new DataItem("EN 2", "DE 2"),
-                new DataItem("EN 3", "DE 3"),
-                new DataItem("EN 4", "DE 4")
-        };
-        JList list = new JList(items);
-        list.setName("JList1");
-        list.setCellRenderer(new JListCellRenderer(Locale.ENGLISH));
-        //list.setCellRenderer(new JListCellRenderer(Locale.GERMAN));
-        frame.add(new JScrollPane(list));
+    DataItem[] items = {
+      new DataItem("EN 1", "DE 1"),
+      new DataItem("EN 2", "DE 2"),
+      new DataItem("EN 3", "DE 3"),
+      new DataItem("EN 4", "DE 4")
+    };
+    JList list = new JList(items);
+    list.setName("JList1");
+    list.setCellRenderer(new JListCellRenderer(Locale.ENGLISH));
+    // list.setCellRenderer(new JListCellRenderer(Locale.GERMAN));
+    frame.add(new JScrollPane(list));
 
-        frame.pack();
-        frame.setVisible(true);
+    frame.pack();
+    frame.setVisible(true);
+  }
+
+  /**
+   * Renderer for JList
+   */
+  private static class JListCellRenderer extends DefaultListCellRenderer {
+    private final Locale userLocale;
+
+    public JListCellRenderer(Locale userLocale) {
+      this.userLocale = userLocale;
     }
 
-    /**
-     * Renderer for JList
-     */
-    private static class JListCellRenderer extends DefaultListCellRenderer {
-        private final Locale userLocale;
+    @Override
+    public Component getListCellRendererComponent(
+        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        public JListCellRenderer(Locale userLocale) {
-            this.userLocale = userLocale;
+      JLabel renderer =
+          (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+      if (value != null) {
+        DataItem dataItem = (DataItem) value;
+
+        if (userLocale.equals(Locale.ENGLISH)) {
+          renderer.setText(dataItem.getNameEN());
+        } else if (userLocale.equals(Locale.GERMAN)) {
+          renderer.setText(dataItem.getNameDE());
         }
+      }
 
-        @Override
-        public Component getListCellRendererComponent(
-                JList list,
-                Object value,
-                int index,
-                boolean isSelected,
-                boolean cellHasFocus) {
+      return renderer;
+    }
+  }
 
-            JLabel renderer = (JLabel) super.getListCellRendererComponent(list,
-                    value,
-                    index,
-                    isSelected,
-                    cellHasFocus);
+  /**
+   * Item to show in JList
+   */
+  private static class DataItem {
+    private final String nameEN;
+    private final String nameDE;
 
-            if (value != null) {
-                DataItem dataItem = (DataItem) value;
-
-                if (userLocale.equals(Locale.ENGLISH)) {
-                    renderer.setText(dataItem.getNameEN());
-                } else if (userLocale.equals(Locale.GERMAN)) {
-                    renderer.setText(dataItem.getNameDE());
-                }
-            }
-
-            return renderer;
-        }
+    public DataItem(String nameEN, String nameDE) {
+      this.nameEN = nameEN;
+      this.nameDE = nameDE;
     }
 
-    /**
-     * Item to show in JList
-     */
-    private static class DataItem {
-        private final String nameEN;
-        private final String nameDE;
-
-        public DataItem(
-                String nameEN,
-                String nameDE) {
-            this.nameEN = nameEN;
-            this.nameDE = nameDE;
-        }
-
-        public String getNameEN() {
-            return nameEN;
-        }
-
-        public String getNameDE() {
-            return nameDE;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("DataItem [nameEN=");
-            builder.append(nameEN);
-            builder.append(", nameDE=");
-            builder.append(nameDE);
-            builder.append("]");
-            return builder.toString();
-        }
+    public String getNameEN() {
+      return nameEN;
     }
+
+    public String getNameDE() {
+      return nameDE;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("DataItem [nameEN=");
+      builder.append(nameEN);
+      builder.append(", nameDE=");
+      builder.append(nameDE);
+      builder.append("]");
+      return builder.toString();
+    }
+  }
 }

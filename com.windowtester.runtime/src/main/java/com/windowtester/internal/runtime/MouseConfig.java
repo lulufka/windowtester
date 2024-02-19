@@ -11,58 +11,57 @@
 package com.windowtester.internal.runtime;
 
 import com.windowtester.runtime.WT;
-
 import java.awt.event.MouseEvent;
 
 public class MouseConfig {
-    public static final int BUTTON_MASK = WT.BUTTON_MASK;
+  public static final int BUTTON_MASK = WT.BUTTON_MASK;
 
-    /**
-     * Constant that specifies whether primary and secondary mouse buttons have been swapped.
-     */
-    public static final boolean BUTTONS_REMAPPED = false;
+  /**
+   * Constant that specifies whether primary and secondary mouse buttons have been swapped.
+   */
+  public static final boolean BUTTONS_REMAPPED = false;
 
-    //report setting to the log
-/*	static {
-		LogHandler.log("Mouse buttons remapped: " + BUTTONS_REMAPPED);
-	}
-*/
-    /**
-     * Constant that identifies the user specified primary mouse button.
-     */
-    public static final int PRIMARY_BUTTON = BUTTONS_REMAPPED ? 3 : 1;
+  // report setting to the log
+  /*	static {
+  		LogHandler.log("Mouse buttons remapped: " + BUTTONS_REMAPPED);
+  	}
+  */
+  /**
+   * Constant that identifies the user specified primary mouse button.
+   */
+  public static final int PRIMARY_BUTTON = BUTTONS_REMAPPED ? 3 : 1;
 
-    /**
-     * Constant that identifies the user specified secondary mouse button.
-     */
-    public static final int SECONDARY_BUTTON = BUTTONS_REMAPPED ? 1 : 3;
+  /**
+   * Constant that identifies the user specified secondary mouse button.
+   */
+  public static final int SECONDARY_BUTTON = BUTTONS_REMAPPED ? 1 : 3;
 
-    public static final int UNSPECIFIED = 0;
+  public static final int UNSPECIFIED = 0;
 
-    //TODO: should be moved elsewhere (somewhere central)
-	/*private static PlaybackSettings getPlaybackSettings() {
-		return Platform.isRunning() ? RuntimePlugin.getDefault().getPlaybackSettings() : PlaybackSettings.loadFromFile();
-	}*/
+  // TODO: should be moved elsewhere (somewhere central)
+  /*private static PlaybackSettings getPlaybackSettings() {
+  	return Platform.isRunning() ? RuntimePlugin.getDefault().getPlaybackSettings() : PlaybackSettings.loadFromFile();
+  }*/
 
-    /**
-     * Given a mouse accelerator, extract the button value.  For use in synthesizing raw events. NOTE: since WT and SWT
-     * constants are identical this can be used in both SWT and WT use constant cases.
-     */
-    public static final int getButton(int accelerator) {
-        accelerator &= BUTTON_MASK;
-        if ((accelerator & MouseEvent.BUTTON1) == MouseEvent.BUTTON1) //WT.BUTTON1 is the same
-        {
-            return MouseConfig.PRIMARY_BUTTON;
-        }
-        if ((accelerator & MouseEvent.BUTTON2) == MouseEvent.BUTTON2) //WT.BUTTON2 is the same
-        {
-            return 2;
-        }
-        if ((accelerator & MouseEvent.BUTTON3) == MouseEvent.BUTTON3) //WT.BUTTON3 is the same
-        {
-            return MouseConfig.SECONDARY_BUTTON;
-        }
-        //is this an error?
-        return UNSPECIFIED;
+  /**
+   * Given a mouse accelerator, extract the button value.  For use in synthesizing raw events. NOTE: since WT and SWT
+   * constants are identical this can be used in both SWT and WT use constant cases.
+   */
+  public static final int getButton(int accelerator) {
+    accelerator &= BUTTON_MASK;
+    if ((accelerator & MouseEvent.BUTTON1) == MouseEvent.BUTTON1) // WT.BUTTON1 is the same
+    {
+      return MouseConfig.PRIMARY_BUTTON;
     }
+    if ((accelerator & MouseEvent.BUTTON2) == MouseEvent.BUTTON2) // WT.BUTTON2 is the same
+    {
+      return 2;
+    }
+    if ((accelerator & MouseEvent.BUTTON3) == MouseEvent.BUTTON3) // WT.BUTTON3 is the same
+    {
+      return MouseConfig.SECONDARY_BUTTON;
+    }
+    // is this an error?
+    return UNSPECIFIED;
+  }
 }

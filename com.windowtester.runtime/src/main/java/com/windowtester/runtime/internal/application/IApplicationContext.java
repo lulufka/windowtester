@@ -15,11 +15,11 @@ package com.windowtester.runtime.internal.application;
  */
 public interface IApplicationContext {
 
-    IApplicationContext setNative();
+  IApplicationContext setNative();
 
-    IApplicationContext setDefault();
+  IApplicationContext setDefault();
 
-    boolean isNative();
+  boolean isNative();
 
-    boolean isDefault();
+  boolean isDefault();
 }

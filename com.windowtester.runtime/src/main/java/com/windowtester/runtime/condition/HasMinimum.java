@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * object. See {@link HasMinimumCondition} for typical usage.
  */
 public interface HasMinimum {
-    /**
-     * Resolve the locator to a single object and answer the minimum value associated with it.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return the minimum value associated with that object
-     */
-    int getMinimum(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and answer the minimum value associated with it.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return the minimum value associated with that object
+   */
+  int getMinimum(IUIContext ui) throws WidgetSearchException;
 }

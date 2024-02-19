@@ -15,20 +15,19 @@ import com.windowtester.recorder.event.ISemanticEventHandler;
 
 public class RecorderAssertionHookAddedEvent implements IRecorderSemanticEvent {
 
-    private static final long serialVersionUID = -1443156876689979723L;
+  private static final long serialVersionUID = -1443156876689979723L;
 
-    private final String _hookName;
+  private final String _hookName;
 
-    public RecorderAssertionHookAddedEvent(String hookName) {
-        _hookName = hookName;
-    }
+  public RecorderAssertionHookAddedEvent(String hookName) {
+    _hookName = hookName;
+  }
 
-    public String getHookName() {
-        return _hookName;
-    }
+  public String getHookName() {
+    return _hookName;
+  }
 
-    public void accept(ISemanticEventHandler handler) {
-        handler.handle(this);
-    }
-
+  public void accept(ISemanticEventHandler handler) {
+    handler.handle(this);
+  }
 }

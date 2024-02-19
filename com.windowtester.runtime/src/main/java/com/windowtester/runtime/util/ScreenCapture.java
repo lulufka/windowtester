@@ -10,14 +10,12 @@
  *******************************************************************************/
 package com.windowtester.runtime.util;
 
+import com.windowtester.internal.debug.LogHandler;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
-import com.windowtester.internal.debug.LogHandler;
 
 /**
  * Dumps a <em>png</em> of the current screen in the standard "wintest" output directory (as defined by {@link
@@ -47,167 +45,49 @@ import com.windowtester.internal.debug.LogHandler;
  */
 public class ScreenCapture {
 
-    public static final int MAX_CAPTURE_RETRIES = 5;
-    public static final int CAPTURE_RETRY_INTERVAL = 3000;
+  public static final int MAX_CAPTURE_RETRIES = 5;
+  public static final int CAPTURE_RETRY_INTERVAL = 3000;
 
-    private static final String WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY = "WindowTesterScreenCapturePaths";
-    private static final String BASE_IMAGE_NAME = "screenshot";
-    private static final String IMAGE_EXT = "png"; // best format for ui graphics
+  private static final String WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY =
+      "WindowTesterScreenCapturePaths";
+  private static final String BASE_IMAGE_NAME = "screenshot";
+  private static final String IMAGE_EXT = "png"; // best format for ui graphics
 
-    private static final String PATH_DELIM = System.getProperty("file.separator");
+  private static final String PATH_DELIM = System.getProperty("file.separator");
 
-    //TODO: make this use configurable
-    private static String OUTPUT_DIR = "wintest";
+  // TODO: make this use configurable
+  private static String OUTPUT_DIR = "wintest";
 
-    // increment counter for unique screenshot file names
-    // on a per run basis
-    private static int _counter = 0;
+  // increment counter for unique screenshot file names
+  // on a per run basis
+  private static int _counter = 0;
 
-    // keep a static Robot around to do the screencapture
-    private static Robot _robot;
+  // keep a static Robot around to do the screencapture
+  private static Robot _robot;
 
-    static {
-        try {
-            _robot = new Robot();
-        } catch (AWTException e) {
-            LogHandler.log(e);
-        }
+  static {
+    try {
+      _robot = new Robot();
+    } catch (AWTException e) {
+      LogHandler.log(e);
     }
+  }
+
+  /**
+   * A user-defined screen capture strategy.
+   */
+  public interface IScreenCaptureHandler {
 
     /**
-     * A user-defined screen capture strategy.
-     */
-    public interface IScreenCaptureHandler {
-
-        /**
-         * Create a screenshot file with the given name.
-         *
-         * @param name - the name of the screenshot
-         * @return a screenshot file (note: may be <code>null</code>
-         */
-        File createScreenCapture(String name);
-    }
-
-    private static class DefaultScreenCaptureHandler implements IScreenCaptureHandler {
-
-        /**
-         * Save the screen pixels as a PNG image file in the current directory. Existing screen cap files will be
-         * overwritten.
-         * <p>
-         * The name parameter will be used as a prefix for the name of the produced image.
-         * <p>
-         * TODO parameterize the image file location
-         *
-         * @return the file into which the image was stored, or <code>null</code> if the image could not be stored.
-         */
-        public File createScreenCapture(String name) {
-            BufferedImage image = captureScreen();
-            if (image == null) {
-                return null;
-            }
-            return createScreenCaptureFile(image, name);
-        }
-
-        public static BufferedImage captureScreen() {
-            // determine current screen size
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            Dimension screenSize = toolkit.getScreenSize();
-            Rectangle screenRect = new Rectangle(screenSize);
-
-            for (int i = 0; i < MAX_CAPTURE_RETRIES; ++i) {
-                try {
-                    return _robot.createScreenCapture(screenRect);
-                } catch (OutOfMemoryError e) {
-                    LogHandler.log("OutOfMemoryError caught in screen capture (attempt [" + i + "])");
-                    try {
-                        Thread.sleep(CAPTURE_RETRY_INTERVAL);
-                    } catch (InterruptedException e1) {
-                        //just continue
-                    }
-                }
-            }
-            LogHandler.log("Screen Capture failed");
-            return null;
-        }
-
-        public static File createScreenCaptureFile(
-                BufferedImage image,
-                String name) {
-            File file;
-            try {
-
-                ensureOutputDirExists();
-                // save captured image to PNG file
-                String path = getOutputLocation() + name + "_" + BASE_IMAGE_NAME + "_" + _counter++ + "." + IMAGE_EXT;
-                file = new File(path);
-                /*boolean writerFound = */
-                ImageIO.write(image, IMAGE_EXT, file);
-                //System.out.println(writerFound);
-            } catch (IOException e) {
-                LogHandler.log(e);
-                return null;
-            }
-
-            // If there was a successful screencapture and the
-            // WindowTesterXMLJunitResultFormatter is in use then record the screencapture so
-            // that WindowTesterXMLJunitResultFormatter can report it as a test artifact
-            String paths = System.getProperty(WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY);
-            if (paths != null) {
-                if (paths.length() > 0) {
-                    paths += ",";
-                }
-                paths += file.getAbsolutePath();
-                System.setProperty(WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY, paths);
-            }
-            return file;
-        }
-
-    }
-
-    private static void ensureOutputDirExists() {
-        File dir = new File(OUTPUT_DIR);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-    }
-
-    /**
-     * Get the output directory for screenshots.
-     */
-    public static String getOutputLocation() {
-        return OUTPUT_DIR + PATH_DELIM;
-    }
-
-    private static IScreenCaptureHandler handler;
-
-    private static IScreenCaptureHandler getDefaultHandler() {
-        //   	return new SWTGCScreenCaptureHandler();
-        return new DefaultScreenCaptureHandler();
-    }
-
-    /**
-     * Override the default screen capture strategy with a user-defined one.
+     * Create a screenshot file with the given name.
      *
-     * @param handler - a user-defined screen capture strategy, or <code>null</code> to reset the default
+     * @param name - the name of the screenshot
+     * @return a screenshot file (note: may be <code>null</code>
      */
-    public static void setHandler(IScreenCaptureHandler handler) {
-        ScreenCapture.handler = handler;
-    }
+    File createScreenCapture(String name);
+  }
 
-    /**
-     * purely static class, no instances allowed
-     */
-    private ScreenCapture() {
-    }
-
-    /**
-     * Save the screen pixels as a PNG image file in the current directory (see {@link #createScreenCapture(String)}).
-     *
-     * @return the file into which the image was stored, or <code>null</code> if the image could not be stored.
-     */
-    public static File createScreenCapture() {
-        return createScreenCapture(TestMonitor.getInstance().getCurrentTestCaseID());
-    }
+  private static class DefaultScreenCaptureHandler implements IScreenCaptureHandler {
 
     /**
      * Save the screen pixels as a PNG image file in the current directory. Existing screen cap files will be
@@ -219,25 +99,139 @@ public class ScreenCapture {
      *
      * @return the file into which the image was stored, or <code>null</code> if the image could not be stored.
      */
-    public static File createScreenCapture(String name) {
-        return getHandler().createScreenCapture(name);
+    public File createScreenCapture(String name) {
+      BufferedImage image = captureScreen();
+      if (image == null) {
+        return null;
+      }
+      return createScreenCaptureFile(image, name);
     }
 
-    private static final IScreenCaptureHandler getHandler() {
-        if (handler == null) {
-            handler = getDefaultHandler();
+    public static BufferedImage captureScreen() {
+      // determine current screen size
+      Toolkit toolkit = Toolkit.getDefaultToolkit();
+      Dimension screenSize = toolkit.getScreenSize();
+      Rectangle screenRect = new Rectangle(screenSize);
+
+      for (int i = 0; i < MAX_CAPTURE_RETRIES; ++i) {
+        try {
+          return _robot.createScreenCapture(screenRect);
+        } catch (OutOfMemoryError e) {
+          LogHandler.log("OutOfMemoryError caught in screen capture (attempt [" + i + "])");
+          try {
+            Thread.sleep(CAPTURE_RETRY_INTERVAL);
+          } catch (InterruptedException e1) {
+            // just continue
+          }
         }
-        return handler;
+      }
+      LogHandler.log("Screen Capture failed");
+      return null;
     }
 
-    /**
-     * Set the output path relative to the eclipse base directory.
-     */
-    public static void setOutputLocation(String path) {
-        if (path == null) {
-            throw new IllegalArgumentException("Path must not be null");
+    public static File createScreenCaptureFile(BufferedImage image, String name) {
+      File file;
+      try {
+
+        ensureOutputDirExists();
+        // save captured image to PNG file
+        String path =
+            getOutputLocation() + name + "_" + BASE_IMAGE_NAME + "_" + _counter++ + "." + IMAGE_EXT;
+        file = new File(path);
+        /*boolean writerFound = */ ImageIO.write(image, IMAGE_EXT, file);
+        // System.out.println(writerFound);
+      } catch (IOException e) {
+        LogHandler.log(e);
+        return null;
+      }
+
+      // If there was a successful screencapture and the
+      // WindowTesterXMLJunitResultFormatter is in use then record the screencapture so
+      // that WindowTesterXMLJunitResultFormatter can report it as a test artifact
+      String paths = System.getProperty(WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY);
+      if (paths != null) {
+        if (paths.length() > 0) {
+          paths += ",";
         }
-        OUTPUT_DIR = path;
+        paths += file.getAbsolutePath();
+        System.setProperty(WINDOW_TESTER_SCREEN_CAPTURE_PATHS_KEY, paths);
+      }
+      return file;
     }
+  }
 
+  private static void ensureOutputDirExists() {
+    File dir = new File(OUTPUT_DIR);
+    if (!dir.exists()) {
+      dir.mkdir();
+    }
+  }
+
+  /**
+   * Get the output directory for screenshots.
+   */
+  public static String getOutputLocation() {
+    return OUTPUT_DIR + PATH_DELIM;
+  }
+
+  private static IScreenCaptureHandler handler;
+
+  private static IScreenCaptureHandler getDefaultHandler() {
+    //   	return new SWTGCScreenCaptureHandler();
+    return new DefaultScreenCaptureHandler();
+  }
+
+  /**
+   * Override the default screen capture strategy with a user-defined one.
+   *
+   * @param handler - a user-defined screen capture strategy, or <code>null</code> to reset the default
+   */
+  public static void setHandler(IScreenCaptureHandler handler) {
+    ScreenCapture.handler = handler;
+  }
+
+  /**
+   * purely static class, no instances allowed
+   */
+  private ScreenCapture() {}
+
+  /**
+   * Save the screen pixels as a PNG image file in the current directory (see {@link #createScreenCapture(String)}).
+   *
+   * @return the file into which the image was stored, or <code>null</code> if the image could not be stored.
+   */
+  public static File createScreenCapture() {
+    return createScreenCapture(TestMonitor.getInstance().getCurrentTestCaseID());
+  }
+
+  /**
+   * Save the screen pixels as a PNG image file in the current directory. Existing screen cap files will be
+   * overwritten.
+   * <p>
+   * The name parameter will be used as a prefix for the name of the produced image.
+   * <p>
+   * TODO parameterize the image file location
+   *
+   * @return the file into which the image was stored, or <code>null</code> if the image could not be stored.
+   */
+  public static File createScreenCapture(String name) {
+    return getHandler().createScreenCapture(name);
+  }
+
+  private static final IScreenCaptureHandler getHandler() {
+    if (handler == null) {
+      handler = getDefaultHandler();
+    }
+    return handler;
+  }
+
+  /**
+   * Set the output path relative to the eclipse base directory.
+   */
+  public static void setOutputLocation(String path) {
+    if (path == null) {
+      throw new IllegalArgumentException("Path must not be null");
+    }
+    OUTPUT_DIR = path;
+  }
 }

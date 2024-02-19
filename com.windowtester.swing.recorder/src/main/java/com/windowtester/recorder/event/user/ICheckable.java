@@ -15,7 +15,7 @@ package com.windowtester.recorder.event.user;
  */
 public interface ICheckable {
 
-    void setChecked(boolean checked);
+  void setChecked(boolean checked);
 
-    boolean getChecked();
+  boolean getChecked();
 }

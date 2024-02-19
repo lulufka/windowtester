@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * HasTextCondition} for typical usage.
  */
 public interface HasText {
-    /**
-     * Resolve the locator to a single object and answer the text associated with it.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return the text associated with that object (may be null)
-     */
-    String getText(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and answer the text associated with it.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return the text associated with that object (may be null)
+   */
+  String getText(IUIContext ui) throws WidgetSearchException;
 }

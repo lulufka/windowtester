@@ -15,10 +15,10 @@ package com.windowtester.internal.runtime;
  * #toString()} method.
  */
 public interface IDiagnosticParticipant {
-    /**
-     * A request for more diagnostic information
-     *
-     * @param diagnostic a collector of diagnostic information
-     */
-    void diagnose(IDiagnostic diagnostic);
+  /**
+   * A request for more diagnostic information
+   *
+   * @param diagnostic a collector of diagnostic information
+   */
+  void diagnose(IDiagnostic diagnostic);
 }

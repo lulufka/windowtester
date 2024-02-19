@@ -13,7 +13,6 @@ package com.windowtester.runtime.locator;
 /**
  * A widget locator that directly references a widget.
  */
-public interface IWidgetReference
-        extends IWidgetLocator {
-    Object getWidget();
+public interface IWidgetReference extends IWidgetLocator {
+  Object getWidget();
 }

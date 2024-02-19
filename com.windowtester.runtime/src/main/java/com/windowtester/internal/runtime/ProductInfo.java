@@ -14,6 +14,6 @@ package com.windowtester.internal.runtime;
  * Product information for the WindowTester runtime used during license validation
  */
 public class ProductInfo {
-    public static final String build = "${build_num}";
-    public static final String version = "${product_version}.${build_num}";
+  public static final String build = "${build_num}";
+  public static final String version = "${product_version}.${build_num}";
 }

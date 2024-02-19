@@ -15,26 +15,25 @@ import com.windowtester.recorder.event.ISemanticEventHandler;
 
 public class RecorderControllerStartEvent implements IRecorderSemanticEvent {
 
-    private static final long serialVersionUID = 3550315448169821517L;
+  private static final long serialVersionUID = 3550315448169821517L;
 
-    /**
-     * port number to pass to main Workbench
-     */
-    private final int port;
+  /**
+   * port number to pass to main Workbench
+   */
+  private final int port;
 
-    public RecorderControllerStartEvent(int port) {
-        this.port = port;
-    }
+  public RecorderControllerStartEvent(int port) {
+    this.port = port;
+  }
 
-    /**
-     * @return Returns the port.
-     */
-    public int getPort() {
-        return port;
-    }
+  /**
+   * @return Returns the port.
+   */
+  public int getPort() {
+    return port;
+  }
 
-    public void accept(ISemanticEventHandler handler) {
-        handler.handleControllerStart(this);
-    }
-
+  public void accept(ISemanticEventHandler handler) {
+    handler.handleControllerStart(this);
+  }
 }

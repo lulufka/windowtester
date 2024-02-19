@@ -18,93 +18,92 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  * Thread debugging utility.
  */
 public class ThreadUtil {
-    private static final Object LOCK = new Object();
-    private static Timer timer;
+  private static final Object LOCK = new Object();
+  private static Timer timer;
 
-    /**
-     * Periodically dump the stack to System.err. This automatically cancels any previously scheduled stack dumps.
-     */
-    public static void startPrintStackTraces(long period) {
-        final Thread callingThread = Thread.currentThread();
-        synchronized (LOCK) {
-            stopPrintStackTraces();
-            timer = new Timer("ThreadUtil Stack Dump");
-            timer.schedule(new TimerTask() {
-                public void run() {
-                    System.err.println(
-                            "**********************************************************************************");
-                    System.err.println("Periodic Thread Dump: " + System.currentTimeMillis());
-                    System.err.println("Calling Thread: " + callingThread);
-                    printStackTraces();
-                }
-            }, period, period);
-        }
-    }
-
-    /**
-     * Stop any scheduled stack dumps
-     */
-    public static void stopPrintStackTraces() {
-        synchronized (LOCK) {
-            if (timer != null) {
-                timer.cancel();
-                timer = null;
+  /**
+   * Periodically dump the stack to System.err. This automatically cancels any previously scheduled stack dumps.
+   */
+  public static void startPrintStackTraces(long period) {
+    final Thread callingThread = Thread.currentThread();
+    synchronized (LOCK) {
+      stopPrintStackTraces();
+      timer = new Timer("ThreadUtil Stack Dump");
+      timer.schedule(
+          new TimerTask() {
+            public void run() {
+              System.err.println(
+                  "**********************************************************************************");
+              System.err.println("Periodic Thread Dump: " + System.currentTimeMillis());
+              System.err.println("Calling Thread: " + callingThread);
+              printStackTraces();
             }
-        }
+          },
+          period,
+          period);
     }
+  }
 
-    /**
-     * Get a string representation of the current stack state of all the active threads.
-     */
-    public static String getStackTraces() {
-        StringWriter stringWriter = new StringWriter(5000);
-        printStackTraces(new PrintWriter(stringWriter));
-        return stringWriter.toString();
+  /**
+   * Stop any scheduled stack dumps
+   */
+  public static void stopPrintStackTraces() {
+    synchronized (LOCK) {
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
     }
+  }
 
-    /**
-     * Print a string representation of the current stack state of all the active threads.
-     */
-    public static void printStackTraces() {
-        printStackTraces(new PrintWriter(new OutputStreamWriter(System.err)));
-    }
+  /**
+   * Get a string representation of the current stack state of all the active threads.
+   */
+  public static String getStackTraces() {
+    StringWriter stringWriter = new StringWriter(5000);
+    printStackTraces(new PrintWriter(stringWriter));
+    return stringWriter.toString();
+  }
 
-    /**
-     * Print a string representation of the current stack state of all the active threads.
-     */
-    public static void printStackTraces(PrintWriter writer) {
-        Map<Thread, StackTraceElement[]> map;
-        try {
-            map = Thread.getAllStackTraces();
-        } catch (Throwable e) {
-            writer.println("Failed to obtain stack traces: " + e);
-            return;
-        }
-        if (map == null) {
-            writer.println("No stack traces available");
-            return;
-        }
-        for (Entry<Thread, StackTraceElement[]> entry : map.entrySet())
-            printStackTrace(writer, entry.getKey(), entry.getValue());
-        writer.flush();
-    }
+  /**
+   * Print a string representation of the current stack state of all the active threads.
+   */
+  public static void printStackTraces() {
+    printStackTraces(new PrintWriter(new OutputStreamWriter(System.err)));
+  }
 
-    private static void printStackTrace(
-            PrintWriter writer,
-            Thread thread,
-            StackTraceElement[] trace) {
-        try {
-            writer.println(thread.toString() + ":");
-            for (int i = 0; i < trace.length; i++)
-                writer.println("\tat " + trace[i]);
-        } catch (Exception e) {
-            writer.println("\t*** Exception printing stack trace: " + e);
-        }
-        writer.flush();
+  /**
+   * Print a string representation of the current stack state of all the active threads.
+   */
+  public static void printStackTraces(PrintWriter writer) {
+    Map<Thread, StackTraceElement[]> map;
+    try {
+      map = Thread.getAllStackTraces();
+    } catch (Throwable e) {
+      writer.println("Failed to obtain stack traces: " + e);
+      return;
     }
+    if (map == null) {
+      writer.println("No stack traces available");
+      return;
+    }
+    for (Entry<Thread, StackTraceElement[]> entry : map.entrySet())
+      printStackTrace(writer, entry.getKey(), entry.getValue());
+    writer.flush();
+  }
+
+  private static void printStackTrace(
+      PrintWriter writer, Thread thread, StackTraceElement[] trace) {
+    try {
+      writer.println(thread.toString() + ":");
+      for (int i = 0; i < trace.length; i++) writer.println("\tat " + trace[i]);
+    } catch (Exception e) {
+      writer.println("\t*** Exception printing stack trace: " + e);
+    }
+    writer.flush();
+  }
 }

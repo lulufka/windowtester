@@ -16,6 +16,4 @@ import com.windowtester.runtime.locator.IWidgetLocator;
 /**
  * Implementers can locate widgets and optionally provide other services via the {@link IAdaptable} interface.
  */
-public interface IAdaptableWidgetLocator extends IWidgetLocator, IAdaptable {
-
-}
+public interface IAdaptableWidgetLocator extends IWidgetLocator, IAdaptable {}

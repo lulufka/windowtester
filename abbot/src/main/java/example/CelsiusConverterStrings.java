@@ -9,19 +9,17 @@ import java.util.ResourceBundle;
  */
 public class CelsiusConverterStrings {
 
-    private static final String BUNDLE_NAME = "example.CelsiusConverter";//$NON-NLS-1$
+  private static final String BUNDLE_NAME = "example.CelsiusConverter"; // $NON-NLS-1$
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-            .getBundle(BUNDLE_NAME);
+  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    private CelsiusConverterStrings() {
+  private CelsiusConverterStrings() {}
+
+  public static String getString(final String key) {
+    try {
+      return RESOURCE_BUNDLE.getString(key);
+    } catch (final MissingResourceException e) {
+      return '!' + key + '!';
     }
-
-    public static String getString(final String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (final MissingResourceException e) {
-            return '!' + key + '!';
-        }
-    }
+  }
 }

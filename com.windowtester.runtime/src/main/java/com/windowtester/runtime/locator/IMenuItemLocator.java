@@ -13,7 +13,6 @@ package com.windowtester.runtime.locator;
 /**
  * Specialized locator for identifying items within a menu or submenu.
  */
-public interface IMenuItemLocator
-        extends ILocator {
-    String getPath();
+public interface IMenuItemLocator extends ILocator {
+  String getPath();
 }

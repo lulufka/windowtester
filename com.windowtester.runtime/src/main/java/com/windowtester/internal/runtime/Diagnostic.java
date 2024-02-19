@@ -14,16 +14,14 @@ package com.windowtester.internal.runtime;
  * Utility class for collecting diagnostic information
  */
 public class Diagnostic {
-    /**
-     * Collect diagnostic information about the specified object
-     *
-     * @return the diagnostic information collected
-     */
-    public static String toString(
-            String key,
-            Object value) {
-        IDiagnostic diagnostic = new DiagnosticWriter();
-        diagnostic.diagnose(key, value);
-        return diagnostic.toString();
-    }
+  /**
+   * Collect diagnostic information about the specified object
+   *
+   * @return the diagnostic information collected
+   */
+  public static String toString(String key, Object value) {
+    IDiagnostic diagnostic = new DiagnosticWriter();
+    diagnostic.diagnose(key, value);
+    return diagnostic.toString();
+  }
 }

@@ -16,48 +16,48 @@ import java.lang.reflect.Field;
  * Field access helper.
  */
 public class FieldAccessor {
-    private Class cls;
-    private Object object;
-    private String fieldName;
+  private Class cls;
+  private Object object;
+  private String fieldName;
 
-    public static FieldAccessor forObject(Object o) {
-        FieldAccessor accessor = new FieldAccessor();
-        accessor.object = o;
-        return accessor;
-    }
+  public static FieldAccessor forObject(Object o) {
+    FieldAccessor accessor = new FieldAccessor();
+    accessor.object = o;
+    return accessor;
+  }
 
-    public static FieldAccessor forClass(Class cls) {
-        FieldAccessor accessor = new FieldAccessor();
-        accessor.cls = cls;
-        return accessor;
-    }
+  public static FieldAccessor forClass(Class cls) {
+    FieldAccessor accessor = new FieldAccessor();
+    accessor.cls = cls;
+    return accessor;
+  }
 
-    public static FieldAccessor forField(String fieldName) {
-        FieldAccessor accessor = new FieldAccessor();
-        accessor.fieldName = fieldName;
-        return accessor;
-    }
+  public static FieldAccessor forField(String fieldName) {
+    FieldAccessor accessor = new FieldAccessor();
+    accessor.fieldName = fieldName;
+    return accessor;
+  }
 
-    public FieldAccessor inClass(Class cls) {
-        this.cls = cls;
-        return this;
-    }
+  public FieldAccessor inClass(Class cls) {
+    this.cls = cls;
+    return this;
+  }
 
-    public Object access(Object object) {
-        this.object = object;
-        return access(this.fieldName);
-    }
+  public Object access(Object object) {
+    this.object = object;
+    return access(this.fieldName);
+  }
 
-    public Object access(String fieldName) {
-        try {
-            Field field = cls.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.get(object);
-        } catch (SecurityException e) {
-        } catch (NoSuchFieldException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        }
-        return null;
+  public Object access(String fieldName) {
+    try {
+      Field field = cls.getDeclaredField(fieldName);
+      field.setAccessible(true);
+      return field.get(object);
+    } catch (SecurityException e) {
+    } catch (NoSuchFieldException e) {
+    } catch (IllegalArgumentException e) {
+    } catch (IllegalAccessException e) {
     }
+    return null;
+  }
 }

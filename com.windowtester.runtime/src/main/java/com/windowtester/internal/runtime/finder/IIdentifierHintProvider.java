@@ -18,9 +18,8 @@ package com.windowtester.internal.runtime.finder;
  */
 public interface IIdentifierHintProvider {
 
-    /**
-     * Does this locator require XY location information to be complete?
-     */
-    boolean requiresXY();
-
+  /**
+   * Does this locator require XY location information to be complete?
+   */
+  boolean requiresXY();
 }

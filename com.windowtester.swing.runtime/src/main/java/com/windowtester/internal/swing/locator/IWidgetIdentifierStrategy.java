@@ -10,19 +10,18 @@
  *******************************************************************************/
 package com.windowtester.internal.swing.locator;
 
-import java.awt.*;
-
 import com.windowtester.runtime.swing.SwingWidgetLocator;
+import java.awt.*;
 
 public interface IWidgetIdentifierStrategy {
 
-    /**
-     * Generates a <code>WidgetLocator</code> that uniquely identifies this widget relative to the current widget
-     * hierarchy.  If no uniquely identifying locator is found
-     * <code>null</code> is returned.
-     *
-     * @param w the widget to identify
-     * @return a uniquely identifying <code>WidgetLocator</code> or <code>null</code> if none can be infered
-     */
-    SwingWidgetLocator identify(Component w);
+  /**
+   * Generates a <code>WidgetLocator</code> that uniquely identifies this widget relative to the current widget
+   * hierarchy.  If no uniquely identifying locator is found
+   * <code>null</code> is returned.
+   *
+   * @param w the widget to identify
+   * @return a uniquely identifying <code>WidgetLocator</code> or <code>null</code> if none can be infered
+   */
+  SwingWidgetLocator identify(Component w);
 }

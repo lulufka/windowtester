@@ -10,68 +10,62 @@
  *******************************************************************************/
 package context2.testcases;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.swing.UITestCaseSwing;
-
-import javax.swing.JList;
 import java.util.Arrays;
 import java.util.Collection;
+import javax.swing.JList;
 
 public class NamedListTest extends UITestCaseSwing {
 
-    private IUIContext ui;
-    private JList jlist;
-	
-/*	public NamedListTest(){
-		super(SwingList.class);
-	}
-	
-	protected void setUp() throws Exception {
-		ui = getUI();
-	}
-*/
+  private IUIContext ui;
+  private JList jlist;
 
-    public void testNamedLists() throws WidgetSearchException {
-//		IWidgetLocator locator;
-//
-//		ui = getUI();
-//		// named locator
-//		locator = ui.click(new JListLocator("one",new NamedWidgetLocator("list1")));
-//		jlist = (JList)((IWidgetReference)locator).getWidget();
-//		assertContainsExactly( jlist.getSelectedValues(),new String[]{"one"});
-//
-//		locator = ui.click(new JListLocator("four",new NamedWidgetLocator("list2")));
-//		jlist = (JList)((IWidgetReference)locator).getWidget();
-////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"four"});
-//
-//		locator = ui.click(new JListLocator("seven",new NamedWidgetLocator("list3")));
-//		jlist = (JList)((IWidgetReference)locator).getWidget();
-////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"seven"});
-//
-//		locator = ui.click(new JListLocator("five",new NamedWidgetLocator("list1")));
-//		jlist = (JList)((IWidgetReference)locator).getWidget();
-////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"five"});
-    }
+  /*	public NamedListTest(){
+  		super(SwingList.class);
+  	}
 
-    ////////////////////////////////////////////////////////////////////////
+  	protected void setUp() throws Exception {
+  		ui = getUI();
+  	}
+  */
+
+  public void testNamedLists() throws WidgetSearchException {
+    //		IWidgetLocator locator;
     //
-    // Assertion helpers
+    //		ui = getUI();
+    //		// named locator
+    //		locator = ui.click(new JListLocator("one",new NamedWidgetLocator("list1")));
+    //		jlist = (JList)((IWidgetReference)locator).getWidget();
+    //		assertContainsExactly( jlist.getSelectedValues(),new String[]{"one"});
     //
-    ////////////////////////////////////////////////////////////////////////
+    //		locator = ui.click(new JListLocator("four",new NamedWidgetLocator("list2")));
+    //		jlist = (JList)((IWidgetReference)locator).getWidget();
+    ////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"four"});
+    //
+    //		locator = ui.click(new JListLocator("seven",new NamedWidgetLocator("list3")));
+    //		jlist = (JList)((IWidgetReference)locator).getWidget();
+    ////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"seven"});
+    //
+    //		locator = ui.click(new JListLocator("five",new NamedWidgetLocator("list1")));
+    //		jlist = (JList)((IWidgetReference)locator).getWidget();
+    ////		assertContainsExactly( jlist.getSelectedValues(),new String[]{"five"});
+  }
 
-    public void assertContainsExactly(
-            Collection host,
-            Collection elems) {
-        assertTrue(host.containsAll(elems));
-    }
+  ////////////////////////////////////////////////////////////////////////
+  //
+  // Assertion helpers
+  //
+  ////////////////////////////////////////////////////////////////////////
 
-    public void assertContainsExactly(
-            Object[] hosts,
-            Object[] elems) {
-        assertContainsExactly(Arrays.asList(hosts), Arrays.asList(elems));
-    }
+  public void assertContainsExactly(Collection host, Collection elems) {
+    assertTrue(host.containsAll(elems));
+  }
+
+  public void assertContainsExactly(Object[] hosts, Object[] elems) {
+    assertContainsExactly(Arrays.asList(hosts), Arrays.asList(elems));
+  }
 }

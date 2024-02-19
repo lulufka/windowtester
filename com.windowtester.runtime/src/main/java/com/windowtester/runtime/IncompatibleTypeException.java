@@ -21,24 +21,23 @@ package com.windowtester.runtime;
  */
 public class IncompatibleTypeException extends IllegalStateException {
 
-    private static final long serialVersionUID = -1675440415583239600L;
+  private static final long serialVersionUID = -1675440415583239600L;
 
-    /**
-     * Constructs an IncompatibleTypeException with no detail message. A detail message is a String that describes this
-     * particular exception.
-     */
-    public IncompatibleTypeException() {
-        super();
-    }
+  /**
+   * Constructs an IncompatibleTypeException with no detail message. A detail message is a String that describes this
+   * particular exception.
+   */
+  public IncompatibleTypeException() {
+    super();
+  }
 
-    /**
-     * Constructs an IncompatibleTypeException with the specified detail message.  A detail message is a String that
-     * describes this particular exception.
-     *
-     * @param msg the String that contains a detailed message
-     */
-    public IncompatibleTypeException(String msg) {
-        super(msg);
-    }
-
+  /**
+   * Constructs an IncompatibleTypeException with the specified detail message.  A detail message is a String that
+   * describes this particular exception.
+   *
+   * @param msg the String that contains a detailed message
+   */
+  public IncompatibleTypeException(String msg) {
+    super(msg);
+  }
 }

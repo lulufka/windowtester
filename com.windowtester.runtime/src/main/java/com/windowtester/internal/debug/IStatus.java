@@ -1,9 +1,9 @@
 package com.windowtester.internal.debug;
 
 public interface IStatus {
-    String getMessage();
+  String getMessage();
 
-    Throwable getException();
+  Throwable getException();
 
-    IStatus[] getChildren();
+  IStatus[] getChildren();
 }

@@ -15,12 +15,11 @@ package com.windowtester.internal.runtime.resolver;
  */
 public interface IClassResolver {
 
-    /**
-     * Resolve this class.
-     *
-     * @param className - the name of the class to resolve
-     * @return the class instance if found, otherwise <code>null</code>
-     */
-    Class resolveClass(String className);
-
+  /**
+   * Resolve this class.
+   *
+   * @param className - the name of the class to resolve
+   * @return the class instance if found, otherwise <code>null</code>
+   */
+  Class resolveClass(String className);
 }

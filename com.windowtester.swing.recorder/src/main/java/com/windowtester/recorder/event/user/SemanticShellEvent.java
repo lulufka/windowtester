@@ -14,19 +14,18 @@ import com.windowtester.internal.runtime.IWidgetIdentifier;
 
 public class SemanticShellEvent extends UISemanticEvent {
 
-    private static final long serialVersionUID = 4064903724976242810L;
+  private static final long serialVersionUID = 4064903724976242810L;
 
-    public SemanticShellEvent(EventInfo info) {
-        super(info);
-    }
+  public SemanticShellEvent(EventInfo info) {
+    super(info);
+  }
 
-    /**
-     * Get the name of the associated Shell.
-     */
-    public String getName() {
-        IWidgetIdentifier locator = getHierarchyInfo();
-        String name = locator == null ? "null" : locator.getNameOrLabel();
-        return name;
-    }
-
+  /**
+   * Get the name of the associated Shell.
+   */
+  public String getName() {
+    IWidgetIdentifier locator = getHierarchyInfo();
+    String name = locator == null ? "null" : locator.getNameOrLabel();
+    return name;
+  }
 }

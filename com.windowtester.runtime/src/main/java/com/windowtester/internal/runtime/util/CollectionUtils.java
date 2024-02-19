@@ -19,21 +19,20 @@ import java.util.List;
  */
 public class CollectionUtils {
 
-    /**
-     * Create an array list of the given type of size 1.
-     */
-    public static <T> ArrayList<T> listOfOne() {
-        return new ArrayList<T>(1);
-    }
+  /**
+   * Create an array list of the given type of size 1.
+   */
+  public static <T> ArrayList<T> listOfOne() {
+    return new ArrayList<T>(1);
+  }
 
-    public static <T> List<T> listWith(T... values) {
-        List<T> list = new ArrayList<T>();
-        list.addAll(Arrays.asList(values));
-        return list;
-    }
+  public static <T> List<T> listWith(T... values) {
+    List<T> list = new ArrayList<T>();
+    list.addAll(Arrays.asList(values));
+    return list;
+  }
 
-    public static <T> List<T> emptyList() {
-        return new ArrayList<T>();
-    }
-
+  public static <T> List<T> emptyList() {
+    return new ArrayList<T>();
+  }
 }

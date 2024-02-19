@@ -16,21 +16,20 @@ import swing.samples.UseTheSampleDialog;
 
 public class TestDialog extends UITestCaseSwing {
 
-    private IUIContext ui;
+  private IUIContext ui;
 
-    public TestDialog() {
-        //super(SampleDialog.class);
-        super(UseTheSampleDialog.class);
-        System.out.println("back to test");
-    }
+  public TestDialog() {
+    // super(SampleDialog.class);
+    super(UseTheSampleDialog.class);
+    System.out.println("back to test");
+  }
 
-    public void testMain() throws Exception {
-//			System.out.println("start test");
-//			ui = getUI();
-//			ui.click(new JButtonLocator("Test the dialog!"));
-//			ui.wait(new WindowShowingCondition("Question"));
-//			ui.click(new JButtonLocator("Yes"));
+  public void testMain() throws Exception {
+    //			System.out.println("start test");
+    //			ui = getUI();
+    //			ui.click(new JButtonLocator("Test the dialog!"));
+    //			ui.wait(new WindowShowingCondition("Question"));
+    //			ui.click(new JButtonLocator("Yes"));
 
-    }
-
+  }
 }

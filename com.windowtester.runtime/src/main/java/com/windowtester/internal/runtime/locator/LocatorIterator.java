@@ -10,80 +10,80 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime.locator;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.windowtester.runtime.IWidgetLocatorVisitor;
 import com.windowtester.runtime.WidgetLocator;
 import com.windowtester.runtime.locator.ILocator;
 import com.windowtester.runtime.locator.XYLocator;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Composite locator iterator helper.
  */
 public class LocatorIterator {
 
-    private final List<ILocator> locators = new ArrayList<ILocator>();
-    private final Iterator<ILocator> iterator;
+  private final List<ILocator> locators = new ArrayList<ILocator>();
+  private final Iterator<ILocator> iterator;
 
-    public LocatorIterator(ILocator locator) {
-        addToList(locator);
-        iterator = locators.iterator();
+  public LocatorIterator(ILocator locator) {
+    addToList(locator);
+    iterator = locators.iterator();
+  }
+
+  private void addToList(ILocator locator) {
+    if (locator == null) {
+      return;
     }
-
-    private void addToList(ILocator locator) {
-        if (locator == null) {
-            return;
-        }
-        if (locator instanceof XYLocator) {
-            locators.add(locator);
-            addToList(((XYLocator) locator).locator());
-        } else if (locator instanceof IdentifierAdapter) {
-            addToList(((IdentifierAdapter) locator).getLocator());
-        } else if (locator instanceof WidgetLocator) {
-            ((WidgetLocator) locator).accept(new IWidgetLocatorVisitor() {
+    if (locator instanceof XYLocator) {
+      locators.add(locator);
+      addToList(((XYLocator) locator).locator());
+    } else if (locator instanceof IdentifierAdapter) {
+      addToList(((IdentifierAdapter) locator).getLocator());
+    } else if (locator instanceof WidgetLocator) {
+      ((WidgetLocator) locator)
+          .accept(
+              new IWidgetLocatorVisitor() {
                 public void visit(WidgetLocator locator) {
-                    locators.add(locator);
+                  locators.add(locator);
                 }
-            });
-        } else {
-            /*
-             * Temporarily use relection to iterate.  Cautious, for now,
-             * about adding iteration to any API.
-             */
-            locators.add(locator);
-            addToList(getWrappedLocator(locator));
-        }
+              });
+    } else {
+      /*
+       * Temporarily use relection to iterate.  Cautious, for now,
+       * about adding iteration to any API.
+       */
+      locators.add(locator);
+      addToList(getWrappedLocator(locator));
     }
+  }
 
-    private ILocator getWrappedLocator(ILocator locator) {
-        try {
-            Method method = locator.getClass().getMethod("getOwner", (Class<?>[]) null);
-            return (ILocator) method.invoke(locator, (Object[]) null);
-        } catch (Throwable e) {
-            //yes, do ignore.
-        }
-        try {
-            Method method = locator.getClass().getMethod("getLocator", (Class<?>[]) null);
-            return (ILocator) method.invoke(locator, (Object[]) null);
-        } catch (Throwable e) {
-            //yes, do ignore.
-        }
-        return null;
+  private ILocator getWrappedLocator(ILocator locator) {
+    try {
+      Method method = locator.getClass().getMethod("getOwner", (Class<?>[]) null);
+      return (ILocator) method.invoke(locator, (Object[]) null);
+    } catch (Throwable e) {
+      // yes, do ignore.
     }
-
-    public static LocatorIterator forLocator(ILocator locator) {
-        return new LocatorIterator(locator);
+    try {
+      Method method = locator.getClass().getMethod("getLocator", (Class<?>[]) null);
+      return (ILocator) method.invoke(locator, (Object[]) null);
+    } catch (Throwable e) {
+      // yes, do ignore.
     }
+    return null;
+  }
 
-    public boolean hasNext() {
-        return iterator.hasNext();
-    }
+  public static LocatorIterator forLocator(ILocator locator) {
+    return new LocatorIterator(locator);
+  }
 
-    public ILocator next() {
-        return iterator.next();
-    }
+  public boolean hasNext() {
+    return iterator.hasNext();
+  }
 
+  public ILocator next() {
+    return iterator.next();
+  }
 }

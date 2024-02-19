@@ -16,55 +16,55 @@ import junit.framework.TestCase;
  */
 public class ScriptFixture extends TestCase {
 
-    private static AWTFixtureHelper oldContext = null;
-    private static final Hierarchy DUMMY_HIERARCHY = new AWTHierarchy();
-    private StepRunner runner;
+  private static AWTFixtureHelper oldContext = null;
+  private static final Hierarchy DUMMY_HIERARCHY = new AWTHierarchy();
+  private StepRunner runner;
 
-    /**
-     * Construct a test case with the given name, which <i>must</i> be the filename of the script to run.
-     */
-    public ScriptFixture(final String filename) {
-        // It is essential that the name be passed to super() unmodified, or
-        // the JUnit GUI will consider it a different test.
-        super(filename);
+  /**
+   * Construct a test case with the given name, which <i>must</i> be the filename of the script to run.
+   */
+  public ScriptFixture(final String filename) {
+    // It is essential that the name be passed to super() unmodified, or
+    // the JUnit GUI will consider it a different test.
+    super(filename);
+  }
+
+  /**
+   * Saves the current UI state for restoration when the fixture (if any) is terminated.  Also sets up a {@link
+   * TestHierarchy} for the duration of the test.
+   */
+  @Override
+  protected void setUp() throws Exception {
+    if (oldContext == null) {
+      oldContext = new AWTFixtureHelper();
     }
+    runner = new StepRunner(oldContext);
+    // Support for deprecated ComponentTester.assertFrameShowing usage
+    // only.  Eventually this will go away.
+    AWTHierarchy.setDefault(runner.getHierarchy());
+  }
 
-    /**
-     * Saves the current UI state for restoration when the fixture (if any) is terminated.  Also sets up a {@link
-     * TestHierarchy} for the duration of the test.
-     */
-    @Override
-    protected void setUp() throws Exception {
-        if (oldContext == null) {
-            oldContext = new AWTFixtureHelper();
-        }
-        runner = new StepRunner(oldContext);
-        // Support for deprecated ComponentTester.assertFrameShowing usage
-        // only.  Eventually this will go away.
-        AWTHierarchy.setDefault(runner.getHierarchy());
+  @Override
+  protected void tearDown() throws Exception {
+    AWTHierarchy.setDefault(null);
+    runner = null;
+  }
+
+  /**
+   * Override the default TestCase runTest method to invoke the script. The {@link Script} is created and a default
+   * {@link StepRunner} is used to run it.
+   *
+   * @see junit.framework.TestCase#runTest
+   */
+  @Override
+  protected void runTest() throws Throwable {
+    final Script script = new Script(getName(), DUMMY_HIERARCHY);
+    Log.log("Running " + script + " with " + getClass());
+
+    try {
+      runner.run(script);
+    } finally {
+      Log.log(script + " finished");
     }
-
-    @Override
-    protected void tearDown() throws Exception {
-        AWTHierarchy.setDefault(null);
-        runner = null;
-    }
-
-    /**
-     * Override the default TestCase runTest method to invoke the script. The {@link Script} is created and a default
-     * {@link StepRunner} is used to run it.
-     *
-     * @see junit.framework.TestCase#runTest
-     */
-    @Override
-    protected void runTest() throws Throwable {
-        final Script script = new Script(getName(), DUMMY_HIERARCHY);
-        Log.log("Running " + script + " with " + getClass());
-
-        try {
-            runner.run(script);
-        } finally {
-            Log.log(script + " finished");
-        }
-    }
+  }
 }

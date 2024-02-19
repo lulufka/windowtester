@@ -20,14 +20,14 @@ import com.windowtester.runtime.IUIContext;
  * Note that conditions should be designed to <em>test</em> and not to <em>modify</em> the User Interface.
  */
 public interface ICondition {
-    /**
-     * Determine if the condition has been satisfied.
-     * <p>
-     * Note that this method is NOT guaranteed to be executed on the UI thread. In fact, it is most likely to be
-     * executed on the test thread. If you want to conveniently execute a test on the SWT UI thread, subclass
-     * com.windowtester.runtime.swt.condition.SWTUIConditionAdapter.
-     *
-     * @return <code>true</code> if the condition is satisfied, else <code>false</code>
-     */
-    boolean test();
+  /**
+   * Determine if the condition has been satisfied.
+   * <p>
+   * Note that this method is NOT guaranteed to be executed on the UI thread. In fact, it is most likely to be
+   * executed on the test thread. If you want to conveniently execute a test on the SWT UI thread, subclass
+   * com.windowtester.runtime.swt.condition.SWTUIConditionAdapter.
+   *
+   * @return <code>true</code> if the condition is satisfied, else <code>false</code>
+   */
+  boolean test();
 }

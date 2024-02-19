@@ -12,32 +12,29 @@ package com.windowtester.recorder.event.user;
 
 public class SemanticShellDisposedEvent extends SemanticShellEvent {
 
-    private static final long serialVersionUID = -6420650777142325456L;
-    private final String _shellTitle;
+  private static final long serialVersionUID = -6420650777142325456L;
+  private final String _shellTitle;
 
-    public SemanticShellDisposedEvent(
-            EventInfo info,
-            String shellTitle) {
-        super(info);
-        _shellTitle = shellTitle;
+  public SemanticShellDisposedEvent(EventInfo info, String shellTitle) {
+    super(info);
+    _shellTitle = shellTitle;
+  }
+
+  public SemanticShellDisposedEvent(EventInfo info) {
+    this(info, null);
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.SemanticShellEvent#getName()
+   */
+  public String getName() {
+    if (_shellTitle != null) {
+      return _shellTitle;
     }
+    return super.getName();
+  }
 
-    public SemanticShellDisposedEvent(EventInfo info) {
-        this(info, null);
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.SemanticShellEvent#getName()
-     */
-    public String getName() {
-        if (_shellTitle != null) {
-            return _shellTitle;
-        }
-        return super.getName();
-    }
-
-    public String toString() {
-        return "Shell: '" + getName() + "' disposed";
-
-    }
+  public String toString() {
+    return "Shell: '" + getName() + "' disposed";
+  }
 }

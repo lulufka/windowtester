@@ -13,6 +13,4 @@ package com.windowtester.recorder.event;
 /**
  * A recorder "meta" event.
  */
-public interface IRecorderSemanticEvent extends ISemanticEvent {
-
-}
+public interface IRecorderSemanticEvent extends ISemanticEvent {}

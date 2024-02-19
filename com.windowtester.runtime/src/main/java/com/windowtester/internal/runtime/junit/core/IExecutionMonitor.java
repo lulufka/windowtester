@@ -16,27 +16,27 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public interface IExecutionMonitor extends ITestExecutionListener {
 
-    /**
-     * Add this listener to the test execution.
-     *
-     * @param listener the listener to add
-     */
-    void addListener(ITestExecutionListener listener);
+  /**
+   * Add this listener to the test execution.
+   *
+   * @param listener the listener to add
+   */
+  void addListener(ITestExecutionListener listener);
 
-    /**
-     * Remove this listener.
-     *
-     * @param listener the listener to remove
-     */
-    void removeListener(ITestExecutionListener listener);
+  /**
+   * Remove this listener.
+   *
+   * @param listener the listener to remove
+   */
+  void removeListener(ITestExecutionListener listener);
 
-    /**
-     * Perform a wait until the test execution is finished.
-     */
-    void waitUntilFinished() throws Throwable;
+  /**
+   * Perform a wait until the test execution is finished.
+   */
+  void waitUntilFinished() throws Throwable;
 
-    /**
-     * Get the exception cache for this monitor.
-     */
-    TestExceptionCache getExceptionCache();
+  /**
+   * Get the exception cache for this monitor.
+   */
+  TestExceptionCache getExceptionCache();
 }

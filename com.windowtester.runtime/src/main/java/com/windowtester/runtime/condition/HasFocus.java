@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * focus. See {@link HasFocusCondition} for typical usage.
  */
 public interface HasFocus extends ILocator {
-    /**
-     * Resolve the locator to a single object and determine if that object has keyboard focus.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return <code>true</code> if the object has focus, else false
-     */
-    boolean hasFocus(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and determine if that object has keyboard focus.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return <code>true</code> if the object has focus, else false
+   */
+  boolean hasFocus(IUIContext ui) throws WidgetSearchException;
 }

@@ -25,173 +25,151 @@ package com.windowtester.runtime;
  */
 public interface IWidgetSelectorDelegate {
 
-    ///////////////////////////////////////////////////////////////////////////////
-    //
-    // Click actions
-    //
-    ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  //
+  // Click actions
+  //
+  ///////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Click in the given part of the component using the specified mouse mask.
-     * <p>
-     * By convention, the runtime uses mouse and key constants as defined in SWT. For example "SWT.BUTTON1 | SWT.SHIFT"
-     * specifies a shift-click of mouse button 1.
-     *
-     * @param w    the widget to click
-     * @param x    the x offset (from the top left) to click
-     * @param y    the y offset (from the top left) to click
-     * @param mask the mouse mask
-     * @return the clicked widget
-     */
-    Object click(
-            Object w,
-            int x,
-            int y,
-            int mask);
+  /**
+   * Click in the given part of the component using the specified mouse mask.
+   * <p>
+   * By convention, the runtime uses mouse and key constants as defined in SWT. For example "SWT.BUTTON1 | SWT.SHIFT"
+   * specifies a shift-click of mouse button 1.
+   *
+   * @param w    the widget to click
+   * @param x    the x offset (from the top left) to click
+   * @param y    the y offset (from the top left) to click
+   * @param mask the mouse mask
+   * @return the clicked widget
+   */
+  Object click(Object w, int x, int y, int mask);
 
-    /**
-     * Click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the node
-     * to click (e.g., "path/to/node").
-     * <p>
-     * The convention is to use "\" as a path delimiter.
-     * <p>
-     * Note on the returned widget: Wherever possible, the most specific widget is returned.  For instance in the case
-     * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
-     * class in question, the tree itself should be returned.
-     *
-     * @param w    the widget
-     * @param path the path identifying the item to click
-     * @return the clicked widget
-     * @throws WidgetNotFoundException       if the path cannot be resolved
-     * @throws MultipleWidgetsFoundException if the path is ambiguous
-     * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
-     */
-    Object click(
-            Object w,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  /**
+   * Click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the node
+   * to click (e.g., "path/to/node").
+   * <p>
+   * The convention is to use "\" as a path delimiter.
+   * <p>
+   * Note on the returned widget: Wherever possible, the most specific widget is returned.  For instance in the case
+   * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
+   * class in question, the tree itself should be returned.
+   *
+   * @param w    the widget
+   * @param path the path identifying the item to click
+   * @return the clicked widget
+   * @throws WidgetNotFoundException       if the path cannot be resolved
+   * @throws MultipleWidgetsFoundException if the path is ambiguous
+   * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
+   */
+  Object click(Object w, String path) throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    /**
-     * Click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the node
-     * to click (e.g., "path/to/node").
-     * <p>
-     * The convention is to use "\" as a path delimiter.
-     * <p>
-     * Note on the returned widget: Whereever possible, the most specific widget is returned.  For instance in the case
-     * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
-     * class in question, the tree itself should be returned.
-     *
-     * @param w    the widget
-     * @param path the path identifying the item to click
-     * @param mask the mouse mask
-     * @return the clicked widget
-     * @throws WidgetNotFoundException       if the path cannot be resolved
-     * @throws MultipleWidgetsFoundException if the path is ambiguous
-     * @throws UnsupportedOperationException if path-based selections are not suported for this widget type
-     */
-    Object click(
-            Object w,
-            String path,
-            int mask) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  /**
+   * Click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the node
+   * to click (e.g., "path/to/node").
+   * <p>
+   * The convention is to use "\" as a path delimiter.
+   * <p>
+   * Note on the returned widget: Whereever possible, the most specific widget is returned.  For instance in the case
+   * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
+   * class in question, the tree itself should be returned.
+   *
+   * @param w    the widget
+   * @param path the path identifying the item to click
+   * @param mask the mouse mask
+   * @return the clicked widget
+   * @throws WidgetNotFoundException       if the path cannot be resolved
+   * @throws MultipleWidgetsFoundException if the path is ambiguous
+   * @throws UnsupportedOperationException if path-based selections are not suported for this widget type
+   */
+  Object click(Object w, String path, int mask)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    ///////////////////////////////////////////////////////////////////////////////
-    //
-    // Double-click actions
-    //
-    ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  //
+  // Double-click actions
+  //
+  ///////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Double-click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the
-     * node to click (e.g., "path/to/node").
-     * <p>
-     * The convention is to use "\" as a path delimiter.
-     * <p>
-     * Note on the returned widget: Whereever possible, the most specific widget is returned.  For instance in the case
-     * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
-     * class in question, the tree itself should be returned.
-     *
-     * @param w    the widget
-     * @param path the path identifying the item to click
-     * @return the clicked widget
-     * @throws WidgetNotFoundException       if the path cannot be resolved
-     * @throws MultipleWidgetsFoundException if the path is ambiguous
-     * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
-     */
-    Object doubleClick(
-            Object w,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  /**
+   * Double-click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the
+   * node to click (e.g., "path/to/node").
+   * <p>
+   * The convention is to use "\" as a path delimiter.
+   * <p>
+   * Note on the returned widget: Whereever possible, the most specific widget is returned.  For instance in the case
+   * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
+   * class in question, the tree itself should be returned.
+   *
+   * @param w    the widget
+   * @param path the path identifying the item to click
+   * @return the clicked widget
+   * @throws WidgetNotFoundException       if the path cannot be resolved
+   * @throws MultipleWidgetsFoundException if the path is ambiguous
+   * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
+   */
+  Object doubleClick(Object w, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    /**
-     * Double-click in the given part of the component using the specified mouse mask.
-     * <p>
-     * By convention, the runtime uses mouse and key constants as defined in SWT. For example "SWT.BUTTON1 | SWT.SHIFT"
-     * specifies a shift-click of mouse button 1.
-     *
-     * @param w    the widget to click
-     * @param x    the x offset (from the top left) to click
-     * @param y    the y offset (from the top left) to click
-     * @param mask the mouse mask
-     * @return the clicked widget
-     */
-    Object doubleClick(
-            Object w,
-            int x,
-            int y,
-            int mask);
+  /**
+   * Double-click in the given part of the component using the specified mouse mask.
+   * <p>
+   * By convention, the runtime uses mouse and key constants as defined in SWT. For example "SWT.BUTTON1 | SWT.SHIFT"
+   * specifies a shift-click of mouse button 1.
+   *
+   * @param w    the widget to click
+   * @param x    the x offset (from the top left) to click
+   * @param y    the y offset (from the top left) to click
+   * @param mask the mouse mask
+   * @return the clicked widget
+   */
+  Object doubleClick(Object w, int x, int y, int mask);
 
-    /**
-     * Double-click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the
-     * node to click (e.g., "path/to/node").
-     * <p>
-     * The convention is to use "\" as a path delimiter.
-     * <p>
-     * Note on the returned widget: Wherever possible, the most specific widget is returned.  For instance in the case
-     * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
-     * class in question, the tree itself should be returned.
-     *
-     * @param w    the widget
-     * @param path the path identifying the item to click
-     * @param mask the mouse mask
-     * @return the clicked widget
-     * @throws WidgetNotFoundException       if the path cannot be resolved
-     * @throws MultipleWidgetsFoundException if the path is ambiguous
-     * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
-     */
-    Object doubleClick(
-            Object w,
-            String path,
-            int mask) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  /**
+   * Double-click this widget by path, such as clicking a tree item relative to the tree by specifying the path to the
+   * node to click (e.g., "path/to/node").
+   * <p>
+   * The convention is to use "\" as a path delimiter.
+   * <p>
+   * Note on the returned widget: Wherever possible, the most specific widget is returned.  For instance in the case
+   * of a tree, the selected tree item should be returned.  If there is no such thing as a tree item for the tree
+   * class in question, the tree itself should be returned.
+   *
+   * @param w    the widget
+   * @param path the path identifying the item to click
+   * @param mask the mouse mask
+   * @return the clicked widget
+   * @throws WidgetNotFoundException       if the path cannot be resolved
+   * @throws MultipleWidgetsFoundException if the path is ambiguous
+   * @throws UnsupportedOperationException if path-based selections are not supported for this widget type
+   */
+  Object doubleClick(Object w, String path, int mask)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    ///////////////////////////////////////////////////////////////////////////////
-    //
-    // Context-click actions
-    //
-    ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  //
+  // Context-click actions
+  //
+  ///////////////////////////////////////////////////////////////////////////////
 
-    Object contextClick(
-            Object w,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  Object contextClick(Object w, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    Object contextClick(
-            Object w,
-            String itemPath,
-            String menuPath) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  Object contextClick(Object w, String itemPath, String menuPath)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    Object contextClick(
-            Object w,
-            int x,
-            int y,
-            String path) throws WidgetNotFoundException, MultipleWidgetsFoundException;
+  Object contextClick(Object w, int x, int y, String path)
+      throws WidgetNotFoundException, MultipleWidgetsFoundException;
 
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    // Click internals
-    //
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  // Click internals
+  //
+  ///////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Calculate the offset from the top left for clicking this widget.  This method is used to determine where on the
-     * widget to click when no x,y coordinates are specified.
-     */
-    java.awt.Point getClickOffset(Object w);
-
+  /**
+   * Calculate the offset from the top left for clicking this widget.  This method is used to determine where on the
+   * widget to click when no x,y coordinates are specified.
+   */
+  java.awt.Point getClickOffset(Object w);
 }

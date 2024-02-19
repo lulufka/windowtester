@@ -19,51 +19,43 @@ import com.windowtester.runtime.swing.internal.junit.SwingExecutionContext;
  */
 public class UITestCaseSwing extends UITestCaseCommon {
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //
-    // Instance Creation
-    //
-    /////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Instance Creation
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
-    public UITestCaseSwing() {
-        super();
-    }
+  public UITestCaseSwing() {
+    super();
+  }
 
-    public UITestCaseSwing(String testName) {
-        super(testName);
-    }
+  public UITestCaseSwing(String testName) {
+    super(testName);
+  }
 
-    public UITestCaseSwing(
-            String testName,
-            Class launchClass) {
-        super(testName, launchClass);
-    }
+  public UITestCaseSwing(String testName, Class launchClass) {
+    super(testName, launchClass);
+  }
 
-    public UITestCaseSwing(
-            String testName,
-            Class launchClass,
-            String[] launchArgs) {
-        super(testName, launchClass, launchArgs);
-    }
+  public UITestCaseSwing(String testName, Class launchClass, String[] launchArgs) {
+    super(testName, launchClass, launchArgs);
+  }
 
-    public UITestCaseSwing(Class launchClass) {
-        super(launchClass);
-    }
+  public UITestCaseSwing(Class launchClass) {
+    super(launchClass);
+  }
 
-    public UITestCaseSwing(
-            Class launchClass,
-            String[] launchArgs) {
-        super(launchClass, launchArgs);
-    }
+  public UITestCaseSwing(Class launchClass, String[] launchArgs) {
+    super(launchClass, launchArgs);
+  }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //
-    // Execution
-    //
-    /////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Execution
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
-    protected IExecutionContext createExecutionContext() {
-        return new SwingExecutionContext();
-    }
-
+  protected IExecutionContext createExecutionContext() {
+    return new SwingExecutionContext();
+  }
 }

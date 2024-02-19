@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * {@link IsEnabledCondition} for typical usage.
  */
 public interface IsEnabled extends ILocator {
-    /**
-     * Resolve the locator to a single object and determine if that object is enabled.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return <code>true</code> if the object is enabled, else false
-     */
-    boolean isEnabled(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and determine if that object is enabled.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return <code>true</code> if the object is enabled, else false
+   */
+  boolean isEnabled(IUIContext ui) throws WidgetSearchException;
 }

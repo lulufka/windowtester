@@ -18,54 +18,51 @@ import com.windowtester.recorder.event.ISemanticEventHandler;
  */
 public class RecorderTraceEvent implements IRecorderSemanticEvent {
 
-    private static final long serialVersionUID = -747178880240708873L;
+  private static final long serialVersionUID = -747178880240708873L;
 
-    /**
-     * The associated trace option.
-     *
-     * @serial
-     */
-    private final String _traceOption;
+  /**
+   * The associated trace option.
+   *
+   * @serial
+   */
+  private final String _traceOption;
 
-    /**
-     * The associated trace message.
-     *
-     * @serial
-     */
-    private final String _msg;
+  /**
+   * The associated trace message.
+   *
+   * @serial
+   */
+  private final String _msg;
 
-    /**
-     * Create an instance.
-     *
-     * @param traceOption
-     * @param msg
-     */
-    public RecorderTraceEvent(
-            String traceOption,
-            String msg) {
-        _traceOption = traceOption;
-        _msg = msg;
-    }
+  /**
+   * Create an instance.
+   *
+   * @param traceOption
+   * @param msg
+   */
+  public RecorderTraceEvent(String traceOption, String msg) {
+    _traceOption = traceOption;
+    _msg = msg;
+  }
 
-    /**
-     * @return Returns the msg.
-     */
-    public String getMsg() {
-        return _msg;
-    }
+  /**
+   * @return Returns the msg.
+   */
+  public String getMsg() {
+    return _msg;
+  }
 
-    /**
-     * @return Returns the traceOption.
-     */
-    public String getTraceOption() {
-        return _traceOption;
-    }
+  /**
+   * @return Returns the traceOption.
+   */
+  public String getTraceOption() {
+    return _traceOption;
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.ISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
-     */
-    public void accept(ISemanticEventHandler handler) {
-        handler.handleTrace(this);
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.ISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
+   */
+  public void accept(ISemanticEventHandler handler) {
+    handler.handleTrace(this);
+  }
 }

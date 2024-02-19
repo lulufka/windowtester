@@ -16,7 +16,6 @@ import com.windowtester.internal.runtime.locator.IdentifierAdapter;
 import com.windowtester.recorder.event.ISemanticEventHandler;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.locator.ILocator;
-
 import java.awt.Point;
 
 /**
@@ -24,107 +23,104 @@ import java.awt.Point;
  */
 public class SemanticWidgetInspectionEvent extends UISemanticEvent implements IWidgetDescription {
 
-    private static final long serialVersionUID = 4381028716485411126L;
+  private static final long serialVersionUID = 4381028716485411126L;
 
-    private PropertySet properties = PropertySet.empty();
+  private PropertySet properties = PropertySet.empty();
 
-    private Point hoverPoint;
+  private Point hoverPoint;
 
-    private int widgetHash;
+  private int widgetHash;
 
-    public SemanticWidgetInspectionEvent(EventInfo info) {
-        super(info);
+  public SemanticWidgetInspectionEvent(EventInfo info) {
+    super(info);
+  }
+
+  public SemanticWidgetInspectionEvent withProperties(PropertySet properties) {
+    this.properties = properties;
+    return this;
+  }
+
+  public SemanticWidgetInspectionEvent withWidgetHash(int hash) {
+    this.widgetHash = hash;
+    return this;
+  }
+
+  /**
+   * Create an instance.
+   *
+   * @param info
+   * @param ui
+   */
+  public SemanticWidgetInspectionEvent(EventInfo info, IUIContext ui) {
+    super(info);
+    properties = PropertySet.forLocatorInContext(getLocator(), ui);
+  }
+
+  public SemanticWidgetInspectionEvent atHoverPoint(Point hoverPoint) {
+    this.hoverPoint = hoverPoint;
+    return this;
+  }
+
+  /**
+   * Get the cached hashcode of the inspected widget.  This is used to ensure that no more than one request for
+   * inspection be processed for a given widget at the same time.
+   */
+  public int getWidgetHash() {
+    return widgetHash;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.UISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
+   */
+  public void accept(ISemanticEventHandler visitor) {
+    visitor.handleInspectionEvent(this);
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.IWidgetDescription#getLocator()
+   */
+  public ILocator getLocator() {
+    IWidgetIdentifier hierarchyInfo = getHierarchyInfo();
+    if (hierarchyInfo instanceof IdentifierAdapter) {
+      return ((IdentifierAdapter) hierarchyInfo).getLocator();
     }
-
-    public SemanticWidgetInspectionEvent withProperties(PropertySet properties) {
-        this.properties = properties;
-        return this;
+    if (hierarchyInfo instanceof ILocator) {
+      return (ILocator) hierarchyInfo;
     }
+    return null; // TODO: introduce a null object here
+  }
 
-    public SemanticWidgetInspectionEvent withWidgetHash(int hash) {
-        this.widgetHash = hash;
-        return this;
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.IWidgetDescription#getProperties()
+   */
+  public PropertySet getProperties() {
+    return properties;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.IWidgetDescription#getHoverPoint()
+   */
+  public Point getHoverPoint() {
+    return hoverPoint;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.recorder.event.user.IWidgetDescription#isSame(com.windowtester.recorder.event.user.IWidgetDescription)
+   */
+  public boolean isSame(IWidgetDescription event) {
+    if (!(event instanceof SemanticWidgetInspectionEvent)) {
+      return false;
     }
+    SemanticWidgetInspectionEvent other = (SemanticWidgetInspectionEvent) event;
+    return other.widgetHash == this.widgetHash;
+  }
 
-    /**
-     * Create an instance.
-     *
-     * @param info
-     * @param ui
-     */
-    public SemanticWidgetInspectionEvent(
-            EventInfo info,
-            IUIContext ui) {
-        super(info);
-        properties = PropertySet.forLocatorInContext(getLocator(), ui);
-    }
-
-    public SemanticWidgetInspectionEvent atHoverPoint(Point hoverPoint) {
-        this.hoverPoint = hoverPoint;
-        return this;
-    }
-
-    /**
-     * Get the cached hashcode of the inspected widget.  This is used to ensure that no more than one request for
-     * inspection be processed for a given widget at the same time.
-     */
-    public int getWidgetHash() {
-        return widgetHash;
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.UISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
-     */
-    public void accept(ISemanticEventHandler visitor) {
-        visitor.handleInspectionEvent(this);
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.IWidgetDescription#getLocator()
-     */
-    public ILocator getLocator() {
-        IWidgetIdentifier hierarchyInfo = getHierarchyInfo();
-        if (hierarchyInfo instanceof IdentifierAdapter) {
-            return ((IdentifierAdapter) hierarchyInfo).getLocator();
-        }
-        if (hierarchyInfo instanceof ILocator) {
-            return (ILocator) hierarchyInfo;
-        }
-        return null; //TODO: introduce a null object here
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.IWidgetDescription#getProperties()
-     */
-    public PropertySet getProperties() {
-        return properties;
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.IWidgetDescription#getHoverPoint()
-     */
-    public Point getHoverPoint() {
-        return hoverPoint;
-    }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.recorder.event.user.IWidgetDescription#isSame(com.windowtester.recorder.event.user.IWidgetDescription)
-     */
-    public boolean isSame(IWidgetDescription event) {
-        if (!(event instanceof SemanticWidgetInspectionEvent)) {
-            return false;
-        }
-        SemanticWidgetInspectionEvent other = (SemanticWidgetInspectionEvent) event;
-        return other.widgetHash == this.widgetHash;
-    }
-
-    /**
-     * Override in subclasses.
-     *
-     * @see com.windowtester.recorder.event.user.IWidgetDescription#getDescriptionLabel()
-     */
-    public String getDescriptionLabel() {
-        return null;
-    }
-
+  /**
+   * Override in subclasses.
+   *
+   * @see com.windowtester.recorder.event.user.IWidgetDescription#getDescriptionLabel()
+   */
+  public String getDescriptionLabel() {
+    return null;
+  }
 }

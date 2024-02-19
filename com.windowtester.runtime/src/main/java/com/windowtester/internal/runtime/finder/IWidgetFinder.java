@@ -21,13 +21,12 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public interface IWidgetFinder {
 
-    /**
-     * Find the widgets identified by the receiver.
-     *
-     * @param locator the locator to use to identify matches
-     * @return the widgets (e.g. SWT Component or Swing JComponent) identified by the receiver (not <code>null</code>,
-     * contains no <code>null</code>s but may be empty)
-     */
-    IWidgetLocator[] findAll(IWidgetLocator locator);
-
+  /**
+   * Find the widgets identified by the receiver.
+   *
+   * @param locator the locator to use to identify matches
+   * @return the widgets (e.g. SWT Component or Swing JComponent) identified by the receiver (not <code>null</code>,
+   * contains no <code>null</code>s but may be empty)
+   */
+  IWidgetLocator[] findAll(IWidgetLocator locator);
 }

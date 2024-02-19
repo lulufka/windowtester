@@ -19,83 +19,82 @@ import com.windowtester.recorder.event.meta.RecorderTraceEvent;
  */
 public interface IEventRecorder extends ISemanticEventProvider {
 
-    /**
-     * Start recording.
-     */
-    void start();
+  /**
+   * Start recording.
+   */
+  void start();
 
-    /**
-     * Stop recording.
-     */
-    void stop();
+  /**
+   * Stop recording.
+   */
+  void stop();
 
-    /**
-     * Write the recording.
-     */
-    void write();
+  /**
+   * Write the recording.
+   */
+  void write();
 
-    /**
-     * Restart the recorder.
-     */
-    void restart();
+  /**
+   * Restart the recorder.
+   */
+  void restart();
 
-    /**
-     * Terminate the current recording session.
-     */
-    void terminate();
+  /**
+   * Terminate the current recording session.
+   */
+  void terminate();
 
-    /**
-     * Pause the current recording session.
-     */
-    void pause();
+  /**
+   * Pause the current recording session.
+   */
+  void pause();
 
-    /**
-     * Record the given semantic event.
-     *
-     * @param semanticEvent - the event to record
-     */
-    void record(IUISemanticEvent semanticEvent);
+  /**
+   * Record the given semantic event.
+   *
+   * @param semanticEvent - the event to record
+   */
+  void record(IUISemanticEvent semanticEvent);
 
-    /**
-     * Report an internal error.
-     *
-     * @param event - the error event
-     */
-    void reportError(RecorderErrorEvent event);
+  /**
+   * Report an internal error.
+   *
+   * @param event - the error event
+   */
+  void reportError(RecorderErrorEvent event);
 
-    /**
-     * Send a trace event (for debugging).
-     *
-     * @param event - the trace event
-     */
-    void trace(RecorderTraceEvent event);
+  /**
+   * Send a trace event (for debugging).
+   *
+   * @param event - the trace event
+   */
+  void trace(RecorderTraceEvent event);
 
-    /**
-     * Add an event filter to filter out events from recording.
-     *
-     * @param filter - the filter to add
-     */
-    void addEventFilter(IEventFilter filter);
+  /**
+   * Add an event filter to filter out events from recording.
+   *
+   * @param filter - the filter to add
+   */
+  void addEventFilter(IEventFilter filter);
 
-    /**
-     * Remove an event filter to filter out events from recording.
-     *
-     * @param filter - the filter to remove
-     */
-    void removeEventFilter(IEventFilter filter);
+  /**
+   * Remove an event filter to filter out events from recording.
+   *
+   * @param filter - the filter to remove
+   */
+  void removeEventFilter(IEventFilter filter);
 
-    /**
-     * Add an assertion hook.
-     *
-     * @param hookName - the name of the assertion hook.
-     */
-    void addHook(String hookName);
+  /**
+   * Add an assertion hook.
+   *
+   * @param hookName - the name of the assertion hook.
+   */
+  void addHook(String hookName);
 
-    /**
-     * Toggle spy mode.
-     */
-    void toggleSpyMode();
+  /**
+   * Toggle spy mode.
+   */
+  void toggleSpyMode();
 
-    boolean isRecording();
-
+  boolean isRecording();
 }

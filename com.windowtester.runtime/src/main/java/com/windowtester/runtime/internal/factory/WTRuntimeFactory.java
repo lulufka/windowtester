@@ -16,12 +16,12 @@ import com.windowtester.runtime.locator.IWidgetReference;
  * Interface used by WindowTester to instantiate implementors of {@link IWidgetReference} and native conditions.
  */
 public interface WTRuntimeFactory {
-    /**
-     * Instantiates a new {@link IWidgetReference} for the specified widget if possible, or returns <code>null</code> if
-     * not.
-     *
-     * @param widget the widget
-     * @return the widget reference or <code>null</code> if no widget reference can be created for the specified widget.
-     */
-    IWidgetReference createReference(Object widget);
+  /**
+   * Instantiates a new {@link IWidgetReference} for the specified widget if possible, or returns <code>null</code> if
+   * not.
+   *
+   * @param widget the widget
+   * @return the widget reference or <code>null</code> if no widget reference can be created for the specified widget.
+   */
+  IWidgetReference createReference(Object widget);
 }

@@ -5,10 +5,9 @@ package abbot.finder;
  * available GUI.
  */
 public class ComponentSearchException extends Exception {
-    public ComponentSearchException() {
-    }
+  public ComponentSearchException() {}
 
-    public ComponentSearchException(String msg) {
-        super(msg);
-    }
+  public ComponentSearchException(String msg) {
+    super(msg);
+  }
 }

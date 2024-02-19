@@ -17,9 +17,9 @@ import com.windowtester.runtime.internal.application.IApplicationContext;
  */
 public interface IApplicationContextAdvisor {
 
-    void preFlight(IApplicationContext context);
+  void preFlight(IApplicationContext context);
 
-    void postFlight(IApplicationContext context);
+  void postFlight(IApplicationContext context);
 
-    void exceptionOccurred(IApplicationContext context);
+  void exceptionOccurred(IApplicationContext context);
 }

@@ -18,45 +18,44 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class ExactClassMatcher implements IWidgetMatcher {
 
-    /**
-     * The class on which to match
-     */
-    private final Class cls;
+  /**
+   * The class on which to match
+   */
+  private final Class cls;
 
-    /**
-     * Create an instance.
-     *
-     * @param cls - the class on which to match
-     */
-    public ExactClassMatcher(Class cls) {
-        if (cls == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        this.cls = cls;
+  /**
+   * Create an instance.
+   *
+   * @param cls - the class on which to match
+   */
+  public ExactClassMatcher(Class cls) {
+    if (cls == null) {
+      throw new IllegalArgumentException("Class must not be null");
+    }
+    this.cls = cls;
+  }
+
+  /**
+   * @see abbot.finder.swt.Matcher#matches(org.eclipse.swt.widgets.Widget)
+   */
+  public boolean matches(final Object w) {
+
+    // null check for sanity
+    if (w == null) {
+      return false;
     }
 
-    /**
-     * @see abbot.finder.swt.Matcher#matches(org.eclipse.swt.widgets.Widget)
-     */
-    public boolean matches(final Object w) {
+    return classMatches(w);
+  }
 
-        //null check for sanity
-        if (w == null) {
-            return false;
-        }
+  private boolean classMatches(final Object w) {
+    return cls.isAssignableFrom(w.getClass()) && w.getClass().isAssignableFrom(cls);
+  }
 
-        return classMatches(w);
-    }
-
-    private boolean classMatches(final Object w) {
-        return cls.isAssignableFrom(w.getClass()) && w.getClass().isAssignableFrom(cls);
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "Exact Class matcher (" + cls.getName() + ")";
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return "Exact Class matcher (" + cls.getName() + ")";
+  }
 }

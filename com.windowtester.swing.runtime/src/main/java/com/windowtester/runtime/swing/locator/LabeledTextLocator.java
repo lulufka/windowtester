@@ -10,12 +10,11 @@
  *******************************************************************************/
 package com.windowtester.runtime.swing.locator;
 
-import javax.swing.*;
-
 import com.windowtester.internal.swing.matcher.HierarchyMatcher;
 import com.windowtester.internal.swing.matcher.IndexMatcher;
 import com.windowtester.internal.swing.matcher.LabeledWidgetMatcher;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
+import javax.swing.*;
 
 /**
  * Locates a text component that is immediately adjacent to (e.g., following) a Label component with the given label
@@ -32,57 +31,47 @@ import com.windowtester.runtime.swing.SwingWidgetLocator;
  */
 public class LabeledTextLocator extends JTextComponentLocator {
 
-    private static final long serialVersionUID = -4186840479034195183L;
+  private static final long serialVersionUID = -4186840479034195183L;
 
-    /**
-     * Create an instance that locates a Text component of class JTextField preceded by a Label component with the given
-     * text.
-     *
-     * @param label the text of the label preceding it
-     */
-    public LabeledTextLocator(String label) {
-        this(label, null);
+  /**
+   * Create an instance that locates a Text component of class JTextField preceded by a Label component with the given
+   * text.
+   *
+   * @param label the text of the label preceding it
+   */
+  public LabeledTextLocator(String label) {
+    this(label, null);
+  }
+
+  /**
+   * Create an instance that locates a Text component of class JTextField preceded by a Label component with the given
+   * text, relative to a given parent.
+   *
+   * @param label  the text of the label preceding it
+   * @param parent the parent locator
+   */
+  public LabeledTextLocator(String label, SwingWidgetLocator parent) {
+    this(label, UNASSIGNED, parent);
+  }
+
+  public LabeledTextLocator(int caret, String label) {
+    this(label, null);
+    setCaretPosition(caret);
+  }
+
+  public LabeledTextLocator(String label, int index, SwingWidgetLocator parent) {
+    super(JTextField.class, label, index, parent);
+
+    _matcher = LabeledWidgetMatcher.create(JTextField.class, label);
+    if (index != UNASSIGNED) {
+      _matcher = IndexMatcher.create(_matcher, index);
     }
-
-    /**
-     * Create an instance that locates a Text component of class JTextField preceded by a Label component with the given
-     * text, relative to a given parent.
-     *
-     * @param label  the text of the label preceding it
-     * @param parent the parent locator
-     */
-    public LabeledTextLocator(
-            String label,
-            SwingWidgetLocator parent) {
-        this(label, UNASSIGNED, parent);
-
+    if (parent != null) {
+      _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
     }
+  }
 
-    public LabeledTextLocator(
-            int caret,
-            String label) {
-        this(label, null);
-        setCaretPosition(caret);
-    }
-
-    public LabeledTextLocator(
-            String label,
-            int index,
-            SwingWidgetLocator parent) {
-        super(JTextField.class, label, index, parent);
-
-        _matcher = LabeledWidgetMatcher.create(JTextField.class, label);
-        if (index != UNASSIGNED) {
-            _matcher = IndexMatcher.create(_matcher, index);
-        }
-        if (parent != null) {
-            _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
-        }
-
-    }
-
-    protected String getWidgetLocatorStringName() {
-        return "LabeledTextLocator";
-    }
-
+  protected String getWidgetLocatorStringName() {
+    return "LabeledTextLocator";
+  }
 }

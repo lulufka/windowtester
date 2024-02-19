@@ -15,25 +15,24 @@ package com.windowtester.runtime;
  */
 public class WidgetNotFoundException extends WidgetSearchException {
 
-    private static final long serialVersionUID = -7232101203251666634L;
+  private static final long serialVersionUID = -7232101203251666634L;
 
-    /**
-     * Create an instance with no specified detail message.
-     */
-    public WidgetNotFoundException() {
-    }
+  /**
+   * Create an instance with no specified detail message.
+   */
+  public WidgetNotFoundException() {}
 
-    /**
-     * Create an instance with the specified detail message.
-     */
-    public WidgetNotFoundException(String msg) {
-        super(msg);
-    }
+  /**
+   * Create an instance with the specified detail message.
+   */
+  public WidgetNotFoundException(String msg) {
+    super(msg);
+  }
 
-    /**
-     * Create an instance with the given cause.
-     */
-    public WidgetNotFoundException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * Create an instance with the given cause.
+   */
+  public WidgetNotFoundException(Throwable cause) {
+    super(cause);
+  }
 }

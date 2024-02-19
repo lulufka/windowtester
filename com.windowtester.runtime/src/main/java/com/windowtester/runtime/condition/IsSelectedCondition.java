@@ -27,76 +27,73 @@ import com.windowtester.runtime.WidgetSearchException;
  * <p>
  * Any locator that implements {@link IsSelected} can be used with this condition.
  */
-public class IsSelectedCondition
-        implements IDiagnosticParticipant, IUICondition {
-    private final IsSelected locator;
-    private final boolean expected;
-    private boolean actual;
-    private WidgetSearchException exception;
+public class IsSelectedCondition implements IDiagnosticParticipant, IUICondition {
+  private final IsSelected locator;
+  private final boolean expected;
+  private boolean actual;
+  private WidgetSearchException exception;
 
-    /**
-     * Construct a new instance that will test for selection of the widget specified by the locator. This is a
-     * convenience constructor that is fully equivalent to
-     *
-     * <pre>
-     * new IsSelectedCondition(locator, true)
-     * </pre>
-     *
-     * @param locator the locator for the widget to be tested
-     */
-    public IsSelectedCondition(IsSelected locator) {
-        this(locator, true);
+  /**
+   * Construct a new instance that will test for selection of the widget specified by the locator. This is a
+   * convenience constructor that is fully equivalent to
+   *
+   * <pre>
+   * new IsSelectedCondition(locator, true)
+   * </pre>
+   *
+   * @param locator the locator for the widget to be tested
+   */
+  public IsSelectedCondition(IsSelected locator) {
+    this(locator, true);
+  }
+
+  /**
+   * Construct a new instance that will test for selection of the widget specified by the locator.
+   *
+   * @param locator  the locator for the widget to be tested
+   * @param expected <code>true</code> if the widget is expected to be selected, else
+   *                 <code>false</code>
+   */
+  public IsSelectedCondition(IsSelected locator, boolean expected) {
+    if (locator == null) {
+      throw new IllegalArgumentException("locator cannot be null");
     }
+    this.locator = locator;
+    this.expected = expected;
+  }
 
-    /**
-     * Construct a new instance that will test for selection of the widget specified by the locator.
-     *
-     * @param locator  the locator for the widget to be tested
-     * @param expected <code>true</code> if the widget is expected to be selected, else
-     *                 <code>false</code>
-     */
-    public IsSelectedCondition(
-            IsSelected locator,
-            boolean expected) {
-        if (locator == null) {
-            throw new IllegalArgumentException("locator cannot be null");
-        }
-        this.locator = locator;
-        this.expected = expected;
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.condition.ICondition#test()
+   */
+  public boolean test() {
+    throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
+   */
+  public boolean testUI(IUIContext ui) {
+    try {
+      actual = locator.isSelected(ui);
+      return actual == expected;
+    } catch (WidgetSearchException e) {
+      exception = e;
+      return false;
     }
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.condition.ICondition#test()
-     */
-    public boolean test() {
-        throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
+  ////////////////////////////////////////////////////////////////////////////
+  //
+  // IDiagnosticParticipant
+  //
+  ////////////////////////////////////////////////////////////////////////////
+
+  public void diagnose(IDiagnostic diagnostic) {
+    diagnostic.attribute("class", getClass().getName());
+    diagnostic.attribute("expected", expected);
+    diagnostic.attribute("actual", actual);
+    if (exception != null) {
+      diagnostic.diagnose("exception", exception);
     }
-
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-     */
-    public boolean testUI(IUIContext ui) {
-        try {
-            actual = locator.isSelected(ui);
-            return actual == expected;
-        } catch (WidgetSearchException e) {
-            exception = e;
-            return false;
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    // IDiagnosticParticipant
-    //
-    ////////////////////////////////////////////////////////////////////////////
-
-    public void diagnose(IDiagnostic diagnostic) {
-        diagnostic.attribute("class", getClass().getName());
-        diagnostic.attribute("expected", expected);
-        diagnostic.attribute("actual", actual);
-        if (exception != null) {
-            diagnostic.diagnose("exception", exception);
-        }
-    }
+  }
 }

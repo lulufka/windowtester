@@ -10,27 +10,26 @@
  *******************************************************************************/
 package context2.testcases;
 
-import java.awt.*;
-
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.swing.UITestCaseSwing;
 import com.windowtester.runtime.swing.locator.JTableItemLocator;
+import java.awt.*;
 
 public class SimpleTableTest extends UITestCaseSwing {
 
-    /**
-     * Create an Instance
-     */
-    public SimpleTableTest() {
-        super(swing.samples.SimpleTable.class);
-    }
+  /**
+   * Create an Instance
+   */
+  public SimpleTableTest() {
+    super(swing.samples.SimpleTable.class);
+  }
 
-    /**
-     * Main test method.
-     */
-    public void testMain() throws Exception {
-        IUIContext ui = getUI();
-        ui.click(new JTableItemLocator(new Point(0, 1)));
-        ui.click(new JTableItemLocator(new Point(2, 3)));
-    }
+  /**
+   * Main test method.
+   */
+  public void testMain() throws Exception {
+    IUIContext ui = getUI();
+    ui.click(new JTableItemLocator(new Point(0, 1)));
+    ui.click(new JTableItemLocator(new Point(2, 3)));
+  }
 }

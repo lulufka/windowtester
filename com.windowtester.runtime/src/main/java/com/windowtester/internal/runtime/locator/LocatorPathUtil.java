@@ -15,37 +15,36 @@ package com.windowtester.internal.runtime.locator;
  */
 public class LocatorPathUtil {
 
-    public static String stripAccelerators(String pathString) {
-        if (pathString == null) {
-            return null;
-        }
-        while (true) {
-            int start = pathString.indexOf('\t');
-            if (start == -1) {
-                break;
-            }
-            int end = pathString.indexOf('/', start);
-            if (end == -1) {
-                pathString = pathString.substring(0, start);
-            } else {
-                pathString = pathString.substring(0, start) + pathString.substring(end);
-            }
-        }
-        return pathString;
+  public static String stripAccelerators(String pathString) {
+    if (pathString == null) {
+      return null;
     }
-
-    public static String stripAmpersands(String pathString) {
-        if (pathString == null) {
-            return null;
-        }
-        while (true) {
-            int index = pathString.indexOf('&');
-            if (index == -1) {
-                break;
-            }
-            pathString = pathString.substring(0, index) + pathString.substring(index + 1);
-        }
-        return pathString;
+    while (true) {
+      int start = pathString.indexOf('\t');
+      if (start == -1) {
+        break;
+      }
+      int end = pathString.indexOf('/', start);
+      if (end == -1) {
+        pathString = pathString.substring(0, start);
+      } else {
+        pathString = pathString.substring(0, start) + pathString.substring(end);
+      }
     }
+    return pathString;
+  }
 
+  public static String stripAmpersands(String pathString) {
+    if (pathString == null) {
+      return null;
+    }
+    while (true) {
+      int index = pathString.indexOf('&');
+      if (index == -1) {
+        break;
+      }
+      pathString = pathString.substring(0, index) + pathString.substring(index + 1);
+    }
+    return pathString;
+  }
 }

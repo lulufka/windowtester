@@ -15,12 +15,11 @@ package com.windowtester.internal.runtime.locator;
  */
 public interface IDefaultUISelectorFactory {
 
-    /**
-     * Create a widget selector for this widget if appropriate, else return null.
-     *
-     * @param widget the widget to adapt to a selector.
-     * @return an appropriate widget reference object.
-     */
-    IUISelector create(Object widget);
-
+  /**
+   * Create a widget selector for this widget if appropriate, else return null.
+   *
+   * @param widget the widget to adapt to a selector.
+   * @return an appropriate widget reference object.
+   */
+  IUISelector create(Object widget);
 }

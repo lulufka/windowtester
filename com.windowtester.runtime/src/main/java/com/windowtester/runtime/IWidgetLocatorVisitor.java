@@ -15,11 +15,10 @@ package com.windowtester.runtime;
  * implementing this interface, it is better to subclass {@link WidgetLocatorAdapter}
  */
 public interface IWidgetLocatorVisitor {
-    /**
-     * Visit this WidgetLocator object.
-     *
-     * @param locator - the locator to visit
-     */
-    void visit(WidgetLocator locator);
-
+  /**
+   * Visit this WidgetLocator object.
+   *
+   * @param locator - the locator to visit
+   */
+  void visit(WidgetLocator locator);
 }

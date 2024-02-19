@@ -16,12 +16,10 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
 /**
  * A factory for creating class by name matchers
  */
-
 public class ClassByNameMatcher {
 
-    public static IWidgetMatcher create(String className) {
-        return new AdapterFactory().adapt(new com.windowtester.internal.finder.matchers.swing.ClassByNameMatcher(
-                className));
-    }
-
+  public static IWidgetMatcher create(String className) {
+    return new AdapterFactory()
+        .adapt(new com.windowtester.internal.finder.matchers.swing.ClassByNameMatcher(className));
+  }
 }

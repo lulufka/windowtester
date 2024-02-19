@@ -15,15 +15,15 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public interface ISequenceRunner {
 
-    /**
-     * Execute this runnable in the test thread.
-     */
-    void exec(IRunnable runnable) throws Throwable;
+  /**
+   * Execute this runnable in the test thread.
+   */
+  void exec(IRunnable runnable) throws Throwable;
 
-    /**
-     * A runnable to be run in the test thread.
-     */
-    interface IRunnable {
-        void run() throws Throwable;
-    }
+  /**
+   * A runnable to be run in the test thread.
+   */
+  interface IRunnable {
+    void run() throws Throwable;
+  }
 }

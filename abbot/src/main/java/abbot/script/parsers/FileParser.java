@@ -7,18 +7,17 @@ import java.io.File;
  * directory for relative paths.
  */
 public class FileParser implements Parser {
-    public FileParser() {
-    }
+  public FileParser() {}
 
-    public Object parse(String input) throws IllegalArgumentException {
-        File file = new File(input);
-        if (!file.isAbsolute()) {
-            file = new File(relativeTo() + File.separator + input);
-        }
-        return file;
+  public Object parse(String input) throws IllegalArgumentException {
+    File file = new File(input);
+    if (!file.isAbsolute()) {
+      file = new File(relativeTo() + File.separator + input);
     }
+    return file;
+  }
 
-    public String relativeTo() {
-        return "";
-    }
+  public String relativeTo() {
+    return "";
+  }
 }

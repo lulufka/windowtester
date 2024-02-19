@@ -16,18 +16,17 @@ package com.windowtester.internal.runtime;
  */
 public final class Platform {
 
-    /**
-     * A flag that indicates whether we are running in the context of the Eclipse Platform
-     */
-    static boolean IS_RUNNING;
+  /**
+   * A flag that indicates whether we are running in the context of the Eclipse Platform
+   */
+  static boolean IS_RUNNING;
 
-    /**
-     * Check whether the Eclipse Platform is running.
-     *
-     * @return true if we are running in the context of the Eclipse platform
-     */
-    public static boolean isRunning() {
-        return IS_RUNNING;
-    }
-
+  /**
+   * Check whether the Eclipse Platform is running.
+   *
+   * @return true if we are running in the context of the Eclipse platform
+   */
+  public static boolean isRunning() {
+    return IS_RUNNING;
+  }
 }

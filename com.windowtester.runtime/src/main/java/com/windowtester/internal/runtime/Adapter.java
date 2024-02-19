@@ -17,16 +17,13 @@ import com.windowtester.runtime.IAdaptable;
  */
 public class Adapter {
 
-    public static Object adapt(
-            Object o,
-            Class<?> cls) {
-        if (o.getClass() == cls) {
-            return o;
-        }
-        if (!(o instanceof IAdaptable)) {
-            return null;
-        }
-        return ((IAdaptable) o).getAdapter(cls);
+  public static Object adapt(Object o, Class<?> cls) {
+    if (o.getClass() == cls) {
+      return o;
     }
-
+    if (!(o instanceof IAdaptable)) {
+      return null;
+    }
+    return ((IAdaptable) o).getAdapter(cls);
+  }
 }

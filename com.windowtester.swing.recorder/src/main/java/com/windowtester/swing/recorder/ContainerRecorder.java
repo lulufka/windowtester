@@ -17,7 +17,7 @@ import abbot.script.Resolver;
  * extends windowtester.ComponentRecorder
  */
 public class ContainerRecorder extends ComponentRecorder {
-    public ContainerRecorder(Resolver resolver) {
-        super(resolver);
-    }
+  public ContainerRecorder(Resolver resolver) {
+    super(resolver);
+  }
 }

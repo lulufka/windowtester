@@ -22,66 +22,63 @@ import com.windowtester.runtime.WidgetSearchException;
  */
 public class HasIndexCondition implements IDiagnosticParticipant, IUICondition {
 
-    private final HasIndex locator;
-    private final int expected;
-    private int actual;
-    private WidgetSearchException exception;
+  private final HasIndex locator;
+  private final int expected;
+  private int actual;
+  private WidgetSearchException exception;
 
-    /**
-     * Construct a new instance that will test for the index of the widget specified by the locator.
-     *
-     * @param locator       the locator for the widget to be tested
-     * @param expectedIndex the expected index
-     */
-    public HasIndexCondition(
-            HasIndex locator,
-            int expectedIndex) {
-        if (locator == null) {
-            throw new IllegalArgumentException("locator cannot be null");
-        }
-        this.locator = locator;
-        this.expected = expectedIndex;
+  /**
+   * Construct a new instance that will test for the index of the widget specified by the locator.
+   *
+   * @param locator       the locator for the widget to be tested
+   * @param expectedIndex the expected index
+   */
+  public HasIndexCondition(HasIndex locator, int expectedIndex) {
+    if (locator == null) {
+      throw new IllegalArgumentException("locator cannot be null");
     }
+    this.locator = locator;
+    this.expected = expectedIndex;
+  }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.windowtester.runtime.condition.ICondition#test()
-     */
-    public boolean test() {
-        throw new RuntimeException(
-                "unsupported method - should call testUI(IUIContext) instead");
+  /*
+   * (non-Javadoc)
+   *
+   * @see com.windowtester.runtime.condition.ICondition#test()
+   */
+  public boolean test() {
+    throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester
+   * .runtime.IUIContext)
+   */
+  public boolean testUI(IUIContext ui) {
+    try {
+      actual = locator.getIndex(ui);
+      return actual == expected;
+    } catch (WidgetSearchException e) {
+      exception = e;
+      return false;
     }
+  }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester
-     * .runtime.IUIContext)
-     */
-    public boolean testUI(IUIContext ui) {
-        try {
-            actual = locator.getIndex(ui);
-            return actual == expected;
-        } catch (WidgetSearchException e) {
-            exception = e;
-            return false;
-        }
+  // //////////////////////////////////////////////////////////////////////////
+  //
+  // IDiagnosticParticipant
+  //
+  // //////////////////////////////////////////////////////////////////////////
+
+  public void diagnose(IDiagnostic diagnostic) {
+    diagnostic.attribute("class", getClass().getName());
+    diagnostic.attribute("expected", expected);
+    diagnostic.attribute("actual", actual);
+    if (exception != null) {
+      diagnostic.diagnose("exception", exception);
     }
-
-    // //////////////////////////////////////////////////////////////////////////
-    //
-    // IDiagnosticParticipant
-    //
-    // //////////////////////////////////////////////////////////////////////////
-
-    public void diagnose(IDiagnostic diagnostic) {
-        diagnostic.attribute("class", getClass().getName());
-        diagnostic.attribute("expected", expected);
-        diagnostic.attribute("actual", actual);
-        if (exception != null) {
-            diagnostic.diagnose("exception", exception);
-        }
-    }
+  }
 }

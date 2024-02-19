@@ -20,8 +20,8 @@ import java.awt.*;
  * @see ComponentFinder
  */
 public interface Matcher {
-    /**
-     * Return whether the given Component matches some lookup criteria.
-     */
-    boolean matches(Component c);
+  /**
+   * Return whether the given Component matches some lookup criteria.
+   */
+  boolean matches(Component c);
 }

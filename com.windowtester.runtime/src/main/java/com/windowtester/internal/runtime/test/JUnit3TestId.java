@@ -19,34 +19,33 @@ import junit.framework.TestCase;
  */
 public class JUnit3TestId implements ITestIdentifier {
 
-    private final TestCase _testcase;
+  private final TestCase _testcase;
 
-    public JUnit3TestId(TestCase testcase) {
-        _testcase = testcase;
+  public JUnit3TestId(TestCase testcase) {
+    _testcase = testcase;
+  }
+
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.util.ITestIdentifier#getName()
+   */
+  public String getName() {
+    if (_testcase == null) {
+      return TestId.unknown().getName();
+    }
+    return getTestCaseID(_testcase);
+  }
+
+  private String getTestCaseID(TestCase testcase) {
+    String name = testcase.getName();
+
+    // TODO [author=Dan] Hack for JUnit 4...
+    // better way would be to have a JUnit4TestId class.
+
+    if (name == null) {
+      name = testcase.getClass().getName();
+      name = name.substring(name.lastIndexOf('.') + 1);
     }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.util.ITestIdentifier#getName()
-     */
-    public String getName() {
-        if (_testcase == null) {
-            return TestId.unknown().getName();
-        }
-        return getTestCaseID(_testcase);
-    }
-
-    private String getTestCaseID(TestCase testcase) {
-        String name = testcase.getName();
-
-        // TODO [author=Dan] Hack for JUnit 4... 
-        // better way would be to have a JUnit4TestId class.
-
-        if (name == null) {
-            name = testcase.getClass().getName();
-            name = name.substring(name.lastIndexOf('.') + 1);
-        }
-
-        return TestMonitor.getId(testcase.getClass(), name);
-    }
-
+    return TestMonitor.getId(testcase.getClass(), name);
+  }
 }

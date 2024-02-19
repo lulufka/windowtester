@@ -19,22 +19,19 @@ import swing.samples.SwingTree;
 
 public class NamedTreeTest extends UITestCaseSwing {
 
-    public NamedTreeTest() {
-        super(SwingTree.class);
-    }
+  public NamedTreeTest() {
+    super(SwingTree.class);
+  }
 
-    public void testNamedTrees() throws WidgetSearchException {
-        IUIContext ui = getUI();
+  public void testNamedTrees() throws WidgetSearchException {
+    IUIContext ui = getUI();
 
-        ui.click(new JTreeItemLocator("Root/Parent1/Child10/grandChild102",
-                new NamedWidgetLocator("tree1")));
-        ui.click(new JTreeItemLocator("Root/Item 1/Node 10/",
-                new NamedWidgetLocator("tree2")));
+    ui.click(
+        new JTreeItemLocator(
+            "Root/Parent1/Child10/grandChild102", new NamedWidgetLocator("tree1")));
+    ui.click(new JTreeItemLocator("Root/Item 1/Node 10/", new NamedWidgetLocator("tree2")));
 
-        ui.click(new JTreeItemLocator("Root/Parent3/Child31",
-                new NamedWidgetLocator("tree1")));
-        ui.click(new JTreeItemLocator("Root/Item 3",
-                new NamedWidgetLocator("tree2")));
-
-    }
+    ui.click(new JTreeItemLocator("Root/Parent3/Child31", new NamedWidgetLocator("tree1")));
+    ui.click(new JTreeItemLocator("Root/Item 3", new NamedWidgetLocator("tree2")));
+  }
 }

@@ -58,44 +58,40 @@ package com.windowtester.runtime.util;
  */
 public class StringComparator {
 
-    /**
-     * Test this string for a match against the given string or pattern.
-     * <p>
-     * See the general {@link StringComparator} notes for a description of the pattern matching strategy.
-     * <p>
-     * Note that if either is argument is <code>null</code> the match will return <code>false</code>.
-     *
-     * @param string          the string in question
-     * @param stringOrPattern a string or pattern against which to match
-     * @return <code>true</code> if the String matches, <code>false</code> otherwise
+  /**
+   * Test this string for a match against the given string or pattern.
+   * <p>
+   * See the general {@link StringComparator} notes for a description of the pattern matching strategy.
+   * <p>
+   * Note that if either is argument is <code>null</code> the match will return <code>false</code>.
+   *
+   * @param string          the string in question
+   * @param stringOrPattern a string or pattern against which to match
+   * @return <code>true</code> if the String matches, <code>false</code> otherwise
+   */
+  public static boolean matches(String string, String stringOrPattern) {
+    /*
+     * Handle null cases:
      */
-    public static boolean matches(
-            String string,
-            String stringOrPattern) {
-        /*
-         * Handle null cases:
-         */
-        if (string == null || stringOrPattern == null) {
-            return false;
-        }
-
-        //check for equality first THEN for a regexp match
-        // 8/17 changed so as to catch exception if string not a regex
-
-        // return string.equals(stringOrPattern) || string.matches(stringOrPattern);
-        if (string.equals(stringOrPattern)) {
-            return true;
-        } else {
-            try {
-                return string.matches(stringOrPattern);
-            } catch (java.util.regex.PatternSyntaxException e) {
-                // do nothing
-                //	System.out.println("String is not a legal regular expression");
-                //	e.printStackTrace();
-            }
-        }
-        return false;
-
+    if (string == null || stringOrPattern == null) {
+      return false;
     }
 
+    // check for equality first THEN for a regexp match
+    // 8/17 changed so as to catch exception if string not a regex
+
+    // return string.equals(stringOrPattern) || string.matches(stringOrPattern);
+    if (string.equals(stringOrPattern)) {
+      return true;
+    } else {
+      try {
+        return string.matches(stringOrPattern);
+      } catch (java.util.regex.PatternSyntaxException e) {
+        // do nothing
+        //	System.out.println("String is not a legal regular expression");
+        //	e.printStackTrace();
+      }
+    }
+    return false;
+  }
 }

@@ -15,9 +15,8 @@ package com.windowtester.recorder.event.user;
  */
 public interface IMaskable {
 
-    /**
-     * Get the mouse mask represented as a String.  This should really be an int but it is a String for legacy reasons.
-     */
-    String getMask();
-
+  /**
+   * Get the mouse mask represented as a String.  This should really be an int but it is a String for legacy reasons.
+   */
+  String getMask();
 }

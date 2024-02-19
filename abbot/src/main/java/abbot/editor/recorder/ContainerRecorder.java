@@ -7,8 +7,7 @@ import abbot.script.Resolver;
  */
 public class ContainerRecorder extends ComponentRecorder {
 
-    public ContainerRecorder(Resolver resolver) {
-        super(resolver);
-    }
+  public ContainerRecorder(Resolver resolver) {
+    super(resolver);
+  }
 }
-

@@ -15,10 +15,9 @@ package com.windowtester.recorder.event.user;
  */
 public class SemanticWidgetClosedEvent extends UISemanticEvent implements ISemanticSelectionEvent {
 
-    private static final long serialVersionUID = 8357231342251229327L;
+  private static final long serialVersionUID = 8357231342251229327L;
 
-    public SemanticWidgetClosedEvent(EventInfo info) {
-        super(info);
-    }
-
+  public SemanticWidgetClosedEvent(EventInfo info) {
+    super(info);
+  }
 }

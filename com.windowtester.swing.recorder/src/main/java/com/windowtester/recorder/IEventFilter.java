@@ -15,12 +15,11 @@ package com.windowtester.recorder;
  */
 public interface IEventFilter {
 
-    /**
-     * Check whether this event is significant (passes through the filter).
-     *
-     * @param event - the event to check
-     * @return true if it is to be included
-     */
-    boolean include(Object event);
-
+  /**
+   * Check whether this event is significant (passes through the filter).
+   *
+   * @param event - the event to check
+   * @return true if it is to be included
+   */
+  boolean include(Object event);
 }

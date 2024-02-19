@@ -17,56 +17,59 @@ import com.windowtester.runtime.condition.IUICondition;
 import com.windowtester.runtime.swing.UITestCaseSwing;
 
 public class IUIConditionSwingTest extends UITestCaseSwing {
-    public void testIUIConditionInWait() {
-        final boolean[] testCalled = new boolean[1];
-        final boolean[] testUICalled = new boolean[1];
-        IUICondition condition = new IUICondition() {
-            public boolean test() {
-                testCalled[0] = true;
-                return true;
-            }
+  public void testIUIConditionInWait() {
+    final boolean[] testCalled = new boolean[1];
+    final boolean[] testUICalled = new boolean[1];
+    IUICondition condition =
+        new IUICondition() {
+          public boolean test() {
+            testCalled[0] = true;
+            return true;
+          }
 
-            public boolean testUI(IUIContext ui) {
-                testUICalled[0] = true;
-                return true;
-            }
+          public boolean testUI(IUIContext ui) {
+            testUICalled[0] = true;
+            return true;
+          }
         };
 
-        // Assert that testUI is called and test is NOT called
-        IUIContext ui = getUI();
-        ui.wait(condition, 1_000);
-        assertTrue(testUICalled[0]);
-        assertFalse(testCalled[0]);
-    }
+    // Assert that testUI is called and test is NOT called
+    IUIContext ui = getUI();
+    ui.wait(condition, 1_000);
+    assertTrue(testUICalled[0]);
+    assertFalse(testCalled[0]);
+  }
 
-    public void testIUIConditionInMonitor() {
-        final boolean[] testCalled = new boolean[1];
-        final boolean[] testUICalled = new boolean[1];
-        final boolean[] handlerCalled = new boolean[1];
-        IUICondition condition = new IUICondition() {
-            public boolean test() {
-                testCalled[0] = true;
-                return true;
-            }
+  public void testIUIConditionInMonitor() {
+    final boolean[] testCalled = new boolean[1];
+    final boolean[] testUICalled = new boolean[1];
+    final boolean[] handlerCalled = new boolean[1];
+    IUICondition condition =
+        new IUICondition() {
+          public boolean test() {
+            testCalled[0] = true;
+            return true;
+          }
 
-            public boolean testUI(IUIContext ui) {
-                testUICalled[0] = true;
-                return true;
-            }
+          public boolean testUI(IUIContext ui) {
+            testUICalled[0] = true;
+            return true;
+          }
         };
-        IHandler handler = new IHandler() {
-            public void handle(IUIContext ui) throws Exception {
-                handlerCalled[0] = true;
-            }
+    IHandler handler =
+        new IHandler() {
+          public void handle(IUIContext ui) throws Exception {
+            handlerCalled[0] = true;
+          }
         };
 
-        // Assert that testUI is called and test is NOT called
-        IUIContext ui = getUI();
-        IConditionMonitor monitor = (IConditionMonitor) ui.getAdapter(IConditionMonitor.class);
-        monitor.add(condition, handler);
-        ui.handleConditions();
-        assertTrue(testUICalled[0]);
-        assertFalse(testCalled[0]);
-        assertTrue(handlerCalled[0]);
-    }
+    // Assert that testUI is called and test is NOT called
+    IUIContext ui = getUI();
+    IConditionMonitor monitor = (IConditionMonitor) ui.getAdapter(IConditionMonitor.class);
+    monitor.add(condition, handler);
+    ui.handleConditions();
+    assertTrue(testUICalled[0]);
+    assertFalse(testCalled[0]);
+    assertTrue(handlerCalled[0]);
+  }
 }

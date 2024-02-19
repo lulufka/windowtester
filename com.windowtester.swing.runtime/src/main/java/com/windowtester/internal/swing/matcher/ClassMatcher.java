@@ -18,8 +18,8 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class ClassMatcher {
 
-    public static IWidgetMatcher create(Class cls) {
-        return new AdapterFactory().adapt(new com.windowtester.internal.finder.matchers.swing.ClassMatcher(cls));
-    }
-
+  public static IWidgetMatcher create(Class cls) {
+    return new AdapterFactory()
+        .adapt(new com.windowtester.internal.finder.matchers.swing.ClassMatcher(cls));
+  }
 }

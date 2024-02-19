@@ -10,7 +10,7 @@
  *******************************************************************************/
 package swing.samples;
 
-//Fri Oct 25 18:07:43 EST 2004
+// Fri Oct 25 18:07:43 EST 2004
 //
 // Written by Sean R. Owens, released to the public
 // domain.  Share and enjoy.  http://darksleep.com/player
@@ -23,44 +23,46 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.*;
 
 public class UseTheSampleDialog implements ActionListener {
-    JFrame mainFrame = null;
-    JButton myButton = null;
+  JFrame mainFrame = null;
+  JButton myButton = null;
 
-    public UseTheSampleDialog() {
-        mainFrame = new JFrame("TestTheDialog Tester");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
+  public UseTheSampleDialog() {
+    mainFrame = new JFrame("TestTheDialog Tester");
+    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    mainFrame.addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            System.exit(0);
+          }
         });
-        myButton = new JButton("Test the dialog!");
-        myButton.addActionListener(this);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.getContentPane().add(myButton);
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-    }
+    myButton = new JButton("Test the dialog!");
+    myButton.addActionListener(this);
+    mainFrame.setLocationRelativeTo(null);
+    mainFrame.getContentPane().add(myButton);
+    mainFrame.pack();
+    mainFrame.setVisible(true);
+  }
 
-    public void actionPerformed(ActionEvent e) {
-        if (myButton == e.getSource()) {
-            System.err.println("Opening dialog.");
-            SampleDialog myDialog = new SampleDialog(mainFrame, "Do you like Java?");
-            System.err.println("After opening dialog.");
-            if (myDialog.getAnswer()) {
-                System.err.println("The answer stored in CustomDialog is 'true' (i.e. user clicked yes button.)");
-            } else {
-                System.err.println("The answer stored in CustomDialog is 'false' (i.e. user clicked no button.)");
-            }
-        }
+  public void actionPerformed(ActionEvent e) {
+    if (myButton == e.getSource()) {
+      System.err.println("Opening dialog.");
+      SampleDialog myDialog = new SampleDialog(mainFrame, "Do you like Java?");
+      System.err.println("After opening dialog.");
+      if (myDialog.getAnswer()) {
+        System.err.println(
+            "The answer stored in CustomDialog is 'true' (i.e. user clicked yes button.)");
+      } else {
+        System.err.println(
+            "The answer stored in CustomDialog is 'false' (i.e. user clicked no button.)");
+      }
     }
+  }
 
-    public static void main(String[] argv) {
+  public static void main(String[] argv) {
 
-        UseTheSampleDialog tester = new UseTheSampleDialog();
-    }
+    UseTheSampleDialog tester = new UseTheSampleDialog();
+  }
 }

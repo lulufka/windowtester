@@ -15,21 +15,20 @@ package com.windowtester.internal.runtime.util;
  */
 public class Invariants {
 
-    public static <T> void notNull(T... o) {
-        if (o == null) {
-            throw new IllegalArgumentException("array argument must not be null");
-        }
-        for (int i = 0; i < o.length; i++) {
-            if (o[i] == null) {
-                throw new IllegalArgumentException("array argument cannot contain nulls");
-            }
-        }
+  public static <T> void notNull(T... o) {
+    if (o == null) {
+      throw new IllegalArgumentException("array argument must not be null");
     }
-
-    public static void notNegative(int i) {
-        if (i < 0) {
-            throw new IllegalArgumentException("argument must not be negative [got: " + i + "]");
-        }
+    for (int i = 0; i < o.length; i++) {
+      if (o[i] == null) {
+        throw new IllegalArgumentException("array argument cannot contain nulls");
+      }
     }
+  }
 
+  public static void notNegative(int i) {
+    if (i < 0) {
+      throw new IllegalArgumentException("argument must not be negative [got: " + i + "]");
+    }
+  }
 }

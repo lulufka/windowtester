@@ -18,26 +18,25 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class AdapterFactory {
 
-    //TODO: consider singleton vs. monostate
+  // TODO: consider singleton vs. monostate
 
-    /**
-     * Adapt this <code>IWidgetMatcher</code> to a <code>Matcher</code>.
-     */
-    public Matcher adapt(IWidgetMatcher matcher) {
-        if (matcher instanceof Matcher) {
-            return (Matcher) matcher;
-        }
-        return new AbbotFinderMatcherAdapter(matcher);
+  /**
+   * Adapt this <code>IWidgetMatcher</code> to a <code>Matcher</code>.
+   */
+  public Matcher adapt(IWidgetMatcher matcher) {
+    if (matcher instanceof Matcher) {
+      return (Matcher) matcher;
     }
+    return new AbbotFinderMatcherAdapter(matcher);
+  }
 
-    /**
-     * Adapt this <code>Matcher</code> to a <code>IWidgetMatcher</code>.
-     */
-    public IWidgetMatcher adapt(Matcher matcher) {
-        if (matcher instanceof IWidgetMatcher) {
-            return (IWidgetMatcher) matcher;
-        }
-        return new WidgetMatcherAdapter(matcher);
+  /**
+   * Adapt this <code>Matcher</code> to a <code>IWidgetMatcher</code>.
+   */
+  public IWidgetMatcher adapt(Matcher matcher) {
+    if (matcher instanceof IWidgetMatcher) {
+      return (IWidgetMatcher) matcher;
     }
-
+    return new WidgetMatcherAdapter(matcher);
+  }
 }

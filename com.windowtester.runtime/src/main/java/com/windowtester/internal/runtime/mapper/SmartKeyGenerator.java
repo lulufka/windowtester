@@ -10,10 +10,9 @@
  *******************************************************************************/
 package com.windowtester.internal.runtime.mapper;
 
+import com.windowtester.runtime.WidgetLocator;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.windowtester.runtime.WidgetLocator;
 
 /**
  * A (somewhat) smart key generator that generates keys based on widget type and label. These generated keys are
@@ -25,60 +24,59 @@ import com.windowtester.runtime.WidgetLocator;
  */
 public class SmartKeyGenerator implements IKeyGenerator {
 
-    /**
-     * A map of witnessed keys to their counts
-     */
-    private final Map/*<StringBuffer,Integer>*/ _seen = new HashMap();
+  /**
+   * A map of witnessed keys to their counts
+   */
+  private final Map /*<StringBuffer,Integer>*/ _seen = new HashMap();
 
-    /**
-     * @see com.windowtester.swt.mapper.IKeyGenerator#generate(com.windowtester.swt.WidgetLocator)
-     */
-    public String generate(WidgetLocator info) {
-        StringBuffer base = getBase(info);
-        int index = getIndex(base.toString());
-        if (index != 0) {
-            base.append(index);
-        }
-        return base.toString();
+  /**
+   * @see com.windowtester.swt.mapper.IKeyGenerator#generate(com.windowtester.swt.WidgetLocator)
+   */
+  public String generate(WidgetLocator info) {
+    StringBuffer base = getBase(info);
+    int index = getIndex(base.toString());
+    if (index != 0) {
+      base.append(index);
+    }
+    return base.toString();
+  }
+
+  /**
+   * Get the index that numbers this base string.
+   *
+   * @param base - the String key
+   * @return an index that describes how many such keys have been encountered
+   */
+  private int getIndex(String base) {
+    Integer index = (Integer) _seen.get(base);
+    if (index == null) {
+      index = new Integer(0);
+    } else {
+      index = new Integer(index.intValue() + 1);
+    }
+    _seen.put(base, index);
+    return index.intValue();
+  }
+
+  /**
+   * Extract a basic identifying String to label this info object.
+   *
+   * @param info - the info to describe
+   * @return a base StringBuffer for use in key generation
+   */
+  private StringBuffer getBase(WidgetLocator info) {
+    StringBuffer sb = new StringBuffer();
+    String label = info.getNameOrLabel();
+    if (label != null && !label.equals("")) {
+      sb.append(label).append('.');
     }
 
-    /**
-     * Get the index that numbers this base string.
-     *
-     * @param base - the String key
-     * @return an index that describes how many such keys have been encountered
-     */
-    private int getIndex(String base) {
-        Integer index = (Integer) _seen.get(base);
-        if (index == null) {
-            index = new Integer(0);
-        } else {
-            index = new Integer(index.intValue() + 1);
-        }
-        _seen.put(base, index);
-        return index.intValue();
-    }
+    // get the simple name of the class
+    String className = info.getTargetClass().getName();
+    int lastPeriod = className.lastIndexOf('.');
+    String simpleName = (lastPeriod >= 0) ? className.substring(lastPeriod + 1) : className;
 
-    /**
-     * Extract a basic identifying String to label this info object.
-     *
-     * @param info - the info to describe
-     * @return a base StringBuffer for use in key generation
-     */
-    private StringBuffer getBase(WidgetLocator info) {
-        StringBuffer sb = new StringBuffer();
-        String label = info.getNameOrLabel();
-        if (label != null && !label.equals("")) {
-            sb.append(label).append('.');
-        }
-
-        // get the simple name of the class
-        String className = info.getTargetClass().getName();
-        int lastPeriod = className.lastIndexOf('.');
-        String simpleName = (lastPeriod >= 0) ? className.substring(lastPeriod + 1) : className;
-
-        sb.append(simpleName.toLowerCase());
-        return sb;
-    }
-
+    sb.append(simpleName.toLowerCase());
+    return sb;
+  }
 }

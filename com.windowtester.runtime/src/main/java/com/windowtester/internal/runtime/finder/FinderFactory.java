@@ -17,11 +17,10 @@ import com.windowtester.runtime.IUIContext;
  */
 public class FinderFactory {
 
-    /**
-     * Get the widget finder associated with the given UI context.
-     */
-    public static IWidgetFinder getFinder(IUIContext ui) {
-        return (IWidgetFinder) ui.getAdapter(IWidgetFinder.class);
-    }
-
+  /**
+   * Get the widget finder associated with the given UI context.
+   */
+  public static IWidgetFinder getFinder(IUIContext ui) {
+    return (IWidgetFinder) ui.getAdapter(IWidgetFinder.class);
+  }
 }

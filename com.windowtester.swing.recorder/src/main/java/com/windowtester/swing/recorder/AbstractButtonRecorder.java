@@ -10,15 +10,14 @@
  *******************************************************************************/
 package com.windowtester.swing.recorder;
 
-import java.awt.*;
-import java.awt.event.InputEvent;
-
 import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
+import java.awt.*;
+import java.awt.event.InputEvent;
 
 /**
  * abbot.editor.recorder.AbstractButtonRecorder Record basic semantic events you might find on an AbstractButton.  This
@@ -28,50 +27,47 @@ import com.windowtester.recorder.event.UISemanticEventFactory;
  */
 public class AbstractButtonRecorder extends JComponentRecorder {
 
-    public AbstractButtonRecorder(Resolver resolver) {
-        super(resolver);
+  public AbstractButtonRecorder(Resolver resolver) {
+    super(resolver);
+  }
+
+  /**
+   * Usually don't bother tracking drags/drops on buttons.
+   */
+  protected boolean canDrag() {
+    return false;
+  }
+
+  /**
+   * Usually aren't interested in multiple clicks on a button.
+   */
+  protected boolean canMultipleClick() {
+    return false;
+  }
+
+  /**
+   * Create a button-specific click action.
+   */
+  protected Step createClick(Component target, int x, int y, int mods, int count) {
+    // No need to store the coordinates, the center of the button is just
+    // fine.   Only care about button 1, though.
+
+    // generate windowtester semantic event
+    if (mods == 0 || mods == InputEvent.BUTTON1_DOWN_MASK) {
+      IUISemanticEvent semanticEvent =
+          UISemanticEventFactory.createWidgetSelectionEvent(target, x, y, count, getButton());
+      notify(semanticEvent);
     }
 
-    /**
-     * Usually don't bother tracking drags/drops on buttons.
-     */
-    protected boolean canDrag() {
-        return false;
+    ComponentReference cr = getResolver().addComponent(target);
+    if (mods == 0 || mods == InputEvent.BUTTON1_DOWN_MASK) {
+      return new Action(
+          getResolver(),
+          null,
+          "actionClick",
+          new String[] {cr.getID()},
+          javax.swing.AbstractButton.class);
     }
-
-    /**
-     * Usually aren't interested in multiple clicks on a button.
-     */
-    protected boolean canMultipleClick() {
-        return false;
-    }
-
-    /**
-     * Create a button-specific click action.
-     */
-    protected Step createClick(
-            Component target,
-            int x,
-            int y,
-            int mods,
-            int count) {
-        // No need to store the coordinates, the center of the button is just
-        // fine.   Only care about button 1, though.
-
-        // generate windowtester semantic event
-        if (mods == 0 || mods == InputEvent.BUTTON1_DOWN_MASK) {
-            IUISemanticEvent semanticEvent =
-                    UISemanticEventFactory.createWidgetSelectionEvent(target, x, y, count, getButton());
-            notify(semanticEvent);
-        }
-
-        ComponentReference cr = getResolver().addComponent(target);
-        if (mods == 0 || mods == InputEvent.BUTTON1_DOWN_MASK) {
-            return new Action(getResolver(),
-                    null, "actionClick",
-                    new String[]{cr.getID()},
-                    javax.swing.AbstractButton.class);
-        }
-        return null;
-    }
+    return null;
+  }
 }

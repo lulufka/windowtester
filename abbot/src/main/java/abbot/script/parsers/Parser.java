@@ -12,5 +12,5 @@ package abbot.script.parsers;
  * @see TreePathParser
  */
 public interface Parser {
-    Object parse(String string) throws IllegalArgumentException;
+  Object parse(String string) throws IllegalArgumentException;
 }

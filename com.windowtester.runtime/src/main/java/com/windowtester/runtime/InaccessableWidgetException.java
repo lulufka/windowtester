@@ -16,16 +16,15 @@ package com.windowtester.runtime;
  * getText(IUIContext) is called and the widget found does not have a getText() method.
  */
 public class InaccessableWidgetException extends WidgetSearchException {
-    private static final long serialVersionUID = 3035842156651482281L;
+  private static final long serialVersionUID = 3035842156651482281L;
 
-    public InaccessableWidgetException() {
-    }
+  public InaccessableWidgetException() {}
 
-    public InaccessableWidgetException(String msg) {
-        super(msg);
-    }
+  public InaccessableWidgetException(String msg) {
+    super(msg);
+  }
 
-    public InaccessableWidgetException(Throwable cause) {
-        super(cause);
-    }
+  public InaccessableWidgetException(Throwable cause) {
+    super(cause);
+  }
 }

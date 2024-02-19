@@ -1,5 +1,3 @@
 package abbot.editor.actions;
 
-public interface UndoableCommand extends Command, Undoable {
-}
-
+public interface UndoableCommand extends Command, Undoable {}

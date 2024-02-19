@@ -10,29 +10,27 @@
  *******************************************************************************/
 package context2.testcases;
 
-import java.awt.*;
-
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.swing.UITestCaseSwing;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JTableItemLocator;
 import com.windowtester.runtime.swing.locator.NamedWidgetLocator;
+import java.awt.*;
 import swing.samples.SwingTables;
 
 public class NamedTableTest extends UITestCaseSwing {
 
-    public NamedTableTest() {
-        super(SwingTables.class);
-    }
+  public NamedTableTest() {
+    super(SwingTables.class);
+  }
 
-    public void testNamedTable() throws WidgetSearchException {
-        IUIContext ui = getUI();
-        ui.wait(new WindowShowingCondition("TableDemo2"), 1_000);
-        ui.click(new JTableItemLocator(new Point(1, 1), new NamedWidgetLocator("table1")));
-        ui.click(new JTableItemLocator(new Point(3, 2), new NamedWidgetLocator("table1")));
-        ui.click(new JTableItemLocator(new Point(1, 0), new NamedWidgetLocator("table2")));
-        ui.click(new JTableItemLocator(new Point(3, 1), new NamedWidgetLocator("table2")));
-    }
-
+  public void testNamedTable() throws WidgetSearchException {
+    IUIContext ui = getUI();
+    ui.wait(new WindowShowingCondition("TableDemo2"), 1_000);
+    ui.click(new JTableItemLocator(new Point(1, 1), new NamedWidgetLocator("table1")));
+    ui.click(new JTableItemLocator(new Point(3, 2), new NamedWidgetLocator("table1")));
+    ui.click(new JTableItemLocator(new Point(1, 0), new NamedWidgetLocator("table2")));
+    ui.click(new JTableItemLocator(new Point(3, 1), new NamedWidgetLocator("table2")));
+  }
 }

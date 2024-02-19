@@ -20,11 +20,11 @@ import com.windowtester.runtime.locator.ILocator;
  * {@link IsSelectedCondition} for typical usage.
  */
 public interface IsSelected extends ILocator {
-    /**
-     * Resolve the locator to a single object and determine if that object is selected.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return <code>true</code> if the object is selected, else false
-     */
-    boolean isSelected(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and determine if that object is selected.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return <code>true</code> if the object is selected, else false
+   */
+  boolean isSelected(IUIContext ui) throws WidgetSearchException;
 }

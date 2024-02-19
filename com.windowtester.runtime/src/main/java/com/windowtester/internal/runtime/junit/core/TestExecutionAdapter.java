@@ -16,39 +16,38 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public class TestExecutionAdapter implements ITestExecutionListener {
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.exec.ITestExecutionListener#exceptionCaught(java.lang.Throwable)
-     */
-    public void exceptionCaught(Throwable e) {
-        //no-op
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#exceptionCaught(java.lang.Throwable)
+   */
+  public void exceptionCaught(Throwable e) {
+    // no-op
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinished()
-     */
-    public void testFinished() {
-        //no-op
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinished()
+   */
+  public void testFinished() {
+    // no-op
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinishing()
-     */
-    public void testFinishing() {
-        //no-op
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinishing()
+   */
+  public void testFinishing() {
+    // no-op
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarting(com.windowtester.runtime.test.TestIdentifier)
-     */
-    public void testStarting(ITestIdentifier identifier) {
-        //no-op
-    }
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarting(com.windowtester.runtime.test.TestIdentifier)
+   */
+  public void testStarting(ITestIdentifier identifier) {
+    // no-op
+  }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarted(com.windowtester.runtime.test.TestIdentifier)
-     */
-    public void testStarted(ITestIdentifier identifier) {
-        //no-op
-    }
-
+  /* (non-Javadoc)
+   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarted(com.windowtester.runtime.test.TestIdentifier)
+   */
+  public void testStarted(ITestIdentifier identifier) {
+    // no-op
+  }
 }

@@ -10,64 +10,63 @@
  *******************************************************************************/
 package context2.testcases;
 
-import javax.swing.*;
-import javax.swing.table.TableModel;
-
 import abbot.finder.ComponentNotFoundException;
 import abbot.finder.MultipleComponentsFoundException;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.swing.UITestCaseSwing;
+import javax.swing.*;
+import javax.swing.table.TableModel;
 
 public class JTableTest2 extends UITestCaseSwing {
 
-    JTable table;
-    TableModel model;
+  JTable table;
+  TableModel model;
 
-    private IUIContext ui;
+  private IUIContext ui;
 
-    /**
-     * Create an Instance
-     */
-//	public JTableTest2() {
-//		super(swing.samples.SimpleTable.class);
-//	}
-    protected void setUp() throws Exception {
-        ui = getUI();
-    }
-	
-/*	public void testDoubleClicks() throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
-		
-		IWidgetReference locator;
-		
-		
-		
-		locator = (IWidgetReference)ui.click(2,new JTableItemLocator(new Point(1,0)));
-		
-		table = (JTable)locator.getWidget();
-		model = table.getModel();
-		
-		ui.enterText("next\n");
-		
-		ui.click(new JTableItemLocator(new Point(1,0)));
-		assertEquals(model.getValueAt(table.getSelectedRow(),table.getSelectedColumn()),"next");
-		
-	//	try {
-	//		ui.click("five");
-	//	} catch (LocationUnavailableException e) {
-	//		//pass
-	//	} 
-	}
-	
-*/
+  /**
+   * Create an Instance
+   */
+  //	public JTableTest2() {
+  //		super(swing.samples.SimpleTable.class);
+  //	}
+  protected void setUp() throws Exception {
+    ui = getUI();
+  }
 
-    public void testContextMenuSelection() throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
+  /*	public void testDoubleClicks() throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
 
-//		ui.click(new JTableItemLocator(new Point(2,1)));
-//		ui.contextClick(new JTableItemLocator(new Point(2,1)),new JMenuItemLocator("choice3"));
-//
-//		ui.contextClick(new JTableItemLocator(new Point(0,2)), new JMenuItemLocator("choice1"));
+  		IWidgetReference locator;
 
-    }
 
+
+  		locator = (IWidgetReference)ui.click(2,new JTableItemLocator(new Point(1,0)));
+
+  		table = (JTable)locator.getWidget();
+  		model = table.getModel();
+
+  		ui.enterText("next\n");
+
+  		ui.click(new JTableItemLocator(new Point(1,0)));
+  		assertEquals(model.getValueAt(table.getSelectedRow(),table.getSelectedColumn()),"next");
+
+  	//	try {
+  	//		ui.click("five");
+  	//	} catch (LocationUnavailableException e) {
+  	//		//pass
+  	//	}
+  	}
+
+  */
+
+  public void testContextMenuSelection()
+      throws ComponentNotFoundException, MultipleComponentsFoundException, WidgetSearchException {
+
+    //		ui.click(new JTableItemLocator(new Point(2,1)));
+    //		ui.contextClick(new JTableItemLocator(new Point(2,1)),new JMenuItemLocator("choice3"));
+    //
+    //		ui.contextClick(new JTableItemLocator(new Point(0,2)), new JMenuItemLocator("choice1"));
+
+  }
 }

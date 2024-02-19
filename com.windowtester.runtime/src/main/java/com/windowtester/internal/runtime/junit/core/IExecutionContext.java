@@ -17,14 +17,13 @@ import com.windowtester.runtime.IUIContext;
  */
 public interface IExecutionContext {
 
-    /**
-     * Get the UIContext instance appropriate for this test execution.
-     */
-    IUIContext getUI();
+  /**
+   * Get the UIContext instance appropriate for this test execution.
+   */
+  IUIContext getUI();
 
-    /**
-     * Get the Execution monitor for monitoring test runs.
-     */
-    IExecutionMonitor getExecutionMonitor();
-
+  /**
+   * Get the Execution monitor for monitoring test runs.
+   */
+  IExecutionMonitor getExecutionMonitor();
 }

@@ -19,11 +19,11 @@ import com.windowtester.runtime.locator.ILocator;
  * object. See {@link HasIndexCondition} for typical usage.
  */
 public interface HasIndex {
-    /**
-     * Resolve the locator to a single object and answer the index associated with it.
-     *
-     * @param ui the UI context in which to find the widgets
-     * @return the index associated with that object
-     */
-    int getIndex(IUIContext ui) throws WidgetSearchException;
+  /**
+   * Resolve the locator to a single object and answer the index associated with it.
+   *
+   * @param ui the UI context in which to find the widgets
+   * @return the index associated with that object
+   */
+  int getIndex(IUIContext ui) throws WidgetSearchException;
 }

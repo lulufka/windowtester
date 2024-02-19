@@ -13,17 +13,17 @@ package com.windowtester.recorder.event.user;
 /**
  * A semantic event that corresponds to an underlying default selection event.
  */
-public class SemanticDefaultSelectionEvent extends UISemanticEvent implements ISemanticSelectionEvent {
+public class SemanticDefaultSelectionEvent extends UISemanticEvent
+    implements ISemanticSelectionEvent {
 
-    private static final long serialVersionUID = -2420280718907104253L;
+  private static final long serialVersionUID = -2420280718907104253L;
 
-    /**
-     * Create an instance.
-     *
-     * @param info
-     */
-    public SemanticDefaultSelectionEvent(EventInfo info) {
-        super(info);
-    }
-
+  /**
+   * Create an instance.
+   *
+   * @param info
+   */
+  public SemanticDefaultSelectionEvent(EventInfo info) {
+    super(info);
+  }
 }

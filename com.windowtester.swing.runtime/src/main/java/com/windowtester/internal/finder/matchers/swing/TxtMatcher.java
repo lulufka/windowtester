@@ -10,94 +10,88 @@
  *******************************************************************************/
 package com.windowtester.internal.finder.matchers.swing;
 
-import java.awt.*;
-
-import javax.swing.*;
-
 import abbot.finder.matchers.AbstractMatcher;
+import java.awt.*;
+import javax.swing.*;
 
 public class TxtMatcher extends AbstractMatcher {
 
-    private final String text;
-    private String ctext = null;
+  private final String text;
+  private String ctext = null;
 
-    /**
-     * Constructs a Matcher for the text given.
-     * <p/>
-     * The component must be visible.
-     *
-     * @param text the text to match.
-     */
-    public TxtMatcher(String text) {
-        this(text, true);
+  /**
+   * Constructs a Matcher for the text given.
+   * <p/>
+   * The component must be visible.
+   *
+   * @param text the text to match.
+   */
+  public TxtMatcher(String text) {
+    this(text, true);
+  }
+
+  /**
+   * Constructs a Matcher with the text and the visibility given.
+   * <p/>
+   *
+   * @param text          the text to match.
+   * @param mustBeShowing true if the widget must be visible.
+   */
+  public TxtMatcher(String text, boolean mustBeShowing) {
+    this.text = text;
+  }
+
+  public boolean matches(final Component w) {
+
+    // AWT Components
+    if (w instanceof Button) {
+      ctext = ((Button) w).getLabel();
+    }
+    if (w instanceof Checkbox) {
+      ctext = ((Checkbox) w).getLabel();
+    }
+    if (w instanceof Label) {
+      ctext = ((Label) w).getText();
+    }
+    if (w instanceof TextComponent) {
+      ctext = ((TextComponent) w).getText();
+    }
+    if (w instanceof Dialog) {
+      ctext = ((Dialog) w).getTitle();
+    }
+    if (w instanceof Frame) {
+      ctext = ((Frame) w).getTitle();
     }
 
-    /**
-     * Constructs a Matcher with the text and the visibility given.
-     * <p/>
-     *
-     * @param text          the text to match.
-     * @param mustBeShowing true if the widget must be visible.
-     */
-    public TxtMatcher(
-            String text,
-            boolean mustBeShowing) {
-        this.text = text;
+    // Swing Components
+    if (w instanceof AbstractButton) // button,menuitem,togglebutton
+    {
+      ctext = ((AbstractButton) w).getText();
+    }
+    if (w instanceof JLabel) {
+      ctext = ((JLabel) w).getText();
+    }
+    // popupmenu getLabel ?
+
+    //	if (w instanceof JTextComponent)
+    //		ctext = ((JTextComponent)w).getText();
+
+    if (ctext == null) {
+      return false;
+    }
+    if (text == null) {
+      return ctext == null;
     }
 
-    public boolean matches(final Component w) {
+    return stringsMatch(text, ctext);
+  }
 
-        // AWT Components
-        if (w instanceof Button) {
-            ctext = ((Button) w).getLabel();
-        }
-        if (w instanceof Checkbox) {
-            ctext = ((Checkbox) w).getLabel();
-        }
-        if (w instanceof Label) {
-            ctext = ((Label) w).getText();
-        }
-        if (w instanceof TextComponent) {
-            ctext = ((TextComponent) w).getText();
-        }
-        if (w instanceof Dialog) {
-            ctext = ((Dialog) w).getTitle();
-        }
-        if (w instanceof Frame) {
-            ctext = ((Frame) w).getTitle();
-        }
-
-        // Swing Components
-        if (w instanceof AbstractButton) // button,menuitem,togglebutton
-        {
-            ctext = ((AbstractButton) w).getText();
-        }
-        if (w instanceof JLabel) {
-            ctext = ((JLabel) w).getText();
-        }
-        // popupmenu getLabel ?
-
-        //	if (w instanceof JTextComponent)
-        //		ctext = ((JTextComponent)w).getText();
-
-        if (ctext == null) {
-            return false;
-        }
-        if (text == null) {
-            return ctext == null;
-        }
-
-        return stringsMatch(text, ctext);
-
-    }
-
-    /**
-     * Retrieve the text of this matcher.
-     *
-     * @return Returns the text.
-     */
-    public String getText() {
-        return text;
-    }
-
+  /**
+   * Retrieve the text of this matcher.
+   *
+   * @return Returns the text.
+   */
+  public String getText() {
+    return text;
+  }
 }

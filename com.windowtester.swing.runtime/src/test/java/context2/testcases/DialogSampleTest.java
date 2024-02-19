@@ -14,22 +14,21 @@ import com.windowtester.runtime.swing.UITestCaseSwing;
 
 public class DialogSampleTest extends UITestCaseSwing {
 
-    /**
-     * Create an Instance
-     */
-    public DialogSampleTest() {
-        super(swing.samples.DialogSample.class);
-    }
+  /**
+   * Create an Instance
+   */
+  public DialogSampleTest() {
+    super(swing.samples.DialogSample.class);
+  }
 
-    /**
-     * Main test method.
-     */
-    public void testDialogSample() throws Exception {
-//		IUIContext ui = getUI();
-//		ui.click(new JButtonLocator("Yes"));
-//		ui.wait(new WindowShowingCondition("Inane error"));
-//		ui.click(new JButtonLocator("OK"));
-//		ui.wait(new WindowDisposedCondition("Inane error"));
-    }
-
+  /**
+   * Main test method.
+   */
+  public void testDialogSample() throws Exception {
+    //		IUIContext ui = getUI();
+    //		ui.click(new JButtonLocator("Yes"));
+    //		ui.wait(new WindowShowingCondition("Inane error"));
+    //		ui.click(new JButtonLocator("OK"));
+    //		ui.wait(new WindowDisposedCondition("Inane error"));
+  }
 }
