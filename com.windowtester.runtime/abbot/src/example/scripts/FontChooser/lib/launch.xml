@@ -1,4 +1,0 @@
-<AWTTestScript  desc="Wait for main frame">
-  <launch  method="launch" args="[]" class="example.FontChooserTest"/>
-  <wait  method="FrameShowing" args="Font Chooser unit test" />
-</AWTTestScript>

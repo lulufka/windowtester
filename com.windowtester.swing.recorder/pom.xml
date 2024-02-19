@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.github.r4fterman</groupId>
+        <artifactId>com.windowtester</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>com.windowtester.swing.recorder</artifactId>
+
+    <scm>
+        <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
+        <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git</developerConnection>
+        <url>https://github.com/r4fterman/windowtester</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.r4fterman</groupId>
+            <artifactId>abbot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.r4fterman</groupId>
+            <artifactId>com.windowtester.runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.r4fterman</groupId>
+            <artifactId>com.windowtester.swing.runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
