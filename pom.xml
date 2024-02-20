@@ -8,7 +8,7 @@
   <artifactId>com.windowtester</artifactId>
   <packaging>pom</packaging>
 
-  <version>6.0.0-SNAPSHOT</version>
+  <version>3.8.3-SNAPSHOT</version>
   <modules>
     <module>abbot</module>
     <module>com.windowtester.runtime</module>
