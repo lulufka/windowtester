@@ -6,7 +6,7 @@
 
   <groupId>io.github.r4fterman</groupId>
   <artifactId>com.windowtester</artifactId>
-  <version>3.8.4-SNAPSHOT</version>
+  <version>3.8.2.1</version>
   <packaging>pom</packaging>
 
   <name>Windowtester</name>
@@ -14,7 +14,7 @@
   <url>https://github.com/r4fterman/windowtester</url>
 
   <scm>
-    <url>https://github.com/r4fterman/windowtester</url>
+    <url>https://github.com/r4fterman/windowtester-</url>
   </scm>
 
   <licenses>
