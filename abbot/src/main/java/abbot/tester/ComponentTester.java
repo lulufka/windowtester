@@ -36,35 +36,35 @@ import javax.accessibility.AccessibleIcon;
 /**
  * Provides basic programmatic operation of a {@link Component} and related UI objects such as windows, menus and menu
  * bars throuh action methods. Also provides some useful assertions about properties of a {@link Component}.
- * <p>
+ *
  * There are two sets of event-generating methods.  The internal, protected methods inherited from {@link
  * abbot.tester.Robot abbot.tester.Robot} are for normal programmatic use within derived Tester classes.  No event queue
  * synchronization should be performed except when modifying a component for which results are required for the action
  * itself.
- * <p>
+ *
  * The public <code>actionXXX</code> functions are meant to be invoked from a script or directly from a hand-written
  * test.  These actions are distinguished by name, number of arguments, and by argument type.  The actionX methods will
  * be synchronized with the event dispatch thread when invoked, so you should only do synchronization with waitForIdle
  * when you depend on the results of a particular event prior to sending the next one (e.g. scrolling a table cell into
  * view before selecting it). All public action methods should ensure that the actions they trigger are finished on
  * return, or will be finished before any subsequent actions are requested.
- * <p>
+ *
  * <i>Action</i> methods generally represent user-driven actions such
  * as menu selection, table selection, popup menus, etc.  All actions should have the following signature:
  * <blockquote>
  * <code>public void actionSpinMeRoundLikeARecord(Component c, ...);</code>
  * <code>public void actionPinchMe(Component c, ComponentLocation loc);</code>
  * </blockquote>
- * <p>
+ *
  * It is essential that the argument is of type {@link Component}; if you use a more-derived class, then the actual
  * invocation becomes ambiguous since method parsing doesn't attempt to determine which identically-named method is the
  * most-derived.
- * <p>
+ *
  * The {@link ComponentLocation} abstraction allows all derived tester classes to inherit click, popup menu, and drag
  * variants without having to explicitly define new methods for component-specific substructures.  The new class need
  * only define the {@link #parseLocation(String)} method, which should return a location specific to the component in
  * question.
- * <p>
+ *
  * <i>Assertions</i> are either independent of any component (and should be
  * implemented in this class), or take a component as the first argument, and perform some check on that component.  All
  * assertions should have one of the following signatures:
@@ -76,7 +76,7 @@ import javax.accessibility.AccessibleIcon;
  * <code>boolean</code> value indicating success or failure.  Normally these
  * assertions will be wrapped by an abbot.script.Assert step if you want to cause a test failure, or you can manually
  * throw the proper failure exception if the method returns false.
- * <p>
+ *
  * <i>Property checks</i> may also be implemented in cases where the component
  * "property" might not be readily available or easily comparable, e.g. see {@link
  * abbot.tester.JPopupMenuTester#getMenuLabels(Component)}.
@@ -87,8 +87,7 @@ import javax.accessibility.AccessibleIcon;
  * Any non-property methods with the property signature, should be added to the {@link #IGNORED_METHODS} set, since
  * property-like methods are scanned dynamically to populate the {@link abbot.editor.ScriptEditor editor}'s action
  * menus.
- * <p>
- * <a name=Customization>
+ *
  * <h2>Extending ComponentTester</h2>
  * Following are the steps required to implement a Tester object for a custom class.
  * <ul>
@@ -120,11 +119,11 @@ import javax.accessibility.AccessibleIcon;
  * Convert the given <code>String</code> into an instance of
  * {@link ComponentLocation} specific to your Tester.  Here is an example
  * implementation from {@link JListTester}:<br>
- * <code><pre>
+ * <pre>
  * public ComponentLocation parseLocation(String encoded) {
  * return new JListLocation().parse(encoded);
  * }
- * </pre></code>
+ * </pre>
  * <li>{@link #getLocation(Component, Point)}<br>
  * Use the given <code>Point</code> to create a {@link ComponentLocation}
  * instance appropriate for the <code>Component</code> substructure
@@ -154,8 +153,7 @@ import javax.accessibility.AccessibleIcon;
  * which is also defined by another Tester class, you must supply the class
  * name as a prefix to the property.
  * </ul>
- * <p>
- * <a name=MethodNaming>
+ *
  * <h2>Method Naming Conventions</h2>
  * Action methods should be named according to the human-centric action that
  * is being performed if at all possible.  For example, use
@@ -169,7 +167,7 @@ import javax.accessibility.AccessibleIcon;
  * since there is no common language usage for these
  * concepts (line and page exist, but are not appropriate if what is scrolled
  * is not text).
- * <p>
+ *
  * When naming a selection method, include the logical substructure target of
  * the selection in the name (e.g.
  * {@link JTableTester#actionSelectCell(Component, JTableLocation)}
@@ -197,35 +195,14 @@ public class ComponentTester extends Robot {
    */
   private static final HashMap<String, ComponentTester> testers = new HashMap<>();
 
-  /**
-   * Establish the given ComponentTester as the one to use for the given class.  This may be used to override the
-   * default tester for a given core class.  Note that this will only work with components loaded by the framework
-   * class loader, not those loaded by the class loader for the code under test.
-   */
   public static void setTester(Class<?> forClass, ComponentTester tester) {
     testers.put(forClass.getName(), tester);
   }
 
-  /**
-   * Return a shared instance of the appropriate
-   * <code>ComponentTester</code> for the given {@link Component}.<p>
-   * This method is primarily used by the scripting system, since the appropriate <code>ComponentTester</code> for a
-   * given {@link Component} is not known <i>a priori</i>.  Coded unit tests should generally just create an instance
-   * of the desired type of <code>ComponentTester</code> for local use.
-   */
   public static ComponentTester getTester(Component comp) {
     return comp != null ? getTester(comp.getClass()) : getTester(Component.class);
   }
 
-  /**
-   * Return a shared instance of the corresponding
-   * <code>ComponentTester</code> object for the given {@link Component}
-   * class, chaining up the inheritance tree if no specific tester is found for that class.<p> The abbot tester
-   * package is searched first, followed by the tester extensions package.<p> This method is primarily used by the
-   * scripting system, since the appropriate <code>ComponentTester</code> for a given Component is not known <i>a
-   * priori</i>.  Coded unit tests should generally just create an instance of the desired type of
-   * <code>ComponentTester</code> for local use.
-   */
   public static ComponentTester getTester(Class<?> componentClass) {
     String className = componentClass.getName();
     ComponentTester tester = testers.get(className);
@@ -270,9 +247,6 @@ public class ComponentTester extends Robot {
     return tester;
   }
 
-  /**
-   * Return whether this tester is an extension.
-   */
   public final boolean isExtension() {
     return getClass().getName().startsWith("abbot.tester.extensions");
   }
@@ -320,9 +294,6 @@ public class ComponentTester extends Robot {
     return tester;
   }
 
-  /**
-   * Derive a tag from the given accessible context if possible, or return null.
-   */
   protected String deriveAccessibleTag(AccessibleContext context) {
     String tag = null;
     if (context != null) {
@@ -351,26 +322,14 @@ public class ComponentTester extends Robot {
     "getLabel", "getTitle", "getText",
   };
 
-  /**
-   * Return a reasonable identifier for the given component. Note that this should not duplicate information provided
-   * by existing attributes such as title, label, or text. This functionality is provided to assist in identification
-   * of non-standard GUI components only.
-   */
   public static String getTag(Component comp) {
     return getTester(comp.getClass()).deriveTag(comp);
   }
 
-  /**
-   * Returns whether the given class is not a core JRE class.
-   */
   protected boolean isCustom(Class<?> c) {
     return !(c.getName().startsWith("javax.swing.") || c.getName().startsWith("java.awt."));
   }
 
-  /**
-   * Determine a component-specific identifier not already defined in other component attributes.  This method should
-   * be defined to something unique for custom UI components.
-   */
   public String deriveTag(Component comp) {
     // If the component class is custom, don't provide a tag
     if (isCustom(comp.getClass())) {
@@ -431,14 +390,13 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  /**
-   * Delay the given number of ms.
-   */
   public void actionDelay(int ms) {
     delay(ms);
   }
 
   /**
+   * @param menuFrame menu frame
+   * @param path path
    * @deprecated Renamed to {@link #actionSelectAWTMenuItem(Frame, String)}.
    */
   @Deprecated
@@ -450,6 +408,7 @@ public class ComponentTester extends Robot {
    * Selects an AWT menu item ({@link java.awt.MenuItem}) and returns when the invocation has triggered (though not
    * necessarily completed).
    *
+   * @param menuFrame menu frame
    * @param path either a unique label or the menu path.
    * @see Robot#selectAWTMenuItem(Frame, String)
    */
@@ -468,6 +427,8 @@ public class ComponentTester extends Robot {
   }
 
   /**
+   * @param invoker invoker
+   * @param path path
    * @deprecated Renamed to {@link #actionSelectAWTPopupMenuItem(Component, String)}.
    */
   @Deprecated
@@ -475,11 +436,6 @@ public class ComponentTester extends Robot {
     actionSelectAWTPopupMenuItem(invoker, path);
   }
 
-  /**
-   * Selects an AWT menu item and returns when the invocation has triggered (though not necessarily completed).
-   *
-   * @see Robot#selectAWTPopupMenuItem(Component, String)
-   */
   public void actionSelectAWTPopupMenuItem(Component invoker, String path) {
     AWTMenuListener listener = new AWTMenuListener();
     new WeakAWTEventListener(listener, AWTEvent.ACTION_EVENT_MASK);
@@ -494,188 +450,108 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  /**
-   * Select the given menu item.
-   */
   public void actionSelectMenuItem(Component item) {
     Log.debug("Attempting to select menu item " + toString(item));
     selectMenuItem(item);
     waitForIdle();
   }
 
-  /**
-   * Select the given menu item, given its path and a component on the same window.
-   */
   public void actionSelectMenuItem(Component sameWindow, String path) {
     Log.debug("Attempting to select menu item '" + path + "'");
     selectMenuItem(sameWindow, path);
     waitForIdle();
   }
 
-  /**
-   * Pop up a menu at the center of the given component and select the given item.
-   */
   public void actionSelectPopupMenuItem(Component invoker, String path) {
     actionSelectPopupMenuItem(invoker, invoker.getWidth() / 2, invoker.getHeight() / 2, path);
   }
 
-  /**
-   * Pop up a menu at the given location on the given component and select the given item.
-   */
   public void actionSelectPopupMenuItem(Component invoker, ComponentLocation loc, String path) {
     selectPopupMenuItem(invoker, loc, path);
     waitForIdle();
   }
 
-  /**
-   * Pop up a menu at the given coordinates on the given component and select the given item.
-   */
   public void actionSelectPopupMenuItem(Component invoker, int x, int y, String path) {
     actionSelectPopupMenuItem(invoker, new ComponentLocation(new Point(x, y)), path);
   }
 
-  /**
-   * Pop up a menu in the center of the given component.
-   */
   public void actionShowPopupMenu(Component invoker) {
     actionShowPopupMenu(invoker, new ComponentLocation());
   }
 
-  /**
-   * Pop up a menu in the center of the given component.
-   */
   public void actionShowPopupMenu(Component invoker, ComponentLocation loc) {
     Point where = loc.getPoint(invoker);
     showPopupMenu(invoker, where.x, where.y);
   }
 
-  /**
-   * Pop up a menu at the given location on the given component.
-   */
   public void actionShowPopupMenu(Component invoker, int x, int y) {
     showPopupMenu(invoker, x, y);
   }
 
-  /**
-   * Click in the center of the component.
-   */
   public void actionClick(Component comp) {
     actionClick(comp, new ComponentLocation());
   }
 
-  /**
-   * Click on the component at the given location.
-   */
   public void actionClick(Component c, ComponentLocation loc) {
     actionClick(c, loc, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  /**
-   * Click on the component at the given location with the given modifiers.
-   */
   public void actionClick(Component c, ComponentLocation loc, int buttons) {
     actionClick(c, loc, buttons, 1);
   }
 
-  /**
-   * Click on the component at the given location, with the given modifiers and click count.
-   */
   public void actionClick(Component c, ComponentLocation loc, int buttons, int count) {
     Point where = loc.getPoint(c);
     click(c, where.x, where.y, buttons, count);
     waitForIdle();
   }
 
-  /**
-   * Click on the component at the given location.
-   */
   public void actionClick(Component comp, int x, int y) {
     actionClick(comp, new ComponentLocation(new Point(x, y)));
   }
 
-  /**
-   * Click on the component at the given location.  The buttons mask should be the InputEvent masks for the desired
-   * button, e.g. {@link InputEvent#BUTTON1_DOWN_MASK}.  ComponentTester also defines {@link AWTConstants#POPUP_MASK} and
-   * {@link AWTConstants#TERTIARY_MASK} for platform-independent masks for those buttons.
-   */
   public void actionClick(Component comp, int x, int y, int buttons) {
     actionClick(comp, x, y, buttons, 1);
   }
 
-  /**
-   * Click on the component at the given location, specifying buttons and the number of clicks.  The buttons mask
-   * should be the InputEvent mask for the desired button, e.g. {@link InputEvent#BUTTON1_DOWN_MASK}.  ComponentTester also
-   * defines {@link AWTConstants#POPUP_MASK} and {@link AWTConstants#TERTIARY_MASK} for platform-independent masks for
-   * those buttons.
-   */
   public void actionClick(Component comp, int x, int y, int buttons, int count) {
     actionClick(comp, new ComponentLocation(new Point(x, y)), buttons, count);
   }
 
-  /**
-   * Send a key press event for the given virtual key code to the given Component.
-   */
   public void actionKeyPress(Component comp, int keyCode) {
     actionFocus(comp);
     actionKeyPress(keyCode);
   }
 
-  /**
-   * Generate a key press event for the given virtual key code.
-   */
   public void actionKeyPress(int keyCode) {
     keyPress(keyCode);
     waitForIdle();
   }
 
-  /**
-   * Generate a key release event sent to the given component.
-   */
   public void actionKeyRelease(Component comp, int keyCode) {
     actionFocus(comp);
     actionKeyRelease(keyCode);
   }
 
-  /**
-   * Generate a key release event.
-   */
   public void actionKeyRelease(int keyCode) {
     keyRelease(keyCode);
     waitForIdle();
   }
 
-  /**
-   * Send the given keystroke, which must be the KeyEvent field name of a KeyEvent VK_ constant to the program.  Sends
-   * a key down/up, with no modifiers.  The focus is changed to the target component.
-   */
   public void actionKeyStroke(Component c, int keyCode) {
     actionFocus(c);
     actionKeyStroke(keyCode, 0);
   }
 
-  /**
-   * Send the given keystroke, which must be the KeyEvent field name of a KeyEvent VK_ constant.  Sends a key press
-   * and key release, with no modifiers.  Note that this method does not affect the current focus.
-   */
   public void actionKeyStroke(int keyCode) {
     actionKeyStroke(keyCode, 0);
   }
 
-  /**
-   * Send the given keystroke, which must be the KeyEvent field name of a KeyEvent VK_ constant to the program.  Sends
-   * a key down/up, with the given modifiers, which should be the InputEvent field name modifier masks optionally ORed
-   * together with "|".  The focus is changed to the target component.<p>
-   */
   public void actionKeyStroke(Component c, int keyCode, int modifiers) {
     actionFocus(c);
     actionKeyStroke(keyCode, modifiers);
   }
 
-  /**
-   * Send the given keystroke, which must be the KeyEvent field name of a KeyEvent VK_ constant to the program.  Sends
-   * a key down/up, with the given modifiers, which should be the InputEvent field name modifier masks optionally ORed
-   * together with "|".  Note that this does not affect the current focus.<p>
-   */
   public void actionKeyStroke(int keyCode, int modifiers) {
     if (Bugs.hasKeyStrokeGenerationBug()) {
       int oldDelay = getAutoDelay();
@@ -689,18 +565,11 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  /**
-   * Send events required to generate the given string on the given component.  This version is preferred over {@link
-   * #actionKeyString(String)}.
-   */
   public void actionKeyString(Component c, String string) {
     actionFocus(c);
     actionKeyString(string);
   }
 
-  /**
-   * Send events required to generate the given string.
-   */
   public void actionKeyString(String string) {
     keyString(string);
     // FIXME waitForIdle isn't always sufficient on OSX with key events
@@ -710,58 +579,35 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  /**
-   * Set the focus on to the given component.
-   */
   public void actionFocus(Component comp) {
     focus(comp, true);
   }
 
-  /**
-   * Move the mouse/pointer to the given location.
-   */
   public void actionMouseMove(Component comp, ComponentLocation loc) {
     Point where = loc.getPoint(comp);
     mouseMove(comp, where.x, where.y);
     waitForIdle();
   }
 
-  /**
-   * Press mouse button 1 at the given location.
-   */
   public void actionMousePress(Component comp, ComponentLocation loc) {
     actionMousePress(comp, loc, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  /**
-   * Press mouse buttons corresponding to the given mask at the given location.
-   */
   public void actionMousePress(Component comp, ComponentLocation loc, int mask) {
     Point where = loc.getPoint(comp);
     mousePress(comp, where.x, where.y, mask);
     waitForIdle();
   }
 
-  /**
-   * Release any currently held mouse buttons.
-   */
   public void actionMouseRelease() {
     mouseRelease();
     waitForIdle();
   }
 
-  /**
-   * Perform a drag action.  Derived classes may provide more specific identifiers for what is being dragged simply by
-   * deriving a new class from ComponentLocation which identifies the appropriate substructure. For instance, a {@link
-   * JTreeLocation} might encapsulate the expansion control location for the path [root, node A, child B].
-   */
   public void actionDrag(Component dragSource, ComponentLocation loc) {
     actionDrag(dragSource, loc, "BUTTON1_DOWN_MASK");
   }
 
-  /**
-   * Perform a drag action.  Grabs the center of the given component.
-   */
   public void actionDrag(Component dragSource) {
     actionDrag(dragSource, new ComponentLocation());
   }
@@ -772,8 +618,7 @@ public class ComponentTester extends Robot {
    * @param dragSource source of the drag
    * @param loc        identifies where on the given {@link Component} to begin the drag.
    * @param modifiers  a <code>String</code> representation of key modifiers, e.g. "ALT|SHIFT", based on the {@link
-   *                   InputEvent#ALT_MASK InputEvent
-   *                   <code>_MASK</code> fields}.
+   *                   InputEvent#ALT_MASK InputEvent fields}.
    * @deprecated Use the {@link #actionDrag(Component, ComponentLocation, int) integer modifier mask} version instead.
    */
   @Deprecated
@@ -786,7 +631,7 @@ public class ComponentTester extends Robot {
    *
    * @param dragSource source of the drag
    * @param loc        identifies where on the given {@link Component} to begin the drag.
-   * @param modifiers  one or more of the {@link InputEvent#ALT_DOWN_MASK InputEvent <code>_MASK</code> fields}.
+   * @param modifiers  one or more of the {@link InputEvent#ALT_DOWN_MASK InputEvent fields}.
    */
   public void actionDrag(Component dragSource, ComponentLocation loc, int modifiers) {
     Point where = loc.getPoint(dragSource);
@@ -794,9 +639,6 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  /**
-   * Perform a drag action.  Grabs at the given explicit location.
-   */
   public void actionDrag(Component dragSource, int sx, int sy) {
     actionDrag(dragSource, new ComponentLocation(new Point(sx, sy)));
   }
@@ -808,8 +650,7 @@ public class ComponentTester extends Robot {
    * @param sx         X coordinate
    * @param sy         Y coordinate
    * @param modifiers  a <code>String</code> representation of key modifiers, e.g. "ALT|SHIFT", based on the {@link
-   *                   InputEvent#ALT_DOWN_MASK InputEvent
-   *                   <code>_MASK</code> fields}.
+   *                   InputEvent#ALT_DOWN_MASK InputEvent fields}.
    * @deprecated Use the {@link #actionDrag(Component, ComponentLocation, int) ComponentLocation/ integer modifier
    * mask} version instead.
    */
@@ -818,44 +659,27 @@ public class ComponentTester extends Robot {
     actionDrag(dragSource, new ComponentLocation(new Point(sx, sy)), modifiers);
   }
 
-  /**
-   * Drag the current dragged object over the given target/location.
-   */
   public void actionDragOver(Component target, ComponentLocation where) {
     Point loc = where.getPoint(target);
     dragOver(target, loc.x, loc.y);
     waitForIdle();
   }
 
-  /**
-   * Perform a basic drop action (implicitly causing preceding mouse drag motion).  Drops in the center of the
-   * component.
-   */
   public void actionDrop(Component dropTarget) {
     actionDrop(dropTarget, new ComponentLocation());
   }
 
-  /**
-   * Perform a basic drop action (implicitly causing preceding mouse drag motion).
-   */
   public void actionDrop(Component dropTarget, ComponentLocation loc) {
     Point where = loc.getPoint(dropTarget);
     drop(dropTarget, where.x, where.y);
     waitForIdle();
   }
 
-  /**
-   * Perform a basic drop action (implicitly causing preceding mouse drag motion).  The modifiers represents the set
-   * of active modifiers when the drop is made.
-   */
   public void actionDrop(Component dropTarget, int x, int y) {
     drop(dropTarget, x, y);
     waitForIdle();
   }
 
-  /**
-   * Return whether the component's contents matches the given image.
-   */
   public boolean assertImage(Component comp, java.io.File fileImage, boolean ignoreBorder) {
     java.awt.image.BufferedImage img = capture(comp, ignoreBorder);
     return new ImageComparator().compare(img, fileImage) == 0;
@@ -864,7 +688,8 @@ public class ComponentTester extends Robot {
   /**
    * Returns whether a Window corresponding to the given String is showing.  The string may be a plain String or
    * regular expression and may match either the window title (for Frames or Dialogs) or its Component name.
-   *
+   * @param id id
+   * @return true if frame is showing
    * @see junit.extensions.abbot.ComponentTestFixture#isShowing(String)
    * @deprecated This method does not specify the proper context for the lookup.
    */
@@ -887,6 +712,7 @@ public class ComponentTester extends Robot {
    * may match either the window title (for Frames and Dialogs) or its Component name.  This method is provided as a
    * convenience for hand-coded tests, since scripts will use a wait step instead.<p> The property
    * abbot.robot.component_delay affects the default timeout.
+   * @param identifier id
    *
    * @see junit.extensions.abbot.ComponentTestFixture#isShowing(String)
    * @deprecated This method does not provide sufficient context to reliably find a component.
@@ -906,9 +732,6 @@ public class ComponentTester extends Robot {
         componentDelay);
   }
 
-  /**
-   * Return whether the Component represented by the given ComponentReference is available.
-   */
   public boolean assertComponentShowing(ComponentReference ref) {
     try {
       Component c = ref.getComponent();
@@ -918,10 +741,6 @@ public class ComponentTester extends Robot {
     }
   }
 
-  /**
-   * Wait for the Component represented by the given ComponentReference to become available.  The timeout is affected
-   * by abbot.robot.component_delay, which defaults to 30s.
-   */
   public void waitForComponentShowing(final ComponentReference ref) {
     wait(
         new Condition() {
@@ -969,9 +788,6 @@ public class ComponentTester extends Robot {
 
   private Method[] cachedActions = null;
 
-  /**
-   * Return a list of all actions defined by this class that don't depend on a component argument.
-   */
   public Method[] getActions() {
     if (cachedActions == null) {
       cachedActions = getMethods("action", void.class, false);
@@ -981,9 +797,6 @@ public class ComponentTester extends Robot {
 
   private Method[] cachedComponentActions = null;
 
-  /**
-   * Return a list of all actions defined by this class that require a component argument.
-   */
   public Method[] getComponentActions() {
     if (cachedComponentActions == null) {
       cachedComponentActions = getMethods("action", void.class, true);
@@ -993,10 +806,6 @@ public class ComponentTester extends Robot {
 
   private Method[] cachedPropertyMethods = null;
 
-  /**
-   * Return an array of all property check methods defined by this class. The first argument <b>must</b> be a
-   * Component.
-   */
   public Method[] getPropertyMethods() {
     if (cachedPropertyMethods == null) {
       ArrayList<Method> all = new ArrayList<>();
@@ -1010,9 +819,6 @@ public class ComponentTester extends Robot {
 
   private Method[] cachedAssertMethods = null;
 
-  /**
-   * Return a list of all assertions defined by this class that don't depend on a component argument.
-   */
   public Method[] getAssertMethods() {
     if (cachedAssertMethods == null) {
       cachedAssertMethods = getMethods("assert", boolean.class, false);
@@ -1022,9 +828,6 @@ public class ComponentTester extends Robot {
 
   private Method[] cachedComponentAssertMethods = null;
 
-  /**
-   * Return a list of all assertions defined by this class that require a component argument.
-   */
   public Method[] getComponentAssertMethods() {
     if (cachedComponentAssertMethods == null) {
       cachedComponentAssertMethods = getMethods("assert", boolean.class, true);
@@ -1032,10 +835,6 @@ public class ComponentTester extends Robot {
     return cachedComponentAssertMethods;
   }
 
-  /**
-   * Quick and dirty strip raw text from html, for getting the basic text from html-formatted labels and buttons.
-   * Behavior is undefined for badly formatted html.
-   */
   public static String stripHTML(String str) {
     if (str != null && (str.startsWith("<html>") || str.startsWith("<HTML>"))) {
       while (str.startsWith("<")) {
@@ -1056,9 +855,6 @@ public class ComponentTester extends Robot {
     return str;
   }
 
-  /**
-   * Wait for the given condition, throwing an ActionFailedException if it times out.
-   */
   protected void waitAction(String desc, Condition cond) throws ActionFailedException {
     try {
       wait(cond);
@@ -1067,10 +863,6 @@ public class ComponentTester extends Robot {
     }
   }
 
-  /**
-   * Return the Component class that corresponds to this ComponentTester class.  For example,
-   * JComponentTester.getTestedClass(JLabel.class) would return JComponent.class.
-   */
   public Class<?> getTestedClass(Class<?> cls) {
     while (getTester(cls.getSuperclass()) == this) {
       cls = cls.getSuperclass();
@@ -1078,17 +870,10 @@ public class ComponentTester extends Robot {
     return cls;
   }
 
-  /**
-   * Parse the String representation of a ComponentLocation into the actual ComponentLocation object.
-   */
   public ComponentLocation parseLocation(String encoded) {
     return new ComponentLocation().parse(encoded);
   }
 
-  /**
-   * Return a ComponentLocation for the given Point.  Derived classes may provide something more suitable than an (x,
-   * y) coordinate.  A JTree, for example, might provide a JTreeLocation indicating a path or row in the tree.
-   */
   public ComponentLocation getLocation(Component c, Point where) {
     return new ComponentLocation(where);
   }

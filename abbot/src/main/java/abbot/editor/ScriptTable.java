@@ -38,8 +38,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * Provides a component to edit a test script.  A cursor indicates where insertions will be positioned.  Supports drag &
- * drop within the component itself.<p> Actions supported:<br> move-rows-up<br> move-rows-down<br> toggle<br>
+ * Provides a component to edit a test script.  A cursor indicates where insertions will be positioned.  Supports drag &amp;
+ * drop within the component itself. Actions supported:<br> move-rows-up<br> move-rows-down<br> toggle<br>
  */
 public class ScriptTable extends JTable implements Autoscroll {
   private int cursorRow = 0;
@@ -134,9 +134,6 @@ public class ScriptTable extends JTable implements Autoscroll {
         });
   }
 
-  /**
-   * Toggle the open/closed state of a sequence.
-   */
   public void toggle(int row) {
     int[] rows = getSelectedRows();
     if (rows.length > 0) {
@@ -166,10 +163,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     }
   }
 
-  /**
-   * Return the bounding for the given cell.  If the step at the given row is contained within a sequence, the rect
-   * will be offset to the right.
-   */
   public Rectangle getCellRect(int row, int col, boolean includeBorder) {
     Rectangle rect = super.getCellRect(row, col, includeBorder);
     int indent = getIndentation(row);
@@ -178,16 +171,10 @@ public class ScriptTable extends JTable implements Autoscroll {
     return rect;
   }
 
-  /**
-   * Return the number of pixels offset from the left edge of the table for the given row.
-   */
   public int getIndentation(int row) {
     return getDepthIndentation(model.getNestingDepthAt(row));
   }
 
-  /**
-   * Return the number of pixels offset from the left edge of the table for the given level of indentation.
-   */
   public int getDepthIndentation(int depth) {
     return baseIndent * depth;
   }
@@ -223,16 +210,10 @@ public class ScriptTable extends JTable implements Autoscroll {
     dt.setDefaultActions(DnDConstants.ACTION_MOVE);
   }
 
-  /**
-   * Determine what the background color for the given step should be.
-   */
   protected Color getStepColor(Step step, boolean selected) {
     return selected ? getSelectionBackground() : getBackground();
   }
 
-  /**
-   * Returns the script context of the currently selected row.
-   */
   public Script getScriptContext() {
     int row = getSelectedRow();
     if (row == -1) {
@@ -241,24 +222,14 @@ public class ScriptTable extends JTable implements Autoscroll {
     return model.getScriptOf(row);
   }
 
-  /**
-   * Returns the row number of the cursor.  The number of cursor locations is one greater than the number of table
-   * entries.
-   */
   public int getCursorRow() {
     return cursorRow;
   }
 
-  /**
-   * Returns the target parent of the current cursor location.
-   */
   public Sequence getCursorParent() {
     return cursorParent;
   }
 
-  /**
-   * Returns the target index within the parent of the current cursor location.
-   */
   public int getCursorParentIndex() {
     return cursorParentIndex;
   }
@@ -368,9 +339,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     repaint(getCursorBounds());
   }
 
-  /**
-   * Set the cursor location to a reasonable target for the given row.
-   */
   public void setCursorLocation(int row) {
     setCursorLocation(row, 0);
   }
@@ -380,9 +348,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     ((Graphics2D) g).fill(getCursorBounds());
   }
 
-  /**
-   * We paint a cursor where insertions will take effect.
-   */
   public void paint(Graphics g) {
     super.paint(g);
     drawCursor(g, cursorRow == getRowCount() ? cursorRow - 1 : cursorRow);
@@ -445,16 +410,10 @@ public class ScriptTable extends JTable implements Autoscroll {
     }
   }
 
-  /**
-   * Return the first selected step.
-   */
   public Step getSelectedStep() {
     return getSelectedRowCount() > 0 ? model.getStepAt(getSelectedRow()) : null;
   }
 
-  /**
-   * Return the set of selected steps, restricted to siblings of the first selected row.
-   */
   public List getSelectedSteps() {
     ArrayList list = new ArrayList();
     int[] rows = getSelectedRows();
@@ -483,10 +442,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     return row > min && !(model.getStepAt(row) instanceof Terminate);
   }
 
-  /**
-   * Move the selected step(s) up.  If the previous row is part of an open sequence, move to the end of the sequence.
-   * Otherwise, switch places with the step at the previous row.
-   */
   public void moveUp() {
     if (!canMoveUp()) {
       return;
@@ -521,9 +476,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     moveSelectedRows(parent, targetIndex);
   }
 
-  /**
-   * Move the currently selected rows down one row.
-   */
   public void moveDown() {
     if (!canMoveDown()) {
       Log.warn("Unexpected move down state");
@@ -552,9 +504,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     moveSelectedRows(parent, targetIndex);
   }
 
-  /**
-   * Move the currently selected rows into the given parent at the given index.
-   */
   public void moveSelectedRows(Sequence parent, int index) {
     List steps = getSelectedSteps();
     Step first = (Step) steps.get(0);
@@ -610,9 +559,6 @@ public class ScriptTable extends JTable implements Autoscroll {
     }
   }
 
-  /**
-   * Listens to events coming from the source of the drag action.
-   */
   private class DSListener implements DragSourceListener {
     public void dragDropEnd(DragSourceDropEvent e) {
       Log.debug("drag drop end " + e.getDropAction());

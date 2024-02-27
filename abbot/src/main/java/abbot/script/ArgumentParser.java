@@ -28,6 +28,7 @@ import java.util.Map;
  * <li>Commas must be escaped when they would otherwise be interpreted as an
  * argument separator:<br>
  * "one,two%2ctwo,three" (2nd argument is "two,two")
+ * </ul>
  */
 public class ArgumentParser {
   private ArgumentParser() {}
@@ -68,18 +69,12 @@ public class ArgumentParser {
     return null;
   }
 
-  /**
-   * Set the parser for a given class.  Returns the old one, if any.
-   */
   public static Parser setParser(Class cls, Parser parser) {
     Parser old = (Parser) parsers.get(cls);
     parsers.put(cls, parser);
     return old;
   }
 
-  /**
-   * Find a string parser for the given class.  Returns null if none found.
-   */
   public static Parser getParser(Class cls) {
     Parser parser = (Parser) parsers.get(cls);
     // Load core testers with the current framework's class loader
@@ -143,13 +138,6 @@ public class ArgumentParser {
     }
   }
 
-  /**
-   * Convert the given encoded String into an array of Strings. Interprets strings of the format "[el1,el2,el3]" to be
-   * a single (array) argument (such commas do not need escaping). <p> Explicit commas and square brackets in
-   * arguments must be escaped by preceding the character with a backslash ('\').  The strings '(null)' and 'null' are
-   * interpreted as the value null.<p> Explicit spaces should be protected by double quotes, e.g. " an argument
-   * bounded by spaces ".
-   */
   public static String[] parseArgumentList(String encodedArgs) {
     ArrayList alist = new ArrayList();
     if (encodedArgs == null || "".equals(encodedArgs)) {
@@ -200,9 +188,6 @@ public class ArgumentParser {
     return (String[]) alist.toArray(new String[alist.size()]);
   }
 
-  /**
-   * Performs property substitutions on the argument priort to evaluating it.  Substitutions are not recursive.
-   */
   public static String substitute(Resolver resolver, String arg) {
     if (arg == null) {
       return arg;
@@ -235,12 +220,6 @@ public class ArgumentParser {
     return sb.toString();
   }
 
-  /**
-   * Convert the given string into the given class, if possible, using any available parsers if conversion to basic
-   * types fails. The Resolver could be a parser, but it would need to adapt automatically to whatever is the current
-   * context.<p> Performs property substitution on the argument prior to evaluating it. Spaces are only trimmed from
-   * the argument if spaces have no meaning for the target class.
-   */
   public static Object eval(Resolver resolver, String arg, Class cls)
       throws IllegalArgumentException, NoSuchReferenceException, ComponentSearchException {
     // Perform property substitution
@@ -310,9 +289,6 @@ public class ArgumentParser {
     }
   }
 
-  /**
-   * Evaluate the given set of arguments into the given set of types.
-   */
   public static Object[] eval(Resolver resolver, String[] args, Class[] params)
       throws IllegalArgumentException, NoSuchReferenceException, ComponentSearchException {
     Object[] plist = new Object[params.length];
@@ -322,9 +298,6 @@ public class ArgumentParser {
     return plist;
   }
 
-  /**
-   * Replace all instances in the given String of s1 with s2.
-   */
   public static String replace(String str, String s1, String s2) {
     StringBuffer sb = new StringBuffer(str);
     int index = 0;
@@ -367,10 +340,6 @@ public class ArgumentParser {
     return ref.getComponent();
   }
 
-  /**
-   * Convert a value into a String representation.  Handles null values and arrays.  Returns null if the String
-   * representation is the default class@pointer format.
-   */
   public static String toString(Object value) {
     if (value == null) {
       return NULL;
@@ -399,9 +368,6 @@ public class ArgumentParser {
     return s;
   }
 
-  /**
-   * Returns whether the given String is the default toString() implementation for the given Object.
-   */
   public static boolean isDefaultToString(String s) {
     if (s == null) {
       return false;

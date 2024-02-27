@@ -14,9 +14,6 @@ public abstract class AbstractComponentDecorator {
   private Renderer renderer;
   private boolean inViewport;
 
-  /**
-   * Create a decorator for the given component.
-   */
   public AbstractComponentDecorator(Container c) {
     if (c instanceof JViewport
         && c.getComponentCount() != 0
@@ -44,9 +41,6 @@ public abstract class AbstractComponentDecorator {
     return component;
   }
 
-  /**
-   * Stop decorating.
-   */
   public void dispose() {
     Runnable action =
         new Runnable() {

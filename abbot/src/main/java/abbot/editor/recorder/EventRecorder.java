@@ -73,10 +73,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     Window.class,
   };
 
-  /**
-   * Create a Recorder for use in capturing raw AWTEvents.  Indicate whether mouse motion should be captured, and what
-   * semantic event type to capture.
-   */
   public EventRecorder(Resolver resolver, boolean captureMotion) {
     super(resolver);
     this.captureMotion = captureMotion;
@@ -86,9 +82,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Return the name of the type of GUI action to be recorded.
-   */
   public String toString() {
     return captureMotion ? Strings.get("actions.capture-all") : Strings.get("actions.capture");
   }
@@ -366,9 +359,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Insert an arbitrary script step into the currently recorded stream.
-   */
   public void insertStep(Step step) {
     steps.add(step);
     if ((step instanceof Assert) && ((Assert) step).getMethodName().equals("assertFrameShowing")) {
@@ -384,6 +374,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
 
   /**
    * Return a sequence containing all the semantic and basic events captured thus far.
+   * @return step
    */
   protected Step createStep() {
     removeTerminalShift();
@@ -444,6 +435,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
    * semantic recorder is active, select one based on the event's component.  If the semantic recorder accepts the
    * event, then it is used to consume each subsequent event, until its recordEvent method returns true, indicating
    * that the semantic event has completed.
+   * @param event event
    */
   protected void recordEvent(java.awt.AWTEvent event) throws RecordingFailedException {
 
@@ -569,9 +561,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
           // required to capture MenuItem actions
           | AWTEvent.ACTION_EVENT_MASK;
 
-  /**
-   * Return the events of interest to this Recorder.
-   */
   public long getEventMask() {
     return RECORDING_EVENT_MASK;
   }
@@ -598,9 +587,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     return getSemanticRecorder(comp.getClass());
   }
 
-  /**
-   * Return the semantic recorder for the given component class.
-   */
   protected SemanticRecorder getSemanticRecorder(Class cls) {
     // 	System.out.println("getting recorder for: " + cls);
     if (!(Component.class.isAssignableFrom(cls))) {
@@ -653,11 +639,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Extracted the generation of recorder name, so as to override
-   *
-   * @author keertip 10/11/06
-   */
   protected String getRecoderName(String cname) {
     return "abbot.editor.recorder." + cname + "Recorder";
   }

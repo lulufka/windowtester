@@ -11,7 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 
 /**
- * Record basic semantic events you might find on an Choice component. <p>
+ * Record basic semantic events you might find on a Choice component.
  */
 public class ChoiceRecorder extends ComponentRecorder {
 
@@ -46,8 +46,8 @@ public class ChoiceRecorder extends ComponentRecorder {
   }
 
   /**
-   * Track click -> select ->click, cancelable by ESC or by clicking away from the component.<p> NOTE:
-   * press->drag->release produces an identical set of events<br> OSX 1.3.1:<br> MOUSE_PRESSED<br>
+   * Track click -&gt; select -&gt;click, cancelable by ESC or by clicking away from the component. NOTE:
+   * press-&gt;drag-&gt;release produces an identical set of events<br> OSX 1.3.1:<br> MOUSE_PRESSED<br>
    * (ITEM_STATE_CHANGED)|MOUSE_RELEASED|KEY_RELEASED<br> The ItemEvent never makes it to the AWT listener.
    */
   protected boolean parseClick(AWTEvent event) {

@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.text.JTextComponent;
 
 /**
- * Record basic semantic events you might find on an JTextComponent. <p>
+ * Record basic semantic events you might find on an JTextComponent.
  */
 public class JTextComponentRecorder extends JComponentRecorder {
 

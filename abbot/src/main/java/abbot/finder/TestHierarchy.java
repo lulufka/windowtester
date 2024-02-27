@@ -18,7 +18,7 @@ import javax.swing.*;
  * lifetime of this Hierarchy instance. Extant Components (and any subsequently generated subwindows) are ignored by
  * default.<p> Implicitly auto-filters windows which are disposed (i.e. generate a WINDOW_CLOSED event), but also
  * implicitly un-filters them if they should be shown again.  Any Window explicitly disposed with {@link
- * #dispose(Window)} will be ignored permanently.<p>
+ * #dispose(Window)} will be ignored permanently.
  */
 public class TestHierarchy extends AWTHierarchy {
 
@@ -43,9 +43,6 @@ public class TestHierarchy extends AWTHierarchy {
     this(true);
   }
 
-  /**
-   * Create a new TestHierarchy, indicating whether extant Components should be omitted from the Hierarchy.
-   */
   public TestHierarchy(boolean ignoreExisting) {
     if (ignoreExisting) {
       ignoreExisting();
@@ -61,10 +58,6 @@ public class TestHierarchy extends AWTHierarchy {
     return super.contains(c) && !isFiltered(c);
   }
 
-  /**
-   * Dispose of the given Window, but only if it currently exists within the hierarchy.  It will no longer appear in
-   * this Hierarchy or be reachable in a hierarchy walk.
-   */
   public void dispose(Window w) {
     if (contains(w)) {
       super.dispose(w);
@@ -82,18 +75,12 @@ public class TestHierarchy extends AWTHierarchy {
     }
   }
 
-  /**
-   * Returns all available root Windows, excluding those which have been filtered.
-   */
   public Collection getRoots() {
     Collection s = super.getRoots();
     s.removeAll(filtered.keySet());
     return s;
   }
 
-  /**
-   * Returns all sub-components of the given Component, omitting those which are currently filtered.
-   */
   public Collection getComponents(Component c) {
     if (!isFiltered(c)) {
       Collection s = super.getComponents(c);
@@ -110,11 +97,6 @@ public class TestHierarchy extends AWTHierarchy {
     return w != null && isFiltered(w);
   }
 
-  /**
-   * Returns true if the given component will not be considered when walking the hierarchy.  A Component is filtered
-   * if it has explicitly been filtered via {@link #setFiltered(Component, boolean)}, or if any <code>Window</code>
-   * ancestor has been filtered.
-   */
   public boolean isFiltered(Component c) {
     if (c == null) {
       return false;
@@ -127,10 +109,6 @@ public class TestHierarchy extends AWTHierarchy {
         || (!(c instanceof Window) && isWindowFiltered(c));
   }
 
-  /**
-   * Indicates whether the given component is to be included in the Hierarchy.  If the component is a Window,
-   * recursively applies the action to all owned Windows.
-   */
   public void setFiltered(Component c, boolean filter) {
     if (AWT.isSharedInvisibleFrame(c)) {
       Iterator iter = getComponents(c).iterator();

@@ -33,9 +33,6 @@ public class JComponentTester extends ContainerTester {
    */
   private static final String LABELED_BY_PROPERTY = "labeledBy";
 
-  /**
-   * Derive a tag for identifying this component.
-   */
   public String deriveTag(Component comp) {
     // If the component class is custom, don't provide a tag
     if (isCustom(comp.getClass())) {
@@ -62,6 +59,10 @@ public class JComponentTester extends ContainerTester {
 
   /**
    * Scrolls to ensure the substructure is in view before clicking.
+   * @param c component
+   * @param loc location
+   * @param buttons buttons
+   * @param count count
    *
    * @deprecated Use {@link #actionClick(Component, ComponentLocation, int, int)} instead.
    */
@@ -71,6 +72,10 @@ public class JComponentTester extends ContainerTester {
 
   /**
    * Scrolls to ensure the substructure is in view before clicking.
+   * @param c component
+   * @param loc location
+   * @param buttons buttons
+   * @param count count
    */
   public void actionClick(Component c, ComponentLocation loc, int buttons, int count) {
     if (c instanceof JComponent) {
@@ -80,15 +85,15 @@ public class JComponentTester extends ContainerTester {
   }
 
   /**
+   * @param c component
+   * @param loc location
+   * @param mods modifiers
    * @deprecated Use {@link #actionDrag(Component, ComponentLocation, int)} instead.
    */
   public void actionDrag(Component c, ComponentLocation loc, String mods) {
     actionDrag(c, loc, AWT.getModifiers(mods));
   }
 
-  /**
-   * Scrolls to ensure the substructure is in view before starting the drag.
-   */
   public void actionDrag(Component c, ComponentLocation loc, int modifiers) {
     if (c instanceof JComponent) {
       scrollToVisible(c, loc.getBounds(c));
@@ -96,9 +101,6 @@ public class JComponentTester extends ContainerTester {
     super.actionDrag(c, loc, modifiers);
   }
 
-  /**
-   * Scrolls to ensure the drop target substructure is in view before dropping (normally handled by autoscroll).
-   */
   public void actionDrop(Component c, ComponentLocation loc) {
     if (c instanceof JComponent) {
       scrollToVisible(c, loc.getBounds(c));
@@ -106,11 +108,6 @@ public class JComponentTester extends ContainerTester {
     super.actionDrop(c, loc);
   }
 
-  /**
-   * Click in the given part of the component, scrolling the component if necessary to make the point visible.
-   * Performing the scroll here obviates the need for all derived classes to remember to do it for actions involving
-   * clicks.
-   */
   public void mousePress(Component comp, int x, int y, int buttons) {
     if (comp instanceof JComponent) {
       scrollToVisible(comp, x, y);
@@ -131,10 +128,6 @@ public class JComponentTester extends ContainerTester {
     scrollToVisible(comp, rect);
   }
 
-  /**
-   * Invoke {@link JComponent#scrollRectToVisible(Rectangle)} on the given {@link JComponent} on the event dispatch
-   * thread.
-   */
   protected void scrollRectToVisible(final JComponent jc, final Rectangle rect) {
     // Ideally, we'd use scrollbar commands to effect the scrolling,
     // but that gets really complicated for no real gain in function.
@@ -186,35 +179,20 @@ public class JComponentTester extends ContainerTester {
     }
   }
 
-  /**
-   * Make sure the given point is visible.  Note that this may have no effect if the component is not actually in a
-   * scroll pane.
-   */
   public void actionScrollToVisible(Component comp, ComponentLocation loc) {
     scrollToVisible(comp, loc.getBounds(comp));
     waitForIdle();
   }
 
-  /**
-   * Make sure the given point is visible.  Note that this may have no effect if the component is not actually in a
-   * scroll pane.
-   */
   public void actionScrollToVisible(Component comp, int x, int y) {
     actionScrollToVisible(comp, new ComponentLocation(new Point(x, y)));
   }
 
-  /**
-   * Make sure the given rectangle is visible.  Note that this may have no effect if the component is not actually in
-   * a scroll pane.
-   */
   public void actionScrollToVisible(Component comp, int x, int y, int width, int height) {
     scrollToVisible(comp, new Rectangle(x, y, width, height));
     waitForIdle();
   }
 
-  /**
-   * Invoke an action from the component's action map.
-   */
   public void actionActionMap(Component comp, String name) {
     focus(comp, true);
     JComponent jc = (JComponent) comp;
@@ -288,9 +266,6 @@ public class JComponentTester extends ContainerTester {
     throw new ActionFailedException("No input event found for action key '" + name + "'");
   }
 
-  /**
-   * Return a shared instance of JComponentTester.
-   */
   public static JComponentTester getTester(JComponent c) {
     return (JComponentTester) ComponentTester.getTester(JComponent.class);
   }

@@ -80,9 +80,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
 
   private final LocalHierarchy hierarchy;
 
-  /**
-   * Default constructor
-   */
   public ComponentBrowser(Resolver r, Hierarchy h) {
     this.resolver = r;
     this.hierarchy = new LocalHierarchy(h);
@@ -141,9 +138,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     return pane;
   }
 
-  /**
-   * Set the resolver on which the references list is based.
-   */
   public void setResolver(Resolver resolver) {
     this.resolver = resolver;
     refModel = new ReferencesModel(resolver);
@@ -322,9 +316,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
             }));
   }
 
-  /**
-   * Select the given reference in the current view.
-   */
   public void setSelectedReference(ComponentReference ref) {
     if (ref != selectedReference) {
       selectedReference = ref;
@@ -338,11 +329,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     }
   }
 
-  /**
-   * Select the given component (and make it visible) in the current view.  Update the auxiliary view components
-   * appropriately. If showing component references and the given component doesn't have one, switch the view to the
-   * hierarchy.
-   */
   public void setSelectedComponent(Component comp) {
     selectedComponent = comp;
     ComponentReference ref = null;
@@ -360,9 +346,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     fireSelectionChanged();
   }
 
-  /**
-   * Return the row index of the given component reference.
-   */
   private int getRow(ComponentReference ref) {
     if (ref != null) {
       for (int i = 0; i < refTable.getRowCount(); i++) {
@@ -383,9 +366,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
 
   private boolean ignoreReferenceChange = false;
 
-  /**
-   * Set the appropriate selection in the reference list.
-   */
   private void updateReferenceSelection(ComponentReference ref) {
     if (!showingHierarchy()) {
       int row = getRow(ref);
@@ -401,9 +381,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     updatePropertyList();
   }
 
-  /**
-   * Set the appropriate selection in the component hierarchy tree.
-   */
   private void updateComponentSelection(Component comp) {
     if (showingHierarchy()) {
       ignoreHierarchyChange = true;
@@ -424,9 +401,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     updatePropertyList();
   }
 
-  /**
-   * Utility method showing whether a component node has been selected or not.
-   */
   public boolean isComponentSelected() {
     if (showingHierarchy()) {
       return componentTree.getLastSelectedPathComponent() != null;
@@ -434,9 +408,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     return refTable.getSelectedRow() != -1;
   }
 
-  /**
-   * When re-enabled, perform a reload of the tree.
-   */
   public void setEnabled(boolean state) {
     super.setEnabled(state);
     if (state) {
@@ -453,9 +424,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
         });
   }
 
-  /**
-   * Convert the component reference into an actual component, creating a dummy one if the real one is not available.
-   */
   private Component getComponentForReference(ComponentReference ref) {
     Component comp = null;
     fakeComponent = false;
@@ -494,23 +462,14 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     return tabs.getSelectedIndex() == TAB_HIERARCHY;
   }
 
-  /**
-   * Returns the currently selected reference.
-   */
   public ComponentReference getSelectedReference() {
     return selectedReference;
   }
 
-  /**
-   * Returns which component is currently selected.
-   */
   public Component getSelectedComponent() {
     return selectedComponent;
   }
 
-  /**
-   * Sets whether uninteresting components are elided from the display.
-   */
   public void setCompactDisplay(boolean compact) {
     filter = compact;
     filterButton.setSelected(filter);
@@ -518,16 +477,10 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     componentTree.setHierarchy(hierarchy);
   }
 
-  /**
-   * Returns whether the current display mode is compact.
-   */
   public boolean isCompactDisplay() {
     return filter;
   }
 
-  /**
-   * Generic action handler for buttons.
-   */
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == refreshButton) {
       refresh();
@@ -575,9 +528,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     actionMapTable.repaint();
   }
 
-  /**
-   * Returns the Component represented by the current tree selection.
-   */
   private Component getSelectedComponentFromTree() {
     ComponentNode node = (ComponentNode) componentTree.getLastSelectedPathComponent();
     Component comp = node != null ? node.getComponent() : null;
@@ -588,9 +538,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     return (ComponentReference) refTable.getValueAt(row, 0);
   }
 
-  /**
-   * Returns the component reference represented by the current selection in the reference list.
-   */
   private ComponentReference getSelectedReferenceFromList() {
     int refrow = refTable.getSelectedRow();
     return refrow == -1 ? null : getReferenceAt(refrow);
@@ -602,18 +549,12 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     addSampleButton.setEnabled(row != -1 && isComponentSelected());
   }
 
-  /**
-   * Called when a the reference list selection changes, and when the property list changes.
-   */
   public void referenceListSelectionChanged(ListSelectionEvent e) {
     if (!ignoreReferenceChange) {
       setSelectedReference(getSelectedReferenceFromList());
     }
   }
 
-  /**
-   * Invoked when the hierarchy/reference tab changes.
-   */
   public void tabChanged(ChangeEvent e) {
     if (showingHierarchy()) {
       // If we were viewing a fake component in the reference view,
@@ -721,9 +662,6 @@ public class ComponentBrowser extends JPanel implements ActionListener {
     }
   }
 
-  /**
-   * To be invoked when an underlying component reference has changed.
-   */
   public void referencesChanged() {
     if (SwingUtilities.isEventDispatchThread()) {
       refModel.fireTableDataChanged();

@@ -85,9 +85,6 @@ public class ForkedStepRunner extends StepRunner {
       }
     }
 
-    /**
-     * Handle running a script as a forked process.
-     */
     public void launchSlave(int port) {
       // make connection back to originating port
       try {
@@ -537,9 +534,6 @@ public class ForkedStepRunner extends StepRunner {
     }
   }
 
-  /**
-   * Provide means to control execution and feedback of a script in a separate process.
-   */
   public static void main(String[] args) {
     args = Log.init(args);
     try {

@@ -19,16 +19,10 @@ public class PathClassLoader extends java.net.URLClassLoader {
   private final String classPath;
   private static final Factory factory = new Factory();
 
-  /**
-   * Create a class loader that loads classes from the given path.
-   */
   public PathClassLoader(String path) {
     this(path, null);
   }
 
-  /**
-   * Create a class loader that loads classes from the given path.
-   */
   public PathClassLoader(String path, ClassLoader parent) {
     super(
         getURLs(path != null ? path : System.getProperty("java.class.path"), ":;"),
@@ -70,16 +64,10 @@ public class PathClassLoader extends java.net.URLClassLoader {
     return urls;
   }
 
-  /**
-   * Returns an array of filenames (including path).
-   */
   public static String[] convertPathToFilenames(String path) {
     return convertPathToFilenames(path, ":;");
   }
 
-  /**
-   * Convert the given path string into an array of File.
-   */
   public static File[] convertPathToFiles(String path, String seps) {
     String[] names = convertPathToFilenames(path, ":;");
     ArrayList files = new ArrayList();

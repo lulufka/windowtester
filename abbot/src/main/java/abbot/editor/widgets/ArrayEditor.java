@@ -78,9 +78,6 @@ public class ArrayEditor extends Box {
         super(label);
       }
 
-      /**
-       * Ensure all insets are equal.
-       */
       public Insets getInsets() {
         Insets insets = super.getInsets();
         int min =
@@ -169,16 +166,10 @@ public class ArrayEditor extends Box {
     }
   }
 
-  /**
-   * Creates a default, empty editor.
-   */
   public ArrayEditor() {
     this(new String[0]);
   }
 
-  /**
-   * Creates an editor with the given contents.
-   */
   public ArrayEditor(Object[] contents) {
     super(BoxLayout.Y_AXIS);
     setValues(contents, false);

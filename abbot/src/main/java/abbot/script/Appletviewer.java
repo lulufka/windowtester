@@ -70,9 +70,6 @@ public class Appletviewer extends Launch {
     return map;
   }
 
-  /**
-   * Create an applet-launching step.
-   */
   public Appletviewer(Resolver resolver, Map attributes) {
     super(resolver, patchAttributes(attributes));
     code = (String) attributes.get(TAG_CODE);
@@ -83,9 +80,6 @@ public class Appletviewer extends Launch {
     height = (String) attributes.get(TAG_HEIGHT);
   }
 
-  /**
-   * Create an applet-launching step.
-   */
   public Appletviewer(
       Resolver resolver,
       String description,
@@ -151,9 +145,6 @@ public class Appletviewer extends Launch {
         });
   }
 
-  /**
-   * Generate HTML suitable for launching this applet.
-   */
   protected String generateHTML() {
     StringBuffer html = new StringBuffer();
     html.append("<html><applet code=\"" + getCode() + "\"");
@@ -319,9 +310,6 @@ public class Appletviewer extends Launch {
     return TAG_APPLETVIEWER;
   }
 
-  /**
-   * Returns the applet class loader.
-   */
   public ClassLoader getContextClassLoader() {
     // Maybe use codebase/archive to have an alternative classpath?
     ClassLoader cl = super.getContextClassLoader();

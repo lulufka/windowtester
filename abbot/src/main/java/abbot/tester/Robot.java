@@ -108,10 +108,6 @@ public class Robot implements AWTConstants {
   public static final int MOUSELESS_MODIFIER_MASK = InputEvent.ALT_DOWN_MASK;
   public static final String MOUSELESS_MODIFIER = AWT.getKeyModifiers(MOUSELESS_MODIFIER_MASK);
 
-  /**
-   * OS X using screenMenuBar actually uses an AWT menu as the live component.  The JXXX components exist, but are not
-   * effectively active.
-   */
   protected static final boolean useScreenMenuBar() {
     // Ideally we'd install a menu and check where it ended up, since the
     // property is read once at startup and ignored thereafter.
@@ -191,17 +187,10 @@ public class Robot implements AWTConstants {
     return autoDelay;
   }
 
-  /**
-   * Returns a functioning instance of java.awt.Robot. If this method returns null, it should be assumed that
-   * java.awt.Robot is unavailable or non-functional on the current system.
-   */
   public static java.awt.Robot getRobot() {
     return serviceMode ? null : robot;
   }
 
-  /**
-   * Return a singleton InputState object.
-   */
   public static InputState getState() {
     return state;
   }
@@ -246,9 +235,6 @@ public class Robot implements AWTConstants {
     return robot;
   }
 
-  /**
-   * Returns the current event-generation mode.
-   */
   public static int getEventMode() {
     return eventMode;
   }
@@ -261,12 +247,6 @@ public class Robot implements AWTConstants {
     return desc;
   }
 
-  /**
-   * Set the event-generation mode.
-   *
-   * @throws IllegalStateException if the requested mode is EM_ROBOT and java.awt.Robot is unavailable in the current
-   *                               environment.
-   */
   public static void setEventMode(int mode) {
     if (eventMode != mode) {
       if (mode == EM_ROBOT && (serviceMode || robot == null)) {
@@ -285,9 +265,6 @@ public class Robot implements AWTConstants {
     eventPostDelay = Math.min(1000, Math.max(0, delay));
   }
 
-  /**
-   * Allow this to be adjusted, mostly for testing.
-   */
   public static void setAutoDelay(int ms) {
     ms = Math.min(60000, Math.max(0, ms));
     if (eventMode == EM_ROBOT) {
@@ -297,12 +274,6 @@ public class Robot implements AWTConstants {
     Log.debug("Auto delay set to " + ms);
   }
 
-  /**
-   * Move the mouse to the given location, in screen coordinates. NOTE: in robot mode, you may need to invoke this
-   * with a little jitter. There are some conditions where a single mouse move will not generate the necessary enter
-   * event on a component (typically a dialog with an OK button) before a mousePress.  See also click(). NOTE: does
-   * 1.4+ need jitter?
-   */
   public void mouseMove(int x, int y) {
     if (eventMode == EM_ROBOT) {
       Log.debug("ROBOT: Mouse move: (" + x + "," + y + ")");
@@ -312,9 +283,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Send a button press event.
-   */
   public void mousePress(int buttons) {
     if (eventMode == EM_ROBOT) {
       Log.debug("ROBOT: Mouse press: " + AWT.getMouseModifiers(buttons));
@@ -331,16 +299,10 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Send a button release event for button 1.
-   */
   public void mouseRelease() {
     mouseRelease(MouseEvent.BUTTON1_MASK);
   }
 
-  /**
-   * Send a button release event.
-   */
   public void mouseRelease(int buttons) {
     if (eventMode == EM_ROBOT) {
       Log.debug("ROBOT: Mouse release: " + AWT.getMouseModifiers(buttons));
@@ -367,10 +329,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Move keyboard focus to the given component.  Note that the component may not yet have focus when this method
-   * returns.
-   */
   public void focus(Component comp) {
     focus(comp, false);
   }
@@ -395,9 +353,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Move keyboard focus to the given component.
-   */
   public void focus(final Component comp, boolean wait) {
     Component currentOwner = AWT.getFocusOwner();
     if (currentOwner == comp) {
@@ -441,32 +396,22 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Usually only needed when dealing with Applets.
-   */
   protected EventQueue getEventQueue(Component c) {
     return c != null ? tracker.getQueue(c) : toolkit.getSystemEventQueue();
   }
 
-  /**
-   * Post a runnable on the given component's event queue.  Useful when driving multiple Applets, but is also useful
-   * to ensure an operation happens on the event dispatch thread.
-   */
   public void invokeLater(Component context, Runnable action) {
     EventQueue queue = getEventQueue(context);
     queue.postEvent(new InvocationEvent(toolkit, action));
   }
 
-  /**
-   * Post a runnable on the given component's event queue and wait for it to finish.
-   */
   public void invokeAndWait(Component c, Runnable action) {
     invokeLater(c, action);
     waitForIdle();
   }
 
   /**
-   * @param action
+   * @param action action
    * @deprecated Method renamed to {@link #invokeLater(Runnable)}
    */
   public void invokeAction(Runnable action) {
@@ -474,25 +419,18 @@ public class Robot implements AWTConstants {
   }
 
   /**
-   * @param c
-   * @param action
+   * @param c component
+   * @param action action
    * @deprecated Method renamed to {@link #invokeLater(Component, Runnable)}
    */
   public void invokeAction(Component c, Runnable action) {
     invokeLater(c, action);
   }
 
-  /**
-   * Run the given action on the event dispatch thread.  This should be used for any non-read-only methods invoked
-   * directly on a GUI component. NOTE: if you want to use the results of the action, use invokeAndWait instead.
-   */
   public void invokeLater(Runnable action) {
     invokeLater(null, action);
   }
 
-  /**
-   * Run the given action on the event dispatch thread, but don't return until it's been run.
-   */
   public void invokeAndWait(Runnable action) {
     invokeAndWait(null, action);
   }
@@ -526,9 +464,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Send a key release event.
-   */
   public void keyRelease(int keycode) {
     if (eventMode == EM_ROBOT) {
       Log.debug("ROBOT: key release " + AWT.getKeyCode(keycode));
@@ -565,9 +500,6 @@ public class Robot implements AWTConstants {
     delay(SLEEP_INTERVAL);
   }
 
-  /**
-   * Sleep the given duration of ms.
-   */
   public void delay(int ms) {
     if (eventMode == EM_ROBOT) {
       while (ms > MAX_DELAY) {
@@ -597,9 +529,6 @@ public class Robot implements AWTConstants {
     return postInvocationEvent(toolkit.getSystemEventQueue(), toolkit, 200);
   }
 
-  /**
-   * @return whether we timed out waiting for the invocation to run
-   */
   protected boolean postInvocationEvent(EventQueue eq, Toolkit toolkit, long timeout) {
     class RobotIdleLock {}
     Object lock = new RobotIdleLock();
@@ -665,7 +594,7 @@ public class Robot implements AWTConstants {
    * <code>java.awt.Robot.waitForIdle()</code>, which may have events on the queue when it returns.  Do <b>NOT</b>
    * use
    * this method if there are animations or other continual refreshes happening, since in that case it may never
-   * return.<p>
+   * return.
    */
   public void waitForIdle() {
     if (eventPostDelay > autoDelay) {
@@ -682,9 +611,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Sample the color at the given point on the screen.
-   */
   public Color sample(int x, int y) {
     // Service mode always returns black when sampled
     if (robot != null && !serviceMode) {
@@ -694,39 +620,25 @@ public class Robot implements AWTConstants {
     throw new UnsupportedOperationException(msg);
   }
 
-  /**
-   * Sample the color at the given point on the component.
-   */
   public Color sample(Component c, int x, int y) {
     Point p = AWT.getLocationOnScreen(c);
     return sample(p.x + x, p.y + y);
   }
 
-  /**
-   * Capture the contents of the given rectangle.
-   */
-  /* NOTE: Text components (and maybe others with a custom cursor) will
-   * capture the cursor.  May want to move the cursor out of the component
-   * bounds, although this might cause issues where the component is
-   * responding visually to mouse movement.
-   * Is this an OSX bug?
-   */
+   // NOTE: Text components (and maybe others with a custom cursor) will
+   // capture the cursor.  May want to move the cursor out of the component
+   // bounds, although this might cause issues where the component is
+   // responding visually to mouse movement.
+   // Is this an OSX bug?
+   //
   public BufferedImage capture(Rectangle bounds) {
     return robot != null ? robot.createScreenCapture(bounds) : null;
   }
 
-  /**
-   * Capture the contents of the given component, sans any border or insets.  This should only be used on components
-   * that do not use a LAF UI, or the results will not be consistent across platforms.
-   */
   public BufferedImage capture(Component comp) {
     return capture(comp, true);
   }
 
-  /**
-   * Capture the contents of the given component, optionally including the border and/or insets.  This should only be
-   * used on components that do not use a LAF UI, or the results will not be consistent across platforms.
-   */
   public BufferedImage capture(Component comp, boolean ignoreBorder) {
     Rectangle bounds = new Rectangle(comp.getSize());
     Point loc = AWT.getLocationOnScreen(comp);
@@ -756,9 +668,6 @@ public class Robot implements AWTConstants {
     mouseMove((x > 0 ? x - 1 : x + 1), y);
   }
 
-  /**
-   * Move the pointer to the center of the given component.
-   */
   public void mouseMove(Component comp) {
     mouseMove(comp, comp.getWidth() / 2, comp.getHeight() / 2);
   }
@@ -816,9 +725,6 @@ public class Robot implements AWTConstants {
     return comp;
   }
 
-  /**
-   * Move the pointer to the given coordinates relative to the given component.
-   */
   public void mouseMove(Component comp, int x, int y) {
     if (!waitForComponent(comp, componentDelay)) {
       String msg = "Can't obtain position of component " + toString(comp);
@@ -872,27 +778,15 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Move the mouse appropriately to get from the source to the destination.  Enter/exit events will be generated
-   * where appropriate.
-   */
   public void dragOver(Component dst, int x, int y) {
     mouseMove(dst, x - 4, y);
     mouseMove(dst, x, y);
   }
 
-  /**
-   * Begin a drag operation using button 1.<p> This method is tuned for native drag/drop operations, so if you get odd
-   * behavior, you might try using a simple {@link #mousePress(Component, int, int)} instead.
-   */
   public void drag(Component src, int sx, int sy) {
     drag(src, sx, sy, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  /**
-   * Begin a drag operation using the given button mask.<p> This method is tuned for native drag/drop operations, so
-   * if you get odd behavior, you might try using a simple {@link #mousePress(Component, int, int, int)} instead.
-   */
   // TODO: maybe auto-switch to robot mode if available?
   public void drag(Component src, int sx, int sy, int buttons) {
     if (Bugs.dragDropRequiresNativeEvents()
@@ -936,11 +830,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * End a drag operation, releasing the mouse button over the given target location.<p> This method is tuned for
-   * native drag/drop operations, so if you get odd behavior, you might try using a simple {@link
-   * #mouseMove(Component, int, int)}, {@link #mouseRelease()} instead.
-   */
   public void drop(Component target, int x, int y) {
     // Delay between final move and drop to ensure drop ends.
     int DROP_DELAY =
@@ -988,16 +877,10 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Type the given keycode with no modifiers.
-   */
   public void key(int keycode) {
     key(keycode, 0);
   }
 
-  /**
-   * Press or release the appropriate modifiers corresponding to the given mask.
-   */
   public void setModifiers(int modifiers, boolean press) {
     boolean altGraph = (modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0;
     boolean shift = (modifiers & InputEvent.SHIFT_DOWN_MASK) != 0;
@@ -1040,9 +923,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Type the given keycode with the given modifiers.  Modifiers is a mask from the available InputEvent masks.
-   */
   public void key(int keycode, int modifiers) {
     key(KeyEvent.CHAR_UNDEFINED, keycode, modifiers);
   }
@@ -1081,9 +961,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Type the given character.  Note that this sends the key to whatever component currently has the focus.
-   */
   // FIXME should this be renamed to "key"?
   public void keyStroke(char ch) {
     KeyStroke ks = KeyStrokeMap.getKeyStroke(ch);
@@ -1114,9 +991,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Type the given string.
-   */
   public void keyString(String str) {
     char[] ch = str.toCharArray();
     for (int i = 0; i < ch.length; i++) {
@@ -1136,9 +1010,6 @@ public class Robot implements AWTConstants {
     mousePress(comp, x, y, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  /**
-   * Mouse down in the given part of the component.  All other mousePress methods must eventually invoke this one.
-   */
   public void mousePress(Component comp, int x, int y, int mask) {
     if (eventMode == EM_ROBOT && Bugs.hasRobotMotionBug()) {
       jitter(comp, x, y);
@@ -1200,38 +1071,22 @@ public class Robot implements AWTConstants {
             !AWTConstants.POPUP_ON_PRESS && (mask & AWTConstants.POPUP_MASK) != 0));
   }
 
-  /**
-   * Click in the center of the given component.
-   */
   public final void click(Component comp) {
     click(comp, comp.getWidth() / 2, comp.getHeight() / 2);
   }
 
-  /**
-   * Click in the center of the given component, specifying which button.
-   */
   public final void click(Component comp, int mask) {
     click(comp, comp.getWidth() / 2, comp.getHeight() / 2, mask);
   }
 
-  /**
-   * Click in the component at the given location.
-   */
   public final void click(Component comp, int x, int y) {
     click(comp, x, y, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  /**
-   * Click in the component at the given location with the given button.
-   */
   public final void click(Component comp, int x, int y, int mask) {
     click(comp, x, y, mask, 1);
   }
 
-  /**
-   * Click in the given part of the component.  All other click methods must eventually invoke this one.  This method
-   * sometimes needs to be redefined (i.e. JComponent to scroll before clicking).
-   */
   public void click(Component comp, int x, int y, int mask, int count) {
     Log.debug(
         "Click at ("
@@ -1268,18 +1123,14 @@ public class Robot implements AWTConstants {
   }
 
   /**
+   * @param path path
+   * @param frame frame
    * @deprecated Renamed to {@link #selectAWTMenuItem(Frame, String)}.
    */
   public void selectAWTMenuItemByLabel(Frame frame, String path) {
     selectAWTMenuItem(frame, path);
   }
 
-  /**
-   * Select the given menu item from the given Frame.  The given String may be either a label or path of labels, but
-   * must uniquely identify the menu item.  For example, "Copy" would be valid if there is only one instance of that
-   * menu label under the MenuBar, otherwise you would need to specify "Edit|Copy" to ensure the proper selection.
-   * Note that this method doesn't require referencing the MenuComponent directly as a parameter.
-   */
   public void selectAWTMenuItem(Frame frame, String path) {
     MenuBar mb = frame.getMenuBar();
     if (mb == null) {
@@ -1299,19 +1150,14 @@ public class Robot implements AWTConstants {
   }
 
   /**
+   * @param invoker invoker
+   * @param path path
    * @deprecated Renamed to {@link #selectAWTPopupMenuItem(Component, String)}.
    */
   public void selectAWTPopupMenuItemByLabel(Component invoker, String path) {
     selectAWTPopupMenuItem(invoker, path);
   }
 
-  /**
-   * Select the given menu item from a PopupMenu on the given Component. The given String may be either a label or
-   * path of labels, but must uniquely identify the menu item.  For example, "Copy" would be valid if there is only
-   * one instance of that menu label under the MenuBar, otherwise you would need to specify "Edit|Copy" to ensure the
-   * proper selection.  If there are more than one PopupMenu registerd on the invoking component, you will need to
-   * prefix the PopupMenu name as well, e.g. "popup0|Edit|Copy".
-   */
   public void selectAWTPopupMenuItem(Component invoker, String path) {
     try {
       PopupMenu[] popups = AWT.getPopupMenus(invoker);
@@ -1357,9 +1203,6 @@ public class Robot implements AWTConstants {
     return (Component) item.getParent();
   }
 
-  /**
-   * Select an AWT menu item.
-   */
   public void selectAWTMenuItem(MenuComponent item) {
     // Can't do this through coordinates because MenuComponents don't
     // store any of that information
@@ -1370,9 +1213,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Select an AWT popup menu item.
-   */
   public void selectAWTPopupMenuItem(MenuComponent item) {
     // Can't do this through coordinates because MenuComponents don't
     // store any of that information
@@ -1383,9 +1223,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Is the given component ready for robot input?
-   */
   protected boolean isReadyForInput(Component c) {
     if (eventMode == EM_AWT) {
       return c.isShowing();
@@ -1402,9 +1239,6 @@ public class Robot implements AWTConstants {
     return parent != null && isOnJMenuBar(parent);
   }
 
-  /**
-   * Find and select the given menu item, by path.
-   */
   public void selectMenuItem(Component sameWindow, String path) {
     try {
       Window window = AWT.getWindow(sameWindow);
@@ -1418,9 +1252,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Find and select the given menu item.
-   */
   public void selectMenuItem(Component item) {
     Log.debug("Selecting menu item " + toString(item));
     Component parent = item.getParent();
@@ -1518,16 +1349,10 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Attempt to display a popup menu at center of the component.
-   */
   public Component showPopupMenu(Component invoker) {
     return showPopupMenu(invoker, invoker.getWidth() / 2, invoker.getHeight() / 2);
   }
 
-  /**
-   * Attempt to display a popup menu at the given coordinates.
-   */
   public Component showPopupMenu(Component invoker, int x, int y) {
     String where = " at (" + x + "," + y + ")";
     Log.debug("Invoking popup " + where);
@@ -1552,9 +1377,6 @@ public class Robot implements AWTConstants {
     return popup;
   }
 
-  /**
-   * Activate the given window.
-   */
   public void activate(final Window win) {
     // ACTIVATE means window gets keyboard focus.
     invokeAndWait(
@@ -1578,9 +1400,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Invoke the window close operation.
-   */
   public void close(Window w) {
     if (w.isShowing()) {
       // Move to a corner and "pretend" to use the window manager
@@ -1601,26 +1420,17 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Return where the mouse usually grabs to move a window.  Center of the top of the frame is usually a good choice.
-   */
   protected Point getMoveLocation(Container c) {
     Dimension size = c.getSize();
     Insets insets = c.getInsets();
     return new Point(size.width / 2, insets.top / 2);
   }
 
-  /**
-   * Move the given Frame/Dialog to the requested location.
-   */
   public void move(Container comp, int newx, int newy) {
     Point loc = AWT.getLocationOnScreen(comp);
     moveBy(comp, newx - loc.x, newy - loc.y);
   }
 
-  /**
-   * Move the given Window by the given amount.
-   */
   public void moveBy(final Container comp, final int dx, final int dy) {
     final Point loc = AWT.getLocationOnScreen(comp);
     boolean userMovable = userMovable(comp);
@@ -1642,26 +1452,16 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Return where the mouse usually grabs to resize a window.  The lower right corner of the window is usually a good
-   * choice.
-   */
   protected Point getResizeLocation(Container c) {
     Dimension size = c.getSize();
     Insets insets = c.getInsets();
     return new Point(size.width - insets.right / 2, size.height - insets.bottom / 2);
   }
 
-  /**
-   * Return whether it is possible for the user to move the given component.
-   */
   protected boolean userMovable(Component comp) {
     return comp instanceof Dialog || comp instanceof Frame || canMoveWindows();
   }
 
-  /**
-   * Return whether it is possible for the user to resize the given component.
-   */
   protected boolean userResizable(Component comp) {
     if (comp instanceof Dialog) {
       return ((Dialog) comp).isResizable();
@@ -1673,17 +1473,11 @@ public class Robot implements AWTConstants {
     return canResizeWindows();
   }
 
-  /**
-   * Resize the given Frame/Dialog to the given size.
-   */
   public void resize(Container comp, int width, int height) {
     Dimension size = comp.getSize();
     resizeBy(comp, width - size.width, height - size.height);
   }
 
-  /**
-   * Resize the given Frame/Dialog by the given amounts.
-   */
   public void resizeBy(final Container comp, final int dx, final int dy) {
     // Fake the pointer motion like we're resizing
     boolean userResizable = userResizable(comp);
@@ -1705,9 +1499,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Identify the coordinates of the iconify button where we can, returning (0, 0) if we can't.
-   */
   protected Point getIconifyLocation(Container c) {
     Dimension size = c.getSize();
     Insets insets = c.getInsets();
@@ -1728,18 +1519,12 @@ public class Robot implements AWTConstants {
   private static final int MAXIMIZE_BUTTON_OFFSET =
       Platform.isOSX() ? 25 : Platform.isWindows() ? -20 : 0;
 
-  /**
-   * Identify the coordinates of the maximize button where possible, returning null if not.
-   */
   protected Point getMaximizeLocation(Container c) {
     Point loc = getIconifyLocation(c);
     loc.x += MAXIMIZE_BUTTON_OFFSET;
     return loc;
   }
 
-  /**
-   * Iconify the given Frame.  Don't support iconification of Dialogs at this point (although maybe should).
-   */
   public void iconify(final Frame frame) {
     Point loc = getIconifyLocation(frame);
     if (loc != null) {
@@ -1771,9 +1556,6 @@ public class Robot implements AWTConstants {
         });
   }
 
-  /**
-   * Make the window full size.  On 1.3.1, this is not reversible.
-   */
   public void maximize(final Frame frame) {
     Point loc = getMaximizeLocation(frame);
     if (loc != null) {
@@ -1809,9 +1591,6 @@ public class Robot implements AWTConstants {
         });
   }
 
-  /**
-   * Send the given event as appropriate to the event-generation mode.
-   */
   public void sendEvent(AWTEvent event) {
     // Modifiers are ignored, assuming that an event will be
     // sent that causes modifiers to be sent appropriately.
@@ -1852,9 +1631,6 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Return the symbolic name of the given event's ID.
-   */
   public static String getEventID(AWTEvent event) {
     // Optimize here to avoid field name lookup overhead
     switch (event.getID()) {
@@ -1938,9 +1714,6 @@ public class Robot implements AWTConstants {
     return refClass;
   }
 
-  /**
-   * Provides a more concise representation of the component than the default Component.toString().
-   */
   public static String toString(Component comp) {
     if (comp == null) {
       return "(null)";
@@ -1980,9 +1753,6 @@ public class Robot implements AWTConstants {
     return name;
   }
 
-  /**
-   * Provide a string representation of the given component (Component or MenuComponent.
-   */
   public static String toString(Object obj) {
     if (obj instanceof Component) {
       return toString((Component) obj);
@@ -2011,9 +1781,6 @@ public class Robot implements AWTConstants {
     return desc.toString();
   }
 
-  /**
-   * Provides the hierarchic path of the given component by component class, e.g. "JFrame:JRootPane:JPanel:JButton".
-   */
   public static String toHierarchyPath(Component c) {
     StringBuffer buf = new StringBuffer();
     Container parent = c.getParent();
@@ -2035,9 +1802,6 @@ public class Robot implements AWTConstants {
     return buf.toString();
   }
 
-  /**
-   * Provide a more concise representation of the event than the default AWTEvent.toString().
-   */
   public static String toString(AWTEvent event) {
     String name = toString(event.getSource());
     String desc = getEventID(event);
@@ -2085,30 +1849,16 @@ public class Robot implements AWTConstants {
     return desc + " on " + name;
   }
 
-  /**
-   * Return the numeric event ID corresponding to the given string.
-   */
   public static int getEventID(Class cls, String id) {
     return Reflector.getFieldValue(cls, id);
   }
 
-  /**
-   * Strip the package from the class name.
-   */
   public static String simpleClassName(Class cls) {
     String name = cls.getName();
     int dot = name.lastIndexOf(".");
     return name.substring(dot + 1);
   }
 
-  /***
-   * Copied from ComponentReference - to remove the dependency
-   *
-   */
-  /**
-   * Return a descriptive name for the given component for use in UI text (may be localized if appropriate and need
-   * not be re-usable across locales.
-   */
   public static String getDescriptiveName(Component c) {
     if (AWT.isSharedInvisibleFrame(c)) {
       return Strings.get("component.default_frame");
@@ -2222,9 +1972,6 @@ public class Robot implements AWTConstants {
   private MouseEvent lastMousePress = null;
   private boolean countingClicks = false;
 
-  /**
-   * Post the given event to the corresponding event queue for the given component.
-   */
   protected void postEvent(Component comp, AWTEvent ev) {
     if (Log.isClassDebugEnabled(Robot.class)) {
       Log.debug("POST: " + toString(ev));
@@ -2274,7 +2021,7 @@ public class Robot implements AWTConstants {
   /**
    * Wait for the given Condition to return true.  The default timeout may be changed by setting
    * abbot.robot.default_delay.
-   *
+   * @param condition condition
    * @throws WaitTimedOutError if the default timeout (30s) is exceeded.
    */
   public void wait(Condition condition) {
@@ -2283,7 +2030,8 @@ public class Robot implements AWTConstants {
 
   /**
    * Wait for the given Condition to return true, waiting for timeout ms.
-   *
+   * @param condition condition
+   * @param timeout timeout
    * @throws WaitTimedOutError if the timeout is exceeded.
    */
   public void wait(Condition condition, long timeout) {
@@ -2292,7 +2040,9 @@ public class Robot implements AWTConstants {
 
   /**
    * Wait for the given Condition to return true, waiting for timeout ms, polling at the given interval.
-   *
+   * @param condition condition
+   * @param timeout timeout
+   * @param interval interval
    * @throws WaitTimedOutError if the timeout is exceeded.
    */
   public void wait(Condition condition, long timeout, int interval) {
@@ -2317,33 +2067,18 @@ public class Robot implements AWTConstants {
     }
   }
 
-  /**
-   * Return the Component which currently owns the focus.
-   */
   public Component findFocusOwner() {
     return AWT.getFocusOwner();
   }
 
-  /**
-   * Returns whether it is possible to resize windows that are not an instance of Frame or Dialog.  Most X11 window
-   * managers will allow this, but stock Macintosh and Windows do not.
-   */
   public static boolean canResizeWindows() {
     return !Platform.isWindows() && !Platform.isMacintosh();
   }
 
-  /**
-   * Returns whether it is possible to move windows that are not an instance of Frame or Dialog.  Most X11 window
-   * managers will allow this, but stock Macintosh and Windows do not.
-   */
   public static boolean canMoveWindows() {
     return !Platform.isWindows() && !Platform.isMacintosh();
   }
 
-  /**
-   * Returns the appropriate auto delay for robot-generated events. As platforms are tested at 0 delay, adjust this
-   * value.<p>
-   */
   public static int getPreferredRobotAutoDelay() {
     if (Platform.isWindows() || Platform.isOSX() || Platform.isX11()) {
       return 0;

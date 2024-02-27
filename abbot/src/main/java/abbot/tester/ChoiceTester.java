@@ -30,9 +30,6 @@ public class ChoiceTester extends ComponentTester {
     }
   }
 
-  /**
-   * Select an item by index.
-   */
   public void actionSelectIndex(Component c, final int index) {
     final Choice choice = (Choice) c;
     int current = choice.getSelectedIndex();
@@ -65,9 +62,6 @@ public class ChoiceTester extends ComponentTester {
     waitForIdle();
   }
 
-  /**
-   * Select an item by its String representation.
-   */
   public void actionSelectItem(Component c, String item) {
     Choice choice = (Choice) c;
     for (int i = 0; i < choice.getItemCount(); i++) {

@@ -49,21 +49,10 @@ public class JTreeLocation extends ComponentLocation {
     this.inExpansion = inExpansion;
   }
 
-  /**
-   * Create a JTreeLocation corresponding to the given TreePath.  The TreePath must consist of usable String
-   * representations that can be used in later comparisons.  The default &ltclassname&gt;@&lt;hashcode&gt; returned by
-   * {@link Object#toString()} is not usable; if that is all that is available, refer to the row number instead.
-   */
   public JTreeLocation(TreePath treePath) {
     this(treePath, false);
   }
 
-  /**
-   * Create a JTreeLocation corresponding to the given TreePath.  The TreePath must consist of usable String
-   * representations that can be used in later comparisons.  The default &lt;classname&gt;@&lt;hashcode&gt; format
-   * returned by {@link Object#toString()} is not usable; if that is all that is available, refer to the row number
-   * instead.
-   */
   public JTreeLocation(TreePath treePath, boolean inExpansion) {
     this.treePath = treePath;
     this.inExpansion = inExpansion;

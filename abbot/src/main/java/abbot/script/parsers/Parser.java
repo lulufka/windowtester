@@ -5,7 +5,7 @@ package abbot.script.parsers;
  * was designed as an extensible method of converting {@link String}s into arbitrary target classes when parsing
  * scripted arguments to methods.  When a script is run and a method is resolved, the {@link String} arguments are
  * converted to the classes required for the method invocation.  Built-in conversions are provided for {@link
- * abbot.script.ComponentReference}s and all the basic types, including arrays.<p>
+ * abbot.script.ComponentReference}s and all the basic types, including arrays.
  *
  * @see ColorParser
  * @see FileParser

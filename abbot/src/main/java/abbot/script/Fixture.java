@@ -20,17 +20,11 @@ public class Fixture extends Script implements UIContext {
     super(filename, h);
   }
 
-  /**
-   * Construct a <code>Fixture</code> from its XML attributes.
-   */
   public Fixture(Resolver parent, Map attributes) {
     super(parent, attributes);
     setHierarchy(parent.getHierarchy());
   }
 
-  /**
-   * Run the entire fixture, using the given runner as a controller/monitor.
-   */
   public void launch(StepRunner runner) throws Throwable {
     runner.run(this);
   }
@@ -80,9 +74,6 @@ public class Fixture extends Script implements UIContext {
     return desc.indexOf(UNTITLED_FILE) != -1 ? UNTITLED : desc;
   }
 
-  /**
-   * Two fixtures are equivalent if they have the same XML representation.
-   */
   public boolean equivalent(UIContext f) {
     return f instanceof Fixture
         && (equals(f) || getFullXMLString().equals(((Fixture) f).getFullXMLString()));

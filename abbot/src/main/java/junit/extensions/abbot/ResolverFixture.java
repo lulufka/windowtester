@@ -36,38 +36,22 @@ public class ResolverFixture extends TestCase {
   private ComponentFinder finder;
   private Resolver resolver;
 
-  /**
-   * Obtain a consistent hierarchy.
-   */
   protected Hierarchy getHierarchy() {
     return hierarchy;
   }
 
-  /**
-   * Provide for derived classes to provide their own Hierarchy.
-   */
   protected Hierarchy createHierarchy() {
     return new TestHierarchy();
   }
 
-  /**
-   * Obtain a component finder to look up components.
-   */
   protected ComponentFinder getFinder() {
     return finder;
   }
 
-  /**
-   * Obtain a consistent resolver.
-   */
   protected Resolver getResolver() {
     return resolver;
   }
 
-  /**
-   * Fixture setup is performed here, to avoid problems should a derived class define its own setUp and neglect to
-   * invoke the superclass method.
-   */
   protected void fixtureSetUp() throws Throwable {
     hierarchy = createHierarchy();
 
@@ -77,10 +61,6 @@ public class ResolverFixture extends TestCase {
     resolver = new Script(hierarchy);
   }
 
-  /**
-   * Fixture teardown is performed here, to avoid problems should a derived class define its own tearDown and neglect
-   * to invoke the superclass method.
-   */
   protected void fixtureTearDown() throws Throwable {
     Iterator iter = hierarchy.getRoots().iterator();
     while (iter.hasNext()) {
@@ -93,10 +73,6 @@ public class ResolverFixture extends TestCase {
     finder = null;
   }
 
-  /**
-   * Override the default <code>junit.framework.TestCase#RunBare()</code> to ensure proper test harness setup and
-   * teardown that won't likely be accidentally overridden by a derived class.
-   */
   public void runBare() throws Throwable {
     Log.log("setting up fixture: " + getName());
     Throwable exception = null;
@@ -120,9 +96,6 @@ public class ResolverFixture extends TestCase {
     }
   }
 
-  /**
-   * Construct a test case with the given name.
-   */
   public ResolverFixture(String name) {
     super(name);
   }

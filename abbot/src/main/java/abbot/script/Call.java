@@ -59,9 +59,6 @@ public class Call extends Step {
     return TAG_CALL;
   }
 
-  /**
-   * Convert our argument vector into a single String.
-   */
   public String getEncodedArguments() {
     return ArgumentParser.encodeArguments(args);
   }
@@ -70,9 +67,6 @@ public class Call extends Step {
     return "(" + ArgumentParser.replace(getEncodedArguments(), ArgumentParser.ESC_COMMA, ",") + ")";
   }
 
-  /**
-   * Set the String representation of the arguments for this Call step.
-   */
   public void setArguments(String[] args) {
     if (args == null) {
       args = new String[0];
@@ -83,7 +77,8 @@ public class Call extends Step {
   /**
    * Designate the arguments for this Call step.  The format of this String is a comma-separated list of String
    * representations.  See the abbot.parsers package for supported String representations.
-   * <p>
+   *
+   * @param encodedArgs encoded arguments
    *
    * @see ArgumentParser#parseArgumentList for a description of the format.
    * @see #setArguments(String[]) for the preferred method of indicating the argument list.
@@ -103,9 +98,6 @@ public class Call extends Step {
     methodName = mn;
   }
 
-  /**
-   * Method name to save in script.
-   */
   public String getMethodName() {
     return methodName;
   }
@@ -121,9 +113,6 @@ public class Call extends Step {
     targetClassName = cn;
   }
 
-  /**
-   * Attributes to save in script.
-   */
   public Map getAttributes() {
     Map map = super.getAttributes();
     map.put(TAG_CLASS, getTargetClassName());
@@ -136,16 +125,13 @@ public class Call extends Step {
 
   /**
    * Return the arguments as an array of String.
-   *
+   * @return the arguments as an array of String
    * @deprecated use getArguments().
    */
   public String[] getArgs() {
     return getArguments();
   }
 
-  /**
-   * Return the arguments as an array of String.
-   */
   public String[] getArguments() {
     return args;
   }
@@ -163,9 +149,6 @@ public class Call extends Step {
     return ArgumentParser.eval(getResolver(), param, type);
   }
 
-  /**
-   * Convert the String representation of the arguments into actual arguments.
-   */
   protected Object[] evaluateParameters(Method m, String[] params) throws Exception {
     Object[] args = new Object[params.length];
     Class[] types = m.getParameterTypes();
@@ -175,11 +158,6 @@ public class Call extends Step {
     return args;
   }
 
-  /**
-   * Make the target method invocation.  This uses
-   * <code>evaluateParameters</code> to convert the String representation
-   * of the arguments into actual arguments. Tries all matching methods of N arguments.
-   */
   protected Object invoke() throws Throwable {
     boolean retried = false;
     Method[] m = getMethods();
@@ -222,32 +200,18 @@ public class Call extends Step {
     throw new IllegalArgumentException("Can't invoke method " + m[0].getName());
   }
 
-  /**
-   * Return matching methods to be used for invocation.
-   */
   public Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
     return resolveMethod(getMethodName(), getTargetClass(), null);
   }
 
-  /**
-   * Return matching methods to be used for invocation.
-   */
   protected Method[] getMethods() throws ClassNotFoundException, NoSuchMethodException {
     return resolveMethods(getMethodName(), getTargetClass(), null);
   }
 
-  /**
-   * Get the class of the target of the method invocation.  This is public to provide editors access to the class
-   * being used (for example, providing a menu of all available methods).
-   */
   public Class getTargetClass() throws ClassNotFoundException {
     return resolveClass(getTargetClassName());
   }
 
-  /**
-   * Return the target of the invocation.  The default implementation always returns null for static methods; it will
-   * attempt to instantiate a target for non-static methods.
-   */
   protected Object getTarget(Method m) throws Throwable {
     if ((m.getModifiers() & Modifier.STATIC) == 0) {
       try {
@@ -268,6 +232,10 @@ public class Call extends Step {
    * Look up all methods in the given class with the given name and return type, having the number of arguments in
    * this step.
    *
+   * @param name name
+   * @param cls class
+   * @param returnType return type
+   * @return arguments
    * @throws NoSuchMethodException if no matching method is found
    * @see #getArguments()
    */
@@ -309,7 +277,11 @@ public class Call extends Step {
    * Look up the given method name in the given class with the requested return type, having the number of arguments
    * in this step.
    *
-   * @throws IllegalArgumentException if not exactly one match exists
+   * @param name name
+   * @param cls class
+   * @param returnType return type
+   * @return method
+   * @throws NoSuchMethodException if not exactly one match exists
    * @see #getArguments()
    */
   protected Method resolveMethod(String name, Class cls, Class returnType)
@@ -322,8 +294,10 @@ public class Call extends Step {
   }
 
   /**
-   * Try to distinguish betwenn the given methods.
+   * Try to distinguish between the given methods.
    *
+   * @param methods methods
+   * @return method
    * @throws IllegalArgumentException indicating the appropriate target method can't be distinguished.
    */
   protected Method disambiguateMethod(Method[] methods) {

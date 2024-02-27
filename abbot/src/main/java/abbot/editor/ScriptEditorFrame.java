@@ -58,9 +58,6 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
   private JPanel lastEditor;
   private final LookAndFeelPreserver preserver;
 
-  /**
-   * Constructs a ScriptEditorFrame with a title and a scriptable
-   */
   public ScriptEditorFrame(
       String[][] menus,
       ActionMap actionMap,
@@ -112,20 +109,10 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
     return menuBar;
   }
 
-  /**
-   * Returns the componentBrowser.
-   *
-   * @return ComponentBrowser
-   */
   public ComponentBrowser getComponentBrowser() {
     return componentBrowser;
   }
 
-  /**
-   * Sets the componentBrowser.
-   *
-   * @param componentBrowser The componentBrowser to set
-   */
   public void setComponentBrowser(ComponentBrowser componentBrowser) {
     this.componentBrowser = componentBrowser;
     scriptBrowserSplit.setBottomComponent(componentBrowser);
@@ -207,10 +194,6 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
     super.hide();
   }
 
-  /**
-   * Set the text for the status window.  The first argument is the short text and the second is additional optional
-   * text to be displayed in a larger dialog.
-   */
   public void setStatus(final String msg, final String extended, final Color color) {
     // setText is thread-safe w/r/t the dispatch thread, but setForeground
     // is not
@@ -439,9 +422,6 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
     }
   }
 
-  /**
-   * Fill the menu with available actionXXX methods for the given class.
-   */
   public void populateInsertMenu(ArrayList actions) {
     if (INSERT_BASE_COUNT == 0) {
       INSERT_BASE_COUNT = insertMenu.getItemCount();
@@ -460,25 +440,16 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
     populateMenu(actionMenu, actions);
   }
 
-  /**
-   * Fill the menu with available assertXXX methods for the given class.
-   */
   public void populateAssertMenu(ArrayList actions) {
     assertMenu.removeAll();
     populateMenu(assertMenu, actions);
   }
 
-  /**
-   * Same as populateAssertMenu, but makes them waits instead.
-   */
   public void populateWaitMenu(ArrayList actions) {
     waitMenu.removeAll();
     populateMenu(waitMenu, actions);
   }
 
-  /**
-   * Create the list of recordable GUI actions.
-   */
   public void populateCaptureMenu(ArrayList actions) {
     captureMenu.removeAll();
     populateMenu(captureMenu, actions);
@@ -578,24 +549,15 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
     return dialog;
   }
 
-  /**
-   * Display a confirmation dialog.
-   */
   public int showConfirmation(String msg) {
     return showConfirmation(msg, JOptionPane.YES_NO_OPTION);
   }
 
-  /**
-   * Display a confirmation dialog.
-   */
   public int showConfirmation(String msg, int opts) {
     msg = TextFormat.dialog(msg);
     return JOptionPane.showConfirmDialog(this, msg, Strings.get("Confirm"), opts);
   }
 
-  /**
-   * Global facility for obtaining a user input String.
-   */
   public String showInputDialog(String title, String msg, String initial) {
     msg = TextFormat.dialog(msg);
     return (String)
@@ -603,39 +565,24 @@ public class ScriptEditorFrame extends JFrame implements EditorConstants, abbot.
             this, msg, title, JOptionPane.PLAIN_MESSAGE, null, null, initial);
   }
 
-  /**
-   * Global facility for message dialogs.
-   */
   public void showMessage(String title, String msg) {
     msg = TextFormat.dialog(msg);
     JOptionPane.showMessageDialog(this, msg);
   }
 
-  /**
-   * Global facility for warning dialog.
-   */
   public void showWarning(String msg) {
     showWarning(Strings.get("Warning.title"), msg);
   }
 
-  /**
-   * Global facility for warning dialog.
-   */
   public void showWarning(String title, String msg) {
     msg = TextFormat.dialog(msg);
     JOptionPane.showMessageDialog(this, msg, title, JOptionPane.WARNING_MESSAGE);
   }
 
-  /**
-   * Global facility for error dialogs.
-   */
   public void showError(String msg) {
     showError(Strings.get("Error.title"), msg);
   }
 
-  /**
-   * Global facility for error dialogs.
-   */
   public void showError(String title, String msg) {
     msg = TextFormat.dialog(msg);
     JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);

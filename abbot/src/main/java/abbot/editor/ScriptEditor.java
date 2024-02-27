@@ -93,9 +93,9 @@ import junit.extensions.abbot.ScriptFixture;
 import junit.extensions.abbot.ScriptTestSuite;
 
 /**
- * This is the 'model' behind the script editor UI.<p>
- * <p>
- * Acts as a resolver, using the currently in-context script as the component resolver. <p>
+ * This is the 'model' behind the script editor UI.
+ *
+ * Acts as a resolver, using the currently in-context script as the component resolver.
  */
 
 /* To add new actions, add the action to the list in initActions(),
@@ -359,10 +359,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     rootIsExiting = false;
   }
 
-  /**
-   * Provides a convenient menu setup definition. Use a defined action name to indicate that action's place within the
-   * menu.  Null values indicate menu separators.
-   */
   private String[][] initMenus() {
     ArrayList fileMenu = new ArrayList();
     ArrayList helpMenu = new ArrayList();
@@ -504,9 +500,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return map;
   }
 
-  /**
-   * Add event handlers to their respective components
-   */
   private void addEventHandlers(final ScriptEditorFrame view) {
     scriptTable.getSelectionModel().addListSelectionListener(new ScriptTableSelectionHandler());
     scriptTable.addMouseListener(
@@ -553,9 +546,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Determines if the editor is testing itself and initializes the security manager accordingly.
-   */
   private TestHierarchy initContext(boolean isRoot) {
     TestHierarchy hierarchy =
         new TestHierarchy() {
@@ -600,9 +590,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return recorders;
   }
 
-  /**
-   * Initialize the primary editor frame.
-   */
   private ScriptEditorFrame initFrame(final boolean isRoot) {
 
     scriptModel =
@@ -697,9 +684,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return f;
   }
 
-  /**
-   * Provide a color that is a mix of the two given colors.
-   */
   private Color mixColors(Color c1, Color c2) {
     return new Color(
         (c1.getRed() + c2.getRed()) / 2,
@@ -707,9 +691,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
         (c1.getBlue() + c2.getBlue()) / 2);
   }
 
-  /**
-   * Return whether the root editor disposed of this instance.
-   */
   private boolean isDisposeFromRootEditor() {
     // FIXME cf how applets prevent disposal of embedded frame
     // AWTHierarchy surrounds disposal calls with the property
@@ -745,9 +726,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Return a script step encapsulating an image comparison. Assumes the script context is not null.
-   */
   private Step captureComponentImage(Component comp) {
     Step step = null;
     ComponentTester tester = ComponentTester.getTester(comp);
@@ -785,9 +763,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return step;
   }
 
-  /**
-   * Start recording, launching the code under test if necessary.
-   */
   private void startRecording(Recorder rec) {
     Log.debug("Starting recorder");
     boolean noWindows = countShowingWindows(null) == 0;
@@ -827,9 +802,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Stop recording and update the recorder actions' state.
-   */
   private void stopRecording(boolean discardRecording) {
     Log.debug("Stopping recorder");
     recording = false;
@@ -939,9 +911,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Initalize the componentBrowser and listeners to the scriptTable
-   */
   private ComponentBrowser createComponentBrowser() {
     ComponentBrowser cb = new ComponentBrowser(this, hierarchy);
     cb.setEnabled(false);
@@ -962,11 +931,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return cb;
   }
 
-  /**
-   * Install a new security manager to prevent launched applications from exiting the JVM.  This is only a partial
-   * solution; ideally we'd like to be able to kill all the launched app's threads, or force an unload of the class
-   * and reload it. Should only be installed once, in the root editor context.
-   */
   private void initSecurityManager() {
     if (Boolean.getBoolean("abbot.no_security_manager")) {
       return;
@@ -982,9 +946,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Respond to various components.
-   */
   public void actionPerformed(ActionEvent ev) {
     if (ev.getSource() == view.getTestScriptSelector() && !ignoreComboBox) {
       Script script = (Script) view.getTestScriptSelector().getSelectedItem();
@@ -1010,9 +971,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Remove the selected step.
-   */
   private void cutSelection() {
     int row = scriptTable.getSelectedRow();
     if (row == -1) {
@@ -1037,17 +995,11 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     setActionsEnabledState();
   }
 
-  /**
-   * Move the selected step down.
-   */
   private void moveSelectionDown() {
     scriptTable.moveDown();
     setActionsEnabledState();
   }
 
-  /**
-   * Put the current selection into a sequence.
-   */
   private void groupSelection() {
     int row = scriptTable.getSelectedRow();
     Sequence seq = new Sequence(getResolverContext(), (String) null);
@@ -1068,9 +1020,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     setActionsEnabledState();
   }
 
-  /**
-   * Insert a launch step.
-   */
   void insertLaunch() {
     Step step =
         new Launch(
@@ -1084,9 +1033,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     addStep(step);
   }
 
-  /**
-   * Insert an applet step.
-   */
   void insertApplet() {
     Step step =
         new Appletviewer(
@@ -1100,9 +1046,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     addStep(step);
   }
 
-  /**
-   * Insert a terminate step.
-   */
   void insertTerminate() {
     Step step = new Terminate(getResolverContext(), (String) null);
     scriptTable.setCursorLocation(scriptTable.getRowCount());
@@ -1130,9 +1073,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Insert a new, empty sequence.
-   */
   private void insertSequence() {
     addStep(new Sequence(getResolverContext(), (String) null, null));
   }
@@ -1147,9 +1087,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
 
   private void insertAnnotation() {}
 
-  /**
-   * Insert another script as a step in this one.
-   */
   private void insertScript(boolean fixture) {
     JFileChooser chooser = getChooser(filter);
     chooser.setCurrentDirectory(getWorkingDirectory());
@@ -1175,11 +1112,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Returns the current test suite's directory, if available, the directory of the current script, if available, or
-   * the current working directory.  If the current script has not yet been saved, uses the current working
-   * directory.
-   */
   private File getWorkingDirectory() {
     return testSuite != null
         ? testSuite.getDirectory()
@@ -1188,9 +1120,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
             : new File(System.getProperty("user.dir")));
   }
 
-  /**
-   * Return a file chooser that filters for test scripts.
-   */
   // FIXME some open, close operations should be sticky w/r/t
   // last directory used
   private JFileChooser getChooser(FileFilter f) {
@@ -1202,9 +1131,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return chooser;
   }
 
-  /**
-   * Set the test case to the one corresponding to the given index.
-   */
   private void setScript(int index) {
     if (getScripts().size() == 0) {
       setScript((Script) null);
@@ -1274,9 +1200,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     updateTitle();
   }
 
-  /**
-   * Update the state of all actions.  This method should be invoked after any GUI state change.
-   */
   private void setActionsEnabledState() {
     if (!SwingUtilities.isEventDispatchThread()) {
       SwingUtilities.invokeLater(
@@ -1340,17 +1263,11 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     view.getComponentBrowser().setEnabled(!isScriptRunning);
   }
 
-  /**
-   * Set the current test script.
-   */
   void setScript(String filename) {
     Script script = filename != null ? new Script(filename, hierarchy) : null;
     setScript(script);
   }
 
-  /**
-   * Indicate the component and/or reference currently in use.
-   */
   private void setSelectedComponent(Component c, ComponentReference ref) {
 
     if (c == selectedComponent && ref == selectedReference) {
@@ -1527,9 +1444,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     System.exit(0);
   }
 
-  /**
-   * Set the contents of the status message.
-   */
   public void setStatus(String msg) {
     setStatus(msg, null, INFO);
   }
@@ -1543,9 +1457,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return writer.toString();
   }
 
-  /**
-   * Set the contents of the status message.
-   */
   public void setStatus(String msg, String extended, int type) {
     String text = Strings.get(statusFormat[type], new Object[] {msg});
     view.setStatus(text, extended, statusColor[type]);
@@ -1679,9 +1590,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Returns null if not found.
-   */
   public String getComponentID(Component comp) {
     ComponentReference ref = getComponentReference(comp);
     return ref != null ? ref.getID() : null;
@@ -1758,9 +1666,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Copy the fixture from the given script into the current one.
-   */
   public void copyFixture(Script src) {
     Step first = src.getStep(0);
     Step last = src.getStep(src.size() - 1);
@@ -2634,23 +2539,14 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return scriptTable.getScriptContext();
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public ComponentReference getComponentReference(String refid) {
     return getResolverContext() != null ? getResolverContext().getComponentReference(refid) : null;
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public ComponentReference getComponentReference(Component comp) {
     return getResolverContext() != null ? getResolverContext().getComponentReference(comp) : null;
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public void addComponentReference(ComponentReference ref) {
     if (getResolverContext() == null) {
       throw new RuntimeException(Strings.get("NoContext"));
@@ -2658,9 +2554,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     getResolverContext().addComponentReference(ref);
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public ComponentReference addComponent(Component comp) {
     if (getResolverContext() == null) {
       throw new RuntimeException(Strings.get("NoContext"));
@@ -2668,9 +2561,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return getResolverContext().addComponent(comp);
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public Collection getComponentReferences() {
     if (getResolverContext() == null) {
       return new HashSet();
@@ -2678,9 +2568,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return getResolverContext().getComponentReferences();
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public String getContext(Step step) {
     Resolver r = getResolverContext();
     if (r != null) {
@@ -2689,9 +2576,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return "unknown";
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public File getDirectory() {
     if (getResolverContext() == null) {
       return new File(System.getProperty("user.dir"));
@@ -2699,18 +2583,12 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return getResolverContext().getDirectory();
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public void setProperty(String name, Object value) {
     if (getResolverContext() != null) {
       getResolverContext().setProperty(name, value);
     }
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public Object getProperty(String name) {
     if (getResolverContext() != null) {
       return getResolverContext().getProperty(name);
@@ -2718,9 +2596,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     return null;
   }
 
-  /**
-   * From abbot.Resolver.
-   */
   public ClassLoader getContextClassLoader() {
     if (getResolverContext() != null) {
       return getResolverContext().getContextClassLoader();
@@ -2989,9 +2864,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
       // avoid annoying drive A: bug on w32
     }
 
-    /**
-     * We do additional checking to allow exit from the editor itself.
-     */
     public void checkExit(int status) {
       // Only allow exits by the root script editor
       if (!rootIsExiting) {
@@ -3042,9 +2914,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
     }
   }
 
-  /**
-   * Launch the script editor, with an argument of either a test suite class or a script filename.
-   */
   public static void main(String[] args) {
     try {
       args = Log.init(args);
@@ -3630,9 +3499,6 @@ public class ScriptEditor implements ActionListener, Resolver, EditorConstants {
   }
 
   private class EditorStepRunner extends StepRunner {
-    /**
-     * We use a single runner througout the editor's lifetime, so one saved UI context will suffice.
-     */
     public EditorStepRunner() {
       super(new AWTFixtureHelper());
     }

@@ -68,9 +68,6 @@ public class LookAndFeelPreserver {
     frame.add(trigger);
   }
 
-  /**
-   * Add a component on which to preserve the LAF.
-   */
   public void add(final Component c) {
     owned.put(c, Boolean.TRUE);
     if (c instanceof Window) {

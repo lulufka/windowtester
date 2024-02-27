@@ -21,9 +21,6 @@ public class ComponentNode extends DefaultMutableTreeNode {
   private final Map map;
   private boolean loaded;
 
-  /**
-   * Constructor for the root node of a hierarchy.
-   */
   public ComponentNode(Hierarchy hierarchy) {
     super(null, true);
     this.hierarchy = hierarchy;
@@ -110,16 +107,10 @@ public class ComponentNode extends DefaultMutableTreeNode {
     }
   }
 
-  /**
-   * Return the component that appears as a parent in the ComponentNode hierarchy.
-   */
   Component getParent(Component c) {
     return hierarchy.getParent(c);
   }
 
-  /**
-   * Returns the Component represented, or null if this is either the root or a java.awt.MenuComponent.
-   */
   public Component getComponent() {
     if (getUserObject() instanceof Component) {
       return (Component) getUserObject();
@@ -131,9 +122,6 @@ public class ComponentNode extends DefaultMutableTreeNode {
     return (isRoot() ? super.hashCode() : getUserObject().hashCode());
   }
 
-  /**
-   * Return true if the represented components are the same.
-   */
   public boolean equals(Object other) {
     return this == other
         || ((other instanceof ComponentNode)
@@ -147,11 +135,6 @@ public class ComponentNode extends DefaultMutableTreeNode {
     return Robot.toString(getUserObject());
   }
 
-  /**
-   * Return the nearest node corresponding to the given component. Behavior is undefined if the node is not reachable
-   * from the root node.  If the component is elided in the underlying hierarchy, returns the nearest parent node that
-   * is not elided.
-   */
   public ComponentNode getNode(Component comp) {
     if (comp == null) {
       return (ComponentNode) getRoot();
@@ -176,10 +159,6 @@ public class ComponentNode extends DefaultMutableTreeNode {
     return node;
   }
 
-  /**
-   * Return the TreePath for the given Component, assuming it is in the same hierarchy as this node.  Returns as much
-   * of the ancestor path as is available in the hierarchy.
-   */
   public TreePath getPath(Component comp) {
     ComponentNode node = getNode(comp);
     return new TreePath(node.getPath());

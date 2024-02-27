@@ -85,18 +85,11 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     this.description = description;
   }
 
-  /**
-   * Only exposed so that Script may invoke it on load from disk.
-   */
   protected final void parseStepAttributes(Map attributes) {
     Log.debug("Parsing attributes for " + getClass());
     description = (String) attributes.get(TAG_DESC);
   }
 
-  /**
-   * Main run method.  Should <b>never</b> be run on the event dispatch thread, although no check is explicitly done
-   * here.
-   */
   public final void run() throws Throwable {
     if (invalidScriptError != null) {
       throw invalidScriptError;
@@ -105,9 +98,6 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     runStep();
   }
 
-  /**
-   * Implement the step's behavior here.
-   */
   protected abstract void runStep() throws Throwable;
 
   public String getDescription() {
@@ -118,25 +108,12 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     description = desc;
   }
 
-  /**
-   * Define the XML tag to use for this script step.
-   */
   public abstract String getXMLTag();
 
-  /**
-   * Provide a usage String for this step.
-   */
   public abstract String getUsage();
 
-  /**
-   * Return a reasonable default description for this script step. This value is used in the absence of an explicit
-   * description.
-   */
   public abstract String getDefaultDescription();
 
-  /**
-   * For use by subclasses when an error is encountered during parsing. Should only be used by the XML parsing ctors.
-   */
   protected void setScriptError(Throwable thr) {
     if (invalidScriptError == null) {
       invalidScriptError = thr;
@@ -154,10 +131,6 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     usage(null);
   }
 
-  /**
-   * Store an invalid script exception describing the proper script usage.  This should be used by derived classes
-   * whenever parsing indicates invalid input.
-   */
   protected void usage(String details) {
     String msg = getUsage();
     if (details != null) {
@@ -166,9 +139,6 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     setScriptError(new InvalidScriptException(msg));
   }
 
-  /**
-   * Attributes to save in script.
-   */
   public Map getAttributes() {
     Map map = new HashMap();
     if (description != null && !description.equals(getDefaultDescription())) {
@@ -181,16 +151,10 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     return resolver;
   }
 
-  /**
-   * Override if the step actually has some contents.  In most cases, it won't.
-   */
   protected Element addContent(Element el) {
     return el;
   }
 
-  /**
-   * Add an attribute to the given XML Element.  Attributes are kept in alphabetical order.
-   */
   protected Element addAttributes(Element el) {
     // Use a TreeMap to keep the attributes sorted on output
     Map atts = new TreeMap(getAttributes());
@@ -207,16 +171,10 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     return el;
   }
 
-  /**
-   * Convert this Step into a String suitable for editing.  The default is the XML representation of the Step.
-   */
   public String toEditableString() {
     return toXMLString(this);
   }
 
-  /**
-   * Provide a one-line XML string representation.
-   */
   public static String toXMLString(XMLifiable obj) {
     // Comments are the only things that aren't actually elements...
     if (obj instanceof Comment) {
@@ -233,16 +191,10 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     return writer.toString();
   }
 
-  /**
-   * Convert the object to XML.
-   */
   public Element toXML() {
     return addAttributes(addContent(new Element(getXMLTag())));
   }
 
-  /**
-   * Create a new step from an in-line XML string.
-   */
   public static Step createStep(Resolver resolver, String str)
       throws InvalidScriptException, IOException {
     StringReader reader = new StringReader(str);
@@ -256,9 +208,6 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     }
   }
 
-  /**
-   * Convert the attributes in the given XML Element into a Map of name/value pairs.
-   */
   protected static Map createAttributeMap(Element el) {
     Log.debug("Creating attribute map for " + el);
     Map attributes = new HashMap();
@@ -270,10 +219,6 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     return attributes;
   }
 
-  /**
-   * Factory method, equivalent to a "fromXML" for step creation.  Looks for a class with the same name as the XML
-   * tag, with the first letter capitalized.  For example, &lt;call /&gt; is abbot.script.Call.
-   */
   public static Step createStep(Resolver resolver, Element el) throws InvalidScriptException {
     String tag = el.getName();
     Map attributes = createAttributeMap(el);
@@ -313,17 +258,10 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     return ComponentTester.simpleClassName(cls);
   }
 
-  /**
-   * Return a description of this script step.
-   */
   public String toString() {
     return getDescription();
   }
 
-  /**
-   * Returns the Class corresponding to the given class name.  Provides just-in-time classname resolution to ensure
-   * loading by the proper class loader. <p>
-   */
   public Class resolveClass(String className) throws ClassNotFoundException {
     ClassLoader cl = getResolver().getContextClassLoader();
     return Class.forName(className, true, cl);
@@ -332,7 +270,10 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
   /**
    * Look up an appropriate ComponentTester given an arbitrary Component-derived class. If the class is derived from
    * abbot.tester.ComponentTester, instantiate one; if it is derived from java.awt.Component, return a matching
-   * Tester. Otherwise return abbot.tester.ComponentTester.<p>
+   * Tester. Otherwise return abbot.tester.ComponentTester.
+   *
+   * @param className class name
+   * @return component tester
    *
    * @throws ClassNotFoundException   If the given class can't be found.
    * @throws IllegalArgumentException If the tester cannot be instantiated.

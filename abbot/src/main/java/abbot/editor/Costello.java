@@ -54,10 +54,6 @@ public class Costello {
     return splash;
   }
 
-  /**
-   * Note that this "main" is typical of many Swing apps, in that it does window showing and disposal directly from
-   * the main thread.  Running the editor under itself should provide a reasonable test for handling that scenario.
-   */
   public static void main(String[] args) {
 
     try {

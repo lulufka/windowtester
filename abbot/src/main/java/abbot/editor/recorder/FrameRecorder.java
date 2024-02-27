@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 
 /**
- * Record basic semantic events you might find on an Window. <p>
+ * Record basic semantic events you might find on a Window.
  */
 public class FrameRecorder extends WindowRecorder {
 

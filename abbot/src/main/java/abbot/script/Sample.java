@@ -27,18 +27,12 @@ public class Sample extends PropertyCall {
     propertyName = (String) attributes.get(TAG_PROPERTY);
   }
 
-  /**
-   * Component property sample.
-   */
   public Sample(
       Resolver resolver, String description, String methodName, String id, String propName) {
     super(resolver, description, methodName, id);
     propertyName = propName;
   }
 
-  /**
-   * Static method property sample.
-   */
   public Sample(
       Resolver resolver,
       String description,
@@ -78,9 +72,6 @@ public class Sample extends PropertyCall {
     return propertyName;
   }
 
-  /**
-   * Store the results of the invocation in the designated property as a String-encoded value.
-   */
   protected Object invoke() throws Throwable {
     Object obj = super.invoke();
     if (propertyName != null) {

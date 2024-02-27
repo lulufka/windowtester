@@ -5,37 +5,43 @@ import abbot.Log;
 import abbot.Platform;
 import abbot.finder.Hierarchy;
 import abbot.i18n.Strings;
-import java.awt.*;
+import java.awt.Window;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Provides scripted static method invocation.  Usage:<br>
- * <blockquote><code>
- * &lt;launch class="package.class" method="methodName" args="..." classpath="..." [threaded=true]&gt;<br>
- * </code></blockquote><p>
- * The args attribute is a comma-separated list of arguments to pass to the class method, and may use square brackets to
- * denote an array, e.g. "[one,two,three]" will be interpreted as an array length 3 of String.  The square brackets may
- * be escaped ('\[' or '\]') to include them literally in an argument.
- * <p>
- * The class path attribute may use either colon or semicolon as a path separator, but should preferably use relative
- * paths to avoid making the containing script platform- and location-dependent.<p> In most cases, the classes under
- * test will <i>only</i> be found under the custom class path, and so the parent class loader will fail to find them. If
- * this is the case then the classes under test will be properly discarded on each launch when a new class loader is
+ * <pre>
+ * &lt;launch class="package.class" method="methodName" args="..." classpath="..."
+ * [threaded=true]&gt;<br>
+ * </pre>
+ * The args attribute is a comma-separated list of arguments to pass to the class method, and may
+ * use square brackets to denote an array, e.g. "[one,two,three]" will be interpreted as an array
+ * length 3 of String.  The square brackets may be escaped ('\[' or '\]') to include them literally
+ * in an argument.
+ *
+ * The class path attribute may use either colon or semicolon as a path separator, but should
+ * preferably use relative paths to avoid making the containing script platform- and
+ * location-dependent. In most cases, the classes under test will <i>only</i> be found under the
+ * custom class path, and so the parent class loader will fail to find them. If this is the case
+ * then the classes under test will be properly discarded on each launch when a new class loader is
  * created.
- * <p>
- * The 'threaded' attribute is provided in case your code under test requires GUI event processing prior to returning
- * from its invoked method.  An example might be a main method which invokes dialog and waits for the response before
- * continuing.  In general, it's better to refactor the code if possible so that the main method turns over control to
- * the event dispatch thread as soon as possible.  Otherwise, if the application under test is background threaded by
- * the Launch step, any runtime exceptions thrown from the launch code will cause errors in the launch step out of
- * sequence with the other script steps.  While this won't cause any problems for the Abbot framework, it can be very
- * confusing for the user.<p> Note that if the "reload" attribute is set true (i.e. Abbot's class loader is used to
- * reload code under test), ComponentTester extensions must also be loaded by that class loader, so the path to
- * extensions should be included in the Launch class path.<p>
+ *
+ * The 'threaded' attribute is provided in case your code under test requires GUI event processing
+ * prior to returning from its invoked method.  An example might be a main method which invokes
+ * dialog and waits for the response before continuing.  In general, it's better to refactor the
+ * code if possible so that the main method turns over control to the event dispatch thread as soon
+ * as possible.  Otherwise, if the application under test is background threaded by the Launch step,
+ * any runtime exceptions thrown from the launch code will cause errors in the launch step out of
+ * sequence with the other script steps.  While this won't cause any problems for the Abbot
+ * framework, it can be very confusing for the user. Note that if the "reload" attribute is set true
+ * (i.e. Abbot's class loader is used to reload code under test), ComponentTester extensions must
+ * also be loaded by that class loader, so the path to extensions should be included in the Launch
+ * class path.
  */
 public class Launch extends Call implements UIContext {
+
   /**
    * Allow only one active launch at a time.
    */
@@ -99,8 +105,8 @@ public class Launch extends Call implements UIContext {
   }
 
   /**
-   * Install the class loader context for the code being launched.  The context class loader for the current thread is
-   * modified.
+   * Install the class loader context for the code being launched.  The context class loader for the
+   * current thread is modified.
    */
   protected void install() {
     ClassLoader loader = getContextClassLoader();
@@ -143,7 +149,9 @@ public class Launch extends Call implements UIContext {
     if (currentLaunch == this) {
       // Nothing special to do, dispose windows normally
       Iterator iter = getHierarchy().getRoots().iterator();
-      while (iter.hasNext()) getHierarchy().dispose((Window) iter.next());
+      while (iter.hasNext()) {
+        getHierarchy().dispose((Window) iter.next());
+      }
       if (classLoader != null) {
         classLoader.uninstall();
         classLoader = null;
@@ -153,7 +161,8 @@ public class Launch extends Call implements UIContext {
   }
 
   /**
-   * Launches the UI described by this <code>Launch</code> step, using the given runner as controller/monitor.
+   * Launches the UI described by this <code>Launch</code> step, using the given runner as
+   * controller/monitor.
    */
   public void launch(StepRunner runner) throws Throwable {
     runner.run(this);
@@ -203,9 +212,9 @@ public class Launch extends Call implements UIContext {
   }
 
   /**
-   * Overrides the default implementation to always use the class loader defined by this step.  This works in cases
-   * where the Launch step has not yet been added to a Script; otherwise the Script will provide an implementation
-   * equivalent to this one.
+   * Overrides the default implementation to always use the class loader defined by this step.  This
+   * works in cases where the Launch step has not yet been added to a Script; otherwise the Script
+   * will provide an implementation equivalent to this one.
    */
   public Class resolveClass(String className) throws ClassNotFoundException {
     return Class.forName(className, true, getContextClassLoader());
@@ -232,8 +241,8 @@ public class Launch extends Call implements UIContext {
   }
 
   /**
-   * Return the target for the method invocation.  All launch invocations must be static, so this always returns
-   * null.
+   * Return the target for the method invocation.  All launch invocations must be static, so this
+   * always returns null.
    */
   protected Object getTarget(Method m) {
     return null;
@@ -261,8 +270,8 @@ public class Launch extends Call implements UIContext {
     String desc =
         Strings.get(
             "launch.desc",
-            new Object[] {
-              getTargetClassName() + "." + getMethodName() + "(" + getEncodedArguments() + ")"
+            new Object[]{
+                getTargetClassName() + "." + getMethodName() + "(" + getEncodedArguments() + ")"
             });
     return desc;
   }
@@ -275,21 +284,20 @@ public class Launch extends Call implements UIContext {
     return TAG_LAUNCH;
   }
 
-  /**
-   * Set a listener to respond to events when the launch step is threaded.
-   */
   public void setThreadedLaunchListener(ThreadedLaunchListener l) {
     listener = l;
   }
 
   public interface ThreadedLaunchListener {
+
     void stepFailure(Launch launch, AssertionFailedError error);
 
     void stepError(Launch launch, Throwable throwable);
   }
 
   /**
-   * No two launches are ever considered equivalent.  If you want a shared {@link UIContext}, use a {@link Fixture}.
+   * No two launches are ever considered equivalent.  If you want a shared {@link UIContext}, use a
+   * {@link Fixture}.
    *
    * @see abbot.script.UIContext#equivalent(abbot.script.UIContext)
    * @see abbot.script.StepRunner#run(Step)

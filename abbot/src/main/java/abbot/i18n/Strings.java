@@ -49,18 +49,10 @@ public class Strings {
     }
   }
 
-  /**
-   * Returns the localized String for the given key, or the key surrounded by '#' if no corresponding localized string
-   * is found.
-   */
   public static String get(String key) {
     return get(key, false);
   }
 
-  /**
-   * Returns the localized string for the given key.  If optional is true, return null, otherwise returns the key
-   * surrounded by '#' if no corresponding localized string is found.
-   */
   public static String get(String key, boolean optional) {
     String defaultValue = "#" + key + "#";
     String value = null;
@@ -81,10 +73,6 @@ public class Strings {
     return value;
   }
 
-  /**
-   * Returns a formatted localized string for the given key and arguments, or the key if no corresponding localized
-   * string is found.  Use java.text.MessageFormat syntax for the format string and arguments.
-   */
   public static String get(String key, Object[] args) {
     MessageFormat fmt = (MessageFormat) formats.get(key);
     if (fmt == null) {

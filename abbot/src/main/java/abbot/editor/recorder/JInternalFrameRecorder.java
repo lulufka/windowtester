@@ -16,7 +16,7 @@ import javax.swing.event.InternalFrameEvent;
 /**
  * Handle the recording of events related to an internal frame (JInternalFrame). Like instances of Window, we must
  * insert waits for the showing and hiding of internal frames.
- * <p>
+ *
  * NOTE: InternalFrameEvents are not normally posted to the AWT event queue.
  *
  * @author pickens
@@ -40,7 +40,7 @@ public class JInternalFrameRecorder extends JComponentRecorder {
   /**
    * Constructor for JInternalFrameRecorder.
    *
-   * @param resolver
+   * @param resolver resolver
    */
   public JInternalFrameRecorder(Resolver resolver) {
     super(resolver);
@@ -52,9 +52,6 @@ public class JInternalFrameRecorder extends JComponentRecorder {
     type = UNKNOWN;
   }
 
-  /**
-   * @see abbot.editor.recorder.ComponentRecorder#accept(java.awt.AWTEvent)
-   */
   public boolean accept(AWTEvent event) {
     int id = event.getID();
     Log.debug("Source is " + event.getSource());

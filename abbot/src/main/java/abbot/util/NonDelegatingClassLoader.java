@@ -19,23 +19,18 @@ public class NonDelegatingClassLoader extends PathClassLoader {
    * Returns whether the given class should be given to the parent class loader to try before this one does.  The
    * default implementation always returns false.  Making this method return true will revert to the standard class
    * loader behavior.
+   * @param name name
+   * @return true if it should delegate
    */
   protected boolean shouldDelegate(String name) {
     return false;
   }
 
-  /**
-   * Find the given class in the search path.
-   */
   public Class findClass(String name) throws ClassNotFoundException {
     Log.debug("Looking up " + name + " with " + this);
     return super.findClass(name);
   }
 
-  /**
-   * Load the given class, but attempt to load <i>before</i> the parent if shouldDelegate returns false for the given
-   * class.
-   */
   protected synchronized Class loadClass(String name, boolean resolve)
       throws ClassNotFoundException {
     if (shouldDelegate(name)) {

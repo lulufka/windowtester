@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 /**
- * Record basic semantic events you might find on an JComboBox. <p>
+ * Record basic semantic events you might find on an JComboBox.
  * <ul>
  * <li>Select an item by value (toString representation)
  * <li>Enter a value (if editable) (not done)

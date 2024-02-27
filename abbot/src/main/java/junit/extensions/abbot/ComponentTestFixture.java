@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * #showWindow(Window)} when testing a {@link Frame}, {@link Dialog}, or {@link Window}.<p> Any member fields you define
  * which are classes derived from any of the classes in {@link #DISPOSE_CLASSES} will be automatically set to null after
  * the test is run.<p>
- * <bold>WARNING:</bold> Any tests which use significant or scarce resources
+ * <b>WARNING:</b> Any tests which use significant or scarce resources
  * and reference them in member fields should explicitly null those fields in the tearDown method if those classes are
  * not included or derived from those in {@link #DISPOSE_CLASSES}.  Otherwise the resources will not be subject to GC
  * until the {@link TestCase} itself and any containing {@link junit.framework.TestSuite} is disposed (which, in the
@@ -85,24 +85,14 @@ public class ComponentTestFixture extends ResolverFixture {
   private Throwable edtException;
   private long edtExceptionTime;
 
-  /**
-   * Return an Abbot {@link abbot.tester.Robot} for basic event generation.
-   */
   protected Robot getRobot() {
     return robot;
   }
 
-  /**
-   * Return a WindowTracker instance.
-   */
   protected WindowTracker getWindowTracker() {
     return tracker;
   }
 
-  /**
-   * This method should be invoked to display the component under test. The frame's size will be its preferred size.
-   * This method will return with the enclosing {@link Frame} is showing and ready for input.
-   */
   protected Frame showFrame(final Component comp) {
     return showFrame(comp, null);
   }
@@ -111,9 +101,10 @@ public class ComponentTestFixture extends ResolverFixture {
    * This method should be invoked to display the component under test, when a specific size of frame is desired.  The
    * method will return when the enclosing {@link Frame} is showing and ready for input.
    *
-   * @param comp
+   * @param comp component
    * @param size Desired size of the enclosing frame, or <code>null</code> to make no explicit adjustments to its
    *             size.
+   * @return frame
    */
   protected Frame showFrame(final Component comp, final Dimension size) {
     final JFrame frame = new JFrame(getName());
@@ -125,28 +116,14 @@ public class ComponentTestFixture extends ResolverFixture {
     return frame;
   }
 
-  /**
-   * Safely display a window with proper EDT synchronization.   This method blocks until the {@link Window} is showing
-   * and ready for input.
-   */
   protected void showWindow(final Window w) {
     showWindow(w, null, true);
   }
 
-  /**
-   * Safely display a window with proper EDT synchronization.   This method blocks until the {@link Window} is showing
-   * and ready for input.
-   */
   protected void showWindow(final Window w, final Dimension size) {
     showWindow(w, size, true);
   }
 
-  /**
-   * Safely display a window with proper EDT synchronization.   This method blocks until the window is showing.  This
-   * method will return even when the window is a modal dialog, since the show method is called on the event dispatch
-   * thread.  The window will be packed if the pack flag is set, and set to the given size if it is
-   * non-<code>null</code>.<p> Modal dialogs may be shown with this method without blocking.
-   */
   protected void showWindow(final Window w, final Dimension size, final boolean pack) {
     EventQueue.invokeLater(
         new Runnable() {
@@ -188,12 +165,6 @@ public class ComponentTestFixture extends ResolverFixture {
     }
   }
 
-  /**
-   * Synchronous, safe hide of a window.  The window is ensured to be hidden ({@link
-   * java.awt.event.ComponentEvent#COMPONENT_HIDDEN} or equivalent has been posted) when this method returns.  Note
-   * that this will <em>not</em> trigger a {@link java.awt.event.WindowEvent#WINDOW_CLOSING} event; use {@link
-   * abbot.tester.WindowTester#actionClose(Component)} if a window manager window close operation is required.
-   */
   protected void hideWindow(final Window w) {
     EventQueue.invokeLater(
         new Runnable() {
@@ -208,20 +179,12 @@ public class ComponentTestFixture extends ResolverFixture {
     robot.waitForIdle();
   }
 
-  /**
-   * Synchronous, safe dispose of a window.  The window is ensured to be disposed ({@link
-   * java.awt.event.WindowEvent#WINDOW_CLOSED} has been posted) when this method returns.
-   */
   protected void disposeWindow(final Window w) {
     w.dispose();
     waitForWindow(w, false);
     robot.waitForIdle();
   }
 
-  /**
-   * Install the given popup on the given component.  Takes care of installing the appropriate mouse handler to
-   * activate the popup.
-   */
   protected void installPopup(final Component invoker, final JPopupMenu popup) {
     invoker.addMouseListener(
         new MouseAdapter() {

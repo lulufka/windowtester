@@ -9,7 +9,7 @@ import java.util.TimerTask;
 /**
  * Prevents misbehaving TimerTasks from canceling the timer thread by throwing exceptions and/or errors.  Also extends
  * the basic Timer to use a name for its thread.  Naming the timer thread facilitates discerning different threads in a
- * full stack dump.<p>
+ * full stack dump.
  */
 public class NamedTimer extends Timer {
 

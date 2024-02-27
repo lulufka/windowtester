@@ -20,36 +20,18 @@ public class AWTHierarchy implements Hierarchy {
 
   private static Hierarchy defaultHierarchy = null;
 
-  /**
-   * Obtain a default Hierarchy.  This method is provided only to support the deprecated
-   * <code>ComponentTester.assertFrameShowing()</code> method.
-   */
   public static Hierarchy getDefault() {
-    /*System.out.println("Using default Hierarchy: "
-    + Log.getStack(Log.FULL_STACK));*/
     return defaultHierarchy != null ? defaultHierarchy : new AWTHierarchy();
   }
 
-  /**
-   * Set the default Hierarchy. This method is provided only to support the deprecated
-   * <code>ComponentTester.assertFrameShowing()</code> method.
-   */
   public static void setDefault(Hierarchy h) {
     defaultHierarchy = h;
   }
 
-  /**
-   * Returns whether the given component is reachable from any of the root windows.  The default is to consider all
-   * components to be contained in the hierarchy, whether they are reachable or not (NOTE: isReachable is a distinctly
-   * different operation).
-   */
   public boolean contains(Component c) {
     return true;
   }
 
-  /**
-   * Properly dispose of the given Window, making it and its native resources available for garbage collection.
-   */
   public void dispose(final Window w) {
     if (AWT.isAppletViewerFrame(w)) {
       // Don't dispose, it must quit on its own
@@ -113,17 +95,10 @@ public class AWTHierarchy implements Hierarchy {
     }
   }
 
-  /**
-   * Return all root components in the current AWT hierarchy.
-   */
   public Collection<Component> getRoots() {
     return tracker.getRootWindows();
   }
 
-  /**
-   * Return all descendents of interest of the given Component. This includes owned windows for Windows, children for
-   * Containers.
-   */
   public Collection<Component> getComponents(Component c) {
     if (c instanceof Container) {
       Container cont = (Container) c;

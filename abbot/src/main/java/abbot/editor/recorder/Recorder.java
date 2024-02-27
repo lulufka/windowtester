@@ -12,26 +12,20 @@ import java.awt.event.ActionListener;
 /**
  * The <code>Recorder</code> provides a mechanism for recording an event stream and generating a sequence of script
  * steps from that stream.
- * <p>
+ *
  * NOTE: when writing a recorder, be very careful not to test for platform-specific behavior, and avoid being
  * susceptible to platform-specific bugs.  Please make sure the recorder works on both pointer-focus and click-to-focus
- * window managers, as well as on at least two platforms.<p>
+ * window managers, as well as on at least two platforms.
  */
 public abstract class Recorder {
   private ActionListener al;
   private final Resolver resolver;
   private long lastEventTime = 0;
 
-  /**
-   * Create a Recorder for use in converting events into script steps.
-   */
   public Recorder(Resolver resolver) {
     this.resolver = resolver;
   }
 
-  /**
-   * The recorder supports zero or one listeners.
-   */
   public void addActionListener(ActionListener al) {
     this.al = al;
   }
@@ -40,16 +34,10 @@ public abstract class Recorder {
     return al;
   }
 
-  /**
-   * Start recording a new event stream.
-   */
   public void start() {
     lastEventTime = System.currentTimeMillis();
   }
 
-  /**
-   * Indicate the end of the current event input stream.
-   */
   public abstract void terminate() throws RecordingFailedException;
 
   public long getLastEventTime() {
@@ -58,26 +46,21 @@ public abstract class Recorder {
 
   /**
    * Create a step or sequence of steps based on the event stream so far.
+   * @return step
    */
   protected abstract Step createStep();
 
-  /**
-   * Return a step or sequence of steps representing the steps created thus far, or null if none.
-   */
   public Step getStep() {
     return createStep();
   }
 
-  /**
-   * Insert an arbitrary step into the recording stream.
-   */
   public void insertStep(Step step) {
     // Default does nothing
   }
 
   /**
    * Process the given event.
-   *
+   * @param event event
    * @throws RecordingFailedException if an error was encountered and recording should discontinue.
    */
   public void record(java.awt.AWTEvent event) throws RecordingFailedException {
@@ -105,14 +88,12 @@ public abstract class Recorder {
 
   /**
    * Implement this to actually handle the event.
+   * @param event event
    *
    * @throws RecordingFailedException if an error was encountered and recording should be discontinued.
    */
   protected abstract void recordEvent(AWTEvent event) throws RecordingFailedException;
 
-  /**
-   * Return the events of interest to this Recorder.
-   */
   public long getEventMask() {
     return -1;
   }
@@ -124,9 +105,6 @@ public abstract class Recorder {
     return resolver;
   }
 
-  /**
-   * Indicate the current recording state, so that the status may be displayed elsewhere.
-   */
   protected void setStatus(String msg) {
     if (al != null) {
       ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, msg);

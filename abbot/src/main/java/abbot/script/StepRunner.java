@@ -63,10 +63,6 @@ public class StepRunner {
     this(new AWTFixtureHelper());
   }
 
-  /**
-   * Create a new runner.  The given {@link Hierarchy} maintains which GUI components are in or out of scope of the
-   * runner.  The {@link AWTFixtureHelper} will be used to restore state if {@link #terminate()} is called.
-   */
   public StepRunner(AWTFixtureHelper helper) {
     this.helper = helper;
     this.catcher = new EDTExceptionCatcher();
@@ -113,17 +109,11 @@ public class StepRunner {
     stop(false);
   }
 
-  /**
-   * Stop execution, indicating whether to terminate the app.
-   */
   public void stop(boolean terminate) {
     stop = true;
     terminateOnStop = terminate;
   }
 
-  /**
-   * Return whether the runner has been stopped.
-   */
   public boolean stopped() {
     return stop;
   }
@@ -131,6 +121,7 @@ public class StepRunner {
   /**
    * Create a security manager to use for the duration of this runner's execution.  The default prevents invoked
    * applications from invoking {@link System#exit(int)} and invokes {@link #terminate()} instead.
+   * @return security manager
    */
   protected SecurityManager createSecurityManager() {
     return new ExitHandler();
@@ -175,7 +166,8 @@ public class StepRunner {
    * will be invoked if the script is stopped for any reason, unless {@link #setTerminateOnError(boolean)} has been
    * called with a <code>false</code> argument.  Otherwise {@link #terminate()} will only be called if a {@link
    * Terminate} step is encountered.
-   *
+   * @param step step
+   * @throws Throwable in case of error
    * @see #terminate()
    */
   public void run(Step step) throws Throwable {
@@ -231,10 +223,6 @@ public class StepRunner {
     }
   }
 
-  /**
-   * Set whether the application under test should be terminated when an error is encountered and script execution
-   * stopped.  The default implementation always terminates.
-   */
   public void setTerminateOnError(boolean state) {
     terminateOnError = state;
   }
@@ -250,6 +238,7 @@ public class StepRunner {
 
   /**
    * Throw an exception if the file does not exist.
+   * @param script script
    */
   protected void checkFile(Script script) throws InvalidScriptException {
     File file = script.getFile();
@@ -269,6 +258,8 @@ public class StepRunner {
    * events to all registered {@link StepListener}s on starting, and exactly one of STEP_END, STEP_FAILURE, or
    * STEP_ERROR upon termination.  If stopOnFailure/stopOnError is set false, then both STEP_FAILURE/ERROR may be sent
    * in addition to STEP_END.
+   * @param step step
+   * @throws Throwable in case of error
    */
   protected void runStep(final Step step) throws Throwable {
 
@@ -341,7 +332,8 @@ public class StepRunner {
    * Similar to {@link #run(Step)}, but defers to the {@link Script} to determine what subset of steps should be run
    * as the UI context.
    *
-   * @param step
+   * @param step step
+   * @throws Throwable in case of error
    */
   public void launch(Script step) throws Throwable {
     UIContext ctxt = step.getUIContext();
@@ -388,9 +380,6 @@ public class StepRunner {
     }
   }
 
-  /**
-   * If this is used to propagate a failure/error, be sure to invoke setError on the step first.
-   */
   protected void fireStepEvent(StepEvent event) {
     Iterator iter;
     synchronized (listeners) {

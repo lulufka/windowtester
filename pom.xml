@@ -45,6 +45,8 @@
     <maven.version>3.5.4</maven.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
+
+    <!--gpg.keyname>6BFECA69</gpg.keyname -->
   </properties>
 
   <dependencies>
@@ -111,7 +113,7 @@
         <executions>
           <execution>
             <goals>
-              <goal>check</goal>
+              <goal>apply</goal>
             </goals>
           </execution>
         </executions>
@@ -164,7 +166,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -215,6 +216,7 @@
         </plugins>
       </reporting>
     </profile>
+
     <profile>
       <id>release</id>
       <build>
@@ -242,12 +244,12 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>3.6.3</version>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <!--doclint>all,-missing</doclint-->
+              <doclint>none</doclint>
             </configuration>
             <executions>
               <execution>
@@ -269,6 +271,10 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <!--                <configuration>-->
+                <!--                  <keyname>${gpg.keyname}</keyname>-->
+                <!--                  <passphraseServerId>${gpg.keyname}</passphraseServerId>-->
+                <!--                </configuration>-->
               </execution>
             </executions>
           </plugin>

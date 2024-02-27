@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * Record basic semantic events you might find on an JList. <p>
+ * Record basic semantic events you might find on an JList.
  * <ul>
  * <li>Select a cell
  * </ul>

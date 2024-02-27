@@ -35,6 +35,7 @@ public abstract class NoExitSecurityManager extends SecurityManager {
    * Implement this method to do any context-specific cleanup.  This hook is provided since it may not always be
    * possible to catch the ExitException explicitly (like when it's caught by someone else, or thrown from the event
    * dispatch thread).
+   * @param status status
    */
   protected abstract void exitCalled(int status);
 }

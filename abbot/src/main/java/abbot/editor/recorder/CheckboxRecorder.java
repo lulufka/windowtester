@@ -7,7 +7,7 @@ import abbot.script.Step;
 import java.awt.*;
 
 /**
- * Record basic click a Checkbox component. <p>
+ * Record basic click a Checkbox component.
  */
 public class CheckboxRecorder extends ComponentRecorder {
 

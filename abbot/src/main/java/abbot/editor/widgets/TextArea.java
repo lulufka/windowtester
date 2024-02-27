@@ -95,9 +95,6 @@ public class TextArea extends JTextArea {
     fireActionPerformed(getText(), true);
   }
 
-  /**
-   * On normal fire (enter) select all text.
-   */
   protected void fireActionPerformed(String cmd, boolean select) {
     if (select) {
       selectAll();
