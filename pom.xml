@@ -6,9 +6,17 @@
 
   <groupId>io.github.r4fterman</groupId>
   <artifactId>com.windowtester</artifactId>
+  <version>3.8.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <name>Windowtester</name>
   <description>Windowtester is a library for Java/Swing UI test automation.</description>
+  <url>https://github.com/r4fterman/windowtester</url>
+
+  <scm>
+    <url>https://github.com/r4fterman/windowtester</url>
+  </scm>
+
   <licenses>
     <license>
       <name>Eclipse Public License, Version 1.0</name>
@@ -17,7 +25,6 @@
     </license>
   </licenses>
 
-  <version>3.8.4-SNAPSHOT</version>
   <modules>
     <module>abbot</module>
     <module>com.windowtester.runtime</module>
@@ -45,8 +52,6 @@
     <maven.version>3.5.4</maven.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-
-    <!--gpg.keyname>6BFECA69</gpg.keyname -->
   </properties>
 
   <dependencies>
@@ -271,10 +276,6 @@
                 <goals>
                   <goal>sign</goal>
                 </goals>
-                <!--                <configuration>-->
-                <!--                  <keyname>${gpg.keyname}</keyname>-->
-                <!--                  <passphraseServerId>${gpg.keyname}</passphraseServerId>-->
-                <!--                </configuration>-->
               </execution>
             </executions>
           </plugin>
