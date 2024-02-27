@@ -13,8 +13,16 @@
   <description>Windowtester is a library for Java/Swing UI test automation.</description>
   <url>https://github.com/r4fterman/windowtester</url>
 
+  <developers>
+    <developer>
+      <id>r4ft3r</id>
+      <email>r4fterman@gmail.com</email>
+    </developer>
+  </developers>
+
+
   <scm>
-    <url>https://github.com/r4fterman/windowtester-</url>
+    <url>https://github.com/r4fterman/windowtester</url>
   </scm>
 
   <licenses>
