@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>3.8.2.2-SNAPSHOT</version>
+    <version>4.13.2-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

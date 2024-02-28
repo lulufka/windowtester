@@ -6,7 +6,7 @@
 
   <groupId>io.github.r4fterman</groupId>
   <artifactId>com.windowtester</artifactId>
-  <version>3.8.2.2-SNAPSHOT</version>
+  <version>4.13.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Windowtester</name>
@@ -65,7 +65,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.2</version>
+      <version>4.13.2</version>
     </dependency>
   </dependencies>
 
