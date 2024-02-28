@@ -7,7 +7,7 @@
 # Disclaimer
 
 This repository is cloned from the original Google `WindowTester Pro` code base.
-This repository focuses on getting Java/Swing under test.
+This repository focuses on getting Java/Swing UI under test.
 
 # Introduction
 
@@ -38,15 +38,9 @@ Please open an issue or create a PR.
 
 **Welcome Contributors**
 
-I am taking care currently on of the Swing part of Windowtester.
+I am taking care currently on the Swing part of Windowtester.
 As I lack knowledge in supporting Eclipse SWT/JFace this part is skipped.
 Anyone willing to contribute in SWT/JFace and/or Swing feel free to reach out to me.
-
-# TODOs
-
-- Make code JDK 17, 21 ready
-- Provide support for JUnit4
-- Provide support for JUnit5
 
 # [License](LICENSE.md)
 

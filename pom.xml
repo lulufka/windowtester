@@ -20,7 +20,6 @@
     </developer>
   </developers>
 
-
   <scm>
     <url>https://github.com/r4fterman/windowtester</url>
   </scm>
@@ -130,6 +129,33 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.7.9</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>makeBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <projectType>library</projectType>
+          <schemaVersion>1.5</schemaVersion>
+          <includeBomSerialNumber>true</includeBomSerialNumber>
+          <includeCompileScope>true</includeCompileScope>
+          <includeRuntimeScope>true</includeRuntimeScope>
+          <includeSystemScope>true</includeSystemScope>
+          <includeProvidedScope>false</includeProvidedScope>
+          <includeTestScope>false</includeTestScope>
+          <includeLicenseText>false</includeLicenseText>
+          <outputFormat>json</outputFormat>
+          <outputDirectory>${project.build.directory}/classes/META-INF</outputDirectory>
+          <outputName>bom</outputName>
+        </configuration>
       </plugin>
     </plugins>
   </build>
