@@ -35,6 +35,7 @@
   <modules>
     <module>abbot</module>
     <module>com.windowtester.runtime</module>
+    <module>com.windowtester.runtime.junit4</module>
     <module>com.windowtester.swing.runtime</module>
     <module>com.windowtester.swing.recorder</module>
   </modules>
