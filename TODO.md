@@ -3,7 +3,6 @@
 ## Code
 
 - Make code JDK 17, 21 ready
-- Provide support for JUnit4
 - Provide support for JUnit5
 - Mitigate CVEs
 - Make use of Dependency check
