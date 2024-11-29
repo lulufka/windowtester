@@ -31,32 +31,32 @@ public class DelayUIDriverSwing extends UIDriverSwing {
     // TODO: Load settings from file
   }
 
-  public Component click(Component owner, String labelOrPath) throws ActionFailedException {
+  public Component click(Component component, String labelOrPath) throws ActionFailedException {
 
-    Component c = super.click(owner, labelOrPath);
+    Component c = super.click(component, labelOrPath);
     return c;
   }
 
-  public Component click(int clickCount, Component w, int x, int y, int mask) {
+  public Component click(int clickCount, Component component, int x, int y, int mask) {
     // first move the mouse to the point of interest:
-    mouseMove(w);
-    Component c = super.click(clickCount, w, x, y, mask);
+    mouseMove(component);
+    Component c = super.click(clickCount, component, x, y, mask);
     return c;
   }
 
-  public Component clickComboBox(JComboBox owner, String labelOrPath, int clickCount)
+  public Component clickComboBox(JComboBox combobox, String labelOrPath, int clickCount)
       throws ActionFailedException {
     // first move the mouse to the point of interest:
-    mouseMove(owner);
-    Component c = super.clickComboBox(owner, labelOrPath, clickCount);
+    mouseMove(combobox);
+    Component c = super.clickComboBox(combobox, labelOrPath, clickCount);
     return c;
   }
 
-  public Component clickListItem(int clickCount, JList owner, String labelOrPath, int mask)
+  public Component clickListItem(int clickCount, JList list, String labelOrPath, int mask)
       throws ActionFailedException {
     // first move the mouse to the point of interest:
-    mouseMove(owner);
-    Component c = super.clickListItem(clickCount, owner, labelOrPath, mask);
+    mouseMove(list);
+    Component c = super.clickListItem(clickCount, list, labelOrPath, mask);
     return c;
   }
 
@@ -65,14 +65,14 @@ public class DelayUIDriverSwing extends UIDriverSwing {
     return c;
   }
 
-  public Component clickTable(int clickCount, JTable owner, int row, int col, int mask) {
-    mouseMove(owner);
-    Component c = super.clickTable(clickCount, owner, row, col, mask);
+  public Component clickTable(int clickCount, JTable table, int row, int col, int mask) {
+    mouseMove(table);
+    Component c = super.clickTable(clickCount, table, row, col, mask);
     return c;
   }
 
-  public Component clickTreeItem(int clickCount, Component owner, String path, int mask) {
-    Component c = super.clickTreeItem(clickCount, owner, path, mask);
+  public Component clickTreeItem(int clickCount, Component component, String path, int mask) {
+    Component c = super.clickTreeItem(clickCount, component, path, mask);
     return c;
   }
 
@@ -91,9 +91,9 @@ public class DelayUIDriverSwing extends UIDriverSwing {
   private Point pointT;
   private Point cursorT;
 
-  public void mouseMove(Component w, int x, int y) {
+  public void mouseMove(Component component, int x, int y) {
     // get location of the widget
-    pointT = AWT.getLocationOnScreen(w);
+    pointT = AWT.getLocationOnScreen(component);
     // get current location of the cursor/mouse for jre 1.5 and above
     //	PointerInfo info = MouseInfo.getPointerInfo();
     //	cursorT = info.getLocation();

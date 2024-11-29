@@ -22,8 +22,8 @@ import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JCheckBox;
 
 /**
  * A locator for JCheckBox Components.
@@ -42,7 +42,8 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   }
 
   /**
-   * Create an instance of a locator that locates a JCheckBox by its text or name, relative to the given parent
+   * Create an instance of a locator that locates a JCheckBox by its text or name, relative to the
+   * given parent
    *
    * @param label  the text/name of the JButton
    * @param parent the locator for the parent component
@@ -52,7 +53,8 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   }
 
   /**
-   * Create an instance of a locator that locates a JCheckBox by its text or name, relative to the given parent.
+   * Create an instance of a locator that locates a JCheckBox by its text or name, relative to the
+   * given parent.
    *
    * @param label  the text/name of the JCheckBox
    * @param index  the index relative to it's parent
@@ -62,20 +64,17 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
     super(JCheckBox.class, label, parent);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.swing.SWingWidgetLocator#getWidgetText(java.awt.Component)
-   */
+  @Override
   protected String getWidgetText(Component widget) {
     return ((JCheckBox) widget).getText();
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JCheckBoxLocator";
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IsSelected#isSelected(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean isSelected(IUIContext ui) throws WidgetSearchException {
     JCheckBox button = (JCheckBox) ((IWidgetReference) ui.find(this)).getWidget();
     return button.isSelected();
@@ -90,16 +89,16 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   /**
    * Create a condition that tests if the given widget has the expected text.
    *
-   * @param expected the expected text (can be a regular expression as described in the {@link StringComparator}
-   *                 utility)
+   * @param expected the expected text (can be a regular expression as described in the
+   *                 {@link StringComparator} utility)
    */
   public IUICondition hasText(String expected) {
     return new HasTextCondition(this, expected);
   }
 
   /**
-   * Create a condition that tests if the given widget is enabled. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given widget is enabled. Note that this is a convenience
+   * method, equivalent to:
    * <code>isEnabled(true)</code>
    */
   public IUICondition isEnabled() {
@@ -109,7 +108,6 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   * @param selected
    * @param expected <code>true</code> if the menu is expected to be enabled, else
    *                 <code>false</code>
    * @see IsEnabledCondition
@@ -119,8 +117,8 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   }
 
   /**
-   * Create a condition that tests if the given button is selected. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given button is selected. Note that this is a convenience
+   * method, equivalent to:
    * <code>isSelected(true)</code>
    */
   public IUICondition isSelected() {
@@ -130,7 +128,6 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
   /**
    * Create a condition that tests if the given button is selected.
    *
-   * @param selected
    * @param expected <code>true</code> if the button is expected to be selected, else
    *                 <code>false</code>
    */

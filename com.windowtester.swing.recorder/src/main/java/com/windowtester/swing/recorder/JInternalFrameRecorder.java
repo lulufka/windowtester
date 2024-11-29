@@ -18,14 +18,18 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.ComponentTester;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
-import javax.swing.*;
+import java.util.Objects;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 
 /**
- * Handle the recording of events related to an internal frame (JInternalFrame). Like instances of Window, we must
- * insert waits for the showing and hiding of internal frames.
+ * Handle the recording of events related to an internal frame (JInternalFrame). Like instances of
+ * Window, we must insert waits for the showing and hiding of internal frames.
  * <p>
  * NOTE: InternalFrameEvents are not normally posted to the AWT event queue.
  *
@@ -51,21 +55,20 @@ public class JInternalFrameRecorder extends JComponentRecorder {
   /**
    * Constructor for JInternalFrameRecorder.
    *
-   * @param resolver
+   * @param resolver resolver
    */
   public JInternalFrameRecorder(Resolver resolver) {
     super(resolver);
   }
 
+  @Override
   protected void init(int rtype) {
     super.init(rtype);
     frame = null;
     type = UNKNOWN;
   }
 
-  /**
-   * @see abbot.editor.recorder.ComponentRecorder#accept(java.awt.AWTEvent)
-   */
+  @Override
   public boolean accept(AWTEvent event) {
     int id = event.getID();
     Log.debug("Source is " + event.getSource());
@@ -87,8 +90,8 @@ public class JInternalFrameRecorder extends JComponentRecorder {
     return false;
   }
 
+  @Override
   public boolean parse(AWTEvent event) {
-    //	System.out.println("Internal frame " + event);
     boolean consumed = true;
     switch (getRecordingType()) {
       case SE_INTERNAL_FRAME:
@@ -135,6 +138,7 @@ public class JInternalFrameRecorder extends JComponentRecorder {
     return true;
   }
 
+  @Override
   protected Step createStep() {
     Step step;
     switch (getRecordingType()) {
@@ -153,39 +157,47 @@ public class JInternalFrameRecorder extends JComponentRecorder {
 
   protected Step createInternalFrameAction(JInternalFrame target, String type) {
     ComponentReference ref = getResolver().addComponent(target);
-    if (type == SHOW || type == HIDE) {
+    if (Objects.equals(type, SHOW) || Objects.equals(type, HIDE)) {
       Assert step =
           new Assert(
               getResolver(),
               null,
               ComponentTester.class.getName(),
               "assertComponentShowing",
-              new String[] {ref.getID()},
+              new String[]{ref.getID()},
               "true",
-              type == HIDE);
+              Objects.equals(type, HIDE));
       step.setWait(true);
       return step;
-    } else if (type == MOVE) {
+    } else if (Objects.equals(type, MOVE)) {
       Point loc = target.getLocation();
       return new Action(
           getResolver(),
           null,
           "actionMove",
-          new String[] {ref.getID(), String.valueOf(loc.x), String.valueOf(loc.y)},
+          new String[]{ref.getID(), String.valueOf(loc.x), String.valueOf(loc.y)},
           JInternalFrame.class);
-    } else if (type == RESIZE) {
+    } else if (Objects.equals(type, RESIZE)) {
       Dimension size = target.getSize();
       return new Action(
           getResolver(),
           null,
           "actionResize",
-          new String[] {ref.getID(), String.valueOf(size.width), String.valueOf(size.height)},
+          new String[]{ref.getID(), String.valueOf(size.width), String.valueOf(size.height)},
           JInternalFrame.class);
     } else {
-      String action =
-          type == CLOSE ? "actionClose" : ((type == ICONIFY) ? "actionIconify" : "actionDeiconify");
+      String action;
+      if (Objects.equals(type, CLOSE)) {
+        action = "actionClose";
+      } else {
+        if (Objects.equals(type, ICONIFY)) {
+          action = "actionIconify";
+        } else {
+          action = "actionDeiconify";
+        }
+      }
       return new Action(
-          getResolver(), null, action, new String[] {ref.getID()}, JInternalFrame.class);
+          getResolver(), null, action, new String[]{ref.getID()}, JInternalFrame.class);
     }
   }
 }

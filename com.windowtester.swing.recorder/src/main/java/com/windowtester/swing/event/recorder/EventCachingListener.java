@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.windowtester.swing.event.recorder;
 
+import com.windowtester.recorder.event.ISemanticEvent;
 import com.windowtester.recorder.event.ISemanticEventListener;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.meta.RecorderAssertionHookAddedEvent;
@@ -23,86 +24,73 @@ import java.util.List;
  */
 public class EventCachingListener implements ISemanticEventListener {
 
-  List events = new ArrayList();
+  private final List<ISemanticEvent> events = new ArrayList<>();
 
   /**
    * A describer used for stateful event descriptions
    */
   // private EventDescriber _describer = new EventDescriber();
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notify(com.windowtester.swt.event.model.IUISemanticEvent)
-   */
+  @Override
   public void notify(IUISemanticEvent event) {
     events.add(event);
   }
 
-  /**
-   * @see com.windowtester.recorder.event.ISemanticEventListener#notifyAssertionHookAdded(java.lang.String)
-   */
+  @Override
   public void notifyAssertionHookAdded(String hookName) {
     events.add(new RecorderAssertionHookAddedEvent(hookName));
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyStart()
-   */
-  public void notifyStart() {}
+  @Override
+  public void notifyStart() {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyStop()
-   */
-  public void notifyStop() {}
+  @Override
+  public void notifyStop() {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyWrite()
-   */
-  public void notifyWrite() {}
+  @Override
+  public void notifyWrite() {
+  }
 
-  /*
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyPause()
-   */
-  public void notifyPause() {}
+  @Override
+  public void notifyPause() {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyDispose()
-   */
-  public void notifyDispose() {}
+  @Override
+  public void notifyDispose() {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyRestart()
-   */
-  public void notifyRestart() {}
+  @Override
+  public void notifyRestart() {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyError(com.windowtester.swt.event.model.RecorderErrorEvent)
-   */
-  public void notifyError(RecorderErrorEvent event) {}
+  @Override
+  public void notifyError(RecorderErrorEvent event) {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swt.event.model.ISemanticEventListener#notifyTrace(com.windowtester.swt.event.model.RecorderTraceEvent)
-   */
-  public void notifyTrace(RecorderTraceEvent event) {}
+  @Override
+  public void notifyTrace(RecorderTraceEvent event) {
+  }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.recorder.event.ISemanticEventListener#notifySpyModeToggle()
-   */
-  public void notifySpyModeToggle() {}
+  @Override
+  public void notifySpyModeToggle() {
+  }
 
-  public IUISemanticEvent[] getEvents() {
-    if (events == null) {
-      return new IUISemanticEvent[] {};
+  public ISemanticEvent[] getEvents() {
+    if (events.isEmpty()) {
+      return new IUISemanticEvent[]{};
     }
-    return (IUISemanticEvent[]) events.toArray(new IUISemanticEvent[] {});
+    return events.toArray(new ISemanticEvent[0]);
   }
 
+  @Override
   public void notifyControllerStart(int port) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyDisplayNotFound() {
-    // TODO Auto-generated method stub
 
   }
 }

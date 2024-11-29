@@ -8,11 +8,13 @@ import java.io.File;
 /**
  * Indirect usage to avoid too much direct linkage to JUnit.
  */
-public class AssertionFailedError extends junit.framework.AssertionFailedError {
+public class AssertionFailedError extends RuntimeException {
+
   private File file;
   private int line;
 
-  public AssertionFailedError() {}
+  public AssertionFailedError() {
+  }
 
   public AssertionFailedError(String msg) {
     super(msg);
@@ -33,11 +35,12 @@ public class AssertionFailedError extends junit.framework.AssertionFailedError {
   }
 
   private static String getMessage(String msg, Step step) {
-    File file = Script.getFile(step);
     int line = Script.getLine(step);
-    if (file == null || line <= 0) {
+    if (line <= 0) {
       return msg;
     }
-    return Strings.get("step.failure", new Object[] {msg, file, new Integer(line)});
+
+    File file = Script.getFile(step);
+    return Strings.get("step.failure", new Object[]{msg, file, line});
   }
 }

@@ -1,5 +1,7 @@
 package abbot.script;
 
+import static java.util.stream.Collectors.toMap;
+
 import abbot.Log;
 import abbot.Platform;
 import abbot.finder.AWTHierarchy;
@@ -37,16 +39,16 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
- * Provide a structure to encapsulate actions invoked on GUI components and tests performed on those components. Scripts
- * need to be short and concise (and therefore easy to read/write). Extensions don't have to be. This takes a single
- * filename as a constructor argument. Use {@link junit.extensions.abbot.ScriptFixture} and {@link
- * junit.extensions.abbot.ScriptTestSuite} to generate a suite by auto-generating a collection of {@link Script}s.
+ * Provide a structure to encapsulate actions invoked on GUI components and tests performed on those
+ * components. Scripts need to be short and concise (and therefore easy to read/write). Extensions
+ * don't have to be. This takes a single filename as a constructor argument.
  *
  * @see StepRunner
  * @see Fixture
  * @see Launch
  */
 public class Script extends Sequence implements Resolver {
+
   public static final String INTERPRETER = "bsh";
   private static final String USAGE =
       "<AWTTestScript [desc=\"\"] [forked=\"true\"] [slow=\"true\"]"
@@ -83,18 +85,22 @@ public class Script extends Sequence implements Resolver {
   static {
     slowDelay = Properties.getProperty("abbot.script.slow_delay", slowDelay, 0, 60000);
     String defValue = Platform.JAVA_VERSION < Platform.JAVA_1_4 ? "false" : "true";
-    boolean validate = "true".equals(System.getProperty("abbot.script.validate", defValue));
   }
 
-  protected static Map<String, String> createDefaultMap(String filename) {
-    Map<String, String> map = new HashMap<>();
-    map.put(TAG_FILENAME, filename);
+  private static Map<String, File> createDefaultMap(File file) {
+    Map<String, File> map = new HashMap<>();
+    map.put(TAG_FILENAME, file);
     return map;
   }
 
+  private static File toFile(Resolver parent, String filename) {
+    File directory = parent != null ? parent.getDirectory() : null;
+    return filename != null ? new File(filename) : getTempFile(directory);
+  }
+
   /**
-   * Create a new, empty <code>Script</code>.  Used as a temporary {@link Resolver}, uses the default {@link
-   * Hierarchy}.
+   * Create a new, empty <code>Script</code>.  Used as a temporary {@link Resolver}, uses the
+   * default {@link Hierarchy}.
    *
    * @deprecated Use an explicit {@link Hierarchy} instead.
    */
@@ -102,13 +108,14 @@ public class Script extends Sequence implements Resolver {
   public Script() {
     // This is roughly equivalent to what
     // DefaultComponentFinder.getFinder() used to do
-    this(AWTHierarchy.getDefault());
+    this("");
   }
 
   /**
    * Create a <code>Script</code> from the given filename.  Uses the default {@link Hierarchy}.
-   * @param filename file name
-   * @deprecated Use an explicit {@link Hierarchy} instead.
+   *
+   * @param filename filename
+   * @deprecated use constructor Script(File) instead
    */
   @Deprecated
   public Script(String filename) {
@@ -117,25 +124,31 @@ public class Script extends Sequence implements Resolver {
     this(filename, AWTHierarchy.getDefault());
   }
 
-  public Script(Hierarchy h) {
-    this(null, new HashMap<>());
-    setHierarchy(h);
+  public Script(String filename, Hierarchy hierarchy) {
+    this(toFile(null, filename), hierarchy);
   }
 
-  public Script(String filename, Hierarchy h) {
-    this(null, createDefaultMap(filename));
-    setHierarchy(h);
+  public Script(Hierarchy hierarchy) {
+    this((File) null, hierarchy);
   }
 
-  public Script(Resolver parent, Map<String, String> attributes) {
+  public Script(File file) {
+    this(null, createDefaultMap(file));
+  }
+
+  public Script(File file, Hierarchy hierarchy) {
+    this(null, createDefaultMap(file));
+    setHierarchy(hierarchy);
+  }
+
+  public Script(Resolver parent, Map<String, File> attributes) {
     super(parent, attributes);
-    String filename = attributes.get(TAG_FILENAME);
-    File directory = parent != null ? parent.getDirectory() : null;
-    File file = filename != null ? new File(filename) : getTempFile(directory);
-    setFile(file);
+
+    setFile(attributes.get(TAG_FILENAME));
     if (parent != null) {
       setRelativeTo(parent.getDirectory());
     }
+
     try {
       load();
     } catch (IOException e) {
@@ -144,13 +157,15 @@ public class Script extends Sequence implements Resolver {
   }
 
   /**
-   * Since we allow ComponentReference IDs to be changed, make sure our map is always up to date.
+   * Since we allow ComponentReference IDs to be changed, make sure our map is always up-to-date.
    */
   private synchronized void synchReferenceIDs() {
-    Map<String, ComponentReference> map = new HashMap<>();
-    for (ComponentReference ref : refs.values()) {
-      map.put(ref.getID(), ref);
-    }
+    Map<String, ComponentReference> map = refs.values().stream()
+        .collect(toMap(
+            ComponentReference::getID,
+            value -> value
+        ));
+
     if (!refs.equals(map)) {
       // atomic update of references map
       refs = Collections.unmodifiableMap(map);
@@ -162,7 +177,7 @@ public class Script extends Sequence implements Resolver {
     components.clear();
   }
 
-  private File getTempFile(File dir) {
+  private static File getTempFile(File dir) {
     File file;
     try {
       file =
@@ -228,6 +243,7 @@ public class Script extends Sequence implements Resolver {
 
   /**
    * Change the file system basis for the current script.  Does not affect the script contents.
+   *
    * @param file file
    * @deprecated Use {@link #setFile(File)}.
    */
@@ -257,8 +273,9 @@ public class Script extends Sequence implements Resolver {
   private static final String XML_INFO = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 
   /**
-   * Flag to indicate whether emitted XML should contain the script contents.  Sometimes we just want a one-liner
-   * (like when displaying in the script editor), and sometimes we want the full contents (when writing to file).
+   * Flag to indicate whether emitted XML should contain the script contents.  Sometimes we just
+   * want a one-liner (like when displaying in the script editor), and sometimes we want the full
+   * contents (when writing to file).
    */
   private boolean formatForSave = false;
 
@@ -300,12 +317,12 @@ public class Script extends Sequence implements Resolver {
     for (ComponentReference ref : refs.values()) {
       String id = ref.getAttribute(TAG_PARENT);
       if (id != null && refs.get(id) == null) {
-        String msg = Strings.get("script.parent_missing", new Object[] {id});
+        String msg = Strings.get("script.parent_missing", new Object[]{id});
         throw new InvalidScriptException(msg);
       }
       id = ref.getAttribute(TAG_WINDOW);
       if (id != null && refs.get(id) == null) {
-        String msg = Strings.get("script.window_missing", new Object[] {id});
+        String msg = Strings.get("script.window_missing", new Object[]{id});
         throw new InvalidScriptException(msg);
       }
     }
@@ -539,7 +556,7 @@ public class Script extends Sequence implements Resolver {
   @Override
   public String getDefaultDescription() {
     String ext = fork ? " &" : "";
-    String desc = Strings.get("script.desc", new Object[] {getFilename(), ext});
+    String desc = Strings.get("script.desc", new Object[]{getFilename(), ext});
     return desc.contains(UNTITLED_FILE) ? UNTITLED : desc;
   }
 
@@ -558,8 +575,9 @@ public class Script extends Sequence implements Resolver {
   }
 
   /**
-   * Defer to the {@link UIContext} to obtain a {@link ClassLoader}, or use the current {@link Thread}'s context class
-   * loader.
+   * Defer to the {@link UIContext} to obtain a {@link ClassLoader}, or use the current
+   * {@link Thread}'s context class loader.
+   *
    * @return class loader
    * @see Thread#getContextClassLoader()
    */
@@ -672,7 +690,7 @@ public class Script extends Sequence implements Resolver {
 
   public ComponentReference getComponentReference(Component comp) {
     if (!getHierarchy().contains(comp)) {
-      String msg = Strings.get("script.not_in_hierarchy", new Object[] {comp.toString()});
+      String msg = Strings.get("script.not_in_hierarchy", new Object[]{comp.toString()});
       throw new IllegalArgumentException(msg);
     }
     synchReferenceIDs();

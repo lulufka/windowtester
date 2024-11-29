@@ -122,18 +122,20 @@ public class JTextComponentLocator extends SwingWidgetLocator
   /* (non-Javadoc)
    * @see com.windowtester.runtime.swing.SWingWidgetLocator#getWidgetText(java.awt.Component)
    */
+  @Override
   protected String getWidgetText(Component widget) {
     return ((JTextComponent) widget).getText();
   }
 
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
     if (caretPosition == UNASSIGNED) {
-      return super.doClick(ui, clicks, c, offset, modifierMask);
+      return super.doClick(ui, clicks, component, offset, modifierMask);
     }
     return ((UIContextSwing) ui)
         .getDriver()
-        .clickTextComponent((JTextComponent) c, getCaretPosition());
+        .clickTextComponent((JTextComponent) component, getCaretPosition());
   }
 
   ///////////////////////////////////////////////////////////////////////////

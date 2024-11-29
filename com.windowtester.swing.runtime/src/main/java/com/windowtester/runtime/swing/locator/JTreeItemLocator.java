@@ -86,15 +86,17 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   /* (non-Javadoc)
    * @see com.windowtester.swing.locator.AbstractPathLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
    */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
     if (clicks > 2) {
       throw new UnsupportedOperationException();
     }
-    ((UIContextSwing) ui).getDriver().clickTreeItem(clicks, c, getPath(), modifierMask);
-    return c;
+    ((UIContextSwing) ui).getDriver().clickTreeItem(clicks, component, getPath(), modifierMask);
+    return component;
   }
 
+  @Override
   public IWidgetLocator contextClick(
       IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
       throws WidgetSearchException {

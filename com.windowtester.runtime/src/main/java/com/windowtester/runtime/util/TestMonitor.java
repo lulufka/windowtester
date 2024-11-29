@@ -12,10 +12,9 @@ package com.windowtester.runtime.util;
 
 import com.windowtester.internal.debug.Logger;
 import com.windowtester.internal.runtime.junit.core.ITestIdentifier;
-import com.windowtester.internal.runtime.test.JUnit3TestId;
+import com.windowtester.internal.runtime.test.JUnitTestId;
 import com.windowtester.internal.runtime.test.NoRunningTestId;
 import com.windowtester.internal.runtime.test.TestId;
-import junit.framework.TestCase;
 
 /**
  * Monitors the current test run.
@@ -69,11 +68,12 @@ public class TestMonitor {
    *
    * @deprecated use {@link TestMonitor#beginTest(ITestIdentifier)} instead.
    */
-  public void beginTestCase(TestCase testcase) {
-    if (testcase == null) {
-      endTestCase(); // set test to none
+  public void beginTestCase(String id, String name) {
+    if (id == null) {
+      // set test to none
+      endTestCase();
     } else {
-      beginTest(new JUnit3TestId(testcase));
+      beginTest(new JUnitTestId(id, name));
     }
   }
 

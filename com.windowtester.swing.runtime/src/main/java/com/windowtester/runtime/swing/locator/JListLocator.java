@@ -68,10 +68,11 @@ public class JListLocator extends AbstractPathLocator {
     super(cls, itemText, index, parentInfo);
   }
 
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
     return ((UIContextSwing) ui)
         .getDriver()
-        .clickListItem(clicks, (JList) c, getItemText(), modifierMask);
+        .clickListItem(clicks, (JList) component, getItemText(), modifierMask);
   }
 }

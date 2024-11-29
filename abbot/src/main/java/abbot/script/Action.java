@@ -83,6 +83,7 @@ public class Action extends Call {
     }
   }
 
+  @Override
   public void setTargetClassName(String cn) {
     if (cn == null || "".equals(cn)) {
       cn = DEFAULT_CLASS_NAME;
@@ -90,10 +91,12 @@ public class Action extends Call {
     super.setTargetClassName(cn);
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_ACTION;
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     // Only save the class attribute if it's not the default
@@ -104,10 +107,12 @@ public class Action extends Call {
     return map;
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getDefaultDescription() {
     // strip off "action", if it's there
     String name = getMethodName();
@@ -117,10 +122,12 @@ public class Action extends Call {
     return name + getArgumentsDescription();
   }
 
+  @Override
   public Class getTargetClass() throws ClassNotFoundException {
     return resolveTester(getTargetClassName()).getClass();
   }
 
+  @Override
   protected Object evaluateParameter(Method m, String param, Class type) throws Exception {
     // Convert ComponentLocation arguments
     if (ComponentLocation.class.isAssignableFrom(type)) {
@@ -139,10 +146,12 @@ public class Action extends Call {
     }
   }
 
+  @Override
   protected Object getTarget(Method m) throws ClassNotFoundException {
     return resolveTester(getTargetClassName());
   }
 
+  @Override
   protected Method[] resolveMethods(String name, Class cls, Class returnType)
       throws NoSuchMethodException {
     Method[] methods = super.resolveMethods(name, cls, returnType);
@@ -165,10 +174,12 @@ public class Action extends Call {
     return methods;
   }
 
+  @Override
   public Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
     return resolveMethod(getMethodName(), getTargetClass(), void.class);
   }
 
+  @Override
   protected Method disambiguateMethod(Method[] methods) {
     // Try to find the right one by examining some of the parameters
     // Nothing fancy, just explicitly picks between the variants.

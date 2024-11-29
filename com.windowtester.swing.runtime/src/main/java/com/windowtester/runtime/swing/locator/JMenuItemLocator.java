@@ -76,10 +76,11 @@ public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLo
   /* (non-Javadoc)
    * @see com.windowtester.swing.locator.AbstractPathLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
    */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
-    ((UIContextSwing) ui).getDriver().clickMenuItem((JMenuItem) c);
-    return c;
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+    ((UIContextSwing) ui).getDriver().clickMenuItem((JMenuItem) component);
+    return component;
   }
 
   ///////////////////////////////////////////////////////////////////////////

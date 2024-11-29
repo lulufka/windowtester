@@ -18,9 +18,13 @@ import java.util.List;
  */
 public class PathStringTokenizerUtil {
 
+  private PathStringTokenizerUtil() {
+    // do nothing
+  }
+
   /**
    * Take a path string (elements delimited by the '\' character) and break it into tokens. If an element contains the
-   * delimeter, it must be escaped.
+   * delimiter, it must be escaped.
    * <p>
    * <p>
    * For example: "Edit/Find\\/Replace" tokenizes to "Edit", "Find/Replace".
@@ -40,16 +44,16 @@ public class PathStringTokenizerUtil {
    */
   public static class PathTokenizer {
 
-    private final String _pathString;
-    private final char _delimeter;
-    private final char _escape;
-    private StringBuffer _sb = new StringBuffer();
-    private final List _items = new ArrayList();
+    private final String pathString;
+    private final char delimiter;
+    private final char escape;
+    private StringBuilder builder = new StringBuilder();
+    private final List<String> items = new ArrayList<>();
 
-    public PathTokenizer(String pathString, char delimeter, char escape) {
-      _pathString = pathString;
-      _delimeter = delimeter;
-      _escape = escape;
+    public PathTokenizer(String pathString, char delimiter, char escape) {
+      this.pathString = pathString;
+      this.delimiter = delimiter;
+      this.escape = escape;
     }
 
     public PathTokenizer(String pathString) {
@@ -57,11 +61,11 @@ public class PathStringTokenizerUtil {
     }
 
     boolean isDelimeter(char c) {
-      return c == _delimeter;
+      return c == delimiter;
     }
 
     boolean isEscape(char c) {
-      return c == _escape;
+      return c == escape;
     }
 
     public String[] tokenize() {
@@ -82,11 +86,11 @@ public class PathStringTokenizerUtil {
     }
 
     private String[] getItems() {
-      return (String[]) _items.toArray(new String[] {});
+      return items.toArray(new String[] {});
     }
 
     private void addChar(int i) {
-      _sb.append(getChar(i));
+      builder.append(getChar(i));
     }
 
     private boolean isEscapeCase(int i) {
@@ -94,19 +98,19 @@ public class PathStringTokenizerUtil {
     }
 
     private void addItem() {
-      if (_sb.length() == 0) {
+      if (builder.length() == 0) {
         return;
       }
-      _items.add(_sb.toString());
-      _sb = new StringBuffer(); // would be nice if we could just clear it...
+      items.add(builder.toString());
+      builder.delete(0, builder.length() -1);
     }
 
     private char getChar(int i) {
-      return _pathString.charAt(i);
+      return pathString.charAt(i);
     }
 
     private boolean inBounds(int i) {
-      return i < _pathString.length();
+      return i < pathString.length();
     }
   }
 }

@@ -24,13 +24,14 @@
     </dependency>
     <dependency>
       <groupId>io.github.r4fterman</groupId>
-      <artifactId>com.windowtester.runtime</artifactId>
+      <artifactId>com.windowtester.swing.runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.github.r4fterman</groupId>
-      <artifactId>com.windowtester.swing.runtime</artifactId>
+      <artifactId>com.windowtester.junit5</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

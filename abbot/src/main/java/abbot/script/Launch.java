@@ -179,6 +179,7 @@ public class Launch extends Call implements UIContext {
     return getResolver().getHierarchy();
   }
 
+  @Override
   public void runStep() throws Throwable {
     if (currentLaunch != null) {
       currentLaunch.terminate();
@@ -234,6 +235,7 @@ public class Launch extends Call implements UIContext {
     return classLoader;
   }
 
+  @Override
   public Class getTargetClass() throws ClassNotFoundException {
     Class cls = resolveClass(getTargetClassName());
     Log.debug("Target class is " + cls.getName());
@@ -244,6 +246,7 @@ public class Launch extends Call implements UIContext {
    * Return the target for the method invocation.  All launch invocations must be static, so this
    * always returns null.
    */
+  @Override
   protected Object getTarget(Method m) {
     return null;
   }
@@ -251,10 +254,12 @@ public class Launch extends Call implements UIContext {
   /**
    * Return the method to be used for invocation.
    */
+  @Override
   public Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
     return resolveMethod(getMethodName(), getTargetClass(), null);
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (classpath != null) {
@@ -266,6 +271,7 @@ public class Launch extends Call implements UIContext {
     return map;
   }
 
+  @Override
   public String getDefaultDescription() {
     String desc =
         Strings.get(
@@ -276,10 +282,12 @@ public class Launch extends Call implements UIContext {
     return desc;
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_LAUNCH;
   }

@@ -23,7 +23,9 @@ import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.meta.RecorderErrorEvent;
 import com.windowtester.recorder.event.meta.RecorderTraceEvent;
 import com.windowtester.swing.event.spy.SpyEventListener;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.MenuComponent;
 
 /**
  * The Swing Gui Test Recorder
@@ -33,93 +35,99 @@ public class SwingGuiTestRecorder implements IEventRecorder {
   private static final long FIXTURE_EVENT_MASK =
       abbot.editor.recorder.EventRecorder.RECORDING_EVENT_MASK;
 
-  private final SwingEventRecorder _recorder;
+  private final SwingEventRecorder recorder;
 
   // the listener
   private static final EventNormalizer normalizer = new EventNormalizer();
-
-  // for compatibility with abbot code, nothing to do with windowtester
-  private final Script _script;
-  private final Hierarchy _hierarchy;
-
-  /**
-   * A cache to store recorded events
-   */
-  private final EventCachingListener _cache = new EventCachingListener();
 
   /**
    * Create an instance
    */
   public SwingGuiTestRecorder() {
-    _hierarchy = AWTHierarchy.getDefault();
-    _script = new Script(_hierarchy);
-    _recorder = new SwingEventRecorder(_script, true);
-    // for debug purpose
-    //	_recorder.addListener(new ConsoleReportingListener());
-    _recorder.addListener(_cache);
-    _recorder.addListener(new SpyEventListener());
+    Hierarchy hierarchy = AWTHierarchy.getDefault();
+    // for compatibility with abbot code, nothing to do with windowtester
+    Script script = new Script(hierarchy);
+    recorder = new SwingEventRecorder(script, true);
+    EventCachingListener cache = new EventCachingListener();
+    recorder.addListener(cache);
+    recorder.addListener(new SpyEventListener());
   }
 
+  @Override
   public void start() {
     WindowTesterSecurityManager.install();
     startListening();
-    _recorder.start();
+    recorder.start();
   }
 
+  @Override
   public void stop() {
-    _recorder.stop();
+    recorder.stop();
   }
 
+  @Override
   public void write() {
-    _recorder.write();
+    recorder.write();
   }
 
+  @Override
   public void restart() {
-    _recorder.restart();
+    recorder.restart();
   }
 
+  @Override
   public void terminate() {
-    _recorder.terminate();
+    recorder.terminate();
   }
 
+  @Override
   public void toggleSpyMode() {
-    _recorder.toggleSpyMode();
+    recorder.toggleSpyMode();
   }
 
+  @Override
   public void pause() {
-    _recorder.pause();
+    recorder.pause();
   }
 
+  @Override
   public void addListener(ISemanticEventListener listener) {
-    _recorder.addListener(listener);
+    recorder.addListener(listener);
   }
 
+  @Override
   public void removeListener(ISemanticEventListener listener) {
-    _recorder.removeListener(listener);
+    recorder.removeListener(listener);
   }
 
+  @Override
   public void record(IUISemanticEvent semanticEvent) {
-    _recorder.record(semanticEvent);
+    recorder.record(semanticEvent);
   }
 
+  @Override
   public void reportError(RecorderErrorEvent event) {
-    _recorder.reportError(event);
+    recorder.reportError(event);
   }
 
+  @Override
   public void trace(RecorderTraceEvent event) {
-    _recorder.trace(event);
+    recorder.trace(event);
   }
 
+  @Override
   public void addEventFilter(IEventFilter filter) {
-    _recorder.addEventFilter(filter);
+    recorder.addEventFilter(filter);
   }
 
+  @Override
   public void removeEventFilter(IEventFilter filter) {
-    _recorder.removeEventFilter(filter);
+    recorder.removeEventFilter(filter);
   }
 
+  @Override
   public void addHook(String hookName) {
-    _recorder.addHook(hookName);
+    recorder.addHook(hookName);
   }
 
   /**
@@ -128,7 +136,8 @@ public class SwingGuiTestRecorder implements IEventRecorder {
   private void startListening() {
     normalizer.startListening(
         new SingleThreadedEventListener() {
-          protected void processEvent(final AWTEvent event) {
+          @Override
+          protected void processEvent(AWTEvent event) {
             startRecordingEvent(event);
           }
         },
@@ -148,13 +157,13 @@ public class SwingGuiTestRecorder implements IEventRecorder {
       return;
     }
 
-    if (_recorder != null) {
+    if (recorder != null) {
       // System.out.println("recorder process event");
       try {
-        _recorder.record(event);
+        recorder.record(event);
       } catch (RecordingFailedException e) {
         // Stop recording, but keep what we've got so far
-        _recorder.stop();
+        recorder.stop();
         e.printStackTrace();
       }
     }
@@ -163,7 +172,8 @@ public class SwingGuiTestRecorder implements IEventRecorder {
   /* (non-Javadoc)
    * @see com.windowtester.recorder.IEventRecorder#isRecording()
    */
+  @Override
   public boolean isRecording() {
-    return _recorder.isRecording();
+    return recorder.isRecording();
   }
 }

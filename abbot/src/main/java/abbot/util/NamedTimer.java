@@ -1,10 +1,8 @@
 package abbot.util;
 
 import abbot.Log;
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Prevents misbehaving TimerTasks from canceling the timer thread by throwing exceptions and/or errors.  Also extends
@@ -26,7 +24,7 @@ public class NamedTimer extends Timer {
   public NamedTimer(final String name, boolean isDaemon) {
     super(isDaemon);
     schedule(
-        new TimerTask() {
+        new AbbotTimerTask() {
           public void run() {
             Thread.currentThread().setName(name);
           }
@@ -35,7 +33,7 @@ public class NamedTimer extends Timer {
   }
 
   /**
-   * Handle an exception thrown by a TimerTask.  The default does nothing.
+   * Handle an exception thrown by a AbbotTimerTask.  The default does nothing.
    */
   protected void handleException(Throwable thrown) {
     Log.warn(thrown);
@@ -46,10 +44,10 @@ public class NamedTimer extends Timer {
   // We can easily wrap scheduled tasks with a catcher, but we can't readily
   // cancel the wrapper when
 
-  private class ProtectingTimerTask extends TimerTask {
-    private final TimerTask task;
+  private class ProtectingTimerTask extends AbbotTimerTask {
+    private final AbbotTimerTask task;
 
-    public ProtectingTimerTask(TimerTask orig) {
+    public ProtectingTimerTask(AbbotTimerTask orig) {
       this.task = orig;
     }
 
@@ -64,43 +62,29 @@ public class NamedTimer extends Timer {
         }
       }
     }
-
-    private boolean isCanceled() {
-      boolean canceled = false;
-      final int CANCELED = 3;
-      try {
-        Field f = TimerTask.class.getDeclaredField("state");
-        f.setAccessible(true);
-        int state = ((Integer) f.get(task)).intValue();
-        canceled = state == CANCELED;
-      } catch (Exception e) {
-        Log.warn(e);
-      }
-      return canceled;
-    }
   }
 
-  public void schedule(TimerTask task, Date time) {
+  public void schedule(AbbotTimerTask task, Date time) {
     super.schedule(new ProtectingTimerTask(task), time);
   }
 
-  public void schedule(TimerTask task, Date firstTime, long period) {
+  public void schedule(AbbotTimerTask task, Date firstTime, long period) {
     super.schedule(new ProtectingTimerTask(task), firstTime, period);
   }
 
-  public void schedule(TimerTask task, long delay) {
+  public void schedule(AbbotTimerTask task, long delay) {
     super.schedule(new ProtectingTimerTask(task), delay);
   }
 
-  public void schedule(TimerTask task, long delay, long period) {
+  public void schedule(AbbotTimerTask task, long delay, long period) {
     super.schedule(new ProtectingTimerTask(task), delay, period);
   }
 
-  public void scheduleAtFixedRate(TimerTask task, Date firstTime, long period) {
+  public void scheduleAtFixedRate(AbbotTimerTask task, Date firstTime, long period) {
     super.scheduleAtFixedRate(new ProtectingTimerTask(task), firstTime, period);
   }
 
-  public void scheduleAtFixedRate(TimerTask task, long delay, long period) {
+  public void scheduleAtFixedRate(AbbotTimerTask task, long delay, long period) {
     super.scheduleAtFixedRate(new ProtectingTimerTask(task), delay, period);
   }
 }

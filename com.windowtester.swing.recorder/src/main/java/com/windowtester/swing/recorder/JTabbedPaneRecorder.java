@@ -19,9 +19,12 @@ import abbot.tester.ComponentLocation;
 import abbot.tester.JTabbedPaneLocation;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
 import javax.swing.plaf.TabbedPaneUI;
 
 /**
@@ -39,6 +42,7 @@ public class JTabbedPaneRecorder extends JComponentRecorder {
     super(resolver);
   }
 
+  @Override
   public boolean accept(AWTEvent event) {
     if (isClick(event)) {
       MouseEvent me = (MouseEvent) event;
@@ -78,28 +82,21 @@ public class JTabbedPaneRecorder extends JComponentRecorder {
     return super.accept(event);
   }
 
-  /**
-   * Special case for OSX tab selection from popup menu.
-   */
+  @Override
   protected Step createMenuSelection(Component menuItem) {
     ComponentReference ref = getResolver().addComponent(tabbedPane);
     ComponentLocation loc = new JTabbedPaneLocation(((JMenuItem) menuItem).getText());
-    Step step =
-        new Action(
+    return new Action(
             getResolver(),
             null,
             "actionSelectTab",
-            new String[] {
-              ref.getID(), loc.toString(),
+            new String[]{
+                ref.getID(), loc.toString(),
             });
-    return step;
   }
 
-  /**
-   * Parse clicks, notably those that select a tab.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
-
     ComponentReference cr = getResolver().addComponent(target);
     JTabbedPane tp = (JTabbedPane) target;
     TabbedPaneUI ui = tp.getUI();
@@ -118,8 +115,8 @@ public class JTabbedPaneRecorder extends JComponentRecorder {
           getResolver(),
           null,
           "actionSelectTab",
-          new String[] {
-            cr.getID(), getLocationArgument(tp, x, y),
+          new String[]{
+              cr.getID(), getLocationArgument(tp, x, y),
           },
           javax.swing.JTabbedPane.class);
     }

@@ -73,39 +73,39 @@ public class JComponentTester extends ContainerTester {
   /**
    * Scrolls to ensure the substructure is in view before clicking.
    * @param c component
-   * @param loc location
+   * @param location location
    * @param buttons buttons
    * @param count count
    */
-  public void actionClick(Component c, ComponentLocation loc, int buttons, int count) {
+  public void actionClick(Component c, ComponentLocation location, int buttons, int count) {
     if (c instanceof JComponent) {
-      scrollToVisible(c, loc.getBounds(c));
+      scrollToVisible(c, location.getBounds(c));
     }
-    super.actionClick(c, loc, buttons, count);
+    super.actionClick(c, location, buttons, count);
   }
 
   /**
    * @param c component
-   * @param loc location
+   * @param location location
    * @param mods modifiers
    * @deprecated Use {@link #actionDrag(Component, ComponentLocation, int)} instead.
    */
-  public void actionDrag(Component c, ComponentLocation loc, String mods) {
-    actionDrag(c, loc, AWT.getModifiers(mods));
+  public void actionDrag(Component c, ComponentLocation location, String mods) {
+    actionDrag(c, location, AWT.getModifiers(mods));
   }
 
-  public void actionDrag(Component c, ComponentLocation loc, int modifiers) {
+  public void actionDrag(Component c, ComponentLocation location, int modifiers) {
     if (c instanceof JComponent) {
-      scrollToVisible(c, loc.getBounds(c));
+      scrollToVisible(c, location.getBounds(c));
     }
-    super.actionDrag(c, loc, modifiers);
+    super.actionDrag(c, location, modifiers);
   }
 
-  public void actionDrop(Component c, ComponentLocation loc) {
+  public void actionDrop(Component c, ComponentLocation location) {
     if (c instanceof JComponent) {
-      scrollToVisible(c, loc.getBounds(c));
+      scrollToVisible(c, location.getBounds(c));
     }
-    super.actionDrop(c, loc);
+    super.actionDrop(c, location);
   }
 
   public void mousePress(Component comp, int x, int y, int buttons) {

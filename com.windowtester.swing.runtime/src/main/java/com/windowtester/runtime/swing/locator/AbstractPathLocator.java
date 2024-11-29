@@ -67,17 +67,17 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
 
     //	create the matcher
     if (this instanceof JListLocator || this instanceof JTreeItemLocator) {
-      _matcher = ClassMatcher.create(cls);
+      matcher = ClassMatcher.create(cls);
     } else {
-      _matcher = new ExactClassMatcher(cls);
+      matcher = new ExactClassMatcher(cls);
     }
 
     if (this instanceof JMenuItemLocator) {
-      _matcher = new CompoundMatcher(_matcher, NameOrTextMatcher.create(getItemText()));
+      matcher = new CompoundMatcher(matcher, NameOrTextMatcher.create(getItemText()));
     }
 
     if (index != UNASSIGNED) {
-      _matcher = IndexMatcher.create(_matcher, index);
+      matcher = IndexMatcher.create(matcher, index);
     }
 
     if (parentInfo != null) {
@@ -85,13 +85,13 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
       // if parent is NamedWidgetLocator, then component has a name
       if (parentInfo instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
         if (!(this instanceof JMenuItemLocator)) {
-          _matcher = new CompoundMatcher(_matcher, NameMatcher.create(parentInfo.getNameOrLabel()));
+          matcher = new CompoundMatcher(matcher, NameMatcher.create(parentInfo.getNameOrLabel()));
         }
       } else {
         if (index != UNASSIGNED) {
-          _matcher = HierarchyMatcher.create(_matcher, parentInfo.getMatcher(), index);
+          matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher(), index);
         } else {
-          _matcher = HierarchyMatcher.create(_matcher, parentInfo.getMatcher());
+          matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher());
         }
       }
     }
@@ -130,6 +130,7 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
    * @return the clicked widget (as a reference)
    * @throws WidgetSearchException
    */
+  @Override
   public IWidgetLocator contextClick(
       IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
       throws WidgetSearchException {

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class KeyStrokeDecoder {
 
-  public static int[] KEY_CONSTANTS = {
+  private static final int[] KEY_CONSTANTS = {
     KeyEvent.VK_DOWN,
     KeyEvent.VK_UP,
     KeyEvent.VK_LEFT,
@@ -53,18 +53,18 @@ public class KeyStrokeDecoder {
   };
 
   // modifiers
-  public static int[] KEY_MODS = {
+  private static final int[] KEY_MODS = {
     InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK
   };
 
-  public static final int MODIFIER_MASK =
+  private static final int MODIFIER_MASK =
       InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK;
 
   public static int extractModifiers(int compositeKey) {
     int modifiers = 0;
     int candidate;
-    for (int i = 0; i < KEY_MODS.length; i++) {
-      candidate = KEY_MODS[i];
+    for (int keyMod : KEY_MODS) {
+      candidate = keyMod;
       if ((compositeKey & candidate) == candidate) {
         modifiers |= candidate;
       }
@@ -73,23 +73,26 @@ public class KeyStrokeDecoder {
   }
 
   public static int[] extractKeys(int compositeKey) {
-    int candidate;
-    List keys = new ArrayList();
-    for (int i = 0; i < KEY_CONSTANTS.length; i++) {
-      candidate = KEY_CONSTANTS[i];
+    List<Integer> keys = new ArrayList<>();
+    for (int keyConstant : KEY_CONSTANTS) {
+      int candidate = keyConstant;
       if ((compositeKey | MODIFIER_MASK) == (candidate | MODIFIER_MASK)) {
-        keys.add(new Integer(candidate));
+        keys.add(candidate);
       }
     }
     return toIntArray(keys);
   }
 
-  private static int[] toIntArray(List keys) {
+  private static int[] toIntArray(List<Integer> keys) {
     int size = keys.size();
     int[] intArray = new int[size];
     for (int i = 0; i < size; ++i) {
-      intArray[i] = ((Integer) keys.get(i)).intValue();
+      intArray[i] = keys.get(i);
     }
     return intArray;
+  }
+
+  private KeyStrokeDecoder() {
+    // do nothing
   }
 }

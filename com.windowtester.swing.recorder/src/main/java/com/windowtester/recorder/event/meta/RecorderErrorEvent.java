@@ -21,21 +21,21 @@ public class RecorderErrorEvent implements IRecorderSemanticEvent {
   private static final long serialVersionUID = -5661725350112763499L;
 
   // TODO: move someplace central
-  static String NEW_LINE = System.getProperty("line.separator", "\n");
+  private static final String NEW_LINE = System.getProperty("line.separator", "\n");
 
   /**
    * The message describing this event
    *
    * @serial
    */
-  private final String _msg;
+  private final String msg;
 
   /**
    * The throwable associated
    *
    * @serial
    */
-  private final Throwable _throwable;
+  private final Throwable throwable;
 
   /**
    * Create an instance.
@@ -44,13 +44,11 @@ public class RecorderErrorEvent implements IRecorderSemanticEvent {
    * @param throwable - the associated throwable
    */
   public RecorderErrorEvent(String msg, Throwable throwable) {
-    _msg = msg;
-    _throwable = throwable;
+    this.msg = msg;
+    this.throwable = throwable;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.recorder.event.ISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
-   */
+  @Override
   public void accept(ISemanticEventHandler handler) {
     handler.handleError(this);
   }
@@ -59,19 +57,17 @@ public class RecorderErrorEvent implements IRecorderSemanticEvent {
    * @return Returns the message.
    */
   public String getMsg() {
-    return _msg;
+    return msg;
   }
 
   /**
    * @return Returns the associated throwable.
    */
   public Throwable getThrowable() {
-    return _throwable;
+    return throwable;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return "Internal recorder error (" + getMsg() + "):" + NEW_LINE + getThrowable().getMessage();
   }

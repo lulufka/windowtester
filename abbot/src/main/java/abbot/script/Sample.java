@@ -44,6 +44,7 @@ public class Sample extends PropertyCall {
     propertyName = propName;
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (propertyName != null) {
@@ -52,14 +53,17 @@ public class Sample extends PropertyCall {
     return map;
   }
 
+  @Override
   public String getDefaultDescription() {
     return getPropertyName() + "=" + super.getDefaultDescription();
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_SAMPLE;
   }
@@ -72,6 +76,7 @@ public class Sample extends PropertyCall {
     return propertyName;
   }
 
+  @Override
   protected Object invoke() throws Throwable {
     Object obj = super.invoke();
     if (propertyName != null) {

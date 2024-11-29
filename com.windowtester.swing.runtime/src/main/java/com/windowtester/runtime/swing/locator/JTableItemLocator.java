@@ -81,18 +81,18 @@ public class JTableItemLocator extends SwingWidgetLocator implements IsSelected 
     _rowCol = rowCol;
 
     // create the matcher
-    _matcher = new ExactClassMatcher(cls);
+    matcher = new ExactClassMatcher(cls);
     if (index != UNASSIGNED) {
-      _matcher = IndexMatcher.create(_matcher, index);
+      matcher = IndexMatcher.create(matcher, index);
     }
     if (parent != null) {
       if (parent instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
-        _matcher = new CompoundMatcher(_matcher, NameMatcher.create(parent.getNameOrLabel()));
+        matcher = new CompoundMatcher(matcher, NameMatcher.create(parent.getNameOrLabel()));
       } else {
         if (index != UNASSIGNED) {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher(), index);
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
         } else {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
         }
       }
     }
@@ -109,13 +109,15 @@ public class JTableItemLocator extends SwingWidgetLocator implements IsSelected 
   /* (non-Javadoc)
    * @see com.windowtester.swing.WidgetLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
    */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
     return ((UIContextSwing) ui)
         .getDriver()
-        .clickTable(clicks, (JTable) c, getRow(), getColumn(), modifierMask);
+        .clickTable(clicks, (JTable) component, getRow(), getColumn(), modifierMask);
   }
 
+  @Override
   public IWidgetLocator contextClick(
       IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
       throws WidgetSearchException {

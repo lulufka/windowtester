@@ -87,7 +87,10 @@ public class WidgetLocator
    * @since 3.8.1
    */
   protected WidgetLocator(
-      ClassReference classRef, String nameOrLabel, int index, WidgetLocator parentInfo) {
+      ClassReference classRef,
+      String nameOrLabel,
+      int index,
+      WidgetLocator parentInfo) {
     this.classRef = classRef;
     this.nameOrLabel = nameOrLabel;
     this.index = index;
@@ -102,7 +105,11 @@ public class WidgetLocator
    * @param index       - the target's index relative to its parent
    * @param parentInfo  - the target's parent info
    */
-  public WidgetLocator(Class<?> cls, String nameOrLabel, int index, WidgetLocator parentInfo) {
+  public WidgetLocator(
+      Class<?> cls,
+      String nameOrLabel,
+      int index,
+      WidgetLocator parentInfo) {
     this(ClassReference.forClass(cls), nameOrLabel, index, parentInfo);
   }
 

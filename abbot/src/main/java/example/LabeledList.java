@@ -9,21 +9,20 @@ import javax.swing.event.ListSelectionListener;
  * Source code for Tutorial 2.
  */
 public class LabeledList extends JPanel {
-  private final JList list;
+
+  private final JList<String> list;
   private final JLabel label;
 
   public LabeledList(String[] initialContents) {
     setLayout(new BorderLayout());
-    list = new JList(initialContents);
+
+    list = new JList<>(initialContents);
     add(list, BorderLayout.CENTER);
+
     label = new JLabel("Selected: ");
     add(label, BorderLayout.SOUTH);
+
     // Update the label whenever the list selection changes
-    list.addListSelectionListener(
-        new ListSelectionListener() {
-          public void valueChanged(ListSelectionEvent lse) {
-            label.setText("Selected: " + list.getSelectedValue());
-          }
-        });
+    list.addListSelectionListener(event -> label.setText("Selected: " + list.getSelectedValue()));
   }
 }

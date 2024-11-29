@@ -198,14 +198,17 @@ public class Assert extends PropertyCall {
     return map;
   }
 
+  @Override
   public String getXMLTag() {
     return wait ? TAG_WAIT : TAG_ASSERT;
   }
 
+  @Override
   public String getUsage() {
     return wait ? WAIT_USAGE : ASSERT_USAGE;
   }
 
+  @Override
   public String getDefaultDescription() {
     String mname = getMethodName();
     // assert/is/get doesn't really add any information, so drop it
@@ -239,6 +242,7 @@ public class Assert extends PropertyCall {
     return Strings.get((wait ? "wait.desc" : "assert.desc"), new Object[] {expression});
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (invert) {
@@ -316,6 +320,7 @@ public class Assert extends PropertyCall {
     }
   }
 
+  @Override
   protected void runStep() throws Throwable {
     if (!wait) {
       evaluateAssertion();

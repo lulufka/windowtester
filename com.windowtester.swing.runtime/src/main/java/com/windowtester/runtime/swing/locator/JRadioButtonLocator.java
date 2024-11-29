@@ -66,6 +66,7 @@ public class JRadioButtonLocator extends SwingWidgetLocator
   /* (non-Javadoc)
    * @see com.windowtester.runtime.swing.SWingWidgetLocator#getWidgetText(java.awt.Component)
    */
+  @Override
   protected String getWidgetText(Component widget) {
     return ((JRadioButton) widget).getText();
   }

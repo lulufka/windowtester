@@ -1,40 +1,30 @@
 package abbot.finder;
 
-import abbot.Log;
 import abbot.util.AWT;
-import abbot.util.WeakAWTEventListener;
-import java.awt.*;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
+import java.awt.Component;
+import java.awt.Window;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.WeakHashMap;
-import javax.swing.*;
+import java.util.stream.Collectors;
 
 /**
- * Provide isolation of a Component hierarchy to limit consideration to only those Components created during the
- * lifetime of this Hierarchy instance. Extant Components (and any subsequently generated subwindows) are ignored by
- * default.<p> Implicitly auto-filters windows which are disposed (i.e. generate a WINDOW_CLOSED event), but also
- * implicitly un-filters them if they should be shown again.  Any Window explicitly disposed with {@link
- * #dispose(Window)} will be ignored permanently.
+ * Provide isolation of a Component hierarchy to limit consideration to only those Components
+ * created during the lifetime of this Hierarchy instance. Extant Components (and any subsequently
+ * generated subwindows) are ignored by default.<p> Implicitly auto-filters windows which are
+ * disposed (i.event. generate a WINDOW_CLOSED event), but also implicitly un-filters them if they
+ * should be shown again.  Any Window explicitly disposed with {@link #dispose(Window)} will be
+ * ignored permanently.
  */
 public class TestHierarchy extends AWTHierarchy {
 
   // Map of components to ignore
-  private final Map filtered = new WeakHashMap();
-  // Map of components implicitly filtered; these will be implicitly
-  // un-filtered if they are re-shown.
-  private final Map transientFiltered = new WeakHashMap();
+  private final Map<Component, Boolean> filtered = new WeakHashMap<>();
 
-  private static final boolean trackAppletConsole =
+  private static final boolean TRACK_APPLET_CONSOLE =
       Boolean.getBoolean("abbot.applet.track_console");
-
-  /**
-   * Avoid GC of the weak reference.
-   */
-  private final AWTEventListener listener;
 
   /**
    * Create a new TestHierarchy which does not contain any UI Components which might already exist.
@@ -47,138 +37,94 @@ public class TestHierarchy extends AWTHierarchy {
     if (ignoreExisting) {
       ignoreExisting();
     }
-    // Watch for introduction of transient dialogs so we can automatically
-    // filter them on dispose (WINDOW_CLOSED).  Don't do anything when the
-    // component is simply hidden, since we can't tell whether it will be
-    // re-used.
-    listener = new TransientWindowListener();
   }
 
-  public boolean contains(Component c) {
-    return super.contains(c) && !isFiltered(c);
+  @Override
+  public boolean contains(Component component) {
+    return super.contains(component) && !isFiltered(component);
   }
 
-  public void dispose(Window w) {
-    if (contains(w)) {
-      super.dispose(w);
-      setFiltered(w, true);
+  @Override
+  public void dispose(Window window) {
+    if (contains(window)) {
+      super.dispose(window);
+      setFiltered(window, true);
     }
   }
 
   /**
-   * Make all currently extant components invisible to this Hierarchy, without affecting their current state.
+   * Make all currently extant components invisible to this Hierarchy, without affecting their
+   * current state.
    */
   public void ignoreExisting() {
-    Iterator iter = getRoots().iterator();
-    while (iter.hasNext()) {
-      setFiltered((Component) iter.next(), true);
+    for (Component component : getRoots()) {
+      setFiltered(component, true);
     }
   }
 
-  public Collection getRoots() {
-    Collection s = super.getRoots();
-    s.removeAll(filtered.keySet());
-    return s;
+  @Override
+  public Collection<Component> getRoots() {
+    var components = super.getRoots();
+    var filterList = components.stream()
+        .filter(key -> !filtered.containsKey(key))
+        .collect(Collectors.toList());
+    return filterList;
   }
 
-  public Collection getComponents(Component c) {
-    if (!isFiltered(c)) {
-      Collection s = super.getComponents(c);
+  @Override
+  public Collection<Component> getComponents(Component component) {
+    if (!isFiltered(component)) {
+      Collection<Component> components = super.getComponents(component);
       // NOTE: this only removes those components which are directly
       // filtered, not necessarily those which have a filtered ancestor.
-      s.removeAll(filtered.keySet());
-      return s;
+      return components.stream()
+          .filter(key -> !filtered.containsKey(key))
+          .collect(Collectors.toList());
     }
     return EMPTY;
   }
 
-  private boolean isWindowFiltered(Component c) {
-    Window w = AWT.getWindow(c);
-    return w != null && isFiltered(w);
+  private boolean isWindowFiltered(Component component) {
+    Window window = AWT.getWindow(component);
+    return window != null && isFiltered(window);
   }
 
-  public boolean isFiltered(Component c) {
-    if (c == null) {
+  public boolean isFiltered(Component component) {
+    if (component == null) {
       return false;
     }
-    if ("sun.plugin.ConsoleWindow".equals(c.getClass().getName())) {
-      return !trackAppletConsole;
+
+    if ("sun.plugin.ConsoleWindow".equals(component.getClass().getName())) {
+      return !TRACK_APPLET_CONSOLE;
     }
-    return filtered.containsKey(c)
-        || ((c instanceof Window) && isFiltered(c.getParent()))
-        || (!(c instanceof Window) && isWindowFiltered(c));
+
+    return filtered.containsKey(component)
+        || ((component instanceof Window) && isFiltered(component.getParent()))
+        || (!(component instanceof Window) && isWindowFiltered(component));
   }
 
-  public void setFiltered(Component c, boolean filter) {
-    if (AWT.isSharedInvisibleFrame(c)) {
-      Iterator iter = getComponents(c).iterator();
-      while (iter.hasNext()) {
-        setFiltered((Component) iter.next(), filter);
-      }
+  private void setFiltered(Component component, boolean filter) {
+    if (AWT.isSharedInvisibleFrame(component)) {
+      getComponents(component).forEach(c -> setFiltered(c, filter));
+      return;
+    }
+
+    if (filter) {
+      filtered.put(component, Boolean.TRUE);
     } else {
-      if (filter) {
-        filtered.put(c, Boolean.TRUE);
-        transientFiltered.remove(c);
-      } else {
-        filtered.remove(c);
-      }
-      if (c instanceof Window) {
-        Window[] owned = ((Window) c).getOwnedWindows();
-        for (int i = 0; i < owned.length; i++) {
-          setFiltered(owned[i], filter);
-        }
-      }
+      filtered.remove(component);
+    }
+
+    if (component instanceof Window) {
+      Window[] windows = ((Window) component).getOwnedWindows();
+      Arrays.stream(windows).forEach(window -> setFiltered(window, filter));
     }
   }
 
-  /**
-   * Provides for automatic filtering of auto-generated Swing dialogs.
-   */
-  private class TransientWindowListener implements AWTEventListener {
-    private class DisposeAction implements Runnable {
-      private final Window w;
-
-      public DisposeAction(Window w) {
-        this.w = w;
-      }
-
-      public void run() {
-        setFiltered(w, true);
-        transientFiltered.put(w, Boolean.TRUE);
-        Log.debug("window " + w.getName() + " filtered");
-      }
-    }
-
-    public TransientWindowListener() {
-      // Add a weak listener so we don't leave a listener lingering
-      // about.
-      long mask = WindowEvent.WINDOW_EVENT_MASK | ComponentEvent.COMPONENT_EVENT_MASK;
-      new WeakAWTEventListener(this, mask);
-    }
-
-    public void eventDispatched(AWTEvent e) {
-      if (e.getID() == WindowEvent.WINDOW_OPENED
-          || (e.getID() == ComponentEvent.COMPONENT_SHOWN && e.getSource() instanceof Window)) {
-        Window w = (Window) e.getSource();
-        if (transientFiltered.containsKey(w)) {
-          setFiltered(w, false);
-        }
-        // Catch new sub-windows of filtered windows (i.e. dialogs
-        // generated by a test harness UI).
-        else if (isFiltered(w.getParent())) {
-          setFiltered(w, true);
-        }
-      } else if (e.getID() == WindowEvent.WINDOW_CLOSED) {
-        final Window w = (Window) e.getSource();
-        // *Any* window disposal should result in the window being
-        // ignored, at least until it is again displayed.
-        if (!isFiltered(w)) {
-          // Filter only *after* any handlers for this event have
-          // finished.
-          Log.debug("queueing dispose of " + w.getName());
-          SwingUtilities.invokeLater(new DisposeAction(w));
-        }
-      }
-    }
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", TestHierarchy.class.getSimpleName() + "[", "]")
+        .add("filtered=" + filtered)
+        .toString();
   }
 }

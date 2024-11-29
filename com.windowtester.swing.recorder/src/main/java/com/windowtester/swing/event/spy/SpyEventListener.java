@@ -17,67 +17,68 @@ import com.windowtester.recorder.event.meta.RecorderTraceEvent;
 
 public class SpyEventListener implements ISemanticEventListener {
 
+  @Override
   public void notify(IUISemanticEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyAssertionHookAdded(String hookName) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyControllerStart(int port) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyDisplayNotFound() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyDispose() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyError(RecorderErrorEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyPause() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyRestart() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifySpyModeToggle() {
     SpyEventHandler.spyModeToggled();
   }
 
+  @Override
   public void notifyStart() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyStop() {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyTrace(RecorderTraceEvent event) {
-    // TODO Auto-generated method stub
 
   }
 
+  @Override
   public void notifyWrite() {
-    // TODO Auto-generated method stub
 
   }
 }

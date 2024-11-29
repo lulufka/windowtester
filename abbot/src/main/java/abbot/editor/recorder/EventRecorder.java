@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
@@ -568,7 +569,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
   /**
    * Maps component classes to corresponding semantic recorders.
    */
-  private final HashMap semanticRecorders = new HashMap();
+  private final Map<Class<?>, SemanticRecorder> semanticRecorders = new HashMap<>();
 
   /**
    * Return the semantic recorder for the given component.
@@ -587,14 +588,14 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     return getSemanticRecorder(comp.getClass());
   }
 
-  protected SemanticRecorder getSemanticRecorder(Class cls) {
+  protected SemanticRecorder getSemanticRecorder(Class<?> cls) {
     // 	System.out.println("getting recorder for: " + cls);
     if (!(Component.class.isAssignableFrom(cls))) {
       throw new IllegalArgumentException("Class (" + cls + ") must derive from " + "Component");
     }
-    SemanticRecorder sr = (SemanticRecorder) semanticRecorders.get(cls);
+    SemanticRecorder sr = semanticRecorders.get(cls);
     if (sr == null) {
-      Class ccls = Robot.getCanonicalClass(cls);
+      Class<?> ccls = Robot.getCanonicalClass(cls);
       if (ccls != cls) {
         sr = getSemanticRecorder(ccls);
         // Additionally cache the mapping from the non-canonical class
@@ -604,20 +605,15 @@ public class EventRecorder extends Recorder implements SemanticEvents {
       String cname = Robot.simpleClassName(cls);
       try {
         // cname = "abbot.editor.recorder." + cname + "Recorder";
-        cname = getRecoderName(cname);
-        Class recorderClass = Class.forName(cname);
-        Constructor ctor = recorderClass.getConstructor(Resolver.class);
-        sr = (SemanticRecorder) ctor.newInstance(new Object[] {getResolver()});
+        cname = getRecorderName(cname);
+        Class<?> recorderClass = Class.forName(cname);
+        Constructor<?> ctor = recorderClass.getConstructor(Resolver.class);
+        sr = (SemanticRecorder) ctor.newInstance(getResolver());
         sr.addActionListener(getListener());
       } catch (InvocationTargetException e) {
         Log.warn(e);
-      } catch (NoSuchMethodException e) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (InstantiationException e) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (IllegalAccessException iae) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (ClassNotFoundException cnf) {
+      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+               ClassNotFoundException e) {
         sr = getSemanticRecorder(cls.getSuperclass());
       }
       // Cache the results for future reference
@@ -639,7 +635,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  protected String getRecoderName(String cname) {
+  protected String getRecorderName(String cname) {
     return "abbot.editor.recorder." + cname + "Recorder";
   }
 }

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import java.io.Serial;
+
 /**
  * Thrown when a widget is not found.
  */
 public class WidgetNotFoundException extends WidgetSearchException {
 
+  @Serial
   private static final long serialVersionUID = -7232101203251666634L;
 
   /**

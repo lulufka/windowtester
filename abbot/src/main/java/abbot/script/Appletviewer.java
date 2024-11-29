@@ -99,6 +99,7 @@ public class Appletviewer extends Launch {
    * Run this step.  Causes the appropriate HTML file to be written for use by appletviewer and its path used as the
    * sole argument.
    */
+  @Override
   public void runStep() throws Throwable {
     File dir = new File(System.getProperty("user.dir"));
     File htmlFile = File.createTempFile("abbot-applet", ".html", dir);
@@ -166,6 +167,7 @@ public class Appletviewer extends Launch {
     return html.toString();
   }
 
+  @Override
   public void setTargetClassName(String name) {
     if (CLASS_NAME.equals(name)) {
       super.setTargetClassName(name);
@@ -174,6 +176,7 @@ public class Appletviewer extends Launch {
     }
   }
 
+  @Override
   public void setMethodName(String name) {
     if (METHOD_NAME.equals(name)) {
       super.setMethodName(name);
@@ -269,6 +272,7 @@ public class Appletviewer extends Launch {
     return ArgumentParser.encodeArguments(getParamsAsArray());
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     map.put(TAG_CODE, getCode());
@@ -297,15 +301,18 @@ public class Appletviewer extends Launch {
     return map;
   }
 
+  @Override
   public String getDefaultDescription() {
     String desc = Strings.get("step.appletviewer", new Object[] {getCode()});
     return desc;
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_APPLETVIEWER;
   }

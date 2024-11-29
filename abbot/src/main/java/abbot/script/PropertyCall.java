@@ -48,6 +48,7 @@ public abstract class PropertyCall extends Call {
     }
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (componentID != null) {
@@ -57,6 +58,7 @@ public abstract class PropertyCall extends Call {
     return map;
   }
 
+  @Override
   protected Object getTarget(Method m) throws Throwable {
     if (componentID != null) {
       return ArgumentParser.eval(getResolver(), componentID, Component.class);
@@ -100,6 +102,7 @@ public abstract class PropertyCall extends Call {
     return false;
   }
 
+  @Override
   public String getDefaultDescription() {
     String desc = super.getDefaultDescription();
     if (getComponentID() != null) {

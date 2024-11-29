@@ -17,14 +17,17 @@ import com.windowtester.runtime.IUIContext;
  */
 public class UIContextSwingFactory {
 
+  private UIContextSwingFactory() {
+    // do nothing
+  }
+
   /**
    * Create a new user interface context.
    *
    * @return a new instance
    */
   public static IUIContext createContext() {
-    UIContextSwing context = (UIContextSwing) createContext(IUIContext.class);
-    return context;
+    return createContext(IUIContext.class);
   }
 
   /**
@@ -33,11 +36,10 @@ public class UIContextSwingFactory {
    * @param adapter the type of context
    * @return a new instance or <code>null</code> if it could not be created
    */
-  public static IUIContext createContext(Class adapter) {
+  public static IUIContext createContext(Class<?> adapter) {
     if (adapter == IUIContext.class) {
       return new UIContextSwing();
     }
-
     return null;
   }
 }

@@ -17,14 +17,14 @@ public class RecorderAssertionHookAddedEvent implements IRecorderSemanticEvent {
 
   private static final long serialVersionUID = -1443156876689979723L;
 
-  private final String _hookName;
+  private final String hookName;
 
   public RecorderAssertionHookAddedEvent(String hookName) {
-    _hookName = hookName;
+    this.hookName = hookName;
   }
 
   public String getHookName() {
-    return _hookName;
+    return hookName;
   }
 
   public void accept(ISemanticEventHandler handler) {

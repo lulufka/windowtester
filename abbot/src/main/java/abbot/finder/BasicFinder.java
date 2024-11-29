@@ -1,19 +1,22 @@
 package abbot.finder;
 
 import abbot.i18n.Strings;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
- * Provides basic component lookup, examining each component in turn. Searches all components of interest in a given
- * hierarchy.
+ * Provides basic comp lookup, examining each comp in turn. Searches all components of interest in a
+ * given hierarchy.
  */
 public class BasicFinder implements ComponentFinder {
+
   private final Hierarchy hierarchy;
 
   private static final ComponentFinder DEFAULT = new BasicFinder(new AWTHierarchy());
@@ -23,32 +26,33 @@ public class BasicFinder implements ComponentFinder {
   }
 
   private class SingleComponentHierarchy implements Hierarchy {
+
     private final Component root;
-    private final ArrayList list = new ArrayList();
+    private final List<Component> list = new ArrayList<>();
 
     public SingleComponentHierarchy(Container root) {
       this.root = root;
       list.add(root);
     }
 
-    public Collection getRoots() {
+    public Collection<Component> getRoots() {
       return list;
     }
 
-    public Collection getComponents(Component c) {
-      return getHierarchy().getComponents(c);
+    public Collection<Component> getComponents(Component component) {
+      return getHierarchy().getComponents(component);
     }
 
-    public Container getParent(Component c) {
-      return getHierarchy().getParent(c);
+    public Container getParent(Component component) {
+      return getHierarchy().getParent(component);
     }
 
-    public boolean contains(Component c) {
-      return getHierarchy().contains(c) && SwingUtilities.isDescendingFrom(c, root);
+    public boolean contains(Component component) {
+      return getHierarchy().contains(component) && SwingUtilities.isDescendingFrom(component, root);
     }
 
-    public void dispose(Window w) {
-      getHierarchy().dispose(w);
+    public void dispose(Window window) {
+      getHierarchy().dispose(window);
     }
   }
 
@@ -56,65 +60,72 @@ public class BasicFinder implements ComponentFinder {
     this(AWTHierarchy.getDefault());
   }
 
-  public BasicFinder(Hierarchy h) {
-    hierarchy = h;
+  public BasicFinder(Hierarchy hierarchy) {
+    this.hierarchy = hierarchy;
   }
 
   protected Hierarchy getHierarchy() {
     return hierarchy;
   }
 
-  /**
-   * Find a Component, using the given Matcher to determine whether a given component in the hierarchy under the given
-   * root is the desired one.
-   */
-  public Component find(Container root, Matcher m)
+  @Override
+  public Component find(Container root, Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
-    Hierarchy h = root != null ? new SingleComponentHierarchy(root) : getHierarchy();
-    return find(h, m);
+    return find(toHierarchy(root), matcher);
   }
 
-  /**
-   * Find a Component, using the given Matcher to determine whether a given component in the hierarchy used by this
-   * ComponentFinder is the desired one.
-   */
-  public Component find(Matcher m)
-      throws ComponentNotFoundException, MultipleComponentsFoundException {
-    return find(getHierarchy(), m);
-  }
-
-  protected Component find(Hierarchy h, Matcher m)
-      throws ComponentNotFoundException, MultipleComponentsFoundException {
-    Set found = new HashSet();
-    Iterator iter = h.getRoots().iterator();
-    while (iter.hasNext()) {
-      findMatches(h, m, (Component) iter.next(), found);
+  private Hierarchy toHierarchy(Container container) {
+    if (container != null) {
+      return new SingleComponentHierarchy(container);
     }
-    if (found.size() == 0) {
-      String msg = Strings.get("finder.not_found", new Object[] {m.toString()});
+    return getHierarchy();
+  }
+
+  /**
+   * Find a Component, using the given Matcher to determine whether a given comp in the hierarchy
+   * used by this ComponentFinder is the desired one.
+   */
+  public Component find(Matcher matcher)
+      throws ComponentNotFoundException, MultipleComponentsFoundException {
+    return find((Container) null, matcher);
+  }
+
+  protected Component find(Hierarchy hierarchy, Matcher matcher)
+      throws ComponentNotFoundException, MultipleComponentsFoundException {
+    Set<Component> found = new HashSet<>();
+    for (Component component : hierarchy.getRoots()) {
+      findMatches(hierarchy, matcher, component, found);
+    }
+
+    if (found.isEmpty()) {
+      String msg = Strings.get("finder.not_found", new Object[]{matcher.toString()});
       throw new ComponentNotFoundException(msg);
     } else if (found.size() > 1) {
-      Component[] list = (Component[]) found.toArray(new Component[found.size()]);
-      if (!(m instanceof MultiMatcher)) {
-        String msg = Strings.get("finder.multiple_found", new Object[] {m.toString()});
+      Component[] list = found.toArray(new Component[0]);
+      if (!(matcher instanceof MultiMatcher)) {
+        String msg = Strings.get("finder.multiple_found", new Object[]{matcher.toString()});
         throw new MultipleComponentsFoundException(msg, list);
       }
-      return ((MultiMatcher) m).bestMatch(list);
+      return ((MultiMatcher) matcher).bestMatch(list);
     }
-    return (Component) found.iterator().next();
+    return found.iterator().next();
   }
 
-  protected void findMatches(Hierarchy h, Matcher m, Component c, Set found) {
-    if (found.size() == 1 && !(m instanceof MultiMatcher)) {
+  protected void findMatches(
+      Hierarchy hierarchy,
+      Matcher matcher,
+      Component component,
+      Set<Component> found) {
+    if (found.size() == 1 && !(matcher instanceof MultiMatcher)) {
       return;
     }
 
-    Iterator iter = h.getComponents(c).iterator();
-    while (iter.hasNext()) {
-      findMatches(h, m, (Component) iter.next(), found);
+    for (Component value : hierarchy.getComponents(component)) {
+      findMatches(hierarchy, matcher, value, found);
     }
-    if (m.matches(c)) {
-      found.add(c);
+
+    if (matcher.matches(component)) {
+      found.add(component);
     }
   }
 }

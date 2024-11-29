@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.windowtester.internal.debug;
 
+import abbot.util.AbbotTimerTask;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Thread debugging utility.
@@ -34,7 +34,7 @@ public class ThreadUtil {
       stopPrintStackTraces();
       timer = new Timer("ThreadUtil Stack Dump");
       timer.schedule(
-          new TimerTask() {
+          new AbbotTimerTask() {
             public void run() {
               System.err.println(
                   "**********************************************************************************");

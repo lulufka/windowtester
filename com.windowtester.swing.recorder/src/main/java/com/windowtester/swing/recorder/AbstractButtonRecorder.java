@@ -16,12 +16,12 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.InputEvent;
 
 /**
- * abbot.editor.recorder.AbstractButtonRecorder Record basic semantic events you might find on an AbstractButton.  This
- * class handles a click on the button.
+ * abbot.editor.recorder.AbstractButtonRecorder Record basic semantic events you might find on an
+ * AbstractButton.  This class handles a click on the button.
  * <p>
  * added windowtester semantic event generation
  */
@@ -31,23 +31,17 @@ public class AbstractButtonRecorder extends JComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * Usually don't bother tracking drags/drops on buttons.
-   */
+  @Override
   protected boolean canDrag() {
     return false;
   }
 
-  /**
-   * Usually aren't interested in multiple clicks on a button.
-   */
+  @Override
   protected boolean canMultipleClick() {
     return false;
   }
 
-  /**
-   * Create a button-specific click action.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
     // No need to store the coordinates, the center of the button is just
     // fine.   Only care about button 1, though.
@@ -65,7 +59,7 @@ public class AbstractButtonRecorder extends JComponentRecorder {
           getResolver(),
           null,
           "actionClick",
-          new String[] {cr.getID()},
+          new String[]{cr.getID()},
           javax.swing.AbstractButton.class);
     }
     return null;

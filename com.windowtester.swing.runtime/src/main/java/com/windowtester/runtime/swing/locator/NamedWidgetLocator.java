@@ -64,13 +64,14 @@ public class NamedWidgetLocator extends SwingWidgetLocator implements HasText, I
   public NamedWidgetLocator(Class cls, String name) {
     super(cls, name);
     // define matcher
-    _matcher = NameMatcher.create(getNameOrLabel());
+    matcher = NameMatcher.create(getNameOrLabel());
   }
 
   protected String getWidgetLocatorStringName() {
     return "NamedWidgetLocator";
   }
 
+  @Override
   protected String getWidgetText(Component widget) throws WidgetSearchException {
 
     // Find the method

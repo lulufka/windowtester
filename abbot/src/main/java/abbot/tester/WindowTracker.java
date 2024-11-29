@@ -1,6 +1,7 @@
 package abbot.tester;
 
 import abbot.Log;
+import abbot.util.AbbotTimerTask;
 import abbot.util.NamedTimer;
 import abbot.util.Properties;
 import abbot.util.WeakAWTEventListener;
@@ -27,7 +28,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.WeakHashMap;
 import javax.swing.SwingUtilities;
 
@@ -449,8 +449,8 @@ public class WindowTracker {
       }
       // At worst, time out and say the window is ready
       // after the configurable delay
-      TimerTask task =
-          new TimerTask() {
+      AbbotTimerTask task =
+          new AbbotTimerTask() {
             public void run() {
               markWindowReady(w);
             }

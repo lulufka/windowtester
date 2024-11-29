@@ -62,12 +62,12 @@ public class LabeledTextLocator extends JTextComponentLocator {
   public LabeledTextLocator(String label, int index, SwingWidgetLocator parent) {
     super(JTextField.class, label, index, parent);
 
-    _matcher = LabeledWidgetMatcher.create(JTextField.class, label);
+    matcher = LabeledWidgetMatcher.create(JTextField.class, label);
     if (index != UNASSIGNED) {
-      _matcher = IndexMatcher.create(_matcher, index);
+      matcher = IndexMatcher.create(matcher, index);
     }
     if (parent != null) {
-      _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
+      matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
     }
   }
 

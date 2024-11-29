@@ -23,6 +23,7 @@ import java.awt.Point;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,59 +35,63 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleIcon;
 
 /**
- * Provides basic programmatic operation of a {@link Component} and related UI objects such as windows, menus and menu
- * bars throuh action methods. Also provides some useful assertions about properties of a {@link Component}.
- *
- * There are two sets of event-generating methods.  The internal, protected methods inherited from {@link
- * abbot.tester.Robot abbot.tester.Robot} are for normal programmatic use within derived Tester classes.  No event queue
- * synchronization should be performed except when modifying a component for which results are required for the action
- * itself.
- *
- * The public <code>actionXXX</code> functions are meant to be invoked from a script or directly from a hand-written
- * test.  These actions are distinguished by name, number of arguments, and by argument type.  The actionX methods will
- * be synchronized with the event dispatch thread when invoked, so you should only do synchronization with waitForIdle
- * when you depend on the results of a particular event prior to sending the next one (e.g. scrolling a table cell into
- * view before selecting it). All public action methods should ensure that the actions they trigger are finished on
- * return, or will be finished before any subsequent actions are requested.
+ * Provides basic programmatic operation of a {@link Component} and related UI objects such as
+ * windows, menus and menu bars throuh action methods. Also provides some useful assertions about
+ * properties of a {@link Component}.
+ * <p>
+ * There are two sets of event-generating methods.  The internal, protected methods inherited from
+ * {@link abbot.tester.Robot abbot.tester.Robot} are for normal programmatic use within derived
+ * Tester classes.  No event queue synchronization should be performed except when modifying a
+ * component for which results are required for the action itself.
+ * <p>
+ * The public <code>actionXXX</code> functions are meant to be invoked from a script or directly
+ * from a hand-written test.  These actions are distinguished by name, number of arguments, and by
+ * argument type.  The actionX methods will be synchronized with the event dispatch thread when
+ * invoked, so you should only do synchronization with waitForIdle when you depend on the results of
+ * a particular event prior to sending the next one (event.g. scrolling a table cell into view
+ * before selecting it). All public action methods should ensure that the actions they trigger are
+ * finished on return, or will be finished before any subsequent actions are requested.
  *
  * <i>Action</i> methods generally represent user-driven actions such
- * as menu selection, table selection, popup menus, etc.  All actions should have the following signature:
+ * as menu selection, table selection, popup menus, etc.  All actions should have the following
+ * signature:
  * <blockquote>
- * <code>public void actionSpinMeRoundLikeARecord(Component c, ...);</code>
- * <code>public void actionPinchMe(Component c, ComponentLocation loc);</code>
+ * <code>public void actionSpinMeRoundLikeARecord(Component component, ...);</code>
+ * <code>public void actionPinchMe(Component component, ComponentLocation location);</code>
  * </blockquote>
- *
- * It is essential that the argument is of type {@link Component}; if you use a more-derived class, then the actual
- * invocation becomes ambiguous since method parsing doesn't attempt to determine which identically-named method is the
- * most-derived.
- *
- * The {@link ComponentLocation} abstraction allows all derived tester classes to inherit click, popup menu, and drag
- * variants without having to explicitly define new methods for component-specific substructures.  The new class need
- * only define the {@link #parseLocation(String)} method, which should return a location specific to the component in
- * question.
+ * <p>
+ * It is essential that the argument is of type {@link Component}; if you use a more-derived class,
+ * then the actual invocation becomes ambiguous since method parsing doesn't attempt to determine
+ * which identically-named method is the most-derived.
+ * <p>
+ * The {@link ComponentLocation} abstraction allows all derived tester classes to inherit click,
+ * popup menu, and drag variants without having to explicitly define new methods for
+ * component-specific substructures.  The new class need only define the
+ * {@link #parseLocation(String)} method, which should return a location specific to the component
+ * in question.
  *
  * <i>Assertions</i> are either independent of any component (and should be
- * implemented in this class), or take a component as the first argument, and perform some check on that component.  All
- * assertions should have one of the following signatures:
+ * implemented in this class), or take a component as the first argument, and perform some check on
+ * that component.  All assertions should have one of the following signatures:
  * <blockquote>
  * <code>public boolean assertMyself(...);</code><br>
- * <code>public boolean assertBorderIsAtrociouslyUgly(Component c, ...);</code>
+ * <code>public boolean assertBorderIsAtrociouslyUgly(Component component, ...);</code>
  * </blockquote>
  * Note that these assertions do not throw exceptions but rather return a
  * <code>boolean</code> value indicating success or failure.  Normally these
- * assertions will be wrapped by an abbot.script.Assert step if you want to cause a test failure, or you can manually
- * throw the proper failure exception if the method returns false.
+ * assertions will be wrapped by an abbot.script.Assert step if you want to cause a test failure, or
+ * you can manually throw the proper failure exception if the method returns false.
  *
- * <i>Property checks</i> may also be implemented in cases where the component
- * "property" might not be readily available or easily comparable, e.g. see {@link
- * abbot.tester.JPopupMenuTester#getMenuLabels(Component)}.
+ * <i>Property checks</i> may also be implemented in cases location the component
+ * "property" might not be readily available or easily comparable, event.g. see
+ * {@link abbot.tester.JPopupMenuTester#getMenuLabels(Component)}.
  * <blockquote>
- * <code>public Object getHairpiece(Component c);</code><br>
- * <code>public boolean isRighteouslyIndignant(Component c);</code>
+ * <code>public Object getHairpiece(Component component);</code><br>
+ * <code>public boolean isRighteouslyIndignant(Component component);</code>
  * </blockquote>
- * Any non-property methods with the property signature, should be added to the {@link #IGNORED_METHODS} set, since
- * property-like methods are scanned dynamically to populate the {@link abbot.editor.ScriptEditor editor}'s action
- * menus.
+ * Any non-property methods with the property signature, should be added to the
+ * {@link #IGNORED_METHODS} set, since property-like methods are scanned dynamically to populate the
+ * {@link abbot.editor.ScriptEditor editor}'s action menus.
  *
  * <h2>Extending ComponentTester</h2>
  * Following are the steps required to implement a Tester object for a custom class.
@@ -94,7 +99,7 @@ import javax.accessibility.AccessibleIcon;
  * <li><h3>Create the Tester Class</h3>
  * Derive from this class to implement actions and assertions specific to
  * a given component class.  Testers for any classes found in the JRE
- * (i.e. in the {@link java.awt} or {@link javax.swing} packages) should be
+ * (i.event. in the {@link java.awt} or {@link javax.swing} packages) should be
  * in the {@link abbot.tester abbot.tester} package.  Extensions (testers for
  * any <code>Component</code> subclasses not found in the JRE) must be in the
  * <code>abbot.tester.extensions</code> package and be
@@ -144,7 +149,7 @@ import javax.accessibility.AccessibleIcon;
  * properties should be defined:<br>
  * <ul>
  * <li><code>actionWiggle.menu</code> short name for Insert menu
- * <li><code>actionWiggle.desc</code> short description (optional)
+ * <li><code>actionWiggle.description</code> short description (optional)
  * <li><code>actionWiggle.icon</code> icon for the action (optional)
  * <li><code>PR0NViewerTester.actionWiggle.args</code> javadoc-style
  * description of method, displayed when asking the user for its arguments
@@ -167,9 +172,9 @@ import javax.accessibility.AccessibleIcon;
  * since there is no common language usage for these
  * concepts (line and page exist, but are not appropriate if what is scrolled
  * is not text).
- *
+ * <p>
  * When naming a selection method, include the logical substructure target of
- * the selection in the name (e.g.
+ * the selection in the name (event.g.
  * {@link JTableTester#actionSelectCell(Component, JTableLocation)}
  * JTableTester.actionSelectCell()),
  * since some components may have more than one type of selectable item
@@ -178,8 +183,8 @@ import javax.accessibility.AccessibleIcon;
 public class ComponentTester extends Robot {
 
   /**
-   * Add any method names here which should <em>not</em> show up in a dynamically generated list of property methods.
-   * Omit from method lookup deprecated methods or others we want to ignore
+   * Add any method names here which should <em>not</em> show up in a dynamically generated list of
+   * property methods. Omit from method lookup deprecated methods or others we want to ignore
    */
   private static final Set<String> IGNORED_METHODS =
       Set.of(
@@ -315,19 +320,19 @@ public class ComponentTester extends Robot {
   }
 
   /**
-   * Default methods to use to derive a component-specific tag.  These are things that will probably be useful in a
-   * custom component if the method is supported.
+   * Default methods to use to derive a component-specific tag.  These are things that will probably
+   * be useful in a custom component if the method is supported.
    */
   private static final String[] tagMethods = {
-    "getLabel", "getTitle", "getText",
+      "getLabel", "getTitle", "getText",
   };
 
-  public static String getTag(Component comp) {
-    return getTester(comp.getClass()).deriveTag(comp);
+  public static String getTag(Component component) {
+    return getTester(component.getClass()).deriveTag(component);
   }
 
-  protected boolean isCustom(Class<?> c) {
-    return !(c.getName().startsWith("javax.swing.") || c.getName().startsWith("java.awt."));
+  protected boolean isCustom(Class<?> cls) {
+    return !(cls.getName().startsWith("javax.swing.") || cls.getName().startsWith("java.awt."));
   }
 
   public String deriveTag(Component comp) {
@@ -336,27 +341,29 @@ public class ComponentTester extends Robot {
       return null;
     }
 
-    Method m;
+    Method method;
     String tag = null;
     // Try a few default methods
     for (String tagMethod : tagMethods) {
       // Don't use getText on text components
       if (((comp instanceof javax.swing.text.JTextComponent)
-              || (comp instanceof java.awt.TextComponent))
+          || (comp instanceof java.awt.TextComponent))
           && "getText".equals(tagMethod)) {
         continue;
       }
       try {
-        m = comp.getClass().getMethod(tagMethod, null);
-        String tmp = (String) m.invoke(comp, null);
+        method = comp.getClass().getMethod(tagMethod, null);
+        String tmp = (String) method.invoke(comp, null);
         // Don't ever use empty strings for tags
         if (tmp != null && !tmp.isEmpty()) {
           tag = tmp;
           break;
         }
       } catch (Exception e) {
+        // do nothing
       }
     }
+
     // In the absence of any other tag, try to derive one from something
     // recognizable on one of its ancestors.
     if (tag == null || tag.isEmpty()) {
@@ -370,7 +377,7 @@ public class ComponentTester extends Robot {
             StringBuilder buf = new StringBuilder(ptag);
             int under = ptag.indexOf(" under ");
             if (under != -1) {
-              buf = buf.delete(0, under + 7);
+              buf.delete(0, under + 7);
             }
             buf.insert(0, " under ");
             buf.insert(0, simpleClassName(comp.getClass()));
@@ -384,7 +391,8 @@ public class ComponentTester extends Robot {
   }
 
   /**
-   * Wait for an idle AWT event queue.  Will return when there are no more events on the event queue.
+   * Wait for an idle AWT event queue.  Will return when there are no more events on the event
+   * queue.
    */
   public void actionWaitForIdle() {
     waitForIdle();
@@ -396,7 +404,7 @@ public class ComponentTester extends Robot {
 
   /**
    * @param menuFrame menu frame
-   * @param path path
+   * @param path      path
    * @deprecated Renamed to {@link #actionSelectAWTMenuItem(Frame, String)}.
    */
   @Deprecated
@@ -405,11 +413,11 @@ public class ComponentTester extends Robot {
   }
 
   /**
-   * Selects an AWT menu item ({@link java.awt.MenuItem}) and returns when the invocation has triggered (though not
-   * necessarily completed).
+   * Selects an AWT menu item ({@link java.awt.MenuItem}) and returns when the invocation has
+   * triggered (though not necessarily completed).
    *
    * @param menuFrame menu frame
-   * @param path either a unique label or the menu path.
+   * @param path      either a unique label or the menu path.
    * @see Robot#selectAWTMenuItem(Frame, String)
    */
   public void actionSelectAWTMenuItem(Frame menuFrame, String path) {
@@ -428,7 +436,7 @@ public class ComponentTester extends Robot {
 
   /**
    * @param invoker invoker
-   * @param path path
+   * @param path    path
    * @deprecated Renamed to {@link #actionSelectAWTPopupMenuItem(Component, String)}.
    */
   @Deprecated
@@ -466,8 +474,9 @@ public class ComponentTester extends Robot {
     actionSelectPopupMenuItem(invoker, invoker.getWidth() / 2, invoker.getHeight() / 2, path);
   }
 
-  public void actionSelectPopupMenuItem(Component invoker, ComponentLocation loc, String path) {
-    selectPopupMenuItem(invoker, loc, path);
+  public void actionSelectPopupMenuItem(Component invoker, ComponentLocation location,
+      String path) {
+    selectPopupMenuItem(invoker, location, path);
     waitForIdle();
   }
 
@@ -479,8 +488,8 @@ public class ComponentTester extends Robot {
     actionShowPopupMenu(invoker, new ComponentLocation());
   }
 
-  public void actionShowPopupMenu(Component invoker, ComponentLocation loc) {
-    Point where = loc.getPoint(invoker);
+  public void actionShowPopupMenu(Component invoker, ComponentLocation location) {
+    Point where = location.getPoint(invoker);
     showPopupMenu(invoker, where.x, where.y);
   }
 
@@ -488,38 +497,38 @@ public class ComponentTester extends Robot {
     showPopupMenu(invoker, x, y);
   }
 
-  public void actionClick(Component comp) {
-    actionClick(comp, new ComponentLocation());
+  public void actionClick(Component component) {
+    actionClick(component, new ComponentLocation());
   }
 
-  public void actionClick(Component c, ComponentLocation loc) {
-    actionClick(c, loc, InputEvent.BUTTON1_DOWN_MASK);
+  public void actionClick(Component component, ComponentLocation location) {
+    actionClick(component, location, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  public void actionClick(Component c, ComponentLocation loc, int buttons) {
-    actionClick(c, loc, buttons, 1);
+  public void actionClick(Component component, ComponentLocation location, int buttons) {
+    actionClick(component, location, buttons, 1);
   }
 
-  public void actionClick(Component c, ComponentLocation loc, int buttons, int count) {
-    Point where = loc.getPoint(c);
-    click(c, where.x, where.y, buttons, count);
+  public void actionClick(Component component, ComponentLocation location, int buttons, int count) {
+    Point where = location.getPoint(component);
+    click(component, where.x, where.y, buttons, count);
     waitForIdle();
   }
 
-  public void actionClick(Component comp, int x, int y) {
-    actionClick(comp, new ComponentLocation(new Point(x, y)));
+  public void actionClick(Component component, int x, int y) {
+    actionClick(component, new ComponentLocation(new Point(x, y)));
   }
 
-  public void actionClick(Component comp, int x, int y, int buttons) {
-    actionClick(comp, x, y, buttons, 1);
+  public void actionClick(Component component, int x, int y, int buttons) {
+    actionClick(component, x, y, buttons, 1);
   }
 
-  public void actionClick(Component comp, int x, int y, int buttons, int count) {
-    actionClick(comp, new ComponentLocation(new Point(x, y)), buttons, count);
+  public void actionClick(Component component, int x, int y, int buttons, int count) {
+    actionClick(component, new ComponentLocation(new Point(x, y)), buttons, count);
   }
 
-  public void actionKeyPress(Component comp, int keyCode) {
-    actionFocus(comp);
+  public void actionKeyPress(Component component, int keyCode) {
+    actionFocus(component);
     actionKeyPress(keyCode);
   }
 
@@ -528,8 +537,8 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public void actionKeyRelease(Component comp, int keyCode) {
-    actionFocus(comp);
+  public void actionKeyRelease(Component component, int keyCode) {
+    actionFocus(component);
     actionKeyRelease(keyCode);
   }
 
@@ -538,8 +547,8 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public void actionKeyStroke(Component c, int keyCode) {
-    actionFocus(c);
+  public void actionKeyStroke(Component component, int keyCode) {
+    actionFocus(component);
     actionKeyStroke(keyCode, 0);
   }
 
@@ -547,8 +556,8 @@ public class ComponentTester extends Robot {
     actionKeyStroke(keyCode, 0);
   }
 
-  public void actionKeyStroke(Component c, int keyCode, int modifiers) {
-    actionFocus(c);
+  public void actionKeyStroke(Component component, int keyCode, int modifiers) {
+    actionFocus(component);
     actionKeyStroke(keyCode, modifiers);
   }
 
@@ -565,13 +574,13 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public void actionKeyString(Component c, String string) {
-    actionFocus(c);
-    actionKeyString(string);
+  public void actionKeyString(Component component, String value) {
+    actionFocus(component);
+    actionKeyString(value);
   }
 
-  public void actionKeyString(String string) {
-    keyString(string);
+  public void actionKeyString(String value) {
+    keyString(value);
     // FIXME waitForIdle isn't always sufficient on OSX with key events
     if (Bugs.hasKeyStrokeGenerationBug()) {
       delay(100);
@@ -579,23 +588,23 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public void actionFocus(Component comp) {
-    focus(comp, true);
+  public void actionFocus(Component component) {
+    focus(component, true);
   }
 
-  public void actionMouseMove(Component comp, ComponentLocation loc) {
-    Point where = loc.getPoint(comp);
-    mouseMove(comp, where.x, where.y);
+  public void actionMouseMove(Component component, ComponentLocation location) {
+    Point where = location.getPoint(component);
+    mouseMove(component, where.x, where.y);
     waitForIdle();
   }
 
-  public void actionMousePress(Component comp, ComponentLocation loc) {
-    actionMousePress(comp, loc, InputEvent.BUTTON1_DOWN_MASK);
+  public void actionMousePress(Component component, ComponentLocation location) {
+    actionMousePress(component, location, InputEvent.BUTTON1_DOWN_MASK);
   }
 
-  public void actionMousePress(Component comp, ComponentLocation loc, int mask) {
-    Point where = loc.getPoint(comp);
-    mousePress(comp, where.x, where.y, mask);
+  public void actionMousePress(Component component, ComponentLocation location, int mask) {
+    Point where = location.getPoint(component);
+    mousePress(component, where.x, where.y, mask);
     waitForIdle();
   }
 
@@ -604,8 +613,8 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public void actionDrag(Component dragSource, ComponentLocation loc) {
-    actionDrag(dragSource, loc, "BUTTON1_DOWN_MASK");
+  public void actionDrag(Component dragSource, ComponentLocation location) {
+    actionDrag(dragSource, location, "BUTTON1_DOWN_MASK");
   }
 
   public void actionDrag(Component dragSource) {
@@ -616,25 +625,26 @@ public class ComponentTester extends Robot {
    * Perform a drag action with the given modifiers.
    *
    * @param dragSource source of the drag
-   * @param loc        identifies where on the given {@link Component} to begin the drag.
-   * @param modifiers  a <code>String</code> representation of key modifiers, e.g. "ALT|SHIFT", based on the {@link
-   *                   InputEvent#ALT_MASK InputEvent fields}.
-   * @deprecated Use the {@link #actionDrag(Component, ComponentLocation, int) integer modifier mask} version instead.
+   * @param location   identifies location on the given {@link Component} to begin the drag.
+   * @param modifiers  a <code>String</code> representation of key modifiers, event.g. "ALT|SHIFT",
+   *                   based on the {@link InputEvent#ALT_MASK InputEvent fields}.
+   * @deprecated Use the
+   * {@link #actionDrag(Component, ComponentLocation, int) integer modifier mask} version instead.
    */
   @Deprecated
-  public void actionDrag(Component dragSource, ComponentLocation loc, String modifiers) {
-    actionDrag(dragSource, loc, AWT.getModifiers(modifiers));
+  public void actionDrag(Component dragSource, ComponentLocation location, String modifiers) {
+    actionDrag(dragSource, location, AWT.getModifiers(modifiers));
   }
 
   /**
    * Perform a drag action with the given modifiers.
    *
    * @param dragSource source of the drag
-   * @param loc        identifies where on the given {@link Component} to begin the drag.
+   * @param location   identifies location on the given {@link Component} to begin the drag.
    * @param modifiers  one or more of the {@link InputEvent#ALT_DOWN_MASK InputEvent fields}.
    */
-  public void actionDrag(Component dragSource, ComponentLocation loc, int modifiers) {
-    Point where = loc.getPoint(dragSource);
+  public void actionDrag(Component dragSource, ComponentLocation location, int modifiers) {
+    Point where = location.getPoint(dragSource);
     drag(dragSource, where.x, where.y, modifiers);
     waitForIdle();
   }
@@ -649,19 +659,20 @@ public class ComponentTester extends Robot {
    * @param dragSource source of the drag
    * @param sx         X coordinate
    * @param sy         Y coordinate
-   * @param modifiers  a <code>String</code> representation of key modifiers, e.g. "ALT|SHIFT", based on the {@link
-   *                   InputEvent#ALT_DOWN_MASK InputEvent fields}.
-   * @deprecated Use the {@link #actionDrag(Component, ComponentLocation, int) ComponentLocation/ integer modifier
-   * mask} version instead.
+   * @param modifiers  a <code>String</code> representation of key modifiers, event.g. "ALT|SHIFT",
+   *                   based on the {@link InputEvent#ALT_DOWN_MASK InputEvent fields}.
+   * @deprecated Use the
+   * {@link #actionDrag(Component, ComponentLocation, int) ComponentLocation/ integer modifier mask}
+   * version instead.
    */
   @Deprecated
   public void actionDrag(Component dragSource, int sx, int sy, String modifiers) {
     actionDrag(dragSource, new ComponentLocation(new Point(sx, sy)), modifiers);
   }
 
-  public void actionDragOver(Component target, ComponentLocation where) {
-    Point loc = where.getPoint(target);
-    dragOver(target, loc.x, loc.y);
+  public void actionDragOver(Component target, ComponentLocation location) {
+    Point point = location.getPoint(target);
+    dragOver(target, point.x, point.y);
     waitForIdle();
   }
 
@@ -669,8 +680,8 @@ public class ComponentTester extends Robot {
     actionDrop(dropTarget, new ComponentLocation());
   }
 
-  public void actionDrop(Component dropTarget, ComponentLocation loc) {
-    Point where = loc.getPoint(dropTarget);
+  public void actionDrop(Component dropTarget, ComponentLocation location) {
+    Point where = location.getPoint(dropTarget);
     drop(dropTarget, where.x, where.y);
     waitForIdle();
   }
@@ -680,14 +691,16 @@ public class ComponentTester extends Robot {
     waitForIdle();
   }
 
-  public boolean assertImage(Component comp, java.io.File fileImage, boolean ignoreBorder) {
-    java.awt.image.BufferedImage img = capture(comp, ignoreBorder);
+  public boolean assertImage(Component component, java.io.File fileImage, boolean ignoreBorder) {
+    BufferedImage img = capture(component, ignoreBorder);
     return new ImageComparator().compare(img, fileImage) == 0;
   }
 
   /**
-   * Returns whether a Window corresponding to the given String is showing.  The string may be a plain String or
-   * regular expression and may match either the window title (for Frames or Dialogs) or its Component name.
+   * Returns whether a Window corresponding to the given String is showing.  The value may be a
+   * plain String or regular expression and may match either the window title (for Frames or
+   * Dialogs) or its Component name.
+   *
    * @param id id
    * @return true if frame is showing
    * @see junit.extensions.abbot.ComponentTestFixture#isShowing(String)
@@ -696,24 +709,25 @@ public class ComponentTester extends Robot {
   @Deprecated
   public boolean assertFrameShowing(String id) {
     try {
-      Hierarchy h = AWTHierarchy.getDefault();
-      abbot.finder.ComponentFinder finder = new BasicFinder(h);
+      Hierarchy hierarchy = AWTHierarchy.getDefault();
+      abbot.finder.ComponentFinder finder = new BasicFinder(hierarchy);
       return finder.find(new WindowMatcher(id, true)) != null;
     } catch (ComponentNotFoundException e) {
       return false;
-    } catch (MultipleComponentsFoundException m) {
+    } catch (MultipleComponentsFoundException e) {
       // Might not be the one you want, but that's what the docs say
       return true;
     }
   }
 
   /**
-   * Convenience wait for a window to be displayed.  The given string may be a plain String or regular expression and
-   * may match either the window title (for Frames and Dialogs) or its Component name.  This method is provided as a
-   * convenience for hand-coded tests, since scripts will use a wait step instead.<p> The property
-   * abbot.robot.component_delay affects the default timeout.
-   * @param identifier id
+   * Convenience wait for a window to be displayed.  The given value may be a plain String or
+   * regular expression and may match either the window title (for Frames and Dialogs) or its
+   * Component name.  This method is provided as a convenience for hand-coded tests, since scripts
+   * will use a wait step instead.<p> The property abbot.robot.component_delay affects the default
+   * timeout.
    *
+   * @param identifier id
    * @see junit.extensions.abbot.ComponentTestFixture#isShowing(String)
    * @deprecated This method does not provide sufficient context to reliably find a component.
    */
@@ -726,7 +740,7 @@ public class ComponentTester extends Robot {
           }
 
           public String toString() {
-            return Strings.get("tester.Component.show_wait", new Object[] {identifier});
+            return Strings.get("tester.Component.show_wait", new Object[]{identifier});
           }
         },
         componentDelay);
@@ -734,8 +748,8 @@ public class ComponentTester extends Robot {
 
   public boolean assertComponentShowing(ComponentReference ref) {
     try {
-      Component c = ref.getComponent();
-      return isReadyForInput(c);
+      Component component = ref.getComponent();
+      return isReadyForInput(component);
     } catch (ComponentSearchException e) {
       return false;
     }
@@ -749,7 +763,7 @@ public class ComponentTester extends Robot {
           }
 
           public String toString() {
-            return Strings.get("tester.Component.show_wait", new Object[] {ref});
+            return Strings.get("tester.Component.show_wait", new Object[]{ref});
           }
         },
         componentDelay);
@@ -758,7 +772,8 @@ public class ComponentTester extends Robot {
   private Method[] cachedMethods = null;
 
   /**
-   * Look up methods with the given prefix.  Facilitates auto-scanning by scripts and the script editor.
+   * Look up methods with the given prefix.  Facilitates auto-scanning by scripts and the script
+   * editor.
    */
   private Method[] getMethods(String prefix, Class<?> returnType, boolean componentArgument) {
     if (cachedMethods == null) {
@@ -768,8 +783,8 @@ public class ComponentTester extends Robot {
     // Only save one Method for each unique name
     HashSet<String> names = new HashSet<>(IGNORED_METHODS);
 
-    Method[] mlist = cachedMethods;
-    for (Method method : mlist) {
+    Method[] methodList = cachedMethods;
+    for (Method method : methodList) {
       String name = method.getName();
       if (names.contains(name) || !name.startsWith(prefix)) {
         continue;
@@ -777,8 +792,8 @@ public class ComponentTester extends Robot {
       Class<?>[] params = method.getParameterTypes();
       if ((returnType == null || returnType.equals(method.getReturnType()))
           && ((params.length == 0 && !componentArgument)
-              || (params.length > 0
-                  && (Component.class.isAssignableFrom(params[0]) == componentArgument)))) {
+          || (params.length > 0
+          && (Component.class.isAssignableFrom(params[0]) == componentArgument)))) {
         methods.add(method);
         names.add(name);
       }
@@ -835,31 +850,31 @@ public class ComponentTester extends Robot {
     return cachedComponentAssertMethods;
   }
 
-  public static String stripHTML(String str) {
-    if (str != null && (str.startsWith("<html>") || str.startsWith("<HTML>"))) {
-      while (str.startsWith("<")) {
-        int right = str.indexOf(">");
+  public static String stripHTML(String value) {
+    if (value != null && (value.startsWith("<html>") || value.startsWith("<HTML>"))) {
+      while (value.startsWith("<")) {
+        int right = value.indexOf(">");
         if (right == -1) {
           break;
         }
-        str = str.substring(right + 1);
+        value = value.substring(right + 1);
       }
-      while (str.endsWith(">")) {
-        int right = str.lastIndexOf("<");
+      while (value.endsWith(">")) {
+        int right = value.lastIndexOf("<");
         if (right == -1) {
           break;
         }
-        str = str.substring(0, right);
+        value = value.substring(0, right);
       }
     }
-    return str;
+    return value;
   }
 
-  protected void waitAction(String desc, Condition cond) throws ActionFailedException {
+  protected void waitAction(String description, Condition condition) throws ActionFailedException {
     try {
-      wait(cond);
+      wait(condition);
     } catch (WaitTimedOutError wto) {
-      throw new ActionFailedException(desc);
+      throw new ActionFailedException(description);
     }
   }
 
@@ -874,15 +889,17 @@ public class ComponentTester extends Robot {
     return new ComponentLocation().parse(encoded);
   }
 
-  public ComponentLocation getLocation(Component c, Point where) {
+  public ComponentLocation getLocation(Component component, Point where) {
     return new ComponentLocation(where);
   }
 
   private static class AWTMenuListener implements AWTEventListener {
+
     private volatile boolean eventFired;
 
-    public void eventDispatched(AWTEvent e) {
-      if (e.getID() == ActionEvent.ACTION_PERFORMED) {
+    @Override
+    public void eventDispatched(AWTEvent event) {
+      if (event.getID() == ActionEvent.ACTION_PERFORMED) {
         eventFired = true;
       }
     }

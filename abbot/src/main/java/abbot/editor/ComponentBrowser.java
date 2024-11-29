@@ -1,6 +1,7 @@
 package abbot.editor;
 
 import abbot.Log;
+import abbot.Platform;
 import abbot.editor.editors.XMLEditor;
 import abbot.editor.widgets.TextFormat;
 import abbot.finder.AWTHierarchy;
@@ -40,6 +41,10 @@ import javax.swing.tree.TreePath;
  */
 // FIXME put the component reference ID into a label, not in the status
 public class ComponentBrowser extends JPanel implements ActionListener {
+
+  private static final int KC_WAIT = Platform.isMacintosh() ? KeyEvent.VK_ALT : KeyEvent.VK_CONTROL;
+  private static final int KC_INVERT = KeyEvent.VK_SHIFT;
+
   private final int TAB_HIERARCHY = 0;
 
   private JButton refreshButton;
@@ -244,8 +249,8 @@ public class ComponentBrowser extends JPanel implements ActionListener {
         });
     addSampleButton.setEnabled(false);
 
-    String waitKeyName = KeyEvent.getKeyText(ScriptEditor.KC_WAIT);
-    String invertKeyName = KeyEvent.getKeyText(ScriptEditor.KC_INVERT);
+    String waitKeyName = KeyEvent.getKeyText(KC_WAIT);
+    String invertKeyName = KeyEvent.getKeyText(KC_INVERT);
     String tip =
         Strings.get(
             "AssertPropertyTip",

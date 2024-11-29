@@ -15,12 +15,12 @@ public interface ComponentFinder {
    * Note that {@link MultipleComponentsFoundException} can only be thrown if the {@link Matcher} argument is an
    * instance of {@link MultiMatcher}.
    *
-   * @param m matcher
+   * @param matcher matcher
    * @return matching component
    * @throws ComponentNotFoundException component not found
    * @throws MultipleComponentsFoundException multiple components found
    */
-  Component find(Matcher m) throws ComponentNotFoundException, MultipleComponentsFoundException;
+  Component find(Matcher matcher) throws ComponentNotFoundException, MultipleComponentsFoundException;
 
   /**
    * Find a Component, using the given Matcher to determine whether a given component in the hierarchy under the given
@@ -29,12 +29,12 @@ public interface ComponentFinder {
    * Note that {@link MultipleComponentsFoundException} can only be thrown if the {@link Matcher} argument is an
    * instance of {@link MultiMatcher}.
    *
-   * @param m matcher
+   * @param matcher matcher
    * @param root root container
    * @return matching component
    * @throws ComponentNotFoundException component not found
    * @throws MultipleComponentsFoundException multiple components found
    */
-  Component find(Container root, Matcher m)
+  Component find(Container root, Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException;
 }

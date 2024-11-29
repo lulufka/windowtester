@@ -13,10 +13,11 @@ package com.windowtester.swing.recorder;
 import abbot.script.Resolver;
 
 /**
- * Record basic semantic events you might find on an Container. <p> copy of abbot.editor.recorder.ContainerRecorder
- * extends windowtester.ComponentRecorder
+ * Record basic semantic events you might find on an Container. <p> copy of
+ * abbot.editor.recorder.ContainerRecorder extends windowtester.ComponentRecorder
  */
 public class ContainerRecorder extends ComponentRecorder {
+
   public ContainerRecorder(Resolver resolver) {
     super(resolver);
   }

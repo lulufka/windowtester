@@ -80,9 +80,10 @@ public class JComboBoxLocator extends AbstractPathLocator implements IsEnabled, 
     super(cls, itemText, index, parentInfo);
   }
 
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
-    return ((UIContextSwing) ui).getDriver().clickComboBox((JComboBox) c, getItemText(), clicks);
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+    return ((UIContextSwing) ui).getDriver().clickComboBox((JComboBox) component, getItemText(), clicks);
   }
 
   /**

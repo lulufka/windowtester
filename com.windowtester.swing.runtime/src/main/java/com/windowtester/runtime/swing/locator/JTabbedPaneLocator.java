@@ -62,20 +62,20 @@ public class JTabbedPaneLocator extends SwingWidgetLocator {
     super(cls, tabLabel, index, parent);
 
     // create the matcher
-    _matcher = new ExactClassMatcher(cls);
+    matcher = new ExactClassMatcher(cls);
 
     if (index != UNASSIGNED) {
-      _matcher = IndexMatcher.create(_matcher, index);
+      matcher = IndexMatcher.create(matcher, index);
     }
 
     if (parent != null) {
       if (parent instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
-        _matcher = new CompoundMatcher(_matcher, NameMatcher.create(parent.getNameOrLabel()));
+        matcher = new CompoundMatcher(matcher, NameMatcher.create(parent.getNameOrLabel()));
       } else {
         if (index != UNASSIGNED) {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher(), index);
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
         } else {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
         }
       }
     }
@@ -90,8 +90,9 @@ public class JTabbedPaneLocator extends SwingWidgetLocator {
    * @param modifierMask - the mouse modifier mask
    * @return the clicked widget
    */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
-    return ((UIContextSwing) ui).getDriver().click(c, getNameOrLabel());
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+    return ((UIContextSwing) ui).getDriver().click(component, getNameOrLabel());
   }
 }

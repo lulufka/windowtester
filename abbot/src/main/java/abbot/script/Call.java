@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Class for script steps that want to invoke a method on a class. Subclasses may override getMethod and getTarget to
- * customize behavior.
+ * Class for script steps that want to invoke a method on a class. Subclasses may override getMethod
+ * and getTarget to customize behavior.
  * <blockquote><code>
  * &lt;call method="..." args="..." class="..."&gt;<br>
  * </code></blockquote>
  */
 public class Call extends Step {
+
   private String targetClassName = null;
   private String methodName;
   private String[] args;
@@ -22,17 +23,17 @@ public class Call extends Step {
   private static final String USAGE =
       "<call class=\"...\" method=\"...\" args=\"...\" [property=\"...\"]/>";
 
-  public Call(Resolver resolver, Map attributes) {
+  public Call(Resolver resolver, Map<String, String> attributes) {
     super(resolver, attributes);
-    methodName = (String) attributes.get(TAG_METHOD);
+    methodName = attributes.get(TAG_METHOD);
     if (methodName == null) {
       usage(Strings.get("call.method_missing"));
     }
-    targetClassName = (String) attributes.get(TAG_CLASS);
+    targetClassName = attributes.get(TAG_CLASS);
     if (targetClassName == null) {
       usage(Strings.get("call.class_missing"));
     }
-    String argList = (String) attributes.get(TAG_ARGS);
+    String argList = attributes.get(TAG_ARGS);
     if (argList == null) {
       argList = "";
     }
@@ -42,19 +43,22 @@ public class Call extends Step {
   public Call(
       Resolver resolver, String description, String className, String methodName, String[] args) {
     super(resolver, description);
-    this.targetClassName = className;
+    targetClassName = className;
     this.methodName = methodName;
     this.args = args != null ? args : new String[0];
   }
 
+  @Override
   public String getDefaultDescription() {
     return getMethodName() + getArgumentsDescription();
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_CALL;
   }
@@ -75,11 +79,11 @@ public class Call extends Step {
   }
 
   /**
-   * Designate the arguments for this Call step.  The format of this String is a comma-separated list of String
-   * representations.  See the abbot.parsers package for supported String representations.
+   * Designate the arguments for this Call step.  The format of this String is a comma-separated
+   * list of String representations.  See the abbot.parsers package for supported String
+   * representations.
    *
    * @param encodedArgs encoded arguments
-   *
    * @see ArgumentParser#parseArgumentList for a description of the format.
    * @see #setArguments(String[]) for the preferred method of indicating the argument list.
    */
@@ -113,8 +117,9 @@ public class Call extends Step {
     targetClassName = cn;
   }
 
-  public Map getAttributes() {
-    Map map = super.getAttributes();
+  @Override
+  public Map<String, String> getAttributes() {
+    Map<String, String> map = super.getAttributes();
     map.put(TAG_CLASS, getTargetClassName());
     map.put(TAG_METHOD, getMethodName());
     if (args.length != 0) {
@@ -125,6 +130,7 @@ public class Call extends Step {
 
   /**
    * Return the arguments as an array of String.
+   *
    * @return the arguments as an array of String
    * @deprecated use getArguments().
    */
@@ -136,6 +142,7 @@ public class Call extends Step {
     return args;
   }
 
+  @Override
   protected void runStep() throws Throwable {
     try {
       invoke();
@@ -229,11 +236,11 @@ public class Call extends Step {
   }
 
   /**
-   * Look up all methods in the given class with the given name and return type, having the number of arguments in
-   * this step.
+   * Look up all methods in the given class with the given name and return type, having the number
+   * of arguments in this step.
    *
-   * @param name name
-   * @param cls class
+   * @param name       name
+   * @param cls        class
    * @param returnType return type
    * @return arguments
    * @throws NoSuchMethodException if no matching method is found
@@ -258,11 +265,11 @@ public class Call extends Step {
       throw new NoSuchMethodException(
           Strings.get(
               "call.no_matching_method",
-              new Object[] {
-                name,
-                (returnType == null ? "*" : returnType.toString()),
-                String.valueOf(args.length),
-                cls
+              new Object[]{
+                  name,
+                  (returnType == null ? "*" : returnType.toString()),
+                  String.valueOf(args.length),
+                  cls
               }));
     }
 
@@ -274,11 +281,11 @@ public class Call extends Step {
   }
 
   /**
-   * Look up the given method name in the given class with the requested return type, having the number of arguments
-   * in this step.
+   * Look up the given method name in the given class with the requested return type, having the
+   * number of arguments in this step.
    *
-   * @param name name
-   * @param cls class
+   * @param name       name
+   * @param cls        class
    * @param returnType return type
    * @return method
    * @throws NoSuchMethodException if not exactly one match exists
@@ -298,13 +305,14 @@ public class Call extends Step {
    *
    * @param methods methods
    * @return method
-   * @throws IllegalArgumentException indicating the appropriate target method can't be distinguished.
+   * @throws IllegalArgumentException indicating the appropriate target method can't be
+   *                                  distinguished.
    */
   protected Method disambiguateMethod(Method[] methods) {
     String msg =
         Strings.get(
             "call.multiple_methods",
-            new Object[] {methods[0].getName(), methods[0].getDeclaringClass()});
+            new Object[]{methods[0].getName(), methods[0].getDeclaringClass()});
     throw new IllegalArgumentException(msg);
   }
 }
