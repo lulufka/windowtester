@@ -13,16 +13,20 @@ package com.windowtester.runtime.swing.condition;
 import abbot.finder.AWTHierarchy;
 import com.windowtester.runtime.condition.ICondition;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Window;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+import javax.swing.JDialog;
 
 /**
  * Tests whether a given {@link Window} has been disposed.
  */
 public class WindowDisposedCondition implements ICondition {
 
-  private final String _windowName;
+  private final String windowName;
 
   /**
    * Creates an instance
@@ -30,47 +34,69 @@ public class WindowDisposedCondition implements ICondition {
    * @param title the title of the Window that is to be checked
    */
   public WindowDisposedCondition(String title) {
-    _windowName = title;
+    windowName = title;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime2.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
-    return assertComponentNotShowing(_windowName);
+    return assertComponentNotShowing(windowName);
   }
 
-  boolean boolT;
-
-  private synchronized boolean assertComponentNotShowing(final String title) {
-    boolT = true;
-
-    ArrayList componentList = new ArrayList();
-    AWTHierarchy h = new AWTHierarchy();
-    final Iterator rootIter = h.getRoots().iterator();
-    while (rootIter.hasNext()) {
-      componentList.addAll(h.getComponents((Component) rootIter.next()));
-    }
-    componentList.addAll(h.getRoots());
-
-    final Iterator compIter = componentList.iterator();
-    while (compIter.hasNext()) {
-      Component c = (Component) compIter.next();
-      if (c instanceof Frame) {
-        Frame w = (Frame) c;
-        // if ( w.isDisplayable() && (w.getTitle().equals(title))) {
-        if (w.isDisplayable() && StringComparator.matches(w.getTitle(), title)) {
-          boolT = !w.isVisible();
-        }
+  private synchronized boolean assertComponentNotShowing(String title) {
+    var componentList = collectComponents();
+    for (Component c : componentList) {
+      if (isMatchingFrame(title, c)) {
+        return noFrameShowing(c);
       }
-      if (c instanceof Dialog) {
-        Dialog d = (Dialog) c;
-        // if ( d.isDisplayable() && (d.getTitle().equals(title))) {
-        if (d.isDisplayable() && StringComparator.matches(d.getTitle(), title)) {
-          boolT = !d.isVisible();
-        }
+      if (isMatchingDialog(title, c)) {
+        return noDialogShowing(c);
       }
     }
-    return boolT;
+    // component not found
+    return true;
+  }
+
+  private boolean noDialogShowing(Component c) {
+    return noComponentShowing((JDialog) c);
+  }
+
+  private boolean noFrameShowing(Component c) {
+    return noComponentShowing((Frame) c);
+  }
+
+  private boolean noComponentShowing(Window window) {
+    var isNotDisplayable = !window.isDisplayable();
+    var isNotVisible = !window.isVisible();
+    var isNotActive = !window.isActive();
+
+    return isNotDisplayable && isNotVisible && isNotActive;
+  }
+
+  private boolean isMatchingDialog(String title, Component c) {
+    if (c instanceof JDialog dialog) {
+      return StringComparator.matches(dialog.getTitle(), title);
+    }
+    return false;
+  }
+
+  private boolean isMatchingFrame(String title, Component c) {
+    if (c instanceof Frame frame) {
+      return StringComparator.matches(frame.getTitle(), title);
+    }
+    return false;
+  }
+
+  private List<Component> collectComponents() {
+    var hierarchy = new AWTHierarchy();
+    var components = hierarchy.getRoots().stream()
+        .map(hierarchy::getComponents)
+        .flatMap(Collection::stream)
+        .toList();
+
+    return Stream
+        .concat(
+            components.stream(),
+            hierarchy.getRoots().stream())
+        .toList();
   }
 }

@@ -79,6 +79,7 @@ public class JRadioButtonLocator extends SwingWidgetLocator
     return button.isSelected();
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JRadioButtonLocator";
   }

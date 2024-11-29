@@ -21,23 +21,22 @@ import com.windowtester.internal.runtime.test.TestId;
  */
 public class TestMonitor {
 
-  private volatile ITestIdentifier _runningTest = noTest();
+  private volatile ITestIdentifier runningTest = noTest();
 
-  /* Singleton instance */
-  static TestMonitor _monitor;
+  private static TestMonitor monitor;
 
   /**
    * @return Singleton monitor instance
    */
   public static TestMonitor getInstance() {
-    if (_monitor == null) {
-      _monitor = new TestMonitor();
+    if (monitor == null) {
+      monitor = new TestMonitor();
     }
-    return _monitor;
+    return monitor;
   }
 
   private ITestIdentifier getRunningTest() {
-    return _runningTest;
+    return runningTest;
   }
 
   /**
@@ -48,7 +47,7 @@ public class TestMonitor {
   }
 
   private void setRunningTest(ITestIdentifier runningTest) {
-    _runningTest = runningTest;
+    this.runningTest = runningTest;
   }
 
   // NOTE: arguments must not be null
@@ -109,7 +108,7 @@ public class TestMonitor {
    * @return true if a UITestCase is running
    */
   public boolean isTestRunning() {
-    return _runningTest != noTest();
+    return runningTest != noTest();
   }
 
   private static NoRunningTestId noTest() {

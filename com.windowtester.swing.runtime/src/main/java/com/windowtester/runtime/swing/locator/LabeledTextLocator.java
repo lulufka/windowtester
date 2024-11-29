@@ -71,6 +71,7 @@ public class LabeledTextLocator extends JTextComponentLocator {
     }
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "LabeledTextLocator";
   }

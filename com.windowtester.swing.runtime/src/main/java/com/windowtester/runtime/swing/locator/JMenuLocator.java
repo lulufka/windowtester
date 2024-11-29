@@ -42,6 +42,7 @@ public class JMenuLocator extends JMenuItemLocator {
     super(JMenu.class, path, parent);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JMenuLocator";
   }

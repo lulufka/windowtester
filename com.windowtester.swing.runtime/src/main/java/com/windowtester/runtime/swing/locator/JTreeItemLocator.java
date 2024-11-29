@@ -79,6 +79,7 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
 
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JTreeItemLocator";
   }

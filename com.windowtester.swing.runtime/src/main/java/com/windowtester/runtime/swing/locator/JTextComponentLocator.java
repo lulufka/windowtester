@@ -97,6 +97,7 @@ public class JTextComponentLocator extends SwingWidgetLocator
     super(cls, nameOrLabel, index, parentInfo);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JTextComponentLocator";
   }

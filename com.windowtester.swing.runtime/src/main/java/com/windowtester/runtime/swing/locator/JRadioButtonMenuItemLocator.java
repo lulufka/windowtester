@@ -50,6 +50,7 @@ public class JRadioButtonMenuItemLocator extends JMenuItemLocator implements IsS
     super(JRadioButtonMenuItem.class, path, parent);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JRadioButtonMenuItemLocator";
   }

@@ -82,7 +82,6 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   /**
    * Delegate matcher NOTICE: the matcher is transient.
    */
-  // TODO: build up in constructor
   protected transient IWidgetMatcher matcher;
 
   /**
@@ -221,15 +220,7 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     // an instance of their respective swing classes, and not by exact class matching
 
     if (cls != null) {
-      if (this instanceof JButtonLocator || this instanceof JRadioButtonLocator) {
-        matcher = ClassMatcher.create(cls);
-      } else if (this instanceof JCheckBoxLocator
-          || this instanceof JToggleButtonLocator
-          || this instanceof JTableItemLocator) {
-        matcher = ClassMatcher.create(cls);
-      } else {
-        matcher = new ExactClassMatcher(cls);
-      }
+      matcher = getClassMatcher(cls);
     }
     if (nameOrLabel != null && !nameOrLabel.isEmpty()) {
       matcher = new CompoundMatcher(matcher, NameOrTextMatcher.create(nameOrLabel));
@@ -248,6 +239,18 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     }
   }
 
+  private IWidgetMatcher getClassMatcher(Class<?> cls) {
+    if (this instanceof JButtonLocator || this instanceof JRadioButtonLocator) {
+      return ClassMatcher.create(cls);
+    }
+    if (this instanceof JCheckBoxLocator
+        || this instanceof JToggleButtonLocator
+        || this instanceof JTableItemLocator) {
+      return ClassMatcher.create(cls);
+    }
+    return new ExactClassMatcher(cls);
+  }
+
   @Override
   public boolean matches(Object widget) {
     // delegates matching to component matcher
@@ -264,11 +267,12 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   //
   // Widget finding convenience methods
   //
-  ///////////////////////////////////////////////////////////////////////////////
+
+  /// ////////////////////////////////////////////////////////////////////////////
 
   protected Component findComponent(IUIContext ui) throws WidgetSearchException {
     // we know this is a widget reference
-    WidgetReference<?> widgetReference = (WidgetReference<?>) ui.find(this);
+    var widgetReference = (WidgetReference<?>) ui.find(this);
     // get the widget
     return (Component) widgetReference.getWidget();
   }
@@ -277,14 +281,15 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   //
   // Basic click functionality
   //
-  ///////////////////////////////////////////////////////////////////////////////
+
+  /// ////////////////////////////////////////////////////////////////////////////
 
   @Override
   public IWidgetLocator click(IUIContext ui, IWidgetReference widget, IClickDescription click)
       throws WidgetSearchException {
-    Component component = (Component) widget.getWidget();
-    Point offset = getXYOffset(component, click);
-    Component clicked = doClick(ui, click.clicks(), component, offset, click.modifierMask());
+    var component = (Component) widget.getWidget();
+    var offset = getXYOffset(component, click);
+    var clicked = doClick(ui, click.clicks(), component, offset, click.modifierMask());
     return WidgetReference.create(clicked, this);
   }
 
@@ -310,9 +315,9 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   public IWidgetLocator contextClick(
       IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
       throws WidgetSearchException {
-    Component component = (Component) widget.getWidget();
+    var component = (Component) widget.getWidget();
     // TODO: hook up xys
-    Component clicked = ((UIContextSwing) ui).getDriver().contextClick(component, menuItemPath);
+    var clicked = ((UIContextSwing) ui).getDriver().contextClick(component, menuItemPath);
     return WidgetReference.create(clicked, this);
   }
 
@@ -338,6 +343,7 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   }
 
   /////////////////////////////////////////////////////////////////////////
+  //
   // Diagnostics
   //
   /////////////////////////////////////////////////////////////////////////
@@ -347,7 +353,7 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    */
   @Override
   public void diagnose(IDiagnostic diagnostic) {
-    Hierarchy hierarchy = AWTHierarchy.getDefault();
+    var hierarchy = AWTHierarchy.getDefault();
     hierarchy.getRoots().forEach(component -> {
       if (((Window) component).isActive()) {
         getAllChildren(component, hierarchy, diagnostic);
@@ -366,7 +372,7 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
       return;
     }
 
-    Window[] windows = ((Window) component).getOwnedWindows();
+    var windows = ((Window) component).getOwnedWindows();
     Arrays.stream(windows)
         .filter(Window::isActive)
         .forEach(window -> getAllChildren(window, hierarchy, diagnostic));
@@ -437,9 +443,9 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    * @return the text associated with that object (may be null)
    */
   public String getText(IUIContext ui) throws WidgetSearchException {
-    IWidgetLocator found = ui.find(this);
+    var found = ui.find(this);
     if (found instanceof IWidgetReference widgetReference) {
-      Object widget = widgetReference.getWidget();
+      var widget = widgetReference.getWidget();
       return getWidgetText((Component) widget);
     }
     return null;
@@ -477,9 +483,9 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    * @return <code>true</code> if the object is enabled, else false
    */
   public boolean isEnabled(IUIContext ui) throws WidgetSearchException {
-    IWidgetLocator found = ui.find(this);
+    var found = ui.find(this);
     if (found instanceof IWidgetReference widgetReference) {
-      Object widget = widgetReference.getWidget();
+      var widget = widgetReference.getWidget();
       return isWidgetEnabled((Component) widget);
     }
     return false;

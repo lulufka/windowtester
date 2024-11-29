@@ -3,15 +3,16 @@ package com.windowtester.junit5;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 import com.windowtester.junit5.resolver.AnnotationResolver;
+import com.windowtester.junit5.resolver.FieldInfo;
 import com.windowtester.junit5.resolver.SwingUIContextParameterResolver;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Window;
+import java.util.Optional;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
@@ -22,8 +23,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 public class WindowtesterExtension implements ParameterResolver, BeforeTestExecutionCallback,
     AfterTestExecutionCallback {
-
-  private static final int DELAY = 20_000;
 
   private final SwingUIContextParameterResolver swingUIContextResolver;
 
@@ -56,9 +55,17 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     new AnnotationResolver(context).tryToFindAnnotatedField(UIUnderTest.class)
         .filter(fieldInfo -> fieldInfo.result() instanceof Component)
         .ifPresent(fieldInfo -> {
-          baseFrame.setTitle(fieldInfo.title());
+          baseFrame.setTitle(getUIUnderTestTitle(fieldInfo, context.getTestClass()));
           createAndShowUI(baseFrame, (Component) fieldInfo.result(), context);
         });
+  }
+
+  private String getUIUnderTestTitle(FieldInfo fieldInfo, Optional<Class<?>> testClass) {
+    var title = fieldInfo.title();
+    if (title.isEmpty()) {
+      return testClass.map(Class::getSimpleName).orElse("");
+    }
+    return title;
   }
 
   @Override
@@ -70,27 +77,27 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
       JFrame frame,
       Component component,
       ExtensionContext context) {
-    Window window = createWindow(frame, component);
+    var window = createWindow(frame, component);
     getStorage(context).saveUIComponent(window);
     showWindow(window);
   }
 
-  private Window createWindow(JFrame frame, Component component) {
-    if (component instanceof Frame frame1) {
-      return createAndShowFrameUI(frame1);
+  private Window createWindow(JFrame jFrame, Component component) {
+    if (component instanceof Frame frame) {
+      return createAndShowFrameUI(frame);
     }
-    return createAndShowPanelUI(frame, component);
+    return createAndShowPanelUI(jFrame, component);
   }
 
   private Window createAndShowFrameUI(Frame frame) {
-    if (frame instanceof JFrame frame1) {
-      frame1.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    if (frame instanceof JFrame jFrame) {
+      jFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     return frame;
   }
 
-  private Window createAndShowPanelUI(JFrame frame, Component component) {
-    var pane = (JPanel) frame.getContentPane();
+  private Window createAndShowPanelUI(JFrame jFrame, Component component) {
+    var pane = (JPanel) jFrame.getContentPane();
     pane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
     if (component instanceof JComponent component1) {
@@ -100,7 +107,7 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     if (!(component instanceof Window)) {
       pane.add(component);
     }
-    return frame;
+    return jFrame;
   }
 
   private void showWindow(Window window) {
@@ -116,11 +123,6 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
 
           window.setVisible(true);
         });
-    // Ensure the window is visible before returning
-    new Timer(DELAY, e -> {
-      var message = String.format("Timed out waiting for Window to open within %dms.", DELAY);
-      throw new RuntimeException(message);
-    });
   }
 
   private boolean isSwingUIContextParameter(ParameterContext parameterContext,

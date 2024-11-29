@@ -25,17 +25,19 @@ import swing.samples.DialogSample;
 @ExtendWith(WindowtesterExtension.class)
 class DialogSampleTest {
 
-  @UIUnderTest(title = "Question")
+  @UIUnderTest(title = "DialogSample")
   private DialogSample dialog = new DialogSample(new JFrame("Question"), "");
 
   @Test
-  void testDialogSample(@SwingUIContext IUIContext ui) throws Exception {
+  void testDialogSampleYesButton(@SwingUIContext IUIContext ui) throws Exception {
     ui.wait(new WindowShowingCondition("Question"), 1_000);
 
     ui.click(new JButtonLocator("Yes"));
+
     ui.wait(new WindowShowingCondition("Inane error"), 1_000);
 
     ui.click(new JButtonLocator("OK"));
+
     ui.wait(new WindowDisposedCondition("Inane error"), 1_000);
   }
 }

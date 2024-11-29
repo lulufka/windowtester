@@ -67,6 +67,7 @@ public class NamedWidgetLocator extends SwingWidgetLocator implements HasText, I
     matcher = NameMatcher.create(getNameOrLabel());
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "NamedWidgetLocator";
   }

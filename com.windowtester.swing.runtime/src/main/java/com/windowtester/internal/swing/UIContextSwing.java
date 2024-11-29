@@ -186,7 +186,7 @@ public class UIContextSwing extends UIContextCommon {
     try {
       getDriver().wait(c, timeout, interval);
     } catch (WaitTimedOutError e) {
-      throw new WaitTimedOutException("Timed out waiting for " + condition);
+      throw new WaitTimedOutException("Timed out waiting for " + condition, e);
     }
   }
 
@@ -199,7 +199,7 @@ public class UIContextSwing extends UIContextCommon {
   }
 
   public IWidgetLocator find(IWidgetLocator locator) throws WidgetSearchException {
-    IWidgetLocator[] locators = findAll(locator);
+    var locators = findAll(locator);
     if (locators.length > 1) {
       takeScreenShot();
       throw new MultipleWidgetsFoundException("Multiple Components found");

@@ -16,31 +16,33 @@ import com.windowtester.internal.runtime.finder.FinderFactory;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * Base class for Widget locators.  Widget locators capture hierarchy (containment) relationships between widgets for
- * use in widget identification.
+ * Base class for Widget locators.  Widget locators capture hierarchy (containment) relationships
+ * between widgets for use in widget identification.
  * <p>
- * For example, a widget identified by class and position relative to its parent composite could be described so:
+ * For example, a widget identified by class and position relative to its parent composite could be
+ * described so:
  * <pre>
  * 		new WidgetLocator(Text.class, 2,
  * 			   new WidgetLocator(Group.class, "addressGroup"));
  * </pre>
  * <p>
- * Effectively, this WidgetLocator instance describes the third Text widget in the Group labeled "addressGroup".
+ * Effectively, this WidgetLocator instance describes the third Text widget in the Group labeled
+ * "addressGroup".
  */
 public class WidgetLocator
     implements Serializable,
-        IWidgetIdentifier,
-        IAdaptable,
-        com.windowtester.runtime.locator.IWidgetLocator {
+    IWidgetIdentifier,
+    IAdaptable,
+    com.windowtester.runtime.locator.IWidgetLocator {
 
   /*
    * NOTE: this class is serializable and uses the default serialization scheme.
    * This should _not_ be a problem (hierarchies are not too deep); still, we
    * could consider a custom serialization scheme.
    */
-
   private static final long serialVersionUID = 7772528976750829834L;
 
   /**
@@ -187,8 +189,6 @@ public class WidgetLocator
 
   /**
    * Accept this visitor.
-   *
-   * @param visitor
    */
   public void accept(IWidgetLocatorVisitor visitor) {
     visitor.visit(this);
@@ -215,20 +215,12 @@ public class WidgetLocator
     return ancestorInfo;
   }
 
-  /**
-   * Get the name or label String that helps identify this widget.
-   *
-   * @return the subject's name or label
-   */
+  @Override
   public String getNameOrLabel() {
     return nameOrLabel;
   }
 
-  /**
-   * Get the subject widget's class.
-   *
-   * @return the subject's class
-   */
+  @Override
   public Class<?> getTargetClass() {
     return classRef.getClassForName();
   }
@@ -242,17 +234,12 @@ public class WidgetLocator
     return classRef;
   }
 
-  /**
-   * Get the subject widget's class name
-   *
-   * @return the subject's class name
-   */
+  @Override
   public String getTargetClassName() {
     if (classRef != null) {
       return classRef.getName();
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**
@@ -291,146 +278,75 @@ public class WidgetLocator
     this.index = index;
   }
 
-  /**
-   * Get a String representation of this <code>WidgetLocator</code>.
-   *
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    String name = getWidgetLocatorStringName();
+    var builder = new StringBuilder();
+
+    var name = getWidgetLocatorStringName();
     if (name != null) {
-      sb.append(name).append("(");
+      builder.append(name).append("(");
     } else {
-      sb.append("WidgetLocator(").append(classRef.getName());
+      builder
+          .append("WidgetLocator(")
+          .append(classRef.getName());
       if (getNameOrLabel() != null) {
-        sb.append(", ");
+        builder.append(", ");
       }
     }
 
     if (getNameOrLabel() != null) {
-      sb.append('\"').append(getNameOrLabel()).append('\"');
+      builder
+          .append('\"')
+          .append(getNameOrLabel())
+          .append('\"');
       if (getIndex() != UNASSIGNED || getParentInfo() != null) {
-        sb.append(", ");
+        builder.append(", ");
       }
     }
     if (index != UNASSIGNED) {
-      sb.append(index).append(", ");
+      builder.append(index).append(", ");
     }
     if (parentInfo != null) {
-      sb.append(parentInfo);
+      builder.append(parentInfo);
     }
+    builder.append(")");
 
-    sb.append(")");
-
-    return sb.toString();
+    return builder.toString();
   }
 
-  // Override to customize Locator name used in toString().
+  /**
+   * Override to customize Locator name used in toString(). Default is null.
+   */
   protected String getWidgetLocatorStringName() {
-    // default is null
     return null;
   }
 
-  /**
-   * Indicates whether some other object is "equal to" this one.
-   *
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object o) {
-
-    // null check
-    if (o == null) {
-      return false;
+    if (o instanceof WidgetLocator that) {
+      return index == that.index
+          && Objects.equals(classRef, that.classRef)
+          && Objects.equals(nameOrLabel, that.nameOrLabel)
+          && Objects.equals(parentInfo, that.parentInfo)
+          && Objects.equals(map, that.map);
     }
-
-    // type check
-    if (!(o instanceof WidgetLocator)) {
-      return false;
-    }
-
-    // self check
-    if (o == this) {
-      return true;
-    }
-
-    WidgetLocator other = (WidgetLocator) o;
-
-    // check class
-    // if (!_classRef.getClassForName().equals(other.getTargetClass()))
-    ClassReference targetClassRef = other.getTargetClassRef();
-    if (classRef == null && targetClassRef != null) {
-      return false;
-    }
-    if (targetClassRef == null && classRef != null) {
-      return false;
-    }
-    if (classRef != null && targetClassRef != null && !classRef.equals(targetClassRef)) {
-      return false;
-    }
-
-    // check name
-    if (nameOrLabel == null) {
-      if (other.nameOrLabel != null) {
-        return false;
-      }
-    } else {
-      if (!nameOrLabel.equals(other.nameOrLabel)) {
-        return false;
-      }
-    }
-
-    // check index
-    if (index != other.index) {
-      return false;
-    }
-
-    // check parent
-    if (parentInfo == null) {
-      if (other.parentInfo != null) {
-        return false;
-      }
-    } else {
-      if (!parentInfo.equals(other.parentInfo)) {
-        return false;
-      }
-    }
-
-    // check data map
-    if (map == null) {
-      return other.map == null || other.map.isEmpty();
-    } else {
-      return map.equals(other.map);
-    }
-
-    // fall through
+    return false;
   }
 
-  /**
-   * Returns a hash code value for this <code>WidgetLocator</code> object.
-   *
-   * @see java.lang.Object#hashCode()
-   */
+  @Override
   public int hashCode() {
-    int result = 13;
-    result = 37 * result + index;
-    // result = 37*result + ((_cls == null) ? 0 : + _cls.hashCode());
-    result = 37 * result + ((classRef == null) ? 0 : +classRef.hashCode());
-    result = 37 * result + ((nameOrLabel == null) ? 0 : +nameOrLabel.hashCode());
-    result = 37 * result + ((parentInfo == null) ? 0 : +parentInfo.hashCode());
-    result += (map == null) ? 0 : map.hashCode();
-    return result;
+    return Objects.hash(classRef, nameOrLabel, index, parentInfo, map);
   }
 
   /**
-   * Returns the programmer defined property of the receiver with the specified name, or null if it has not been set.
+   * Sets the programmer defined property key to the specified value.
    * <p>
    * Data mappings allow programmers to associate arbitrary key-value pairs with locator instances.
    * </p>
    *
-   * @return the value of the property or null if it has not been set
+   * @param key the name of the property
+   * @param value  the value of the property or null if it has not been set
    * @throws IllegalArgumentException if the key is null
-   * @param        key the name of the property
    */
   public void setData(String key, String value) {
     /*
@@ -446,14 +362,15 @@ public class WidgetLocator
   }
 
   /**
-   * Returns the programmer defined property of the receiver with the specified name, or null if it has not been set.
+   * Returns the programmer defined property of the receiver with the specified name, or null if it
+   * has not been set.
    * <p>
    * Data mappings allow programmers to associate arbitrary key-value pairs with locator instances.
    * </p>
    *
+   * @param key the name of the property
    * @return the value of the property or null if it has not been set
    * @throws IllegalArgumentException if the key is null
-   * @param        key the name of the property
    */
   public String getData(String key) {
     if (key == null) {
@@ -475,14 +392,12 @@ public class WidgetLocator
 
   private Map<String, String> getDataMap() {
     if (map == null) {
-      map = new HashMap<String, String>();
+      map = new HashMap<>();
     }
     return map;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
+  @Override
   public Object getAdapter(Class<?> adapter) {
     return null;
   }
@@ -491,18 +406,17 @@ public class WidgetLocator
   //
   // Widget Finding
   //
-  /////////////////////////////////////////////////////////////////////////
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.locator.IWidgetLocator#findAll(com.windowtester.runtime.IUIContext)
-   */
+  /// //////////////////////////////////////////////////////////////////////
+
+  @Override
   public com.windowtester.runtime.locator.IWidgetLocator[] findAll(IUIContext ui) {
     // get the appropriate finder for this ui context
     return FinderFactory.getFinder(ui).findAll(this);
   }
 
+  @Override
   public boolean matches(Object widget) {
-    // TODO Auto-generated method stub
     return false;
   }
 }

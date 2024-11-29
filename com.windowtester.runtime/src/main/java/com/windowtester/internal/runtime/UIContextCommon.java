@@ -35,7 +35,7 @@ import com.windowtester.runtime.util.ScreenCapture;
 import com.windowtester.runtime.util.TestMonitor;
 
 /**
- * Abstract superclass of {@link UIContextSWT} and {@link UIContextSwing}.
+ * Abstract superclass of {@link UIContextSwing}.
  */
 public abstract class UIContextCommon implements IUIContext {
 
@@ -43,44 +43,41 @@ public abstract class UIContextCommon implements IUIContext {
   static {
     StringBuilder sb = new StringBuilder();
 
-    sb.append(NEW_LINE);
-    sb.append("*************************************************").append(NEW_LINE);
-    sb.append("WindowTester Runtime " + ProductInfo.build).append(NEW_LINE);
-    echoSystemProperties("OS:", new String[] {"os.name", "os.arch", "os.version"}, sb);
-    echoSystemProperties("Java:", new String[] {"java.vendor", "java.version"}, sb);
+    sb
+        .append(NEW_LINE)
+        .append("*************************************************")
+        .append(NEW_LINE)
+        .append("WindowTester Runtime " + ProductInfo.build)
+        .append(NEW_LINE);
+    echoSystemProperties("OS:", new String[]{"os.name", "os.arch", "os.version"}, sb);
+    echoSystemProperties("Java:", new String[]{"java.vendor", "java.version"}, sb);
     echoSystemProperties(
         "Spec:",
-        new String[] {
-          "java.specification.name", "java.specification.vendor", "java.specification.version"
+        new String[]{
+            "java.specification.name", "java.specification.vendor", "java.specification.version"
         },
         sb);
     echoSystemProperties(
         "VM:",
-        new String[] {
-          "java.vm.specification.name",
-          "java.vm.specification.vendor",
-          "java.vm.specification.version"
+        new String[]{
+            "java.vm.specification.name",
+            "java.vm.specification.vendor",
+            "java.vm.specification.version"
         },
         sb);
-    sb.append("*************************************************").append(NEW_LINE);
+    sb
+        .append("*************************************************")
+        .append(NEW_LINE);
 
     LogHandler.log(sb.toString());
-
-    //		if (Platform.isRunning()) {
-    //			try {
-    //				UsageProfilerPlugin.getPlugin().setIsRuntimeWorkspace(true);
-    //			}
-    //			catch (Exception e) {
-    //				// Not critical, so log the exception and move on...
-    //				e.printStackTrace();
-    //			}
-    //		}
   }
 
   private static void echoSystemProperties(String tag, String[] keys, StringBuilder sb) {
     sb.append("   ");
     sb.append(tag);
-    for (int i = tag.length(); i < 6; i++) sb.append(" ");
+    for (int i = tag.length(); i < 6; i++) {
+      sb.append(" ");
+    }
     sb.append(System.getProperty(keys[0]));
     for (int i = 1; i < keys.length; i++) {
       sb.append(", ");
@@ -102,6 +99,7 @@ public abstract class UIContextCommon implements IUIContext {
   /**
    * @see IUIContext#getAdapter(java.lang.Class)
    */
+  @Override
   public Object getAdapter(Class<?> adapter) {
     // TODO[author=pq]: (how) can clients add adapters?
     if (adapter == IConditionMonitor.class) {
@@ -114,63 +112,49 @@ public abstract class UIContextCommon implements IUIContext {
   //
   // Selection
   //
-  // //////////////////////////////////////////////////////////////////////////
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#click(com.windowtester.runtime.locator.ILocator)
-   */
+  /// /////////////////////////////////////////////////////////////////////////
+
+  @Override
   public IWidgetLocator click(ILocator locator) throws WidgetSearchException {
     // unifying context and standard clicks
-    if (locator instanceof IContextMenuItemLocator) {
-      IContextMenuItemLocator context = (IContextMenuItemLocator) locator;
+    if (locator instanceof IContextMenuItemLocator context) {
       return contextClick(context.getOwner(), context.getMenuPath());
     }
 
-    return click(1 /* default is one click */, locator);
+    return click(1, locator);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#click(int, com.windowtester.runtime.locator.ILocator)
-   */
+  @Override
   public IWidgetLocator click(int clickCount, ILocator locator) throws WidgetSearchException {
     return click(clickCount, locator, getDefaultButtonMask());
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#click(int, com.windowtester.runtime.locator.ILocator, int)
-   */
+  @Override
   public IWidgetLocator click(int clickCount, ILocator locator, int buttonMask)
       throws WidgetSearchException {
     return getClickDriver().click(clickCount, locator, buttonMask);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#contextClick(com.windowtester.runtime.locator.ILocator, com.windowtester.runtime.locator.IMenuItemLocator)
-   */
+  @Override
   public IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem)
       throws WidgetSearchException {
     return getClickDriver().contextClick(locator, menuItem);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#contextClick(com.windowtester.runtime.locator.ILocator, com.windowtester.runtime.locator.IMenuItemLocator, int)
-   */
+  @Override
   public IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem, int modifierMask)
       throws WidgetSearchException {
     throw new UnsupportedOperationException();
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#contextClick(com.windowtester.runtime.locator.ILocator, java.lang.String)
-   */
+  @Override
   public IWidgetLocator contextClick(ILocator locator, String menuItem)
       throws WidgetSearchException {
     return contextClick(locator, new MenuItemLocator(menuItem));
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#contextClick(com.windowtester.runtime.locator.ILocator, java.lang.String, int)
-   */
+  @Override
   public IWidgetLocator contextClick(ILocator locator, String menuItem, int modifierMask)
       throws WidgetSearchException {
     return contextClick(locator, new MenuItemLocator(menuItem), modifierMask);
@@ -191,17 +175,14 @@ public abstract class UIContextCommon implements IUIContext {
    */
   protected abstract int getDefaultButtonMask();
 
-  // //////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   //
   // Condition-handling
   //
-  // //////////////////////////////////////////////////////////////////////
 
-  /**
-   * Answer the condition monitor local to this particular UI context.
-   *
-   * @return the local condition monitor (not <code>null</code>).
-   */
+  /// /////////////////////////////////////////////////////////////////////
+
+  @Override
   public IConditionMonitor getConditionMonitor() {
     if (conditionMonitor == null) {
       conditionMonitor = new ConditionMonitor(ConditionMonitor.getInstance());
@@ -222,53 +203,35 @@ public abstract class UIContextCommon implements IUIContext {
     return assertionHandler;
   }
 
-  /**
-   * This implementation simply calls {@link IUIContext#wait(ICondition, long)} with the specified condition and a 3
-   * second timeout.
-   *
-   * @see com.windowtester.runtime.IUIContext#assertThat(com.windowtester.runtime.condition.ICondition)
-   */
+  @Override
   public void assertThat(ICondition condition) throws WaitTimedOutException {
     getAssertionHandler().assertThat(condition);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#assertThat(java.lang.String, com.windowtester.runtime.condition.ICondition)
-   */
+  @Override
   public void assertThat(String message, ICondition condition) throws WaitTimedOutException {
     getAssertionHandler().assertThat(message, condition);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IUIContext#ensureThat(com.windowtester.runtime.condition.IConditionHandler)
-   * @since 3.7.1
-   */
+  @Override
   public void ensureThat(IConditionHandler conditionHandler) throws Exception {
     getAssertionHandler().ensureThat(conditionHandler);
   }
 
-  /**
-   * Check for any active conditions and handle them. If a condition is handled, original hover context will be
-   * restored post condition handling.
-   *
-   * @return one of the following flags indicating what was processed: {@link IConditionMonitor#PROCESS_NONE} if
-   * conditions were processed but no conditions were satisfied, {@link IConditionMonitor#PROCESS_ONE_OR_MORE} if
-   * conditions were processed and at least on condition was satisfied, {@link IConditionMonitor#PROCESS_RECURSIVE} if
-   * conditions were already being processed and no additional action was taken.
-   */
+  @Override
   public int handleConditions() {
     return getConditionMonitor().process(this);
   }
 
-  // //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
   //
   // Utility
   //
-  // //////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Capture the current screen as a file in a standard location with a name based upon the current test and test
-   * case.
+   * Capture the current screen as a file in a standard location with a name based upon the current
+   * test and test case.
    *
    * @param desc the description for logging purposes
    */

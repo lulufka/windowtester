@@ -10,16 +10,13 @@
  *******************************************************************************/
 package com.windowtester.runtime.swing.condition;
 
-import abbot.finder.AWTHierarchy;
 import com.windowtester.runtime.condition.ICondition;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Tests whether a given {@link Window} is showing.
@@ -43,68 +40,37 @@ public class WindowShowingCondition implements ICondition {
   }
 
   private boolean assertComponentShowing(final String title) {
-    var components = collectComponents();
-    for (Component component : components) {
-      if (component instanceof Frame frame
-          && isFrameShowing(title, frame)) {
-        return true;
-      }
-      if (component instanceof Dialog dialog
-          && isDialogShowing(title, dialog)) {
-        return true;
-      }
+    return collectWindows().stream()
+        .filter(window -> isMatchingWindow(title, window))
+        .anyMatch(this::isWindowShowing);
+  }
+
+  private boolean isMatchingWindow(String title, Window window) {
+    if (window instanceof Dialog dialog) {
+      var dialogTitle = dialog.getTitle();
+      return StringComparator.matches(dialogTitle, title);
+    }
+    if (window instanceof Frame frame) {
+      var frameTitle = frame.getTitle();
+      return StringComparator.matches(frameTitle, title);
     }
     return false;
   }
 
-  private boolean isDialogShowing(String expectedTitle, Dialog dialog) {
-    var actualTitle = dialog.getTitle();
-    return isComponentShowing(expectedTitle, actualTitle, dialog);
+  private boolean isWindowShowing(Window window) {
+    var displayable = window.isDisplayable();
+    var visible = window.isVisible();
+    var active = window.isActive();
+
+    return displayable && visible && active;
   }
 
-  private boolean isFrameShowing(String expectedTitle, Frame window) {
-    var actualTitle = window.getTitle();
-    return isComponentShowing(expectedTitle, actualTitle, window);
-  }
-
-  private boolean isComponentShowing(
-      String expectedTitle,
-      String actualTitle,
-      Window window) {
-    final boolean titleMatches = StringComparator.matches(actualTitle, expectedTitle);
-    final boolean displayable = window.isDisplayable();
-    final boolean visible = window.isVisible();
-    final boolean active = window.isActive();
-    if (titleMatches) {
-      System.out.println("WindowShowingCondition.isComponentShowing:\n"
-          + "\ttitle(" + expectedTitle + ":" + actualTitle + "): " + titleMatches + "\n"
-          + "\tvisible: " + visible + "\n"
-          + "\tactive: " + active + "\n"
-          + "\tdisplayable: " + displayable + "\n");
-    }
-
-    return titleMatches
-        && displayable
-        && visible
-        && active;
-  }
-
-  private List<Component> collectComponents() {
-    var hierarchy = new AWTHierarchy();
-    List<Component> comps = hierarchy.getRoots().stream()
-        .map(hierarchy::getComponents)
-        .flatMap(Collection::stream)
-        .toList();
-
-    return Stream
-        .concat(
-            comps.stream(),
-            hierarchy.getRoots().stream())
-        .toList();
+  private List<Window> collectWindows() {
+    return Arrays.asList(Window.getWindows());
   }
 
   @Override
   public String toString() {
-    return title + " to show";
+    return "window with title '" + title + "' to show";
   }
 }

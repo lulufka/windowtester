@@ -50,6 +50,7 @@ public class JCheckBoxMenuItemLocator extends JMenuItemLocator implements IsSele
     super(JCheckBoxMenuItem.class, path, parent);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JCheckBoxMenuItemLocator";
   }

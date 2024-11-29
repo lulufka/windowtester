@@ -69,6 +69,7 @@ public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLo
     super(cls, path, parent);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JMenuItemLocator";
   }
