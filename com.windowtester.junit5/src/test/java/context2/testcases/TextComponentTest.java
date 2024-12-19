@@ -26,7 +26,7 @@ import swing.samples.TextComponentDemo;
 @ExtendWith(WindowtesterExtension.class)
 class TextComponentTest {
 
-  @UIUnderTest(title = "Text Component Demo")
+  @UIUnderTest(title = "Text Component Demo", width = 800, height = 600)
   private TextComponentDemo panel = new TextComponentDemo();
 
   @Test

@@ -7,7 +7,9 @@ import com.windowtester.junit5.resolver.FieldInfo;
 import com.windowtester.junit5.resolver.SwingUIContextParameterResolver;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -24,9 +26,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 public class WindowtesterExtension implements ParameterResolver, BeforeTestExecutionCallback,
     AfterTestExecutionCallback {
-
-  private static final int DEFAULT_WIDTH = 400;
-  private static final int DEFAULT_HEIGHT = 300;
 
   private final SwingUIContextParameterResolver swingUIContextResolver;
 
@@ -52,23 +51,22 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
   public void beforeTestExecution(ExtensionContext context) {
     new AnnotationResolver(context).tryToFindAnnotatedField(UIUnderTest.class)
         .filter(fieldInfo -> fieldInfo.result() instanceof Component)
-        .ifPresentOrElse(
-            fieldInfo -> showUI(fieldInfo, context),
-            () -> {
-              throw new RuntimeException("Unable to find @UIUnderTest annotation in test class.");
-            }
-        );
+        .ifPresent(fieldInfo -> showUI(fieldInfo, context));
   }
 
   private void showUI(
       FieldInfo fieldInfo,
       ExtensionContext context) {
     var uiUnderTest = fieldInfo.result();
-    if (uiUnderTest instanceof Window window) {
-      showWindow(window, context);
+    var title = getUIUnderTestTitle(fieldInfo, context.getTestClass());
+    var dimension = getUIUnderTestDimension(fieldInfo);
+    if (uiUnderTest instanceof Frame window) {
+      window.setTitle(title);
+      showWindow(window, dimension, context);
     } else {
-      var window = createWindow((Component) uiUnderTest, fieldInfo, context);
-      showWindow(window, context);
+      var window = createWindow((Component) uiUnderTest, title);
+      window.setTitle(title);
+      showWindow(window, dimension, context);
     }
   }
 
@@ -77,11 +75,9 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     getStorage(context).wipe();
   }
 
-  private Window createWindow(
+  private JFrame createWindow(
       Component component,
-      FieldInfo fieldInfo,
-      ExtensionContext context) {
-    var title = getUIUnderTestTitle(fieldInfo, context.getTestClass());
+      String title) {
     var baseFrame = createBaseFrame(title);
     attachComponentToFrame(baseFrame, component);
     return baseFrame;
@@ -105,6 +101,10 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     return title;
   }
 
+  private Dimension getUIUnderTestDimension(FieldInfo fieldInfo) {
+    return fieldInfo.dimension();
+  }
+
   private void attachComponentToFrame(
       JFrame jFrame,
       Component component) {
@@ -119,7 +119,10 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     pane.add(component, BorderLayout.CENTER);
   }
 
-  private void showWindow(Window window, ExtensionContext context) {
+  private void showWindow(
+      Window window,
+      Dimension dimension,
+      ExtensionContext context) {
     getStorage(context).saveUIComponent(window);
 
     try {
@@ -131,7 +134,7 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
             window.setLocation(100, 100);
             window.pack();
             window.pack();
-            window.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            window.setSize(dimension);
 
             window.setAutoRequestFocus(true);
             window.setAlwaysOnTop(true);

@@ -17,4 +17,8 @@ import java.lang.annotation.Target;
 public @interface UIUnderTest {
 
   String title() default "";
+
+  int width() default 400;
+
+  int height() default 300;
 }

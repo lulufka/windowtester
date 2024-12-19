@@ -11,20 +11,22 @@
 package context2.testcases;
 
 import com.windowtester.junit5.SwingUIContext;
-import com.windowtester.junit5.UIUnderTest;
 import com.windowtester.junit5.WindowtesterExtension;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JButtonLocator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import swing.samples.UseTheSampleDialog;
 
 @ExtendWith(WindowtesterExtension.class)
-class TestDialog {
+class DialogTest {
 
-  @UIUnderTest(title = "TestTheDialog Tester")
-  private UseTheSampleDialog dialog = new UseTheSampleDialog();
+  @BeforeEach
+  void setUp() {
+    new UseTheSampleDialog();
+  }
 
   @Test
   void testMain(@SwingUIContext IUIContext ui) throws Exception {
