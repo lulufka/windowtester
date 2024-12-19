@@ -7,6 +7,7 @@ import com.windowtester.junit5.resolver.FieldInfo;
 import com.windowtester.junit5.resolver.SwingUIContextParameterResolver;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -58,14 +59,17 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
       FieldInfo fieldInfo,
       ExtensionContext context) {
     var uiUnderTest = fieldInfo.result();
-    var title = getUIUnderTestTitle(fieldInfo, context.getTestClass());
+    var title = getUIUnderTestTitle(fieldInfo);
     var dimension = getUIUnderTestDimension(fieldInfo);
-    if (uiUnderTest instanceof Frame window) {
-      window.setTitle(title);
-      showWindow(window, dimension, context);
+    if (uiUnderTest instanceof Frame frame) {
+      title.ifPresent(frame::setTitle);
+      showWindow(frame, dimension, context);
+    } else if (uiUnderTest instanceof Dialog dialog) {
+      title.ifPresent(dialog::setTitle);
+      showWindow(dialog, dimension, context);
     } else {
-      var window = createWindow((Component) uiUnderTest, title);
-      window.setTitle(title);
+      var window = createWindow((Component) uiUnderTest);
+      title.ifPresent(window::setTitle);
       showWindow(window, dimension, context);
     }
   }
@@ -75,30 +79,24 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     getStorage(context).wipe();
   }
 
-  private JFrame createWindow(
-      Component component,
-      String title) {
-    var baseFrame = createBaseFrame(title);
+  private JFrame createWindow(Component component) {
+    var baseFrame = createBaseFrame();
     attachComponentToFrame(baseFrame, component);
     return baseFrame;
   }
 
-  private JFrame createBaseFrame(String title) {
-    var frame = new JFrame(title);
+  private JFrame createBaseFrame() {
+    var frame = new JFrame("Test");
     frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     return frame;
   }
 
-  private String getUIUnderTestTitle(
-      FieldInfo fieldInfo,
-      Optional<Class<?>> testClass) {
+  private Optional<String> getUIUnderTestTitle(FieldInfo fieldInfo) {
     var title = fieldInfo.title();
     if (title.isEmpty()) {
-      return testClass
-          .map(Class::getSimpleName)
-          .orElse("Test");
+      return Optional.empty();
     }
-    return title;
+    return Optional.of(title);
   }
 
   private Dimension getUIUnderTestDimension(FieldInfo fieldInfo) {

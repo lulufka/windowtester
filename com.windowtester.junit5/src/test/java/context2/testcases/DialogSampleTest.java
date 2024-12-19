@@ -26,7 +26,7 @@ import swing.samples.DialogSample;
 @ExtendWith(WindowtesterExtension.class)
 class DialogSampleTest {
 
-  @UIUnderTest(title = "DialogSample")
+  @UIUnderTest
   private DialogSample dialog;
 
   @BeforeEach
