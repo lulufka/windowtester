@@ -17,15 +17,19 @@ import com.windowtester.internal.swing.matcher.HierarchyMatcher;
 import com.windowtester.internal.swing.matcher.IndexMatcher;
 import com.windowtester.internal.swing.matcher.NameMatcher;
 import com.windowtester.runtime.IUIContext;
+import com.windowtester.runtime.locator.IWidgetMatcher;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
+import javax.swing.JTabbedPane;
 
 /**
  * A locator for JTabbedPane.
  */
 public class JTabbedPaneLocator extends SwingWidgetLocator {
 
+  @Serial
   private static final long serialVersionUID = 2471285225375825938L;
 
   /**
@@ -58,18 +62,20 @@ public class JTabbedPaneLocator extends SwingWidgetLocator {
     this(JTabbedPane.class, tabLabel, index, parent);
   }
 
-  public JTabbedPaneLocator(Class cls, String tabLabel, int index, SwingWidgetLocator parent) {
+  public JTabbedPaneLocator(Class<?> cls, String tabLabel, int index, SwingWidgetLocator parent) {
     super(cls, tabLabel, index, parent);
+    matcher = createMatcher(cls, index, parent);
+  }
 
-    // create the matcher
-    matcher = new ExactClassMatcher(cls);
+  private IWidgetMatcher<?> createMatcher(Class<?> cls, int index, SwingWidgetLocator parent) {
+    IWidgetMatcher<?> matcher = new ExactClassMatcher(cls);
 
     if (index != UNASSIGNED) {
       matcher = IndexMatcher.create(matcher, index);
     }
 
     if (parent != null) {
-      if (parent instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
+      if (parent instanceof NamedWidgetLocator) {
         matcher = new CompoundMatcher(matcher, NameMatcher.create(parent.getNameOrLabel()));
       } else {
         if (index != UNASSIGNED) {
@@ -79,20 +85,17 @@ public class JTabbedPaneLocator extends SwingWidgetLocator {
         }
       }
     }
+
+    return matcher;
   }
 
-  /**
-   * Perform the click.
-   *
-   * @param clicks       - the number of clicks
-   * @param w            - the widget to click
-   * @param offset       - the x,y offset (from top left corner)
-   * @param modifierMask - the mouse modifier mask
-   * @return the clicked widget
-   */
   @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+      IUIContext ui,
+      int clicks,
+      Component component,
+      Point offset,
+      int modifierMask) {
     return ((UIContextSwing) ui).getDriver().click(component, getNameOrLabel());
   }
 }

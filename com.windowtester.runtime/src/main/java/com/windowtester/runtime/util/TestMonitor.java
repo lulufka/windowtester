@@ -21,9 +21,9 @@ import com.windowtester.internal.runtime.test.TestId;
  */
 public class TestMonitor {
 
-  private volatile ITestIdentifier runningTest = noTest();
-
   private static TestMonitor monitor;
+
+  private volatile ITestIdentifier runningTest = noTest();
 
   /**
    * @return Singleton monitor instance
@@ -62,8 +62,8 @@ public class TestMonitor {
   }
 
   /**
-   * Notify the TestMonitor that a new TestCase is starting. Passing <code>null</code> signals that a test has ended
-   * (or that none is running).
+   * Notify the TestMonitor that a new TestCase is starting. Passing <code>null</code> signals that
+   * a test has ended (or that none is running).
    *
    * @deprecated use {@link TestMonitor#beginTest(ITestIdentifier)} instead.
    */
@@ -77,8 +77,8 @@ public class TestMonitor {
   }
 
   /**
-   * Notify the TestMonitor that a new Test is starting. Passing <code>null</code> signals that a test has ended (or
-   * that none is running).
+   * Notify the TestMonitor that a new Test is starting. Passing <code>null</code> signals that a
+   * test has ended (or that none is running).
    */
   public void beginTest(ITestIdentifier testId) {
     if (testId == null) {
@@ -102,8 +102,8 @@ public class TestMonitor {
   }
 
   /**
-   * Check to see if a test is running.  This can be used to see whether the runtime is executing in the context of a
-   * test run or a recording session.
+   * Check to see if a test is running. This can be used to see whether the runtime is executing in
+   * the context of a test run or a recording session.
    *
    * @return true if a UITestCase is running
    */

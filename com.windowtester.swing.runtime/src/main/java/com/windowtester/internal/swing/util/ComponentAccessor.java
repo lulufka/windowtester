@@ -16,7 +16,6 @@ import abbot.script.ArgumentParser;
 import abbot.tester.ComponentTester;
 import abbot.util.AWT;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
@@ -41,18 +40,24 @@ public class ComponentAccessor {
    */
   public static JMenu getRootMenu(JMenuItem child) {
     Component parent = null;
-    Component popup = HIERARCHY.getParent(child);
+    var popup = HIERARCHY.getParent(child);
     if (popup instanceof JPopupMenu) {
       parent = AWT.getInvoker(popup);
     }
 
-    while (parent instanceof JMenu && !((JMenu) parent).isTopLevelMenu()) {
+    while (parent instanceof JMenu menu
+        && !menu.isTopLevelMenu()) {
       popup = parent.getParent();
       if (popup instanceof JPopupMenu) {
         parent = AWT.getInvoker(popup);
       }
     }
-    return (JMenu) parent;
+
+    if (parent instanceof JMenu menu) {
+      return menu;
+    }
+
+    return null;
   }
 
   /**
@@ -63,18 +68,18 @@ public class ComponentAccessor {
    */
   public static String extractMenuPath(JMenuItem child) {
     Component parent = null;
-    Container popup = HIERARCHY.getParent(child);
+    var popup = HIERARCHY.getParent(child);
     if (popup instanceof JPopupMenu) {
       parent = AWT.getInvoker(popup);
     }
 
-    String path = "";
+    var path = "";
     if (parent != null) {
       path = COMPONENT_TESTER.deriveTag(parent);
     }
-    if (parent instanceof JMenu) {
-      StringBuilder builder = new StringBuilder(path);
-      while ((!((JMenu) parent).isTopLevelMenu())) {
+    if (parent instanceof JMenu menu) {
+      var builder = new StringBuilder(path);
+      while ((!menu.isTopLevelMenu())) {
         popup = parent.getParent();
         if (popup instanceof JPopupMenu) {
           parent = AWT.getInvoker(popup);
@@ -93,7 +98,7 @@ public class ComponentAccessor {
    * @return the menu item label string
    */
   public static String extractMenuItemLabel(JMenuItem item) {
-    String labelWithEscapedSlashes = TextUtils.escapeSlashes(COMPONENT_TESTER.deriveTag(item));
+    var labelWithEscapedSlashes = TextUtils.escapeSlashes(COMPONENT_TESTER.deriveTag(item));
     return TextUtils.fixTabs(labelWithEscapedSlashes);
   }
 
@@ -104,11 +109,11 @@ public class ComponentAccessor {
    * @return the path to the menu item
    */
   public static String extractPopupMenuPath(JMenuItem item) {
-    String path = COMPONENT_TESTER.deriveTag(item);
+    var path = COMPONENT_TESTER.deriveTag(item);
     // to get path to menuitem, first get the popup menu
-    Component popup = item.getParent();
-    Component parent = AWT.getInvoker(popup);
-    StringBuilder builder = new StringBuilder(path);
+    var popup = item.getParent();
+    var parent = AWT.getInvoker(popup);
+    var builder = new StringBuilder(path);
     while (parent instanceof JMenu) {
       builder.insert(0, COMPONENT_TESTER.deriveTag(parent) + "/");
       popup = parent.getParent();
@@ -118,34 +123,34 @@ public class ComponentAccessor {
   }
 
   /**
-   * Extract the widget label info.
+   * Extract the component label info.
    *
-   * @param widget component
+   * @param component component
+   * @return label text or an empty string if the component is a button, null otherwise
    */
-  public static String extractWidgetLabel(Component widget) {
-    String label = null;
-    if (widget instanceof AbstractButton) {
-      label = ((AbstractButton) widget).getText();
+  public static String extractWidgetLabel(Component component) {
+    if (component instanceof AbstractButton button) {
+      var label = button.getText();
       if (label == null) {
-        label = "";
+        return "";
       }
+      return label;
     }
-    return label;
+    return null;
   }
 
   /**
    * extract title from frame / dialog
    */
-  public static String extractTitle(Window w) {
-    String title = null;
-    if (w instanceof Frame) {
-      title = ((Frame) w).getTitle();
+  public static String extractTitle(Window window) {
+    if (window instanceof Frame frame) {
+      return frame.getTitle();
     }
-    if (w instanceof Dialog) {
-      title = ((Dialog) w).getTitle();
+    if (window instanceof Dialog dialog) {
+      return dialog.getTitle();
     }
 
-    return title;
+    return null;
   }
 
   /**
@@ -158,7 +163,7 @@ public class ComponentAccessor {
   public static String[] parseTreePath(String input) {
     input = input.substring(1, input.length() - 1);
     // Use our existing utility for parsing a comma-separated list
-    String[] nodeNames = ArgumentParser.parseArgumentList(input);
+    var nodeNames = ArgumentParser.parseArgumentList(input);
     // Strip off leading space, if there is one
     for (int i = 0; i < nodeNames.length; i++) {
       if (nodeNames[i] != null && nodeNames[i].startsWith(" ")) {
@@ -175,7 +180,7 @@ public class ComponentAccessor {
    * @return assembled path
    */
   public static String assemblePath(String[] nodeNames) {
-    StringBuilder path = new StringBuilder();
+    var path = new StringBuilder();
     for (int i = 0; i < nodeNames.length - 1; i++) {
       path
           .append(nodeNames[i])

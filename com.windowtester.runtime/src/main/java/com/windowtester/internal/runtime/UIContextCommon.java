@@ -42,7 +42,6 @@ public abstract class UIContextCommon implements IUIContext {
   // dump system information
   static {
     StringBuilder sb = new StringBuilder();
-
     sb
         .append(NEW_LINE)
         .append("*************************************************")
@@ -75,9 +74,7 @@ public abstract class UIContextCommon implements IUIContext {
   private static void echoSystemProperties(String tag, String[] keys, StringBuilder sb) {
     sb.append("   ");
     sb.append(tag);
-    for (int i = tag.length(); i < 6; i++) {
-      sb.append(" ");
-    }
+    sb.append(" ".repeat(Math.max(0, 6 - tag.length())));
     sb.append(System.getProperty(keys[0]));
     for (int i = 1; i < keys.length; i++) {
       sb.append(", ");
@@ -90,15 +87,6 @@ public abstract class UIContextCommon implements IUIContext {
   private IConditionMonitor conditionMonitor;
   private IAssertionHandler assertionHandler;
 
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Adaptation
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
-  /**
-   * @see IUIContext#getAdapter(java.lang.Class)
-   */
   @Override
   public Object getAdapter(Class<?> adapter) {
     // TODO[author=pq]: (how) can clients add adapters?
@@ -107,13 +95,6 @@ public abstract class UIContextCommon implements IUIContext {
     }
     return null;
   }
-
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Selection
-  //
-
-  /// /////////////////////////////////////////////////////////////////////////
 
   @Override
   public IWidgetLocator click(ILocator locator) throws WidgetSearchException {
@@ -175,13 +156,6 @@ public abstract class UIContextCommon implements IUIContext {
    */
   protected abstract int getDefaultButtonMask();
 
-  ////////////////////////////////////////////////////////////////////////
-  //
-  // Condition-handling
-  //
-
-  /// /////////////////////////////////////////////////////////////////////
-
   @Override
   public IConditionMonitor getConditionMonitor() {
     if (conditionMonitor == null) {
@@ -223,12 +197,6 @@ public abstract class UIContextCommon implements IUIContext {
     return getConditionMonitor().process(this);
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Utility
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
   /**
    * Capture the current screen as a file in a standard location with a name based upon the current
    * test and test case.
@@ -236,7 +204,7 @@ public abstract class UIContextCommon implements IUIContext {
    * @param desc the description for logging purposes
    */
   public void doScreenCapture(String desc) {
-    String testcaseID = TestMonitor.getInstance().getCurrentTestCaseID();
+    var testcaseID = TestMonitor.getInstance().getCurrentTestCaseID();
     TraceHandler.trace(
         IRuntimePluginTraceOptions.CONDITIONS,
         "Creating screenshot (" + desc + ") for testcase: " + testcaseID);

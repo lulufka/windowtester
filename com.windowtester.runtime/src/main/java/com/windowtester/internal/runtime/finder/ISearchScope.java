@@ -13,4 +13,6 @@ package com.windowtester.internal.runtime.finder;
 /**
  * A marker interface for classes that can be used to scope searches.
  */
-public interface ISearchScope {}
+public interface ISearchScope {
+
+}

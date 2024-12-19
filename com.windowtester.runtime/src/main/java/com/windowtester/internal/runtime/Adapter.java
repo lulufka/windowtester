@@ -21,9 +21,9 @@ public class Adapter {
     if (o.getClass() == cls) {
       return o;
     }
-    if (!(o instanceof IAdaptable)) {
-      return null;
+    if (o instanceof IAdaptable adaptable) {
+      return adaptable.getAdapter(cls);
     }
-    return ((IAdaptable) o).getAdapter(cls);
+    return null;
   }
 }

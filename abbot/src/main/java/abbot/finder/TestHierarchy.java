@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.WeakHashMap;
-import java.util.stream.Collectors;
 
 /**
  * Provide isolation of a Component hierarchy to limit consideration to only those Components
@@ -65,27 +64,26 @@ public class TestHierarchy extends AWTHierarchy {
   @Override
   public Collection<Component> getRoots() {
     var components = super.getRoots();
-    var filterList = components.stream()
+    return components.stream()
         .filter(key -> !filtered.containsKey(key))
-        .collect(Collectors.toList());
-    return filterList;
+        .toList();
   }
 
   @Override
   public Collection<Component> getComponents(Component component) {
     if (!isFiltered(component)) {
-      Collection<Component> components = super.getComponents(component);
+      var components = super.getComponents(component);
       // NOTE: this only removes those components which are directly
       // filtered, not necessarily those which have a filtered ancestor.
       return components.stream()
           .filter(key -> !filtered.containsKey(key))
-          .collect(Collectors.toList());
+          .toList();
     }
     return EMPTY;
   }
 
   private boolean isWindowFiltered(Component component) {
-    Window window = AWT.getWindow(component);
+    var window = AWT.getWindow(component);
     return window != null && isFiltered(window);
   }
 
@@ -115,9 +113,10 @@ public class TestHierarchy extends AWTHierarchy {
       filtered.remove(component);
     }
 
-    if (component instanceof Window) {
-      Window[] windows = ((Window) component).getOwnedWindows();
-      Arrays.stream(windows).forEach(window -> setFiltered(window, filter));
+    if (component instanceof Window window) {
+      var windows = window.getOwnedWindows();
+      Arrays.stream(windows)
+          .forEach(w -> setFiltered(w, filter));
     }
   }
 

@@ -7,8 +7,8 @@ import com.windowtester.junit5.resolver.FieldInfo;
 import com.windowtester.junit5.resolver.SwingUIContextParameterResolver;
 import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Frame;
 import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -23,6 +23,9 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 public class WindowtesterExtension implements ParameterResolver, BeforeTestExecutionCallback,
     AfterTestExecutionCallback {
+
+  private static final int DEFAULT_WIDTH = 400;
+  private static final int DEFAULT_HEIGHT = 300;
 
   private final SwingUIContextParameterResolver swingUIContextResolver;
 
@@ -44,20 +47,47 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
 
   @Override
   public void beforeTestExecution(ExtensionContext context) {
-    var baseFrame = new AnnotationResolver(context).tryToFindAnnotatedField(BaseFrame.class)
-        .map(fieldInfo -> (JFrame) fieldInfo.result())
-        .orElseGet(() -> {
-          JFrame frame = new JFrame("");
-          frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-          return frame;
-        });
-
     new AnnotationResolver(context).tryToFindAnnotatedField(UIUnderTest.class)
         .filter(fieldInfo -> fieldInfo.result() instanceof Component)
-        .ifPresent(fieldInfo -> {
-          baseFrame.setTitle(getUIUnderTestTitle(fieldInfo, context.getTestClass()));
-          createAndShowUI(baseFrame, (Component) fieldInfo.result(), context);
-        });
+        .ifPresentOrElse(
+            fieldInfo -> showUI(fieldInfo, context),
+            () -> {
+              throw new RuntimeException("Unable to find @UIUnderTest annotation in test class.");
+            }
+        );
+  }
+
+  private void showUI(
+      FieldInfo fieldInfo,
+      ExtensionContext context) {
+    var uiUnderTest = fieldInfo.result();
+    if (uiUnderTest instanceof Window window) {
+      showWindow(window, context);
+    } else {
+      var window = createWindow((Component) uiUnderTest, fieldInfo, context);
+      showWindow(window, context);
+    }
+  }
+
+  @Override
+  public void afterTestExecution(ExtensionContext context) {
+    getStorage(context).wipe();
+  }
+
+  private Window createWindow(
+      Component component,
+      FieldInfo fieldInfo,
+      ExtensionContext context) {
+    var baseFrame = createBaseFrame(fieldInfo, context);
+    attachComponentToFrame(baseFrame, component);
+    return new Window(baseFrame);
+  }
+
+  private JFrame createBaseFrame(FieldInfo fieldInfo, ExtensionContext context) {
+    var baseFrame = new JFrame("");
+    baseFrame.setTitle(getUIUnderTestTitle(fieldInfo, context.getTestClass()));
+    baseFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    return baseFrame;
   }
 
   private String getUIUnderTestTitle(FieldInfo fieldInfo, Optional<Class<?>> testClass) {
@@ -68,61 +98,40 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     return title;
   }
 
-  @Override
-  public void afterTestExecution(ExtensionContext context) {
-    getStorage(context).wipe();
-  }
-
-  private void createAndShowUI(
-      JFrame frame,
-      Component component,
-      ExtensionContext context) {
-    var window = createWindow(frame, component);
-    getStorage(context).saveUIComponent(window);
-    showWindow(window);
-  }
-
-  private Window createWindow(JFrame jFrame, Component component) {
-    if (component instanceof Frame frame) {
-      return createAndShowFrameUI(frame);
-    }
-    return createAndShowPanelUI(jFrame, component);
-  }
-
-  private Window createAndShowFrameUI(Frame frame) {
-    if (frame instanceof JFrame jFrame) {
-      jFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    }
-    return frame;
-  }
-
-  private Window createAndShowPanelUI(JFrame jFrame, Component component) {
+  private void attachComponentToFrame(JFrame jFrame, Component component) {
     var pane = (JPanel) jFrame.getContentPane();
     pane.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-    if (component instanceof JComponent component1) {
-      component1.setOpaque(true);
+    if (component instanceof JComponent comp) {
+      comp.setOpaque(true);
     }
 
-    if (!(component instanceof Window)) {
-      pane.add(component);
-    }
-    return jFrame;
+    pane.add(component);
   }
 
-  private void showWindow(Window window) {
-    EventQueue.invokeLater(
-        () -> {
-          // Make sure the window is positioned away from
-          // any toolbars around the display borders
-          // Display the window.
-          window.setLocation(100, 100);
-          window.pack();
-          window.pack();
-          window.setSize(400, 300);
+  private void showWindow(Window window, ExtensionContext context) {
+    getStorage(context).saveUIComponent(window);
 
-          window.setVisible(true);
-        });
+    try {
+      EventQueue.invokeAndWait(
+          () -> {
+            // Make sure the window is positioned away from
+            // any toolbars around the display borders
+            // Display the window.
+            window.setLocation(100, 100);
+            window.pack();
+            window.pack();
+            window.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+            window.setAutoRequestFocus(true);
+            window.setAlwaysOnTop(true);
+            window.toFront();
+
+            window.setVisible(true);
+          });
+    } catch (InvocationTargetException | InterruptedException e) {
+      throw new RuntimeException("Fail to close window.", e);
+    }
   }
 
   private boolean isSwingUIContextParameter(ParameterContext parameterContext,

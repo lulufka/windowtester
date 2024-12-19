@@ -17,14 +17,17 @@ import com.windowtester.runtime.condition.IUICondition;
 import com.windowtester.runtime.condition.IsEnabled;
 import com.windowtester.runtime.condition.IsEnabledCondition;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
+import javax.swing.JComboBox;
 
 /**
  * A locator for JComboBoxes.
  */
 public class JComboBoxLocator extends AbstractPathLocator implements IsEnabled, HasFocus {
 
+  @Serial
   private static final long serialVersionUID = -1258270010418601192L;
 
   /**
@@ -39,56 +42,65 @@ public class JComboBoxLocator extends AbstractPathLocator implements IsEnabled, 
   /**
    * Creates a locator for a JComboBox, can be used to locate an editable combo box.
    *
-   * @param parentInfo the locator for the parent
+   * @param parent the locator for the parent
    */
-  public JComboBoxLocator(SwingWidgetLocator parentInfo) {
-    this(null, parentInfo);
+  public JComboBoxLocator(SwingWidgetLocator parent) {
+    this(null, parent);
   }
 
   /**
    * Creates a locator for a JComboBox with the specified selection, and parent locator.
    *
-   * @param itemText   the selected item
-   * @param parentInfo locator for the parent
+   * @param itemText the selected item
+   * @param parent   locator for the parent
    */
-  public JComboBoxLocator(String itemText, SwingWidgetLocator parentInfo) {
-    this(itemText, UNASSIGNED, parentInfo);
+  public JComboBoxLocator(String itemText, SwingWidgetLocator parent) {
+    this(itemText, UNASSIGNED, parent);
   }
 
   /**
-   * Creates an locator for a JComboBox with the sepcified selection, parent locator and it's relative index in the
-   * parent
+   * Creates an locator for a JComboBox with the sepcified selection, parent locator and it's
+   * relative index in the parent
    *
-   * @param itemText   the selected item
-   * @param index      the relative index
-   * @param parentInfo locator for the parent
+   * @param itemText the selected item
+   * @param index    the relative index
+   * @param parent   locator for the parent
    */
-  public JComboBoxLocator(String itemText, int index, SwingWidgetLocator parentInfo) {
-    this(JComboBox.class, itemText, index, parentInfo);
+  public JComboBoxLocator(String itemText, int index, SwingWidgetLocator parent) {
+    this(JComboBox.class, itemText, index, parent);
   }
 
   /**
-   * Creates an locator for a JComboBox with the sepcified selection, parent locator and it's relative index in the
-   * parent
+   * Creates an locator for a JComboBox with the sepcified selection, parent locator and it's
+   * relative index in the parent
    *
-   * @param cls        the exact class of the component
-   * @param itemText   the selected item
-   * @param index      the relative index
-   * @param parentInfo locator for the parent
+   * @param cls      the exact class of the component
+   * @param itemText the selected item
+   * @param index    the relative index
+   * @param parent   locator for the parent
    */
-  public JComboBoxLocator(Class cls, String itemText, int index, SwingWidgetLocator parentInfo) {
-    super(cls, itemText, index, parentInfo);
+  public JComboBoxLocator(
+      Class<?> cls,
+      String itemText,
+      int index,
+      SwingWidgetLocator parent) {
+    super(cls, itemText, index, parent);
   }
 
   @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
-    return ((UIContextSwing) ui).getDriver().clickComboBox((JComboBox) component, getItemText(), clicks);
+      IUIContext ui,
+      int clicks,
+      Component component,
+      Point offset,
+      int modifierMask) {
+    return ((UIContextSwing) ui).getDriver()
+        .clickComboBox((JComboBox<?>) component, getItemText(), clicks);
   }
 
   /**
-   * Create a condition that tests if the given widget is enabled. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given widget is enabled. Note that this is a convenience
+   * method, equivalent to:
    * <code>isEnabled(true)</code>
    */
   public IUICondition isEnabled() {
@@ -98,7 +110,6 @@ public class JComboBoxLocator extends AbstractPathLocator implements IsEnabled, 
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   * @param selected
    * @param expected <code>true</code> if the menu is expected to be enabled, else
    *                 <code>false</code>
    * @see IsEnabledCondition

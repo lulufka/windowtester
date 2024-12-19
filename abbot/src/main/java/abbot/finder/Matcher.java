@@ -1,10 +1,11 @@
 package abbot.finder;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
- * Provides an indication whether a Component matches some desired criteria.  For use with implementations of {@link
- * ComponentFinder}. You can conveniently inline a custom matcher like so:<br>
+ * Provides an indication whether a Component matches some desired criteria. For use with
+ * implementations of {@link ComponentFinder}. You can conveniently inline a custom matcher like
+ * so:<br>
  * <pre>
  * ComponentFinder finder;
  * ...
@@ -20,10 +21,12 @@ import java.awt.*;
  * @see ComponentFinder
  */
 public interface Matcher {
+
   /**
    * Return whether the given Component matches some lookup criteria.
-   * @param c component
+   *
+   * @param component component
    * @return true if matches
    */
-  boolean matches(Component c);
+  boolean matches(Component component);
 }

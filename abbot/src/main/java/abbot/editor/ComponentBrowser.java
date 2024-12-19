@@ -633,14 +633,15 @@ public class ComponentBrowser extends JPanel implements ActionListener {
       return roots;
     }
 
-    public Collection getComponents(Component c) {
-      Collection kids = isCompact() ? super.getComponents(c) : raw.getComponents(c);
+    public Collection getComponents(Component component) {
+      Collection kids = isCompact() ? super.getComponents(component) : raw.getComponents(component);
       kids.removeAll(filtered.keySet());
       return kids;
     }
 
-    public boolean contains(Component c) {
-      return (isCompact() ? super.contains(c) : raw.contains(c)) && !filtered.containsKey(c);
+    public boolean contains(Component component) {
+      return (isCompact() ? super.contains(component) : raw.contains(component)) && !filtered.containsKey(
+          component);
     }
 
     public void filter(Component c) {

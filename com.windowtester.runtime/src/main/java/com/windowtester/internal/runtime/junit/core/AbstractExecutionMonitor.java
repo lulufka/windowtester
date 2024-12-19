@@ -95,6 +95,7 @@ public abstract class AbstractExecutionMonitor
   /* (non-Javadoc)
    * @see com.windowtester.runtime.test.exec.IExecutionMonitor#addListener(com.windowtester.runtime.test.exec.ITestExecutionListener)
    */
+  @Override
   public void addListener(ITestExecutionListener listener) {
     _listeners.add(listener);
   }
@@ -102,6 +103,7 @@ public abstract class AbstractExecutionMonitor
   /* (non-Javadoc)
    * @see com.windowtester.runtime.test.exec.IExecutionMonitor#removeListener(com.windowtester.runtime.test.exec.ITestExecutionListener)
    */
+  @Override
   public void removeListener(ITestExecutionListener listener) {
     _listeners.remove(listener);
   }
@@ -202,6 +204,7 @@ public abstract class AbstractExecutionMonitor
   /* (non-Javadoc)
    * @see com.windowtester.runtime.test.exec.AbstractExecutionMonitor#waitUntilFinished()
    */
+  @Override
   public void waitUntilFinished() throws Throwable {
 
     RunningState state = getState();
@@ -284,6 +287,7 @@ public abstract class AbstractExecutionMonitor
   /* (non-Javadoc)
    * @see com.windowtester.swt.monitor.IUIThreadMonitorListener#uiTimeout(boolean)
    */
+  @Override
   public void uiTimeout(boolean isResponsive) {
 
     // System.out.println("timeout happened");
@@ -311,6 +315,7 @@ public abstract class AbstractExecutionMonitor
   /**
    * Get the exception cache for this monitor.
    */
+  @Override
   public TestExceptionCache getExceptionCache() {
     return getState().getExceptions();
   }

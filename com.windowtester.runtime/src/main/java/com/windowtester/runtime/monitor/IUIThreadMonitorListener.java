@@ -11,18 +11,17 @@
 package com.windowtester.runtime.monitor;
 
 /**
- * Interfaced used by {@link com.windowtester.swt.monitor.IUIThreadMonitor} instances to notify objects that the user
- * interface thread is either idle or unresponsive longer than expected.
+ * Interfaced used by {@link IUIThreadMonitor} instances to notify objects that the user interface
+ * thread is either idle or unresponsive longer than expected.
  */
 public interface IUIThreadMonitorListener {
+
   /**
    * The user interface thread is either idle or unresponsive longer than expected.
    *
-   * @param isResponsive <code>true</code> if the UI thread is responsive to new user
-   *                     interface events, {@link org.eclipse.swt.widgets.Display#syncExec} and {@link
-   *                     org.eclipse.swt.widgets.Display#asyncExec}, and
-   *                     <code>false</code> if the user interface has not processed any new
-   *                     events recently as may be hung.
+   * @param isResponsive <code>true</code> if the UI thread is responsive to new user interface
+   *                     events and <code>false</code> if the user interface has not processed any
+   *                     new events recently as may be hung.
    */
   void uiTimeout(boolean isResponsive);
 }

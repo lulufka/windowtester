@@ -11,7 +11,9 @@
 package com.windowtester.internal.runtime;
 
 import com.windowtester.internal.debug.Logger;
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A class that stores the class information for a widget in the form of a string.
@@ -30,10 +32,14 @@ public class ClassReference implements Serializable {
   }
 
   /**
-   * A class that is used as a sentinel when class resolution in {@link ClassReference#getClassForName()} fails.
+   * A class that is used as a sentinel when class resolution in
+   * {@link ClassReference#getClassForName()} fails.
    */
-  public static final class UnresolvableClass {}
+  public static final class UnresolvableClass {
 
+  }
+
+  @Serial
   private static final long serialVersionUID = -5522094418456665521L;
 
   /**
@@ -56,7 +62,7 @@ public class ClassReference implements Serializable {
       throw new IllegalArgumentException("class must not be null");
     }
     this.cls = cls;
-    this.name = cls.getName();
+    name = cls.getName();
   }
 
   /**
@@ -96,19 +102,18 @@ public class ClassReference implements Serializable {
     }
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
+  @Override
   public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
+    if (obj instanceof ClassReference other) {
+      // just test by string names
+      return other.name.equals(name);
     }
-    if (!(obj instanceof ClassReference)) {
-      return false;
-    }
-    ClassReference other = (ClassReference) obj;
-    // just test by string names
-    return other.name.equals(this.name);
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name);
   }
 
   /**
@@ -137,9 +142,7 @@ public class ClassReference implements Serializable {
     return cls != null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return "ClassReference(" + getName() + ")";
   }

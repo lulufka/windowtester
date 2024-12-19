@@ -13,9 +13,9 @@ package com.windowtester.internal.runtime.selector;
 import com.windowtester.runtime.IWidgetSelectorDelegate;
 
 /**
- * The widget selector service maps widget classes to selectors (implementers of {@link
- * com.windowtester.runtime.IWidgetSelectorDelegate}). The widget selector service can be retrieved from the runtime via
- * an adapter defined on {@link com.windowtester.swt.IUIContext}:
+ * The widget selector service maps widget classes to selectors (implementers of
+ * {@link com.windowtester.runtime.IWidgetSelectorDelegate}). The widget selector service can be
+ * retrieved from the runtime via an adapter defined on {@link com.windowtester.swt.IUIContext}:
  * <pre>
  *  IWidgetSelectorService wss = getUIContext().getAdapter(IWidgetSelectorService.class);
  *  wss.add(MyWidget.class, new MyWidgetSelector());   //add a selector for custom MyWidget class
@@ -32,13 +32,14 @@ public interface IWidgetSelectorService {
    * @param widgetClass the widget class
    * @param selector    the associated selector delegate
    */
-  void set(Class widgetClass, IWidgetSelectorDelegate selector);
+  void set(Class<?> widgetClass, IWidgetSelectorDelegate selector);
 
   /**
-   * Get the widget selector associated with the given type.  If none has been registered, return <code>null</code>.
+   * Get the widget selector associated with the given type.  If none has been registered, return
+   * <code>null</code>.
    *
    * @param widgetClass the widget class in question
    * @return the associated widget selector (or <code>null</code>)
    */
-  IWidgetSelectorDelegate get(Class widgetClass);
+  IWidgetSelectorDelegate get(Class<?> widgetClass);
 }

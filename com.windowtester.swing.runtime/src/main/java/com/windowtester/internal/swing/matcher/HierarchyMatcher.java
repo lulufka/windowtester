@@ -22,7 +22,9 @@ public class HierarchyMatcher {
     // hide public constructor
   }
 
-  public static IWidgetMatcher create(IWidgetMatcher<?> targetMatcher, IWidgetMatcher<?> parentMatcher) {
+  public static IWidgetMatcher<?> create(
+      IWidgetMatcher<?> targetMatcher,
+      IWidgetMatcher<?> parentMatcher) {
     return new AdapterFactory()
         .adapt(
             new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(
@@ -33,7 +35,9 @@ public class HierarchyMatcher {
   }
 
   public static IWidgetMatcher create(
-      IWidgetMatcher<?> targetMatcher, IWidgetMatcher<?> parentMatcher, int index) {
+      IWidgetMatcher<?> targetMatcher,
+      IWidgetMatcher<?> parentMatcher,
+      int index) {
     return new AdapterFactory()
         .adapt(
             new com.windowtester.internal.finder.matchers.swing.HierarchyMatcher(

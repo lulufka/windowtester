@@ -18,6 +18,7 @@ import com.windowtester.runtime.swing.condition.WindowDisposedCondition;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JButtonLocator;
 import javax.swing.JFrame;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import swing.samples.DialogSample;
@@ -26,7 +27,12 @@ import swing.samples.DialogSample;
 class DialogSampleTest {
 
   @UIUnderTest(title = "DialogSample")
-  private DialogSample dialog = new DialogSample(new JFrame("Question"), "");
+  private DialogSample dialog;
+
+  @BeforeEach
+  void setUp() {
+     dialog = new DialogSample(new JFrame("Question"), "");
+  }
 
   @Test
   void testDialogSampleYesButton(@SwingUIContext IUIContext ui) throws Exception {

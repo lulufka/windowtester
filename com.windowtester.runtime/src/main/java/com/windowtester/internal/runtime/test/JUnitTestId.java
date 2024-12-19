@@ -25,6 +25,7 @@ public class JUnitTestId implements ITestIdentifier {
     this.name = name;
   }
 
+  @Override
   public String getName() {
     return name;
   }

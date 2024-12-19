@@ -24,6 +24,7 @@ import com.windowtester.runtime.locator.IWidgetLocator;
  * </pre>
  */
 public class WidgetShowingCondition implements ICondition {
+
   private final IUIContext ui;
   private final IWidgetLocator locator;
 
@@ -37,11 +38,7 @@ public class WidgetShowingCondition implements ICondition {
     this.locator = locator;
   }
 
-  /**
-   * Test whether the widget in question is showing.
-   *
-   * @see com.windowtester.swt.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     /*
      * !pq: This matches the original semantics but could use refinement.

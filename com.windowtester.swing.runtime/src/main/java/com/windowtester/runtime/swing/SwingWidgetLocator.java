@@ -26,7 +26,7 @@ import com.windowtester.internal.swing.matcher.IndexMatcher;
 import com.windowtester.internal.swing.matcher.NameOrTextMatcher;
 import com.windowtester.runtime.IClickDescription;
 import com.windowtester.runtime.IUIContext;
-import com.windowtester.runtime.InaccessableWidgetException;
+import com.windowtester.runtime.InaccessibleWidgetException;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.condition.HasFocus;
 import com.windowtester.runtime.condition.HasText;
@@ -62,8 +62,8 @@ import javax.swing.JLabel;
  * A class that captures Swing hierarchy (containment) relationships between widgets for use in
  * widget identification.
  */
-public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
-    implements IUISelector, IDiagnosticParticipant, IsVisible {
+public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator implements
+    IUISelector, IDiagnosticParticipant, IsVisible {
 
   /*
    * NOTE: this class is serializable and uses the default serialization scheme.
@@ -115,18 +115,7 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    */
   public SwingWidgetLocator(String className, int index, SwingWidgetLocator parent) {
     super(ClassReference.forName(className), null, index, parent);
-    matcher = ClassByNameMatcher.create(className);
-    if (index != UNASSIGNED) {
-      matcher = IndexMatcher.create(matcher, index);
-    }
-
-    if (parent != null) {
-      if (index != UNASSIGNED) {
-        matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
-      } else {
-        matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
-      }
-    }
+    matcher = createMatcher(className, index, parent);
   }
 
   /**
@@ -161,22 +150,22 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
   /**
    * Create an instance.
    *
-   * @param cls        - the target class
-   * @param parentInfo - the target's parent info
+   * @param cls    - the target class
+   * @param parent - the target's parent info
    */
-  public SwingWidgetLocator(Class<?> cls, SwingWidgetLocator parentInfo) {
-    this(cls, null, parentInfo);
+  public SwingWidgetLocator(Class<?> cls, SwingWidgetLocator parent) {
+    this(cls, null, parent);
   }
 
   /**
    * Create an instance.
    *
-   * @param cls        - the target class
-   * @param index      - the target's index relative to its parent
-   * @param parentInfo - the target's parent info
+   * @param cls    - the target class
+   * @param index  - the target's index relative to its parent
+   * @param parent - the target's parent info
    */
-  public SwingWidgetLocator(Class<?> cls, int index, SwingWidgetLocator parentInfo) {
-    this(cls, null, index, parentInfo);
+  public SwingWidgetLocator(Class<?> cls, int index, SwingWidgetLocator parent) {
+    this(cls, null, index, parent);
   }
 
   /**
@@ -195,10 +184,10 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    *
    * @param cls         - the target class
    * @param nameOrLabel - the target's name or label
-   * @param parentInfo  - the target's parent info
+   * @param parent      - the target's parent info
    */
-  public SwingWidgetLocator(Class<?> cls, String nameOrLabel, SwingWidgetLocator parentInfo) {
-    this(cls, nameOrLabel, UNASSIGNED, parentInfo);
+  public SwingWidgetLocator(Class<?> cls, String nameOrLabel, SwingWidgetLocator parent) {
+    this(cls, nameOrLabel, UNASSIGNED, parent);
   }
 
   /**
@@ -207,18 +196,26 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    * @param cls         - the target class
    * @param nameOrLabel - the target's name or label
    * @param index       - the target's index relative to its parent
-   * @param parentInfo  - the target's parent info
+   * @param parent      - the target's parent info
    */
   public SwingWidgetLocator(
       Class<?> cls,
       String nameOrLabel,
       int index,
-      SwingWidgetLocator parentInfo) {
-    super(cls, nameOrLabel, index, parentInfo);
+      SwingWidgetLocator parent) {
+    super(cls, nameOrLabel, index, parent);
     // create the matcher
     // components such as buttons, lists and tables are matched by whether they are
     // an instance of their respective swing classes, and not by exact class matching
+    matcher = createMatcher(cls, nameOrLabel, index, parent);
+  }
 
+  private IWidgetMatcher<?> createMatcher(
+      Class<?> cls,
+      String nameOrLabel,
+      int index,
+      SwingWidgetLocator parent) {
+    IWidgetMatcher<?> matcher = null;
     if (cls != null) {
       matcher = getClassMatcher(cls);
     }
@@ -230,16 +227,41 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
       matcher = IndexMatcher.create(matcher, index);
     }
 
-    if (parentInfo != null) {
+    if (parent != null) {
       if (index != UNASSIGNED) {
-        matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher(), index);
+        matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
       } else {
-        matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher());
+        matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
       }
     }
+
+    if (matcher != null) {
+      return matcher;
+    }
+
+    var msg = String.format("Unable to create matcher for class=%s, index=%d, parent=%s",
+        cls, index, parent);
+    throw new IllegalArgumentException(msg);
   }
 
-  private IWidgetMatcher getClassMatcher(Class<?> cls) {
+  private IWidgetMatcher<?> createMatcher(String className, int index, SwingWidgetLocator parent) {
+    var widgetMatcher = ClassByNameMatcher.create(className);
+    if (index != UNASSIGNED) {
+      widgetMatcher = IndexMatcher.create(widgetMatcher, index);
+    }
+
+    if (parent != null) {
+      if (index != UNASSIGNED) {
+        widgetMatcher = HierarchyMatcher.create(widgetMatcher, parent.getMatcher(), index);
+      } else {
+        widgetMatcher = HierarchyMatcher.create(widgetMatcher, parent.getMatcher());
+      }
+    }
+
+    return widgetMatcher;
+  }
+
+  private IWidgetMatcher<?> getClassMatcher(Class<?> cls) {
     if (this instanceof JButtonLocator || this instanceof JRadioButtonLocator) {
       return ClassMatcher.create(cls);
     }
@@ -263,13 +285,6 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     return matcher;
   }
 
-  ///////////////////////////////////////////////////////////////////////////////
-  //
-  // Widget finding convenience methods
-  //
-
-  /// ////////////////////////////////////////////////////////////////////////////
-
   protected Component findComponent(IUIContext ui) throws WidgetSearchException {
     // we know this is a widget reference
     var widgetReference = (WidgetReference<?>) ui.find(this);
@@ -277,16 +292,11 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     return (Component) widgetReference.getWidget();
   }
 
-  ///////////////////////////////////////////////////////////////////////////////
-  //
-  // Basic click functionality
-  //
-
-  /// ////////////////////////////////////////////////////////////////////////////
-
   @Override
-  public IWidgetLocator click(IUIContext ui, IWidgetReference widget, IClickDescription click)
-      throws WidgetSearchException {
+  public IWidgetLocator click(
+      IUIContext ui,
+      IWidgetReference widget,
+      IClickDescription click) throws WidgetSearchException {
     var component = (Component) widget.getWidget();
     var offset = getXYOffset(component, click);
     var clicked = doClick(ui, click.clicks(), component, offset, click.modifierMask());
@@ -313,8 +323,10 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
 
   @Override
   public IWidgetLocator contextClick(
-      IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
-      throws WidgetSearchException {
+      IUIContext ui,
+      IWidgetReference widget,
+      IClickDescription click,
+      String menuItemPath) throws WidgetSearchException {
     var component = (Component) widget.getWidget();
     // TODO: hook up xys
     var clicked = ((UIContextSwing) ui).getDriver().contextClick(component, menuItemPath);
@@ -329,7 +341,9 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    */
   public Point getXYOffset(Component component, IClickDescription click) {
     if (unspecifiedXY(click)) {
-      return new Point(component.getWidth() / 2, component.getHeight() / 2);
+      var x = component.getWidth() / 2;
+      var y = component.getHeight() / 2;
+      return new Point(x, y);
     }
     return new Point(click.x(), click.y());
   }
@@ -342,15 +356,6 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     return click.relative() == -1;
   }
 
-  /////////////////////////////////////////////////////////////////////////
-  //
-  // Diagnostics
-  //
-  /////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Provide additional diagnostic information
-   */
   @Override
   public void diagnose(IDiagnostic diagnostic) {
     var hierarchy = AWTHierarchy.getDefault();
@@ -400,39 +405,33 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     }
   }
 
-  private String getComponentText(Component w) {
-    if (w instanceof Button button) {
+  private String getComponentText(Component component) {
+    if (component instanceof Button button) {
       return button.getLabel();
     }
-    if (w instanceof Checkbox checkbox) {
+    if (component instanceof Checkbox checkbox) {
       return checkbox.getLabel();
     }
-    if (w instanceof Choice choice) {
+    if (component instanceof Choice choice) {
       return choice.getSelectedItem();
     }
-    if (w instanceof Label label) {
+    if (component instanceof Label label) {
       return label.getText();
     }
-    if (w instanceof AbstractButton abstractButton) {
+    if (component instanceof AbstractButton abstractButton) {
       return abstractButton.getText();
     }
-    if (w instanceof JLabel jLabel) {
+    if (component instanceof JLabel jLabel) {
       return jLabel.getText();
     }
-    if (w instanceof Dialog dialog) {
+    if (component instanceof Dialog dialog) {
       return dialog.getTitle();
     }
-    if (w instanceof Frame frame) {
+    if (component instanceof Frame frame) {
       return frame.getTitle();
     }
     return "";
   }
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // HasText
-  //
-  ////////////////////////////////////////////////////////////////////////////
 
   /**
    * Resolve the locator to a single object and answer the text associated with it. This method is
@@ -463,15 +462,9 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
    * @throws RuntimeException if this is not supported by this type of locator
    */
   protected String getWidgetText(Component widget) throws WidgetSearchException {
-    throw new InaccessableWidgetException(
+    throw new InaccessibleWidgetException(
         "HasText not implemented by this locator: " + getClass().getName());
   }
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IsEnabledLocator
-  //
-  ////////////////////////////////////////////////////////////////////////////
 
   /**
    * Resolve the locator to a single object and determine if that object is enabled. This method is
@@ -503,12 +496,6 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     return widget.isEnabled();
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // HasFocusLocator
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
   /**
    * Resolve the locator to a single object and determine if that object has focus. This method is
    * ONLY supported for those subclasses that implement the {@link HasFocus} interface.
@@ -535,14 +522,8 @@ public class SwingWidgetLocator extends com.windowtester.runtime.WidgetLocator
     return new HasFocusConditionHandler(this);
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IsVisibleLocator
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
   @Override
-  public boolean isVisible(IUIContext ui) throws WidgetSearchException {
+  public boolean isVisible(IUIContext ui) {
     return ui.findAll(this).length > 0;
   }
 

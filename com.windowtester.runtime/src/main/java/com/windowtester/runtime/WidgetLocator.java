@@ -13,6 +13,8 @@ package com.windowtester.runtime;
 import com.windowtester.internal.runtime.ClassReference;
 import com.windowtester.internal.runtime.IWidgetIdentifier;
 import com.windowtester.internal.runtime.finder.FinderFactory;
+import com.windowtester.runtime.locator.IWidgetLocator;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,17 +34,14 @@ import java.util.Objects;
  * Effectively, this WidgetLocator instance describes the third Text widget in the Group labeled
  * "addressGroup".
  */
-public class WidgetLocator
-    implements Serializable,
-    IWidgetIdentifier,
-    IAdaptable,
-    com.windowtester.runtime.locator.IWidgetLocator {
+public class WidgetLocator implements Serializable, IWidgetIdentifier, IAdaptable, IWidgetLocator {
 
   /*
    * NOTE: this class is serializable and uses the default serialization scheme.
    * This should _not_ be a problem (hierarchies are not too deep); still, we
    * could consider a custom serialization scheme.
    */
+  @Serial
   private static final long serialVersionUID = 7772528976750829834L;
 
   /**
@@ -78,7 +77,7 @@ public class WidgetLocator
   /**
    * A map for associated data key-value pairs
    */
-  private HashMap<String, String> map;
+  private Map<String, String> map;
 
   // required for subclass convenience
   protected WidgetLocator() {
@@ -344,8 +343,8 @@ public class WidgetLocator
    * Data mappings allow programmers to associate arbitrary key-value pairs with locator instances.
    * </p>
    *
-   * @param key the name of the property
-   * @param value  the value of the property or null if it has not been set
+   * @param key   the name of the property
+   * @param value the value of the property or null if it has not been set
    * @throws IllegalArgumentException if the key is null
    */
   public void setData(String key, String value) {
@@ -402,15 +401,8 @@ public class WidgetLocator
     return null;
   }
 
-  /////////////////////////////////////////////////////////////////////////
-  //
-  // Widget Finding
-  //
-
-  /// //////////////////////////////////////////////////////////////////////
-
   @Override
-  public com.windowtester.runtime.locator.IWidgetLocator[] findAll(IUIContext ui) {
+  public IWidgetLocator[] findAll(IUIContext ui) {
     // get the appropriate finder for this ui context
     return FinderFactory.getFinder(ui).findAll(this);
   }

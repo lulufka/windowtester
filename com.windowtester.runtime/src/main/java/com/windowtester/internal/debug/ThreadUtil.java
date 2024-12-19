@@ -22,19 +22,22 @@ import java.util.Timer;
  * Thread debugging utility.
  */
 public class ThreadUtil {
+
   private static final Object LOCK = new Object();
   private static Timer timer;
 
   /**
-   * Periodically dump the stack to System.err. This automatically cancels any previously scheduled stack dumps.
+   * Periodically dump the stack to System.err. This automatically cancels any previously scheduled
+   * stack dumps.
    */
   public static void startPrintStackTraces(long period) {
-    final Thread callingThread = Thread.currentThread();
+    Thread callingThread = Thread.currentThread();
     synchronized (LOCK) {
       stopPrintStackTraces();
       timer = new Timer("ThreadUtil Stack Dump");
       timer.schedule(
           new AbbotTimerTask() {
+            @Override
             public void run() {
               System.err.println(
                   "**********************************************************************************");
@@ -64,7 +67,7 @@ public class ThreadUtil {
    * Get a string representation of the current stack state of all the active threads.
    */
   public static String getStackTraces() {
-    StringWriter stringWriter = new StringWriter(5000);
+    var stringWriter = new StringWriter(5000);
     printStackTraces(new PrintWriter(stringWriter));
     return stringWriter.toString();
   }
@@ -80,27 +83,26 @@ public class ThreadUtil {
    * Print a string representation of the current stack state of all the active threads.
    */
   public static void printStackTraces(PrintWriter writer) {
-    Map<Thread, StackTraceElement[]> map;
     try {
-      map = Thread.getAllStackTraces();
+      var map = Thread.getAllStackTraces();
+      for (Entry<Thread, StackTraceElement[]> entry : map.entrySet()) {
+        printStackTrace(writer, entry.getKey(), entry.getValue());
+      }
+      writer.flush();
     } catch (Throwable e) {
       writer.println("Failed to obtain stack traces: " + e);
-      return;
     }
-    if (map == null) {
-      writer.println("No stack traces available");
-      return;
-    }
-    for (Entry<Thread, StackTraceElement[]> entry : map.entrySet())
-      printStackTrace(writer, entry.getKey(), entry.getValue());
-    writer.flush();
   }
 
   private static void printStackTrace(
-      PrintWriter writer, Thread thread, StackTraceElement[] trace) {
+      PrintWriter writer,
+      Thread thread,
+      StackTraceElement[] trace) {
     try {
       writer.println(thread.toString() + ":");
-      for (int i = 0; i < trace.length; i++) writer.println("\tat " + trace[i]);
+      for (StackTraceElement stackTraceElement : trace) {
+        writer.println("\tat " + stackTraceElement);
+      }
     } catch (Exception e) {
       writer.println("\t*** Exception printing stack trace: " + e);
     }

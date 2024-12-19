@@ -36,6 +36,7 @@ class IUIConditionSwingTest {
             return true;
           }
 
+          @Override
           public boolean testUI(IUIContext ui) {
             testUICalled[0] = true;
             return true;
@@ -60,6 +61,7 @@ class IUIConditionSwingTest {
             return true;
           }
 
+          @Override
           public boolean testUI(IUIContext ui) {
             testUICalled[0] = true;
             return true;

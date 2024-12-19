@@ -22,36 +22,36 @@ public class ReflectionUtils {
   @SuppressWarnings("unchecked")
   public static <T> T newInstance(T obj)
       throws IllegalArgumentException,
-          SecurityException,
-          InstantiationException,
-          IllegalAccessException,
-          InvocationTargetException,
-          NoSuchMethodException {
-    Object newObj = obj.getClass().getConstructor().newInstance();
+      SecurityException,
+      InstantiationException,
+      IllegalAccessException,
+      InvocationTargetException,
+      NoSuchMethodException {
+    var newObj = obj.getClass().getConstructor().newInstance();
     return (T) newObj;
   }
 
   @SuppressWarnings("unchecked")
   public static <T> T newInstance(T obj, Class<?> argType, Object arg)
       throws IllegalArgumentException,
-          SecurityException,
-          InstantiationException,
-          IllegalAccessException,
-          InvocationTargetException,
-          NoSuchMethodException {
-    Object newObj = obj.getClass().getConstructor(argType).newInstance(arg);
+      SecurityException,
+      InstantiationException,
+      IllegalAccessException,
+      InvocationTargetException,
+      NoSuchMethodException {
+    var newObj = obj.getClass().getConstructor(argType).newInstance(arg);
     return (T) newObj;
   }
 
   @SuppressWarnings("unchecked")
   public static <T> T newInstance(Class<?> instanceClass, Class<?> argType, Object arg)
       throws IllegalArgumentException,
-          SecurityException,
-          InstantiationException,
-          IllegalAccessException,
-          InvocationTargetException,
-          NoSuchMethodException {
-    Object newObj = instanceClass.getConstructor(argType).newInstance(arg);
+      SecurityException,
+      InstantiationException,
+      IllegalAccessException,
+      InvocationTargetException,
+      NoSuchMethodException {
+    var newObj = instanceClass.getConstructor(argType).newInstance(arg);
     return (T) newObj;
   }
 
@@ -61,8 +61,8 @@ public class ReflectionUtils {
 
   @SuppressWarnings("unchecked")
   public static <T> Class<? extends T> getComponentType(T[] a) {
-    Class<?> k = a.getClass().getComponentType();
-    return (Class<? extends T>) k;
+    var cls = a.getClass().getComponentType();
+    return (Class<? extends T>) cls;
   }
 
   @SuppressWarnings("unchecked")
@@ -70,7 +70,7 @@ public class ReflectionUtils {
     if (k.isPrimitive()) {
       throw new IllegalArgumentException("Argument cannot be primitive: " + k);
     }
-    Object a = Array.newInstance(k, size);
+    var a = Array.newInstance(k, size);
     return (T[]) a;
   }
 
@@ -80,7 +80,6 @@ public class ReflectionUtils {
     if (cls.isAssignableFrom(oc)) {
       return (T) o;
     }
-    System.out.println("ReflectionUtils.castTo() -- returning null");
     return null;
   }
 

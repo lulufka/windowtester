@@ -11,16 +11,15 @@
 package com.windowtester.runtime.swing.locator;
 
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import javax.swing.*;
+import java.io.Serial;
+import javax.swing.JMenu;
 
 /**
  * A locator for JMenus.
  */
 public class JMenuLocator extends JMenuItemLocator {
 
-  /**
-   *
-   */
+  @Serial
   private static final long serialVersionUID = 1369029475541129631L;
 
   /**

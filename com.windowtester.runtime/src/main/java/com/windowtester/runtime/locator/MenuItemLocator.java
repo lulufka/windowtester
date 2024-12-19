@@ -15,16 +15,14 @@ package com.windowtester.runtime.locator;
  */
 public class MenuItemLocator implements IMenuItemLocator {
 
-  private final String _path;
+  private final String path;
 
   public MenuItemLocator(String path) {
-    _path = path;
+    this.path = path;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime2.locator.IMenuItemLocator#getPath()
-   */
+  @Override
   public String getPath() {
-    return _path;
+    return path;
   }
 }

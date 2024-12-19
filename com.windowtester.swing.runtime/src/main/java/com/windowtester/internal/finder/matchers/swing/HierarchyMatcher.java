@@ -163,28 +163,28 @@ public final class HierarchyMatcher implements Matcher {
   /// ////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
-  public boolean matches(Component widget) {
+  public boolean matches(Component component) {
     // is this log-worthy?
-    if (widget == null) {
+    if (component == null) {
       return false;
     }
 
     var matches = false;
     var infoService = new WidgetLocatorService();
 
-    Component parent = widget.getParent();
+    Component parent = component.getParent();
     // If parent is  a JPopupMenu, get the parent menu
     if (parent instanceof JPopupMenu popupMenu) {
       parent = popupMenu.getInvoker();
     }
 
     if (parent == null || parentMatcher == null) {
-      matches = matcher.matches(widget);
+      matches = matcher.matches(component);
     }
 
-    if (parent != null && matcher.matches(widget)
+    if (parent != null && matcher.matches(component)
         && parentMatcher != null && parentMatcher.matches(parent)) {
-      int indexRelativeToParent = infoService.getIndex(widget, parent);
+      int indexRelativeToParent = infoService.getIndex(component, parent);
       matches = indexRelativeToParent == index;
     }
     return matches;

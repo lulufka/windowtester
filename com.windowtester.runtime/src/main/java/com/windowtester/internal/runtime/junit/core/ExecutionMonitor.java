@@ -17,10 +17,10 @@ import com.windowtester.runtime.IUIContext;
  */
 public class ExecutionMonitor {
 
-  private static IExecutionContext _execContext;
+  private static IExecutionContext execContext;
 
   public static void setContext(IExecutionContext execContext) {
-    _execContext = execContext;
+    ExecutionMonitor.execContext = execContext;
   }
 
   public static IUIContext getUI() {
@@ -28,6 +28,6 @@ public class ExecutionMonitor {
   }
 
   public static IExecutionContext getContext() {
-    return _execContext;
+    return execContext;
   }
 }

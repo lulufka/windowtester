@@ -1,38 +1,42 @@
 package abbot.finder;
 
 import abbot.tester.Robot;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Indicates more than one component was found (usually where only one was desired).
  */
 public class MultipleComponentsFoundException extends ComponentSearchException {
-  Component[] components;
 
-  public MultipleComponentsFoundException(Component[] list) {
-    components = list;
+  private final Component[] components;
+
+  public MultipleComponentsFoundException(Component[] components) {
+    this.components = components;
   }
 
-  public MultipleComponentsFoundException(String msg, Component[] list) {
+  public MultipleComponentsFoundException(String msg, Component[] components) {
     super(msg);
-    components = list;
+    this.components = components;
   }
 
   public Component[] getComponents() {
     return components;
   }
 
+  @Override
   public String toString() {
-    StringBuffer buf = new StringBuffer(super.toString());
-    buf.append(": ");
+    var builder = new StringBuilder(super.toString());
+    builder.append(": ");
+
     for (int i = 0; i < components.length; i++) {
-      buf.append("\n (");
-      buf.append(i);
-      buf.append(") ");
-      buf.append(Robot.toHierarchyPath(components[i]));
-      buf.append(": ");
-      buf.append(components[i].toString());
+      builder
+          .append("\n (")
+          .append(i)
+          .append(") ")
+          .append(Robot.toHierarchyPath(components[i]))
+          .append(": ")
+          .append(components[i].toString());
     }
-    return buf.toString();
+    return builder.toString();
   }
 }

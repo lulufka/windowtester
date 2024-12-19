@@ -58,38 +58,31 @@ public class KeyStrokeDecoder {
   public static int[] KEY_MODS = {WT.ALT, WT.SHIFT, WT.CTRL, WT.COMMAND};
 
   public static int[] extractModifiers(int compositeKey) {
-    List keys = new ArrayList();
+    var keys = new ArrayList<Integer>();
     addMods(compositeKey, keys);
     addKeys(compositeKey, keys);
     return toIntArray(keys);
   }
 
-  private static void addMods(int compositeKey, List keys) {
-    int candidate;
-    for (int i = 0; i < KEY_MODS.length; i++) {
-      candidate = KEY_MODS[i];
-      if ((compositeKey & candidate) == candidate) {
-        keys.add(new Integer(candidate));
+  private static void addMods(int compositeKey, List<Integer> keys) {
+    for (int keyMod : KEY_MODS) {
+      if ((compositeKey & keyMod) == keyMod) {
+        keys.add(keyMod);
       }
     }
   }
 
-  private static void addKeys(int compositeKey, List keys) {
-    int candidate;
-    for (int i = 0; i < KEY_CONSTANTS.length; i++) {
-      candidate = KEY_CONSTANTS[i];
-      if ((compositeKey | WT.MODIFIER_MASK) == (candidate | WT.MODIFIER_MASK)) {
-        keys.add(new Integer(candidate));
+  private static void addKeys(int compositeKey, List<Integer> keys) {
+    for (int keyConstant : KEY_CONSTANTS) {
+      if ((compositeKey | WT.MODIFIER_MASK) == (keyConstant | WT.MODIFIER_MASK)) {
+        keys.add(keyConstant);
       }
     }
   }
 
-  private static int[] toIntArray(List keys) {
-    int size = keys.size();
-    int[] intArray = new int[size];
-    for (int i = 0; i < size; ++i) {
-      intArray[i] = ((Integer) keys.get(i)).intValue();
-    }
-    return intArray;
+  private static int[] toIntArray(List<Integer> keys) {
+    return keys.stream()
+        .mapToInt(Integer::intValue)
+        .toArray();
   }
 }

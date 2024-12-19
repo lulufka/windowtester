@@ -1,10 +1,11 @@
 package abbot.finder;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
- * Provides methods for determining the best match among a group of matching components. For use with implementations
- * of {@link ComponentFinder}. You can conveniently inline a custom matcher like so:<br>
+ * Provides methods for determining the best match among a group of matching components. For use
+ * with implementations of {@link ComponentFinder}. You can conveniently inline a custom matcher
+ * like so:<br>
  * <pre>
  * ComponentFinder finder = BasicFinder.getDefault();
  * ...
@@ -29,8 +30,11 @@ import java.awt.*;
  * @see ComponentFinder
  */
 public interface MultiMatcher extends Matcher {
+
   /**
-   * Returns the best match among all the given candidates, or throws an exception if there is no best match.
+   * Returns the best match among all the given candidates, or throws an exception if there is no
+   * best match.
+   *
    * @param candidates candidates
    * @return best matching component
    * @throws MultipleComponentsFoundException multiple components found

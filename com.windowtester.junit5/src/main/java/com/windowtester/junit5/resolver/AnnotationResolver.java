@@ -2,7 +2,6 @@ package com.windowtester.junit5.resolver;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-import com.windowtester.junit5.BaseFrame;
 import com.windowtester.junit5.UIUnderTest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -69,9 +68,6 @@ public class AnnotationResolver {
     Annotation annotation = field.getAnnotation(annotationType);
     if (annotation instanceof UIUnderTest uiUnderTest) {
       return uiUnderTest.title();
-    }
-    if (annotation instanceof BaseFrame baseFrame) {
-      return baseFrame.title();
     }
     return "";
   }

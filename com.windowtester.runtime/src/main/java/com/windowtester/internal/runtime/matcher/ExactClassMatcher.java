@@ -13,48 +13,43 @@ package com.windowtester.internal.runtime.matcher;
 import com.windowtester.runtime.locator.IWidgetMatcher;
 
 /**
- * Provides matching of components by class.  Unlike ClassMatcher, it does not check for asignablity, it checks for the
- * exact class.
+ * Provides matching of components by class. Unlike ClassMatcher, it does not check for
+ * asignablity, it checks for the exact class.
  */
 public class ExactClassMatcher implements IWidgetMatcher {
 
   /**
    * The class on which to match
    */
-  private final Class cls;
+  private final Class<?> cls;
 
   /**
    * Create an instance.
    *
    * @param cls - the class on which to match
    */
-  public ExactClassMatcher(Class cls) {
+  public ExactClassMatcher(Class<?> cls) {
     if (cls == null) {
       throw new IllegalArgumentException("Class must not be null");
     }
     this.cls = cls;
   }
 
-  /**
-   * @see abbot.finder.swt.Matcher#matches(org.eclipse.swt.widgets.Widget)
-   */
-  public boolean matches(final Object w) {
-
-    // null check for sanity
-    if (w == null) {
+  @Override
+  public boolean matches(Object widget) {
+    if (widget == null) {
       return false;
     }
 
-    return classMatches(w);
+    return classMatches(widget);
   }
 
-  private boolean classMatches(final Object w) {
-    return cls.isAssignableFrom(w.getClass()) && w.getClass().isAssignableFrom(cls);
+  private boolean classMatches(Object widget) {
+    return cls.isAssignableFrom(widget.getClass())
+        && widget.getClass().isAssignableFrom(cls);
   }
 
-  /**
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return "Exact Class matcher (" + cls.getName() + ")";
   }

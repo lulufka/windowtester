@@ -2,6 +2,9 @@ package com.windowtester.junit5;
 
 import java.awt.Component;
 import java.awt.Window;
+import java.util.Arrays;
+import javax.swing.JComponent;
+import javax.swing.JTable;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
@@ -28,12 +31,21 @@ public class WindowtesterExecutionStorage {
   }
 
   void wipe() {
+    wipeUIComponent();
+
+    Arrays.stream(Window.getWindows())
+        .forEach(Window::dispose);
+  }
+
+  private void wipeUIComponent() {
     Object o = store.get(UI_COMPONENT_KEY);
     if (o instanceof Window window) {
+      window.setVisible(false);
       window.dispose();
     } else if (o instanceof Component component) {
       component.setVisible(false);
     }
     store.remove(UI_CONTEXT_KEY);
   }
+
 }

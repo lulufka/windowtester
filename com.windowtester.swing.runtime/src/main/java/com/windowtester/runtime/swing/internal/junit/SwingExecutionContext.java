@@ -19,21 +19,17 @@ import com.windowtester.runtime.IUIContext;
  */
 public class SwingExecutionContext implements IExecutionContext {
 
-  IExecutionMonitor _monitor;
+  private IExecutionMonitor monitor;
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.context.IExecutionContext#getExecutionMonitor()
-   */
+  @Override
   public IExecutionMonitor getExecutionMonitor() {
-    if (_monitor == null) {
-      _monitor = new SwingExecutionMonitor();
+    if (monitor == null) {
+      monitor = new SwingExecutionMonitor();
     }
-    return _monitor;
+    return monitor;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.context.IExecutionContext#getUI()
-   */
+  @Override
   public IUIContext getUI() {
     return ((SwingExecutionMonitor) getExecutionMonitor()).getUI();
   }

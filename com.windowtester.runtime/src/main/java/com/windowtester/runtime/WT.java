@@ -98,15 +98,16 @@ public class WT {
   public static final int BUTTON_MASK = BUTTON1 | BUTTON2 | BUTTON3 | BUTTON4 | BUTTON5;
 
   // Selection constants used in Locators
-  public static final int CHECK = 1 << 5; // note this matches SWT.CHECK
+  // note this matches SWT.CHECK
+  public static final int CHECK = 1 << 5;
 
   // Variation constants used in Locators
   public static final int NO_SMART_MATCH = 1 << 0;
   public static final int CLOSE = 1 << 1;
 
   // Defaults used in IUIContext wait methods... in milliseconds
-  private static long DEFAULT_WAIT_TIMEOUT = 60000;
-  private static int DEFAULT_WAIT_INTERVAL = 10;
+  private static long defaultWaitTimeout = 60_000;
+  private static int defaultWaitInterval = 10;
 
   /**
    * Get the number of milliseconds to wait for a condition to be true before timing out.
@@ -115,7 +116,7 @@ public class WT {
    * @see #setDefaultWaitTimeOut(long)
    */
   public static long getDefaultWaitTimeOut() {
-    return DEFAULT_WAIT_TIMEOUT;
+    return defaultWaitTimeout;
   }
 
   /**
@@ -134,7 +135,7 @@ public class WT {
    * @param ms the wait timeout in milliseconds
    */
   public static void setDefaultWaitTimeOut(long ms) {
-    DEFAULT_WAIT_TIMEOUT = ms;
+    defaultWaitTimeout = ms;
   }
 
   /**
@@ -144,7 +145,7 @@ public class WT {
    * @see #setDefaultWaitInterval(int).
    */
   public static int getDefaultWaitInterval() {
-    return DEFAULT_WAIT_INTERVAL;
+    return defaultWaitInterval;
   }
 
   /**
@@ -163,7 +164,7 @@ public class WT {
    * @param ms the number of milliseconds to wait in between condition tests
    */
   public static void setDefaultWaitInterval(int ms) {
-    DEFAULT_WAIT_INTERVAL = ms;
+    defaultWaitInterval = ms;
   }
 
   /**

@@ -17,40 +17,46 @@ import javax.swing.SwingUtilities;
  */
 public class BasicFinder implements ComponentFinder {
 
-  private final Hierarchy hierarchy;
-
   private static final ComponentFinder DEFAULT = new BasicFinder(new AWTHierarchy());
 
   public static ComponentFinder getDefault() {
     return DEFAULT;
   }
 
+  private final Hierarchy hierarchy;
+
   private class SingleComponentHierarchy implements Hierarchy {
 
-    private final Component root;
     private final List<Component> list = new ArrayList<>();
+    private final Component root;
 
     public SingleComponentHierarchy(Container root) {
       this.root = root;
       list.add(root);
     }
 
+    @Override
     public Collection<Component> getRoots() {
       return list;
     }
 
+    @Override
     public Collection<Component> getComponents(Component component) {
       return getHierarchy().getComponents(component);
     }
 
+    @Override
     public Container getParent(Component component) {
       return getHierarchy().getParent(component);
     }
 
+    @Override
     public boolean contains(Component component) {
-      return getHierarchy().contains(component) && SwingUtilities.isDescendingFrom(component, root);
+      return getHierarchy().contains(component)
+          && SwingUtilities.isDescendingFrom(component, root);
     }
 
+    @Override
     public void dispose(Window window) {
       getHierarchy().dispose(window);
     }
@@ -81,10 +87,7 @@ public class BasicFinder implements ComponentFinder {
     return getHierarchy();
   }
 
-  /**
-   * Find a Component, using the given Matcher to determine whether a given comp in the hierarchy
-   * used by this ComponentFinder is the desired one.
-   */
+  @Override
   public Component find(Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
     return find((Container) null, matcher);
@@ -92,18 +95,18 @@ public class BasicFinder implements ComponentFinder {
 
   protected Component find(Hierarchy hierarchy, Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
-    Set<Component> found = new HashSet<>();
+    var found = new HashSet<Component>();
     for (Component component : hierarchy.getRoots()) {
       findMatches(hierarchy, matcher, component, found);
     }
 
     if (found.isEmpty()) {
-      String msg = Strings.get("finder.not_found", new Object[]{matcher.toString()});
+      var msg = Strings.get("finder.not_found", new Object[]{matcher.toString()});
       throw new ComponentNotFoundException(msg);
     } else if (found.size() > 1) {
-      Component[] list = found.toArray(new Component[0]);
+      var list = found.toArray(new Component[0]);
       if (!(matcher instanceof MultiMatcher)) {
-        String msg = Strings.get("finder.multiple_found", new Object[]{matcher.toString()});
+        var msg = Strings.get("finder.multiple_found", new Object[]{matcher.toString()});
         throw new MultipleComponentsFoundException(msg, list);
       }
       return ((MultiMatcher) matcher).bestMatch(list);

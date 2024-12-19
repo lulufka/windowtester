@@ -68,12 +68,6 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
     return "JButtonLocator";
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
    * Create a condition that tests if the given widget has the expected text.
    *
@@ -96,7 +90,8 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   *                 <code>false</code>
+   * <code>false</code>
+   *
    * @see IsEnabledCondition
    */
   public IUICondition isEnabled(boolean expected) {

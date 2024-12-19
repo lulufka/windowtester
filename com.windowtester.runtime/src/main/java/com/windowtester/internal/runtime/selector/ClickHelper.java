@@ -40,18 +40,20 @@ public class ClickHelper implements IClickDriver {
   }
 
   @Override
-  public IWidgetLocator click(int clickCount, ILocator locator, int buttonMask)
-      throws WidgetSearchException {
-    var wl = getWidgetLocator(locator);
+  public IWidgetLocator click(
+      int clickCount,
+      ILocator locator,
+      int buttonMask) throws WidgetSearchException {
+    var widgetLocator = getWidgetLocator(locator);
     IWidgetReference widget = null;
-    if (!(wl instanceof IItemLocator)) {
-      widget = doFind(wl);
+    if (!(widgetLocator instanceof IItemLocator)) {
+      widget = doFind(widgetLocator);
     }
 
     // create click description
     var click = createClickDescription(clickCount, locator, buttonMask);
 
-    var selector = getSelector(wl);
+    var selector = getSelector(widgetLocator);
     var clicked = doClick(widget, click, selector);
 
     informClick(click, clicked);
@@ -106,8 +108,8 @@ public class ClickHelper implements IClickDriver {
    * Get the WidgetLocator associated with this ILocator.
    */
   public static IWidgetLocator getWidgetLocator(ILocator locator) {
-    if (locator instanceof IWidgetLocator l) {
-      return l;
+    if (locator instanceof IWidgetLocator widgetLocator) {
+      return widgetLocator;
     }
 
     if (locator instanceof XYLocator xyLocator) {
@@ -119,7 +121,9 @@ public class ClickHelper implements IClickDriver {
   }
 
   private IClickDescription createClickDescription(
-      int clickCount, ILocator locator, int buttonMask) {
+      int clickCount,
+      ILocator locator,
+      int buttonMask) {
     // TODO properly handle nested XYLocators
     return ClickDescription.create(clickCount, locator, buttonMask);
   }
@@ -150,15 +154,10 @@ public class ClickHelper implements IClickDriver {
     return listeners;
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Wrappers that adapt legacy exceptions appropriately.
-  //
-  ///////////////////////////////////////////////////////////////////////////////////////
-
   private IWidgetLocator doClick(
-      IWidgetReference widget, IClickDescription click, IUISelector selector)
-      throws WidgetSearchException {
+      IWidgetReference widget,
+      IClickDescription click,
+      IUISelector selector) throws WidgetSearchException {
     return selector.click(getUIContext(), widget, click);
   }
 

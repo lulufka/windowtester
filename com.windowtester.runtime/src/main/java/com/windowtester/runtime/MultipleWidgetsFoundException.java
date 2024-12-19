@@ -10,17 +10,22 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import java.io.Serial;
+
 /**
- * Thrown when mutliple widgets are found.
+ * Thrown when multiple widgets are found.
  */
 public class MultipleWidgetsFoundException extends WidgetSearchException {
 
+  @Serial
   private static final long serialVersionUID = 4381140981836391058L;
 
   /**
    * Create an instance with no specified detail message.
    */
-  public MultipleWidgetsFoundException() {}
+  public MultipleWidgetsFoundException() {
+    super();
+  }
 
   /**
    * Create an instance with the specified detail message.

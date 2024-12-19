@@ -11,7 +11,8 @@
 package com.windowtester.internal.runtime;
 
 /**
- * Used by WT to indicate whether to use the current locale keyboard or the US Keyboard for text entry.
+ * Used by WT to indicate whether to use the current locale keyboard or the US Keyboard for text
+ * entry.
  */
 public class WTLocale {
 

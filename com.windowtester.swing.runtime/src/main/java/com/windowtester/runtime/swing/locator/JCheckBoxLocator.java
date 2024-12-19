@@ -23,6 +23,7 @@ import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.util.StringComparator;
 import java.awt.Component;
+import java.io.Serial;
 import javax.swing.JCheckBox;
 
 /**
@@ -30,6 +31,7 @@ import javax.swing.JCheckBox;
  */
 public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsEnabled, IsSelected {
 
+  @Serial
   private static final long serialVersionUID = -4566469282934199114L;
 
   /**
@@ -76,15 +78,9 @@ public class JCheckBoxLocator extends SwingWidgetLocator implements HasText, IsE
 
   @Override
   public boolean isSelected(IUIContext ui) throws WidgetSearchException {
-    JCheckBox button = (JCheckBox) ((IWidgetReference) ui.find(this)).getWidget();
+    var button = (JCheckBox) ((IWidgetReference) ui.find(this)).getWidget();
     return button.isSelected();
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
 
   /**
    * Create a condition that tests if the given widget has the expected text.

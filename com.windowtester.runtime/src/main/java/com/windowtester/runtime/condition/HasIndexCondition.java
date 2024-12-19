@@ -38,25 +38,15 @@ public class HasIndexCondition implements IDiagnosticParticipant, IUICondition {
       throw new IllegalArgumentException("locator cannot be null");
     }
     this.locator = locator;
-    this.expected = expectedIndex;
+    expected = expectedIndex;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester
-   * .runtime.IUIContext)
-   */
+  @Override
   public boolean testUI(IUIContext ui) {
     try {
       actual = locator.getIndex(ui);
@@ -67,12 +57,7 @@ public class HasIndexCondition implements IDiagnosticParticipant, IUICondition {
     }
   }
 
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

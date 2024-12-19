@@ -17,21 +17,20 @@ import com.windowtester.runtime.condition.IsSelected;
 import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import javax.swing.*;
+import java.io.Serial;
+import javax.swing.JRadioButtonMenuItem;
 
 /**
  * A locator for JRadioButtonMenuItems.
  */
 public class JRadioButtonMenuItemLocator extends JMenuItemLocator implements IsSelected {
 
-  /**
-   *
-   */
+  @Serial
   private static final long serialVersionUID = -4750442290023311100L;
 
   /**
-   * Creates an instance of a JRadioButtonMenuItem locator with the menu path indicated by a string such as
-   * "File/New/Project"
+   * Creates an instance of a JRadioButtonMenuItem locator with the menu path indicated by a string
+   * such as "File/New/Project"
    *
    * @param path a String that specifies the complete path to the JRadioButtonMenuItem
    */
@@ -40,8 +39,8 @@ public class JRadioButtonMenuItemLocator extends JMenuItemLocator implements IsS
   }
 
   /**
-   * Creates an instance of a JRadioButtonMenuItem locator with the menu path indicated by a string such as
-   * "File/New/Project", relative to its parent
+   * Creates an instance of a JRadioButtonMenuItem locator with the menu path indicated by a string
+   * such as "File/New/Project", relative to its parent
    *
    * @param path   a String that specifies the complete path to the JRadioButtonMenuItem
    * @param parent the locator for the parent of the menu item
@@ -55,24 +54,15 @@ public class JRadioButtonMenuItemLocator extends JMenuItemLocator implements IsS
     return "JRadioButtonMenuItemLocator";
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IsSelected#isSelected(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean isSelected(IUIContext ui) throws WidgetSearchException {
-    JRadioButtonMenuItem item =
-        (JRadioButtonMenuItem) ((IWidgetReference) ui.find(this)).getWidget();
+    var item = (JRadioButtonMenuItem) ((IWidgetReference) ui.find(this)).getWidget();
     return item.isSelected();
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
-   * Create a condition that tests if the given button is selected. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given button is selected. Note that this is a convenience
+   * method, equivalent to:
    * <code>isSelected(true)</code>
    */
   public IUICondition isSelected() {
@@ -82,7 +72,6 @@ public class JRadioButtonMenuItemLocator extends JMenuItemLocator implements IsS
   /**
    * Create a condition that tests if the given button is selected.
    *
-   * @param selected
    * @param expected <code>true</code> if the button is expected to be selected, else
    *                 <code>false</code>
    */

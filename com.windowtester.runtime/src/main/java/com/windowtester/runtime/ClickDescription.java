@@ -117,22 +117,27 @@ public class ClickDescription implements IClickDescription {
     _modifierMask = modifierMask;
   }
 
+  @Override
   public int clicks() {
     return _clicks;
   }
 
+  @Override
   public int relative() {
     return _relative;
   }
 
+  @Override
   public int x() {
     return _x;
   }
 
+  @Override
   public int y() {
     return _y;
   }
 
+  @Override
   public int modifierMask() {
     return _modifierMask;
   }
@@ -140,6 +145,7 @@ public class ClickDescription implements IClickDescription {
   /* (non-Javadoc)
    * @see com.windowtester.runtime.IClickDescription#isDefaultCenterClick()
    */
+  @Override
   public boolean isDefaultCenterClick() {
     return _relative == DEFAULT_CENTER_CLICK;
   }

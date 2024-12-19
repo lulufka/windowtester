@@ -15,10 +15,11 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to extract parent-relative index from the underlying
- * object. See {@link HasIndexCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to extract parent-relative index
+ * from the underlying object. See {@link HasIndexCondition} for typical usage.
  */
 public interface HasIndex {
+
   /**
    * Resolve the locator to a single object and answer the index associated with it.
    *

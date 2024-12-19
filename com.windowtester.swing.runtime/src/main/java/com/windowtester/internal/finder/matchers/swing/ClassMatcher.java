@@ -27,11 +27,12 @@ public class ClassMatcher extends AbstractMatcher {
     this.cls = cls;
   }
 
-  public boolean matches(Component c) {
-    if (c == null) {
+  @Override
+  public boolean matches(Component component) {
+    if (component == null) {
       return false;
     }
-    return cls.isAssignableFrom(c.getClass());
+    return cls.isAssignableFrom(component.getClass());
   }
 
   public String toString() {

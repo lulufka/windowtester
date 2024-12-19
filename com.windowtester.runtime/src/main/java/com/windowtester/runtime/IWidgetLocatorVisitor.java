@@ -11,10 +11,11 @@
 package com.windowtester.runtime;
 
 /**
- * A visitor for traversing WidgetLocator graphs. New methods may be added to this interface, so rather than
- * implementing this interface, it is better to subclass {@link WidgetLocatorAdapter}
+ * A visitor for traversing WidgetLocator graphs. New methods may be added to this interface, so
+ * rather than implementing this interface, it is better to subclass {@link WidgetLocatorAdapter}
  */
 public interface IWidgetLocatorVisitor {
+
   /**
    * Visit this WidgetLocator object.
    *

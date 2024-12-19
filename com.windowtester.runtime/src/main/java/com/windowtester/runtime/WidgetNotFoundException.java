@@ -23,7 +23,9 @@ public class WidgetNotFoundException extends WidgetSearchException {
   /**
    * Create an instance with no specified detail message.
    */
-  public WidgetNotFoundException() {}
+  public WidgetNotFoundException() {
+    super();
+  }
 
   /**
    * Create an instance with the specified detail message.

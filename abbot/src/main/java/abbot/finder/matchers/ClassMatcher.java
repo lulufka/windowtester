@@ -20,8 +20,9 @@ public class ClassMatcher extends AbstractMatcher {
   }
 
   @Override
-  public boolean matches(Component c) {
-    return cls.isAssignableFrom(c.getClass()) && (!mustBeShowing || c.isShowing());
+  public boolean matches(Component component) {
+    return cls.isAssignableFrom(component.getClass())
+        && (!mustBeShowing || component.isShowing());
   }
 
   @Override

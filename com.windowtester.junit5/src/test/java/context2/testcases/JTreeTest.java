@@ -25,11 +25,13 @@ import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JMenuItemLocator;
 import com.windowtester.runtime.swing.locator.JTreeItemLocator;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.JViewport;
 import javax.swing.tree.TreePath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import swing.samples.SwingTree;
@@ -38,17 +40,18 @@ import swing.samples.SwingTree;
 class JTreeTest {
 
   @UIUnderTest
-  private SwingTree panel = new SwingTree("Swing Tree Example");
+  private SwingTree panel;
+
+  @BeforeEach
+  void setUp() {
+    panel = new SwingTree("Swing Tree Example");
+  }
 
   @Test
   void testTreeSelections(@SwingUIContext IUIContext ui) throws WidgetSearchException {
     ui.wait(new WindowShowingCondition("Swing Tree Example"), 1_000);
 
-//    IWidgetLocator locator = ui.click(new JTreeItemLocator("Root/Parent1/Child10/grandChild102",
-//        new SwingWidgetLocator(JViewport.class,
-//            new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))));
-//    JTree tree = (JTree) ((IWidgetReference) locator).getWidget();
-    JTree tree = doTreeClick(
+    var firstClickTree = doTreeClick(
         1,
         "Root/Parent1/Child10/grandChild102",
         "scrollPane1",
@@ -56,59 +59,50 @@ class JTreeTest {
         ui
     );
 
-    TreePath path = tree.getSelectionPath();
-    int[] items = tree.getSelectionRows();
-    assertEquals(1, items.length);
-    assertEquals("grandChild102", path.getLastPathComponent().toString());
+    assertEquals(1, firstClickTree.getSelectionRows().length);
+    assertEquals("grandChild102", firstClickTree.getSelectionPath().getLastPathComponent().toString());
 
-    ui.click(new JTreeItemLocator("Root/Parent3/Child30",
-        new SwingWidgetLocator(JViewport.class,
-            new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))));
-    path = tree.getSelectionPath();
-    items = tree.getSelectionRows();
-    assertEquals(1, items.length);
-    assertEquals("Child30", path.getLastPathComponent().toString());
+    var secondClickTree = doTreeClick(1, "Root/Parent3/Child30", "scrollPane1", ui);
 
+    assertEquals(1, secondClickTree.getSelectionRows().length);
+    assertEquals("Child30", secondClickTree.getSelectionPath().getLastPathComponent().toString());
   }
 
   @Test
   void testTreeShiftSelections(@SwingUIContext IUIContext ui) throws Exception {
     ui.wait(new WindowShowingCondition("Swing Tree Example"), 1_000);
 
-    // tree selections
-    JTree tree =
-        doTreeClick(1, "Root/Parent1/Child10/grandChild102", "scrollPane1",
-            InputEvent.BUTTON1_DOWN_MASK, ui);
-    TreePath path = tree.getSelectionPath();
-    int[] items = tree.getSelectionRows();
-    assertEquals(1, items.length);
-    assertEquals("grandChild102", path.getLastPathComponent().toString());
+    var firstClickTree = doTreeClick(
+        1,
+        "Root/Item 0/Node 01",
+        "scrollPane2",
+        ui);
 
-    tree = doTreeClick(1, "Root/Parent3/Child30", "scrollPane1", InputEvent.BUTTON1_DOWN_MASK, ui);
-    path = tree.getSelectionPath();
-    items = tree.getSelectionRows();
-    assertEquals(1, items.length);
-    assertEquals("Child30", path.getLastPathComponent().toString());
+    doTreeClick(
+        1,
+        "Root/Item 1/Node 10",
+        "scrollPane2",
+        InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK,
+        ui);
 
-    // test shift clicks
-    tree = doTreeClick(1, "Root/Item 0/Node 01", "scrollPane2", InputEvent.BUTTON1_DOWN_MASK, ui);
-    doTreeClick(1, "Root/Item 1/Node 10", "scrollPane2", InputEvent.BUTTON1_DOWN_MASK |
-        InputEvent.SHIFT_DOWN_MASK, ui);
-    TreePath[] paths = tree.getSelectionPaths();
-    assertEquals(3, paths.length);
+    assertEquals(3, firstClickTree.getSelectionPaths().length);
 
-    IWidgetLocator locator = ui.click(new JTreeItemLocator("Root/Item 0/Node 01",
-        new SwingWidgetLocator(JViewport.class,
-            new SwingWidgetLocator(JScrollPane.class, "scrollPane2"))));
-    ui.click(1, new JTreeItemLocator("Root/Item 1/Node 10",
-            new SwingWidgetLocator(JViewport.class,
-                new SwingWidgetLocator(JScrollPane.class, "scrollPane2"))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+    var tree = doTreeClick(
+      1,
+        "Root/Item 0/Node 01",
+        "scrollPane2",
+        ui
+    );
 
-    tree = (JTree) ((IWidgetReference) locator).getWidget();
-    paths = tree.getSelectionPaths();
-    assertEquals(3, paths.length);
+    doTreeClick(
+      1,
+        "Root/Item 1/Node 10",
+        "scrollPane2",
+        InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK,
+        ui
+    );
 
+    assertEquals(3, tree.getSelectionPaths().length);
   }
 
   @Test
@@ -116,21 +110,21 @@ class JTreeTest {
     ui.wait(new WindowShowingCondition("Swing Tree Example"), 1_000);
 
     // test ctrl clicks
-    IWidgetLocator locator = ui.click(new JTreeItemLocator("Root/Parent1/Child10/grandChild100",
-        new SwingWidgetLocator(JViewport.class,
-            new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))));
-//    doTreeClick(1, "Root/Parent1/Child10/grandChild100", "scrollPane1",
-//        InputEvent.BUTTON1_DOWN_MASK, ui);
+//    IWidgetLocator locator = ui.click(new JTreeItemLocator("Root/Parent1/Child10/grandChild100",
+//        new SwingWidgetLocator(JViewport.class,
+//            new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))));
+    var tree = doTreeClick(1, "Root/Parent1/Child10/grandChild100", "scrollPane1",
+        InputEvent.BUTTON1_DOWN_MASK, ui);
 
-    ui.click(1, new JTreeItemLocator("Root/Parent1/Child10/grandChild102",
-            new SwingWidgetLocator(JViewport.class,
-                new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK);
+//    ui.click(1, new JTreeItemLocator("Root/Parent1/Child10/grandChild102",
+//            new SwingWidgetLocator(JViewport.class,
+//                new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))),
+//        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK);
+//    JTree tree = (JTree) ((IWidgetReference) locator).getWidget();
 
-//    JTree tree = doTreeClick(1, "Root/Parent1/Child10/grandChild102", "scrollPane1",
-//        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK, ui);
+    tree = doTreeClick(1, "Root/Parent1/Child10/grandChild102", "scrollPane1",
+        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK, ui);
 
-    JTree tree = (JTree) ((IWidgetReference) locator).getWidget();
     TreePath[] paths = tree.getSelectionPaths();
     assertEquals(1, paths.length);
   }
@@ -159,25 +153,34 @@ class JTreeTest {
   void testDoubleClicks(@SwingUIContext IUIContext ui) throws WidgetSearchException {
     ui.wait(new WindowShowingCondition("Swing Tree Example"), 1_000);
 
-    IWidgetLocator locator = ui.click(2, new JTreeItemLocator("Root/Parent2",
-        new SwingWidgetLocator(JViewport.class,
-            new SwingWidgetLocator(JScrollPane.class, "scrollPane1"))));
+    var tree = doTreeClick(2, "Root/Parent2", "scrollPane1", ui);
 
-    JTree tree = (JTree) ((IWidgetReference) locator).getWidget();
-    TreePath path = tree.getSelectionPath();
+    var path = tree.getSelectionPath();
+
     assertTrue(tree.isExpanded(path));
+  }
 
+  private JTree doTreeClick(int clickCount, String node, String scrollPane, IUIContext ui)
+      throws WidgetSearchException {
+    final var treeItemLocator = createTreeItemLocator(node, scrollPane);
+
+    var locator = ui.click(clickCount, treeItemLocator);
+    return (JTree) ((IWidgetReference) locator).getWidget();
   }
 
   private JTree doTreeClick(int clickCount, String node, String scrollPane, int mask, IUIContext ui)
       throws WidgetSearchException {
-    IWidgetLocator locator = ui.click(
-        clickCount,
-        new JTreeItemLocator(
-            node,
-            new SwingWidgetLocator(
-                JViewport.class, new SwingWidgetLocator(JScrollPane.class, scrollPane))),
-        mask);
+    var treeItemLocator = createTreeItemLocator(node, scrollPane);
+    var locator = ui.click(clickCount, treeItemLocator, mask);
     return (JTree) ((IWidgetReference) locator).getWidget();
+  }
+
+  private JTreeItemLocator createTreeItemLocator(String node, String scrollPane) {
+    return new JTreeItemLocator(
+        node,
+        new SwingWidgetLocator(
+            JViewport.class, new SwingWidgetLocator(JScrollPane.class, scrollPane)
+        )
+    );
   }
 }

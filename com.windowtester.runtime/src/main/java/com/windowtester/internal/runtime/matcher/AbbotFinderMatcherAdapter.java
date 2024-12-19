@@ -12,7 +12,7 @@ package com.windowtester.internal.runtime.matcher;
 
 import abbot.finder.Matcher;
 import com.windowtester.runtime.locator.IWidgetMatcher;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * An adapter from an {@link IWidgetMatcher} to an Abbot {@link Matcher}.
@@ -21,21 +21,19 @@ import java.awt.*;
  */
 /*package */ class AbbotFinderMatcherAdapter implements Matcher {
 
-  private final IWidgetMatcher _matcher;
+  private final IWidgetMatcher matcher;
 
   /**
    * Create an instance.
    *
-   * @param wm the matcher to adapt.
+   * @param widgetMatcher the matcher to adapt.
    */
-  AbbotFinderMatcherAdapter(IWidgetMatcher wm) {
-    _matcher = wm;
+  AbbotFinderMatcherAdapter(IWidgetMatcher<?> widgetMatcher) {
+    matcher = widgetMatcher;
   }
 
-  /* (non-Javadoc)
-   * @see abbot.finder.Matcher#matches(java.awt.Component)
-   */
-  public boolean matches(Component c) {
-    return _matcher.matches(c);
+  @Override
+  public boolean matches(Component component) {
+    return matcher.matches(component);
   }
 }

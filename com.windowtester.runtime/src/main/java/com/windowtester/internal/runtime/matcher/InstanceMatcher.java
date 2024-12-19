@@ -15,18 +15,16 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
 /**
  * A matcher that matches a given object instance.
  */
-public class InstanceMatcher implements IWidgetMatcher {
+public class InstanceMatcher implements IWidgetMatcher<Object> {
 
-  private final Object _instance;
+  private final Object instance;
 
   public InstanceMatcher(Object instance) {
-    _instance = instance;
+    this.instance = instance;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-   */
+  @Override
   public boolean matches(Object widget) {
-    return widget == _instance;
+    return widget == instance;
   }
 }

@@ -42,7 +42,9 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.InputEvent;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Concrete implementation of {@link com.windowtester.runtime.IUIContext}
@@ -55,72 +57,86 @@ public class UIContextSwing extends UIContextCommon {
   private IUIThreadMonitor threadMonitor;
 
   @Override
-  public IWidgetLocator click(int clickCount, ILocator locator, int buttonMask)
-      throws WidgetSearchException {
+  public IWidgetLocator click(
+      int clickCount,
+      ILocator locator,
+      int buttonMask) throws WidgetSearchException {
     handleConditions();
     return super.click(clickCount, locator, buttonMask);
   }
 
   @Override
-  public IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem, int modifierMask)
-      throws WidgetSearchException {
+  public IWidgetLocator contextClick(
+      ILocator locator,
+      IMenuItemLocator menuItem,
+      int modifierMask) throws WidgetSearchException {
     handleConditions();
     return super.contextClick(locator, menuItem, modifierMask);
   }
 
   @Override
-  public IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem)
-      throws WidgetSearchException {
+  public IWidgetLocator contextClick(
+      ILocator locator,
+      IMenuItemLocator menuItem) throws WidgetSearchException {
     handleConditions();
     return super.contextClick(locator, menuItem);
   }
 
   @Override
-  public IWidgetLocator contextClick(ILocator locator, String menuItem, int modifierMask)
-      throws WidgetSearchException {
+  public IWidgetLocator contextClick(
+      ILocator locator,
+      String menuItem,
+      int modifierMask) throws WidgetSearchException {
     handleConditions();
     return super.contextClick(locator, menuItem, modifierMask);
   }
 
   @Override
-  public IWidgetLocator contextClick(ILocator locator, String menuItem)
-      throws WidgetSearchException {
+  public IWidgetLocator contextClick(
+      ILocator locator,
+      String menuItem) throws WidgetSearchException {
     handleConditions();
     return super.contextClick(locator, menuItem);
   }
 
+  @Override
   public IWidgetLocator mouseMove(ILocator locator) throws WidgetSearchException {
     handleConditions();
-    IWidgetLocator widgetLocator = ClickHelper.getWidgetLocator(locator);
-    Component w = (Component) ((IWidgetReference) find(widgetLocator)).getWidget();
-    getDriver().mouseMove(w);
+    var widgetLocator = ClickHelper.getWidgetLocator(locator);
+    var component = (Component) ((IWidgetReference) find(widgetLocator)).getWidget();
+    getDriver().mouseMove(component);
     return widgetLocator;
   }
 
+  @Override
   public IWidgetLocator dragTo(ILocator locator) throws WidgetSearchException {
     handleConditions();
-    IWidgetLocator widgetLocator = ClickHelper.getWidgetLocator(locator);
-    Component w = (Component) ((IWidgetReference) find(widgetLocator)).getWidget();
-    Point p = findPoint(locator, w);
-    getDriver().doDragTo(w, p.x, p.y);
+    var widgetLocator = ClickHelper.getWidgetLocator(locator);
+    var component = (Component) ((IWidgetReference) find(widgetLocator)).getWidget();
+    var point = findPoint(locator, component);
+    getDriver().doDragTo(component, point.x, point.y);
     return widgetLocator;
   }
 
-  private Point findPoint(ILocator locator, Component w) {
+  private Point findPoint(ILocator locator, Component component) {
     if (locator instanceof AbstractPathLocator abstractPathLocator) {
-      String path = abstractPathLocator.getPath();
-      return getDriver().getLocation(w, path);
+      var path = abstractPathLocator.getPath();
+      return getDriver().getLocation(component, path);
     }
     if (locator instanceof JTableItemLocator tableItemLocator) {
-      return getDriver().getLocation(w, tableItemLocator.getRow(), tableItemLocator.getColumn());
+      return getDriver().getLocation(component, tableItemLocator.getRow(),
+          tableItemLocator.getColumn());
     }
     if (locator instanceof JTextComponentLocator textComponentLocator) {
-      return getDriver().getLocation(w, textComponentLocator.getCaretPosition());
+      return getDriver().getLocation(component, textComponentLocator.getCaretPosition());
     }
-    return getDriver().getLocation(w);
+    return getDriver().getLocation(component);
   }
 
-  public IWidgetLocator dragTo(ILocator locator, int buttonMask) throws WidgetSearchException {
+  @Override
+  public IWidgetLocator dragTo(
+      ILocator locator,
+      int buttonMask) throws WidgetSearchException {
     try {
       getDriver().mouseDown(buttonMask);
       return dragTo(locator);
@@ -129,26 +145,31 @@ public class UIContextSwing extends UIContextCommon {
     }
   }
 
+  @Override
   public void enterText(String txt) {
     handleConditions();
     getDriver().enterText(txt);
   }
 
+  @Override
   public void keyClick(int key) {
     handleConditions();
     getDriver().keyClick(key);
   }
 
+  @Override
   public void keyClick(char key) {
     handleConditions();
     getDriver().keyClick(key);
   }
 
+  @Override
   public void keyClick(int ctrl, char c) {
     handleConditions();
     getDriver().keyClick(ctrl, c);
   }
 
+  @Override
   public void close(IWidgetLocator locator) {
     var window = getWidgetReference(locator)
         .filter(widgetReference -> widgetReference.getWidget() instanceof Window)
@@ -160,23 +181,29 @@ public class UIContextSwing extends UIContextCommon {
 
   private Optional<WidgetReference<?>> getWidgetReference(IWidgetLocator locator) {
     try {
-      WidgetReference<?> ref = (WidgetReference<?>) find(locator);
-      return Optional.ofNullable(ref);
+      var reference = (WidgetReference<?>) find(locator);
+      return Optional.ofNullable(reference);
     } catch (WidgetSearchException e) {
-      e.printStackTrace();
+      // do  nothing
     }
     return Optional.empty();
   }
 
+  @Override
   public void wait(ICondition condition) throws WaitTimedOutException {
     wait(condition, UIDriverSwing.getDefaultTimeout());
   }
 
+  @Override
   public void wait(ICondition condition, long timeout) throws WaitTimedOutException {
     wait(condition, timeout, UIDriverSwing.getDefaultSleepInterval());
   }
 
-  public void wait(ICondition condition, long timeout, int interval) throws WaitTimedOutException {
+  @Override
+  public void wait(
+      ICondition condition,
+      long timeout,
+      int interval) throws WaitTimedOutException {
     if (threadMonitor != null) {
       threadMonitor.expectDelay(timeout);
     }
@@ -190,32 +217,54 @@ public class UIContextSwing extends UIContextCommon {
     }
   }
 
-  public void pause(int ms) {
+  @Override
+  public void pause(int milliseconds) {
     if (threadMonitor != null) {
-      threadMonitor.expectDelay(ms);
+      threadMonitor.expectDelay(milliseconds);
     }
     handleConditions();
-    getDriver().pause(ms);
+    getDriver().pause(milliseconds);
   }
 
+  @Override
   public IWidgetLocator find(IWidgetLocator locator) throws WidgetSearchException {
     var locators = findAll(locator);
-    if (locators.length > 1) {
-      takeScreenShot();
-      throw new MultipleWidgetsFoundException("Multiple Components found");
-    }
+
     if (locators.length == 0) {
-      takeScreenShot();
-      throw new WidgetNotFoundException(
-          Diagnostic.toString("Locator component not found: " + locator, locator));
+      handleNoWidgetFound(locator);
+    } else if (locators.length > 1) {
+      handleMultipleWidgetsFound(locators);
     }
     return locators[0];
   }
 
+  private void handleNoWidgetFound(IWidgetLocator locator) throws WidgetNotFoundException {
+    takeScreenShot();
+    throw new WidgetNotFoundException(
+        Diagnostic.toString("Locator component not found: " + locator, locator));
+  }
+
+  private void handleMultipleWidgetsFound(IWidgetLocator[] locators)
+      throws MultipleWidgetsFoundException {
+    takeScreenShot();
+
+    var value = Arrays.stream(locators)
+        .filter(WidgetReference.class::isInstance)
+        .map(WidgetReference.class::cast)
+        .map(ref -> ref.getWidget().getClass().getCanonicalName() + "("
+            + ((Component) ref.getWidget()).getName() + "-" + ref.getWidget()
+            .hashCode() + ")")
+        .collect(Collectors.joining(","));
+
+    throw new MultipleWidgetsFoundException("Multiple Components found: " + value);
+  }
+
+  @Override
   public IWidgetLocator[] findAll(IWidgetLocator locator) {
     return locator.findAll(this);
   }
 
+  @Override
   public Object getActiveWindow() {
     return AWT.getWindow(AWT.getFocusOwner());
   }
@@ -235,24 +284,20 @@ public class UIContextSwing extends UIContextCommon {
    * @param condition condition
    * @return a abbot.script.Condition
    */
-  private Condition getAbbotCondition(final ICondition condition) {
+  private Condition getAbbotCondition(ICondition condition) {
     return
         new Condition() {
+          @Override
           public boolean test() {
             return ConditionMonitor.test(UIContextSwing.this, condition);
           }
 
+          @Override
           public String toString() {
             return condition.toString();
           }
         };
   }
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Accessors
-  //
-  ////////////////////////////////////////////////////////////////////////////
 
   public UIDriverSwing getDriver() {
     if (driver == null) {

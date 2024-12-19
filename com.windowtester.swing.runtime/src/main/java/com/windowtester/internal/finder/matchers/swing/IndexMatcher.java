@@ -25,9 +25,10 @@ public class IndexMatcher implements Matcher {
     _matcher = matcher;
   }
 
-  public boolean matches(Component widget) {
+  @Override
+  public boolean matches(Component component) {
     boolean matches = false;
-    if (_matcher.matches(widget)) {
+    if (_matcher.matches(component)) {
       _current++;
       Log.debug(
           "Found match for matcher:\n"

@@ -42,12 +42,12 @@ public class PathStringTokenizerUtil {
   /**
    * A helper class for tokenizing.
    */
-  public static class PathTokenizer {
+  private static class PathTokenizer {
 
     private final String pathString;
     private final char delimiter;
     private final char escape;
-    private StringBuilder builder = new StringBuilder();
+    private final StringBuilder builder = new StringBuilder();
     private final List<String> items = new ArrayList<>();
 
     public PathTokenizer(String pathString, char delimiter, char escape) {
@@ -60,23 +60,23 @@ public class PathStringTokenizerUtil {
       this(pathString, '/', '\\');
     }
 
-    boolean isDelimeter(char c) {
+    private boolean isDelimiter(char c) {
       return c == delimiter;
     }
 
-    boolean isEscape(char c) {
+    private boolean isEscape(char c) {
       return c == escape;
     }
 
     public String[] tokenize() {
       for (int i = 0; inBounds(i); ++i) {
-        // System.out.println(getChar(i));
-        if (isDelimeter(getChar(i))) {
+        if (isDelimiter(getChar(i))) {
           addItem();
         } else if (isEscapeCase(i)) {
-          addChar(++i); // advance and add escaped char
+          // advance and add escaped char
+          addChar(++i);
         } else {
-          addChar(i); // just add
+          addChar(i);
         }
       }
       // add last item
@@ -86,7 +86,7 @@ public class PathStringTokenizerUtil {
     }
 
     private String[] getItems() {
-      return items.toArray(new String[] {});
+      return items.toArray(new String[0]);
     }
 
     private void addChar(int i) {
@@ -94,15 +94,16 @@ public class PathStringTokenizerUtil {
     }
 
     private boolean isEscapeCase(int i) {
-      return inBounds(i + 1) && isEscape(getChar(i)) && isDelimeter(getChar(i + 1));
+      return inBounds(i + 1) && isEscape(getChar(i)) && isDelimiter(getChar(i + 1));
     }
 
     private void addItem() {
-      if (builder.length() == 0) {
+      if (builder.isEmpty()) {
         return;
       }
       items.add(builder.toString());
-      builder.delete(0, builder.length() -1);
+
+      builder.delete(0, builder.length());
     }
 
     private char getChar(int i) {

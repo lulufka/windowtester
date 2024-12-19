@@ -11,7 +11,10 @@
 package com.windowtester.runtime.swing.locator;
 
 import abbot.tester.JTreeLocation;
+import com.windowtester.internal.runtime.matcher.CompoundMatcher;
 import com.windowtester.internal.swing.UIContextSwing;
+import com.windowtester.internal.swing.matcher.ClassMatcher;
+import com.windowtester.internal.swing.matcher.TreeMatcher;
 import com.windowtester.runtime.IClickDescription;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
@@ -19,11 +22,14 @@ import com.windowtester.runtime.condition.IUICondition;
 import com.windowtester.runtime.condition.IsSelected;
 import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.locator.IWidgetLocator;
+import com.windowtester.runtime.locator.IWidgetMatcher;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.locator.WidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
+import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 /**
@@ -31,12 +37,14 @@ import javax.swing.tree.TreePath;
  */
 public class JTreeItemLocator extends AbstractPathLocator implements IsSelected {
 
+  @Serial
   private static final long serialVersionUID = -5514291727454535792L;
 
   /**
    * Creates an instance of a locator to a node in a JTree
    *
-   * @param path a string representing the complete path to the node, such as "Root/Parent1/Child10/grandChild102".
+   * @param path a string representing the complete path to the node, such as
+   *             "Root/Parent1/Child10/grandChild102".
    */
   public JTreeItemLocator(String path) {
     this(path, null);
@@ -45,7 +53,8 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   /**
    * Creates an instance of a locator to a node in a JTree
    *
-   * @param path   a string representing the complete path to the node, such as "Root/Parent1/Child10/grandChild102".
+   * @param path   a string representing the complete path to the node, such as
+   *               "Root/Parent1/Child10/grandChild102".
    * @param parent locator of the parent
    */
   public JTreeItemLocator(String path, SwingWidgetLocator parent) {
@@ -55,13 +64,14 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   /**
    * Creates an instance of a locator to a node in a JTree
    *
-   * @param path   a string representing the complete path to the node, such as "Root/Parent1/Child10/grandChild102".
+   * @param path   a string representing the complete path to the node, such as
+   *               "Root/Parent1/Child10/grandChild102".
    * @param index  index of the tree relative to it's parent
    * @param parent locator to the parent
    */
-  // to search in the tree, we need the entire path, not just label of node.
-  // so pass path as itemText
   public JTreeItemLocator(String path, int index, SwingWidgetLocator parent) {
+    // to search in the tree, we need the entire path, not just label of node.
+    // so pass path as itemText
     this(JTree.class, path, index, parent);
   }
 
@@ -69,14 +79,21 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
    * Creates an instance of a locator to a node in a JTree
    *
    * @param cls    the exact class of the component
-   * @param path   a string representing the complete path to the node, such as "Root/Parent1/Child10/grandChild102".
+   * @param path   a string representing the complete path to the node, such as
+   *               "Root/Parent1/Child10/grandChild102".
    * @param index  index of the tree relative to it's parent
    * @param parent locator to the parent
    */
-  public JTreeItemLocator(Class cls, String path, int index, SwingWidgetLocator parent) {
+  public JTreeItemLocator(Class<?> cls, String path, int index, SwingWidgetLocator parent) {
     super(cls, path, path, index, parent);
-    // create the matcher
+    matcher = createMatcher(cls, path);
+  }
 
+  private IWidgetMatcher<?> createMatcher(Class<?> cls, String path) {
+    if (cls != null) {
+      return new CompoundMatcher(ClassMatcher.create(cls), TreeMatcher.create(path));
+    }
+    throw new IllegalArgumentException("Unable to create matcher for class null");
   }
 
   @Override
@@ -84,12 +101,13 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
     return "JTreeItemLocator";
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swing.locator.AbstractPathLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
-   */
   @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+      IUIContext ui,
+      int clicks,
+      Component component,
+      Point offset,
+      int modifierMask) {
     if (clicks > 2) {
       throw new UnsupportedOperationException();
     }
@@ -99,36 +117,30 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
 
   @Override
   public IWidgetLocator contextClick(
-      IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
-      throws WidgetSearchException {
-    Component component = (Component) widget.getWidget();
-    Component clicked =
+      IUIContext ui,
+      IWidgetReference widget,
+      IClickDescription click,
+      String menuItemPath) {
+    var component = (Component) widget.getWidget();
+    var clicked =
         ((UIContextSwing) ui)
             .getDriver()
             .contextClickTree((JTree) component, getPath(), menuItemPath);
     return WidgetReference.create(clicked, this);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IsSelected#isSelected(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean isSelected(IUIContext ui) throws WidgetSearchException {
-    JTree tree = (JTree) ((IWidgetReference) ui.find(this)).getWidget();
-    String[] nodeNames = getPath().split("/");
-    TreePath treePath = new TreePath(nodeNames);
-    int row = new JTreeLocation(treePath).getRow(tree);
+    var tree = (JTree) ((IWidgetReference) ui.find(this)).getWidget();
+    var nodeNames = getPath().split("/");
+    var treePath = new TreePath(nodeNames);
+    var row = new JTreeLocation(treePath).getRow(tree);
     return tree.isRowSelected(row);
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
-   * Create a condition that tests if the given button is selected. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given button is selected. Note that this is a convenience
+   * method, equivalent to:
    * <code>isSelected(true)</code>
    */
   public IUICondition isSelected() {
@@ -138,7 +150,6 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   /**
    * Create a condition that tests if the given button is selected.
    *
-   * @param selected
    * @param expected <code>true</code> if the button is expected to be selected, else
    *                 <code>false</code>
    */

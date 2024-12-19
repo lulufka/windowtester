@@ -35,6 +35,7 @@ public class NotUICondition extends UICondition {
   /* (non-Javadoc)
    * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
    */
+  @Override
   public boolean testUI(IUIContext ui) {
     return !toNegate.testUI(ui);
   }

@@ -8,6 +8,7 @@ import abbot.util.AWT;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,47 +31,43 @@ public class AWTHierarchy implements Hierarchy {
     return defaultHierarchy != null ? defaultHierarchy : new AWTHierarchy();
   }
 
-  public static void setDefault(Hierarchy h) {
-    defaultHierarchy = h;
+  public static void setDefault(Hierarchy hierarchy) {
+    defaultHierarchy = hierarchy;
   }
 
   @Override
-  public boolean contains(Component c) {
+  public boolean contains(Component component) {
     return true;
   }
 
   @Override
-  public void dispose(Window w) {
-    if (AWT.isAppletViewerFrame(w)) {
+  public void dispose(Window window) {
+    if (AWT.isAppletViewerFrame(window)) {
       // Don't dispose, it must quit on its own
       return;
     }
 
-    Log.debug("Dispose " + w);
-    Window[] owned = w.getOwnedWindows();
+    Log.debug("Dispose " + window);
 
-    for (Window window : owned) {
-      // Window.dispose is recursive; make Hierarchy.dispose recursive
-      // as well.
-      dispose(window);
-    }
+    Arrays.stream(window.getOwnedWindows())
+        .forEach(this::dispose);
 
-    if (AWT.isSharedInvisibleFrame(w)) {
+    if (AWT.isSharedInvisibleFrame(window)) {
       // Don't dispose, or any child windows which may be currently
       // ignored (but not hidden) will be hidden and disposed.
       return;
     }
 
-    // Ensure the dispose is done on the swing thread so we can catch any
-    // exceptions.  If Window.dispose is called from a non-Swing thread,
-    // it will invokes the dispose action on the Swing thread but in that
+    // Ensure the disposal is done on the swing thread so we can catch any
+    // exceptions. If Window.dispose is called from a non-Swing thread,
+    // it will invoke the dispose action on the Swing thread but in that
     // case we have no control over exceptions.
     Runnable action = () -> {
       try {
         // Distinguish between the abbot framework disposing a
         // window and anyone else doing so.
         System.setProperty("abbot.finder.disposal", "true");
-        w.dispose();
+        window.dispose();
         System.setProperty("abbot.finder.disposal", "false");
       } catch (NullPointerException npe) {
         // Catch bug in AWT 1.3.1 when generating hierarchy
@@ -86,17 +83,18 @@ public class AWTHierarchy implements Hierarchy {
         Log.warn(
             "An exception was thrown when disposing "
                 + " the window "
-                + Robot.toString(w)
+                + Robot.toString(window)
                 + ".  The exception is ignored");
       }
     };
+
     if (SwingUtilities.isEventDispatchThread()) {
       action.run();
     } else {
       try {
         SwingUtilities.invokeAndWait(action);
-      } catch (Exception e) {
-        // ignore
+      } catch (InterruptedException | InvocationTargetException e) {
+        // do nothing
       }
     }
   }
@@ -130,17 +128,16 @@ public class AWTHierarchy implements Hierarchy {
   }
 
   private Collection<Component> findInternalFramesFromIcons(Container container) {
-    ArrayList<Component> list = new ArrayList<>();
+    var list = new ArrayList<Component>();
     for (Component child : container.getComponents()) {
       if (child instanceof JInternalFrame.JDesktopIcon desktopIcon) {
-        JInternalFrame frame = desktopIcon.getInternalFrame();
+        var frame = desktopIcon.getInternalFrame();
         if (frame != null) {
           list.add(frame);
         }
-      }
-      // OSX puts icons into a dock; handle icon manager situations here
-      else if (child instanceof Container container1) {
-        list.addAll(findInternalFramesFromIcons(container1));
+      } else if (child instanceof Container childContainer) {
+        // OSX puts icons into a dock; handle icon manager situations here
+        list.addAll(findInternalFramesFromIcons(childContainer));
       }
     }
     return list;
@@ -148,13 +145,13 @@ public class AWTHierarchy implements Hierarchy {
 
   @Override
   public Container getParent(Component component) {
-    Container container = component.getParent();
+    var container = component.getParent();
     if (container == null && component instanceof JInternalFrame internalFrame) {
       // workaround for bug in JInternalFrame: COMPONENT_HIDDEN is sent
       // before the desktop icon is set, so
       // JInternalFrame.getDesktopPane will throw a NPE if called while
       // dispatching that event.  Reported against 1.4.x.
-      JInternalFrame.JDesktopIcon icon = internalFrame.getDesktopIcon();
+      var icon = internalFrame.getDesktopIcon();
       if (icon != null) {
         container = icon.getDesktopPane();
       }

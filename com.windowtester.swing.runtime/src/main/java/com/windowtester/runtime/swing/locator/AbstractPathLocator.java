@@ -24,51 +24,59 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.IPathLocator;
 import com.windowtester.runtime.locator.IWidgetLocator;
+import com.windowtester.runtime.locator.IWidgetMatcher;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.locator.WidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
+import java.awt.Component;
+import java.io.Serial;
 
 /**
  * A base class for locators that have a path.
  */
 public abstract class AbstractPathLocator extends SwingWidgetLocator implements IPathLocator {
 
+  @Serial
   private static final long serialVersionUID = 4463096378279721331L;
 
-  private String _path;
+  private String path;
 
-  public AbstractPathLocator(Class cls, String path) {
+  public AbstractPathLocator(Class<?> cls, String path) {
     this(cls, getLabel(path), path);
   }
 
-  public AbstractPathLocator(Class cls, String itemText, String path) {
-    this(cls, itemText, path, SwingWidgetLocator.UNASSIGNED, null);
+  public AbstractPathLocator(Class<?> cls, String itemText, String path) {
+    this(cls, itemText, path, UNASSIGNED, null);
   }
 
-  public AbstractPathLocator(Class cls, String path, SwingWidgetLocator parentInfo) {
+  public AbstractPathLocator(Class<?> cls, String path, SwingWidgetLocator parentInfo) {
     this(cls, getLabel(path), path, parentInfo);
   }
 
-  public AbstractPathLocator(
-      Class cls, String itemText, String path, SwingWidgetLocator parentInfo) {
-    this(cls, itemText, path, SwingWidgetLocator.UNASSIGNED, parentInfo);
+  public AbstractPathLocator(Class<?> cls, String itemText, String path,
+      SwingWidgetLocator parentInfo) {
+    this(cls, itemText, path, UNASSIGNED, parentInfo);
   }
 
-  public AbstractPathLocator(Class cls, String path, int index, SwingWidgetLocator parentInfo) {
+  public AbstractPathLocator(Class<?> cls, String path, int index, SwingWidgetLocator parentInfo) {
     this(cls, getLabel(path), path, index, parentInfo);
   }
 
-  // TODO: improve chaining
-  public AbstractPathLocator(
-      Class cls, String itemText, String path, int index, SwingWidgetLocator parentInfo) {
+  public AbstractPathLocator(Class<?> cls, String itemText, String path, int index,
+      SwingWidgetLocator parentInfo) {
     super(cls, itemText, index, parentInfo);
-    _path = path;
+    this.path = path;
+    this.matcher = createMatcher(cls, index, parentInfo);
+  }
 
-    //	create the matcher
+  private IWidgetMatcher<?> createMatcher(
+      Class<?> cls,
+      int index,
+      SwingWidgetLocator parent) {
+    IWidgetMatcher<?> matcher = null;
     if (this instanceof JListLocator || this instanceof JTreeItemLocator) {
       matcher = ClassMatcher.create(cls);
-    } else {
+    } else if (cls != null) {
       matcher = new ExactClassMatcher(cls);
     }
 
@@ -80,45 +88,52 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
       matcher = IndexMatcher.create(matcher, index);
     }
 
-    if (parentInfo != null) {
-
+    if (parent != null) {
       // if parent is NamedWidgetLocator, then component has a name
-      if (parentInfo instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
+      if (parent instanceof NamedWidgetLocator) {
         if (!(this instanceof JMenuItemLocator)) {
-          matcher = new CompoundMatcher(matcher, NameMatcher.create(parentInfo.getNameOrLabel()));
+          matcher = new CompoundMatcher(matcher, NameMatcher.create(parent.getNameOrLabel()));
         }
       } else {
         if (index != UNASSIGNED) {
-          matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher(), index);
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
         } else {
-          matcher = HierarchyMatcher.create(matcher, parentInfo.getMatcher());
+          matcher = HierarchyMatcher.create(matcher, parent.getMatcher());
         }
       }
     }
+
+    if (matcher != null) {
+      return matcher;
+    }
+
+    var msg = String.format("Unable to create matcher for class=%s, index=%d, parent=%s",
+        cls, index, parent);
+    throw new IllegalArgumentException(msg);
   }
 
   public String getPath() {
-    return _path;
+    return path;
   }
 
   public String getItemText() {
     if (this instanceof JListLocator || this instanceof JComboBoxLocator) {
-      return _path;
+      return path;
     }
     return getNameOrLabel();
   }
 
-  protected static String getLabel(String path) {
+  private static String getLabel(String path) {
     if (path == null) {
       return null;
     }
-    String[] items = PathStringTokenizerUtil.tokenize(path);
+    var items = PathStringTokenizerUtil.tokenize(path);
     return items[items.length - 1];
   }
 
   // not ideal to have this mutable but it fits best with current id inference scheme
   public void setPath(String pathString) {
-    _path = pathString;
+    path = pathString;
   }
 
   /**
@@ -128,15 +143,16 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
    * @param widget       the widget reference to click
    * @param menuItemPath the path to the menu item to select
    * @return the clicked widget (as a reference)
-   * @throws WidgetSearchException
+   * @throws WidgetSearchException in case of error
    */
   @Override
   public IWidgetLocator contextClick(
-      IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
-      throws WidgetSearchException {
-
-    Component component = (Component) widget.getWidget();
-    Component clicked = ((UIContextSwing) ui).getDriver().contextClick(component, menuItemPath);
+      IUIContext ui,
+      IWidgetReference widget,
+      IClickDescription click,
+      String menuItemPath) throws WidgetSearchException {
+    var component = (Component) widget.getWidget();
+    var clicked = ((UIContextSwing) ui).getDriver().contextClick(component, menuItemPath);
     return WidgetReference.create(clicked, this);
   }
 }

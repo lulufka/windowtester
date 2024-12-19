@@ -79,7 +79,7 @@ public class EventCachingListener implements ISemanticEventListener {
 
   public ISemanticEvent[] getEvents() {
     if (events.isEmpty()) {
-      return new IUISemanticEvent[]{};
+      return new IUISemanticEvent[0];
     }
     return events.toArray(new ISemanticEvent[0]);
   }

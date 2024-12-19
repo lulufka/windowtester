@@ -22,6 +22,7 @@ import com.windowtester.runtime.locator.IWidgetLocator;
 public interface IClickDriver {
 
   interface Listener {
+
     void contextClicked(IClickDescription click, IWidgetLocator clicked);
 
     void clicked(IClickDescription click, IWidgetLocator clicked);

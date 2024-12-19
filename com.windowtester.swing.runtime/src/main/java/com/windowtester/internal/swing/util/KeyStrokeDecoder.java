@@ -52,7 +52,6 @@ public class KeyStrokeDecoder {
     KeyEvent.VK_END
   };
 
-  // modifiers
   private static final int[] KEY_MODS = {
     InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK
   };
@@ -73,23 +72,19 @@ public class KeyStrokeDecoder {
   }
 
   public static int[] extractKeys(int compositeKey) {
-    List<Integer> keys = new ArrayList<>();
+    var keys = new ArrayList<Integer>();
     for (int keyConstant : KEY_CONSTANTS) {
-      int candidate = keyConstant;
-      if ((compositeKey | MODIFIER_MASK) == (candidate | MODIFIER_MASK)) {
-        keys.add(candidate);
+      if ((compositeKey | MODIFIER_MASK) == (keyConstant | MODIFIER_MASK)) {
+        keys.add(keyConstant);
       }
     }
     return toIntArray(keys);
   }
 
   private static int[] toIntArray(List<Integer> keys) {
-    int size = keys.size();
-    int[] intArray = new int[size];
-    for (int i = 0; i < size; ++i) {
-      intArray[i] = keys.get(i);
-    }
-    return intArray;
+    return keys.stream()
+        .mapToInt(int.class::cast)
+        .toArray();
   }
 
   private KeyStrokeDecoder() {

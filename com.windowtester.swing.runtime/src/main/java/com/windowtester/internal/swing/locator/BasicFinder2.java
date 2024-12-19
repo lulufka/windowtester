@@ -33,13 +33,13 @@ import javax.swing.SwingUtilities;
  */
 public class BasicFinder2 implements ComponentFinder {
 
-  private final Hierarchy hierarchy;
-
   private static final ComponentFinder DEFAULT = new BasicFinder2(new AWTHierarchy());
 
   public static ComponentFinder getDefault() {
     return DEFAULT;
   }
+
+  private final Hierarchy hierarchy;
 
   private class SingleComponentHierarchy implements Hierarchy {
 
@@ -64,7 +64,8 @@ public class BasicFinder2 implements ComponentFinder {
     }
 
     public boolean contains(Component component) {
-      return getHierarchy().contains(component) && SwingUtilities.isDescendingFrom(component, root);
+      return getHierarchy().contains(component)
+          && SwingUtilities.isDescendingFrom(component, root);
     }
 
     public void dispose(Window window) {
@@ -88,9 +89,12 @@ public class BasicFinder2 implements ComponentFinder {
    * Find a Component, using the given Matcher to determine whether a given component in the
    * hierarchy under the given root is the desired one.
    */
+  @Override
   public Component find(Container root, Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
-    Hierarchy hierarchy = root != null ? new SingleComponentHierarchy(root) : getHierarchy();
+    var hierarchy = root != null
+        ? new SingleComponentHierarchy(root)
+        : getHierarchy();
     return find(hierarchy, matcher);
   }
 
@@ -98,6 +102,7 @@ public class BasicFinder2 implements ComponentFinder {
    * Find a Component, using the given Matcher to determine whether a given component in the
    * hierarchy used by this ComponentFinder is the desired one.
    */
+  @Override
   public Component find(Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
     return find(getHierarchy(), matcher);
@@ -105,7 +110,7 @@ public class BasicFinder2 implements ComponentFinder {
 
   protected Component find(Hierarchy hierarchy, Matcher matcher)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
-    Set<Component> found = new HashSet<>();
+    var found = new HashSet<Component>();
     for (Component component : hierarchy.getRoots()) {
       findMatches(hierarchy, matcher, component, found);
     }
@@ -113,7 +118,7 @@ public class BasicFinder2 implements ComponentFinder {
     if (found.isEmpty()) {
       throw new ComponentNotFoundException("finder.not_found");
     } else if (found.size() > 1) {
-      Component[] list = found.toArray(new Component[0]);
+      var list = found.toArray(new Component[0]);
       if (!(matcher instanceof MultiMatcher)) {
         throw new MultipleComponentsFoundException("finder.multiple_found", list);
       }
@@ -148,7 +153,7 @@ public class BasicFinder2 implements ComponentFinder {
   }
 
   protected int findAll(Hierarchy hierarchy, Matcher matcher) {
-    Set<Component> found = new HashSet<>();
+    var found = new HashSet<Component>();
     for (Component component : hierarchy.getRoots()) {
       // 2/22/07 : kp check for match only in active window
       if (((Window) component).isActive()) {

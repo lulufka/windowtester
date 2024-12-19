@@ -23,7 +23,7 @@ public class LogHandler {
   /**
    * Log the specified exception.
    *
-   * @param ex the exception to be logged.
+   * @param e the exception to be logged.
    */
   public static void log(Throwable e) {
     if (Platform.isRunning()) {
@@ -38,7 +38,7 @@ public class LogHandler {
   /**
    * Log the specified message and object
    *
-   * @param aMessage the message to be logged
+   * @param message the message to be logged
    */
   public static void log(String message) {
     if (Platform.isRunning()) {

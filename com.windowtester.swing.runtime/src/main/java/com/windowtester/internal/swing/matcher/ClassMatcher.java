@@ -22,7 +22,7 @@ public class ClassMatcher {
     // hide public constructor.
   }
 
-  public static IWidgetMatcher create(Class<?> cls) {
+  public static IWidgetMatcher<?> create(Class<?> cls) {
     return new AdapterFactory()
         .adapt(new com.windowtester.internal.finder.matchers.swing.ClassMatcher(cls));
   }

@@ -19,8 +19,10 @@ import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.WidgetReference;
 import java.awt.Component;
 import java.awt.Window;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A Swing Widget Finder.
@@ -70,9 +72,11 @@ public class SwingWidgetFinder implements IWidgetFinder {
       // match only if window has focus
       return true;
     }
-    if (window.isShowing()
-        && (window.getClass().getName()
-        .equals("javax.swing.SwingUtilities$SharedOwnerFrame"))) {
+    if (window.isVisible()) {
+      return true;
+    }
+
+    if (window.getOwnedWindows().length > 0) {
       return true;
     }
 
@@ -98,6 +102,7 @@ public class SwingWidgetFinder implements IWidgetFinder {
     for (Component comp : hierarchy.getComponents(component)) {
       findMatches(matcher, comp, found);
     }
+
     if (matcher.matches(component)) {
       found.add(component);
     }

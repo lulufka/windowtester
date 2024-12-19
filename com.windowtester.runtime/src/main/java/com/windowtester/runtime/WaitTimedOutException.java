@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import java.io.Serial;
+
 /**
  * Thrown when a wait condition time limit is exceeded.
  */
 public class WaitTimedOutException extends RuntimeException {
+
+  @Serial
   private static final long serialVersionUID = -8129128536949106306L;
 
   public WaitTimedOutException(String msg) {

@@ -97,8 +97,8 @@ public class WidgetLocatorService {
    * @return true if they match
    */
   private boolean nameAndOrLabelDataMatch(Component component1, Component component2) {
-    String text1 = getWidgetText(component1);
-    String text2 = getWidgetText(component2);
+    var text1 = getWidgetText(component1);
+    var text2 = getWidgetText(component2);
     if (text1 == null) {
       return text2 == null;
     }
@@ -113,16 +113,16 @@ public class WidgetLocatorService {
    * @return a list of children
    */
   public List<Component> getChildren(Component parent, Class<?> cls) {
-    List<Component> children = new ArrayList<>();
-    if (parent instanceof Container) {
-      Component[] components = ((Container) parent).getComponents();
+    var children = new ArrayList<Component>();
+    if (parent instanceof Container container) {
+      var components = container.getComponents();
       addCheck(children, Arrays.asList(components));
     }
 
     // prune non-exact class matches
-    List<Component> pruned = new ArrayList<>();
+    var pruned = new ArrayList<Component>();
     for (Component child : children) {
-      Class<?> childClass = child.getClass();
+      var childClass = child.getClass();
       if (cls.isAssignableFrom(childClass) && childClass.isAssignableFrom(cls)) {
         pruned.add(child);
       }
@@ -137,7 +137,6 @@ public class WidgetLocatorService {
    * @param src  - the source collection
    */
   private void addCheck(Collection<Component> dest, Collection<Component> src) {
-    /* add object to collection if non-null */
     if (!src.isEmpty()) {
       dest.addAll(src);
     }
@@ -150,15 +149,14 @@ public class WidgetLocatorService {
    * @return the widget's text
    */
   public String getWidgetText(Component component) {
-    if ((component instanceof AbstractButton) && !(component instanceof JMenuItem)) {
-      return (((AbstractButton) component).getText());
+    if (component instanceof AbstractButton button
+        && !(component instanceof JMenuItem)) {
+      return button.getText();
+    }
+    if (component instanceof JLabel label) {
+      return label.getText();
     }
 
-    if (component instanceof JLabel) {
-      return (((JLabel) component).getText());
-    }
-
-    // fall through ....
     return null;
   }
 
@@ -184,39 +182,38 @@ public class WidgetLocatorService {
     //				component = parent;
     //		}
 
-    Class<?> cls = component.getClass();
+    var cls = component.getClass();
     /**
      * We don't want the combo text to be part of the identifying information since it
      * is only set to the value AFTER it is selected...
      * Text values are also too volatile to use as identifiers.
      *
      */
-    //		String text = (component instanceof Combo || component instanceof CCombo || component instanceof Text || component
-    // instanceof StyledText)? null : getWidgetText(component);
-    String text = getWidgetText(component);
-    SwingWidgetLocator locator;
-    if (text != null) {
-      locator = new SwingWidgetLocator(cls, text);
-    } else {
-      locator = new SwingWidgetLocator(cls);
-    }
+    var text = getWidgetText(component);
+    var locator = getSwingWidgetLocator(text, cls);
 
     setDataValues(locator, component);
     return locator;
   }
 
-  //	propagate values of interest from the widget to the locator
-  private void setDataValues(SwingWidgetLocator locator, Component w) {
-    String key;
-    Object value = null;
+  private static SwingWidgetLocator getSwingWidgetLocator(
+      String text,
+      Class<? extends Component> cls) {
+    if (text != null) {
+      return new SwingWidgetLocator(cls, text);
+    }
+    return new SwingWidgetLocator(cls);
+  }
 
+  private void setDataValues(SwingWidgetLocator locator, Component component) {
+    //	propagate values of interest from the widget to the locator
+    Object value = null;
     for (String interestingKey : INTERESTING_KEYS) {
-      key = interestingKey;
-      if (w instanceof JComponent) {
-        value = ((JComponent) w).getClientProperty(key);
+      if (component instanceof JComponent jComponent) {
+        value = jComponent.getClientProperty(interestingKey);
       }
       if (value != null) {
-        locator.setData(key, value.toString());
+        locator.setData(interestingKey, value.toString());
       }
     }
   }

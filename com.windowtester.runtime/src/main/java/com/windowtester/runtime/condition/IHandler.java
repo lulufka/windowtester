@@ -13,15 +13,17 @@ package com.windowtester.runtime.condition;
 import com.windowtester.runtime.IUIContext;
 
 /**
- * An interface used by {@link IConditionMonitor} to signal an object that the associated condition has been satisfied.
+ * An interface used by {@link IConditionMonitor} to signal an object that the associated condition
+ * has been satisfied.
  */
 public interface IHandler {
+
   /**
    * Called when the associated condition has been satisfied.
    * <p>
    * Note that this method is guaranteed to be executed on the WindowTester thread.
    *
-   * @param ui the current UIcontext
+   * @param ui the current UIContext
    */
   void handle(IUIContext ui) throws Exception;
 }

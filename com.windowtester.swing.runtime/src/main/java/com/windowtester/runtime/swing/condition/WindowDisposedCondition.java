@@ -43,25 +43,25 @@ public class WindowDisposedCondition implements ICondition {
   }
 
   private synchronized boolean assertComponentNotShowing(String title) {
-    var componentList = collectComponents();
-    for (Component c : componentList) {
-      if (isMatchingFrame(title, c)) {
-        return noFrameShowing(c);
+    var components = collectComponents();
+    for (Component component : components) {
+      if (isMatchingFrame(title, component)) {
+        return noFrameShowing(component);
       }
-      if (isMatchingDialog(title, c)) {
-        return noDialogShowing(c);
+      if (isMatchingDialog(title, component)) {
+        return noDialogShowing(component);
       }
     }
     // component not found
     return true;
   }
 
-  private boolean noDialogShowing(Component c) {
-    return noComponentShowing((JDialog) c);
+  private boolean noDialogShowing(Component component) {
+    return noComponentShowing((JDialog) component);
   }
 
-  private boolean noFrameShowing(Component c) {
-    return noComponentShowing((Frame) c);
+  private boolean noFrameShowing(Component component) {
+    return noComponentShowing((Frame) component);
   }
 
   private boolean noComponentShowing(Window window) {
@@ -72,15 +72,15 @@ public class WindowDisposedCondition implements ICondition {
     return isNotDisplayable && isNotVisible && isNotActive;
   }
 
-  private boolean isMatchingDialog(String title, Component c) {
-    if (c instanceof JDialog dialog) {
+  private boolean isMatchingDialog(String title, Component component) {
+    if (component instanceof JDialog dialog) {
       return StringComparator.matches(dialog.getTitle(), title);
     }
     return false;
   }
 
-  private boolean isMatchingFrame(String title, Component c) {
-    if (c instanceof Frame frame) {
+  private boolean isMatchingFrame(String title, Component component) {
+    if (component instanceof Frame frame) {
       return StringComparator.matches(frame.getTitle(), title);
     }
     return false;

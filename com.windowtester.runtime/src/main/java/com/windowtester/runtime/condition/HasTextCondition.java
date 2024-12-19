@@ -17,8 +17,8 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.util.StringComparator;
 
 /**
- * Tests whether a locator identifies a widget that has the specified text. For example, this can be used to assert that
- * a wizard error message appears after a particular sequence of user input.
+ * Tests whether a locator identifies a widget that has the specified text. For example, this can be
+ * used to assert that a wizard error message appears after a particular sequence of user input.
  *
  * <pre>
  * 		IUIContext ui = [obtain IUIContext]
@@ -30,6 +30,7 @@ import com.windowtester.runtime.util.StringComparator;
  * Any locator that implements {@link HasText} can be used with this condition.
  */
 public class HasTextCondition implements IDiagnosticParticipant, IUICondition {
+
   private final HasText locator;
   private final String expected;
   private String actual;
@@ -39,24 +40,20 @@ public class HasTextCondition implements IDiagnosticParticipant, IUICondition {
    * Construct a new instance
    *
    * @param locator  the locator for the widget to be tested
-   * @param expected the expected text (can be a regular expression as described in the {@link StringComparator}
-   *                 utility)
+   * @param expected the expected text (can be a regular expression as described in the
+   *                 {@link StringComparator} utility)
    */
   public HasTextCondition(HasText locator, String expected) {
     this.locator = locator;
     this.expected = expected;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean testUI(IUIContext ui) {
     actual = null;
     exception = null;
@@ -75,12 +72,7 @@ public class HasTextCondition implements IDiagnosticParticipant, IUICondition {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

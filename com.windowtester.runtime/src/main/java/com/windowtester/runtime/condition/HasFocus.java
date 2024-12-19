@@ -15,10 +15,11 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to determine if the underlying object has keyboard
- * focus. See {@link HasFocusCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to determine if the underlying
+ * object has keyboard focus. See {@link HasFocusCondition} for typical usage.
  */
 public interface HasFocus extends ILocator {
+
   /**
    * Resolve the locator to a single object and determine if that object has keyboard focus.
    *

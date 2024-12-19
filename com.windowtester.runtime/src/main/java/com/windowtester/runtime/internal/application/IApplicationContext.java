@@ -11,7 +11,8 @@
 package com.windowtester.runtime.internal.application;
 
 /**
- * Application contexts describe interesting states that an application might be in (e.g., native vs. non-native).
+ * Application contexts describe interesting states that an application might be in (e.g., native
+ * vs. non-native).
  */
 public interface IApplicationContext {
 

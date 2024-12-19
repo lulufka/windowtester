@@ -10,21 +10,27 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import java.io.Serial;
+
 /**
- * Thrown when a matching widget is found, but it is not of the necessary type or does not have the appropriate accessor
- * method. For example, the {@link com.windowtester.runtime.swt.locator.NamedWidgetLocator} throws this if
+ * Thrown when a matching widget is found, but it is not of the necessary type or does not have the
+ * appropriate accessor method. For example, the {@link SwingWidgetLocator} throws this if
  * getText(IUIContext) is called and the widget found does not have a getText() method.
  */
-public class InaccessableWidgetException extends WidgetSearchException {
+public class InaccessibleWidgetException extends WidgetSearchException {
+
+  @Serial
   private static final long serialVersionUID = 3035842156651482281L;
 
-  public InaccessableWidgetException() {}
+  public InaccessibleWidgetException() {
+    super();
+  }
 
-  public InaccessableWidgetException(String msg) {
+  public InaccessibleWidgetException(String msg) {
     super(msg);
   }
 
-  public InaccessableWidgetException(Throwable cause) {
+  public InaccessibleWidgetException(Throwable cause) {
     super(cause);
   }
 }

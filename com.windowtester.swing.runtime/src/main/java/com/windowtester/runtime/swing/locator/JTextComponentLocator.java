@@ -20,7 +20,9 @@ import com.windowtester.runtime.condition.IsEnabled;
 import com.windowtester.runtime.condition.IsEnabledCondition;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -29,9 +31,7 @@ import javax.swing.text.JTextComponent;
 public class JTextComponentLocator extends SwingWidgetLocator
     implements HasText, IsEnabled, HasFocus {
 
-  /**
-   *
-   */
+  @Serial
   private static final long serialVersionUID = -4186840479034195183L;
 
   /**
@@ -44,7 +44,7 @@ public class JTextComponentLocator extends SwingWidgetLocator
    *
    * @param cls the exact Class of the component
    */
-  public JTextComponentLocator(Class cls) {
+  public JTextComponentLocator(Class<?> cls) {
     this(cls, null);
   }
 
@@ -54,11 +54,11 @@ public class JTextComponentLocator extends SwingWidgetLocator
    * @param cls   the exact Class of the component
    * @param caret the caret position
    */
-  public JTextComponentLocator(int caret, Class cls) {
+  public JTextComponentLocator(int caret, Class<?> cls) {
     this(caret, cls, null);
   }
 
-  public JTextComponentLocator(int caret, Class cls, String nameOrLabel) {
+  public JTextComponentLocator(int caret, Class<?> cls, String nameOrLabel) {
     super(cls, nameOrLabel, UNASSIGNED, null);
     setCaretPosition(caret);
   }
@@ -69,19 +69,19 @@ public class JTextComponentLocator extends SwingWidgetLocator
    * @param cls    the exact Class of the component
    * @param parent the locator for the parent of the JTextComponent
    */
-  public JTextComponentLocator(Class cls, SwingWidgetLocator parentInfo) {
-    this(cls, UNASSIGNED, parentInfo);
+  public JTextComponentLocator(Class<?> cls, SwingWidgetLocator parent) {
+    this(cls, UNASSIGNED, parent);
   }
 
   /**
    * Creates an instance of a locator for a JTextComponent
    *
-   * @param cls        the exact Class of the component
-   * @param index      the index relative to the parent
-   * @param parentInfo the locator for the parent of the JTextComponent
+   * @param cls    the exact Class of the component
+   * @param index  the index relative to the parent
+   * @param parent the locator for the parent of the JTextComponent
    */
-  public JTextComponentLocator(Class cls, int index, SwingWidgetLocator parentInfo) {
-    this(cls, null, index, parentInfo);
+  public JTextComponentLocator(Class<?> cls, int index, SwingWidgetLocator parent) {
+    this(cls, null, index, parent);
   }
 
   /**
@@ -90,11 +90,14 @@ public class JTextComponentLocator extends SwingWidgetLocator
    * @param cls         the exact Class of the component
    * @param nameOrLabel the name or label for the component
    * @param index       the index relative to the parent
-   * @param parentInfo  the locator for the parent of the JTextComponent
+   * @param parent  the locator for the parent of the JTextComponent
    */
   public JTextComponentLocator(
-      Class cls, String nameOrLabel, int index, SwingWidgetLocator parentInfo) {
-    super(cls, nameOrLabel, index, parentInfo);
+      Class<?> cls,
+      String nameOrLabel,
+      int index,
+      SwingWidgetLocator parent) {
+    super(cls, nameOrLabel, index, parent);
   }
 
   @Override
@@ -120,9 +123,6 @@ public class JTextComponentLocator extends SwingWidgetLocator
     return caretPosition;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.swing.SWingWidgetLocator#getWidgetText(java.awt.Component)
-   */
   @Override
   protected String getWidgetText(Component widget) {
     return ((JTextComponent) widget).getText();
@@ -130,7 +130,11 @@ public class JTextComponentLocator extends SwingWidgetLocator
 
   @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
+      IUIContext ui,
+      int clicks,
+      Component component,
+      Point offset,
+      int modifierMask) {
     if (caretPosition == UNASSIGNED) {
       return super.doClick(ui, clicks, component, offset, modifierMask);
     }
@@ -139,25 +143,19 @@ public class JTextComponentLocator extends SwingWidgetLocator
         .clickTextComponent((JTextComponent) component, getCaretPosition());
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
    * Create a condition that tests if the given widget has the expected text.
    *
-   * @param expected the expected text (can be a regular expression as described in the {@link StringComparator}
-   *                 utility)
+   * @param expected the expected text (can be a regular expression as described in the
+   *                 {@link StringComparator} utility)
    */
   public IUICondition hasText(String expected) {
     return new HasTextCondition(this, expected);
   }
 
   /**
-   * Create a condition that tests if the given widget is enabled. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given widget is enabled. Note that this is a convenience
+   * method, equivalent to:
    * <code>isEnabled(true)</code>
    */
   public IUICondition isEnabled() {
@@ -167,7 +165,6 @@ public class JTextComponentLocator extends SwingWidgetLocator
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   * @param selected
    * @param expected <code>true</code> if the menu is expected to be enabled, else
    *                 <code>false</code>
    * @see IsEnabledCondition
