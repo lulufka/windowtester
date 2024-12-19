@@ -1,10 +1,11 @@
 package com.windowtester.junit5;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 import com.windowtester.junit5.resolver.AnnotationResolver;
 import com.windowtester.junit5.resolver.FieldInfo;
 import com.windowtester.junit5.resolver.SwingUIContextParameterResolver;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Window;
@@ -34,13 +35,15 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
   }
 
   @Override
-  public boolean supportsParameter(ParameterContext parameterContext,
+  public boolean supportsParameter(
+      ParameterContext parameterContext,
       ExtensionContext extensionContext) throws ParameterResolutionException {
     return isSwingUIContextParameter(parameterContext, extensionContext);
   }
 
   @Override
-  public Object resolveParameter(ParameterContext parameterContext,
+  public Object resolveParameter(
+      ParameterContext parameterContext,
       ExtensionContext extensionContext) throws ParameterResolutionException {
     return swingUIContextResolver.resolveParameter(parameterContext, extensionContext);
   }
@@ -78,35 +81,42 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
       Component component,
       FieldInfo fieldInfo,
       ExtensionContext context) {
-    var baseFrame = createBaseFrame(fieldInfo, context);
+    var title = getUIUnderTestTitle(fieldInfo, context.getTestClass());
+    var baseFrame = createBaseFrame(title);
     attachComponentToFrame(baseFrame, component);
-    return new Window(baseFrame);
-  }
-
-  private JFrame createBaseFrame(FieldInfo fieldInfo, ExtensionContext context) {
-    var baseFrame = new JFrame("");
-    baseFrame.setTitle(getUIUnderTestTitle(fieldInfo, context.getTestClass()));
-    baseFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
     return baseFrame;
   }
 
-  private String getUIUnderTestTitle(FieldInfo fieldInfo, Optional<Class<?>> testClass) {
+  private JFrame createBaseFrame(String title) {
+    var frame = new JFrame(title);
+    frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    return frame;
+  }
+
+  private String getUIUnderTestTitle(
+      FieldInfo fieldInfo,
+      Optional<Class<?>> testClass) {
     var title = fieldInfo.title();
     if (title.isEmpty()) {
-      return testClass.map(Class::getSimpleName).orElse("");
+      return testClass
+          .map(Class::getSimpleName)
+          .orElse("Test");
     }
     return title;
   }
 
-  private void attachComponentToFrame(JFrame jFrame, Component component) {
+  private void attachComponentToFrame(
+      JFrame jFrame,
+      Component component) {
     var pane = (JPanel) jFrame.getContentPane();
     pane.setBorder(new EmptyBorder(10, 10, 10, 10));
+    pane.setLayout(new BorderLayout(5, 5));
 
     if (component instanceof JComponent comp) {
       comp.setOpaque(true);
     }
 
-    pane.add(component);
+    pane.add(component, BorderLayout.CENTER);
   }
 
   private void showWindow(Window window, ExtensionContext context) {
@@ -134,7 +144,8 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     }
   }
 
-  private boolean isSwingUIContextParameter(ParameterContext parameterContext,
+  private boolean isSwingUIContextParameter(
+      ParameterContext parameterContext,
       ExtensionContext extensionContext) {
     return swingUIContextResolver.supportsParameter(parameterContext, extensionContext);
   }
