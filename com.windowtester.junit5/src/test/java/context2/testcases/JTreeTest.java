@@ -58,7 +58,7 @@ class JTreeTest {
     assertEquals("grandChild102",
         firstClickTree.getSelectionPath().getLastPathComponent().toString());
 
-    var secondClickTree = doTreeClick(1, "Root/Parent3/Child30", "scrollPane1", ui);
+    var secondClickTree = doTreeClick(1, "Root/Parent3/Child30", "tree1", ui);
 
     assertEquals(1, secondClickTree.getSelectionRows().length);
     assertEquals("Child30", secondClickTree.getSelectionPath().getLastPathComponent().toString());
@@ -132,7 +132,7 @@ class JTreeTest {
 
     assertFalse(panel.isChoice1());
     ui.contextClick(
-        new JTreeItemLocator("Root/Item 1/Node 11", "tree1"),
+        new JTreeItemLocator("Root/Item 1/Node 11", "tree2"),
         new JMenuItemLocator("choice1")
     );
 

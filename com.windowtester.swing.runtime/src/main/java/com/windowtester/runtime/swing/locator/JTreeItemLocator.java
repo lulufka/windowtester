@@ -121,19 +121,9 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   public JTreeItemLocator(Class<?> cls, String path, String treeName, int index,
       SwingWidgetLocator parent) {
     super(cls, path, index, parent);
-    matcher = createMatcher(cls, treeName, index, parent);
-  }
-
-  private IWidgetMatcher<?> createMatcher(
-      Class<?> cls,
-      String treeName,
-      int index,
-      SwingWidgetLocator parent) {
-    var m = super.createMatcher(cls, index, parent);
     if (treeName != null && !treeName.isEmpty()) {
-      return new CompoundMatcher(m, NameOrTextMatcher.create(treeName));
+      matcher = new CompoundMatcher(matcher, NameOrTextMatcher.create(treeName));
     }
-    return m;
   }
 
   @Override

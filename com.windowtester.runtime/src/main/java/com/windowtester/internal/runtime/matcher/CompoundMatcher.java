@@ -31,6 +31,8 @@ public class CompoundMatcher implements IWidgetMatcher {
 
   @Override
   public boolean matches(Object widget) {
-    return componentMatcher1.matches(widget) && componentMatcher2.matches(widget);
+    var matches1 = componentMatcher1.matches(widget);
+    var matches2 = componentMatcher2.matches(widget);
+    return matches1 && matches2;
   }
 }
