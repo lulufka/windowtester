@@ -16,6 +16,7 @@ import com.windowtester.internal.swing.UIContextSwing;
 import com.windowtester.internal.swing.matcher.HierarchyMatcher;
 import com.windowtester.internal.swing.matcher.IndexMatcher;
 import com.windowtester.internal.swing.matcher.NameMatcher;
+import com.windowtester.internal.swing.matcher.NameOrTextMatcher;
 import com.windowtester.runtime.IClickDescription;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
@@ -52,46 +53,63 @@ public class JTableItemLocator extends SwingWidgetLocator implements IsSelected 
   }
 
   /**
+   * Creates an instance of a locator to an item in a JTable
+   *
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   */
+  public JTableItemLocator(Point rowCol, String tableName) {
+    this(rowCol, tableName, null);
+  }
+
+  /**
    * Creates an instance of a locator to an item in a JTable, relative to the parent of the JTable.
    *
-   * @param rowCol the (row,col) of the item
-   * @param parent locator of the parent
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Point rowCol, SwingWidgetLocator parent) {
-    this(rowCol, UNASSIGNED, parent);
+  public JTableItemLocator(Point rowCol, String tableName, SwingWidgetLocator parent) {
+    this(rowCol, tableName, UNASSIGNED, parent);
   }
 
   /**
    * Creates an instance of a locator to an item in a JTable, relative to the index and parent of
    * the JTable
    *
-   * @param rowCol the (row,col) of the item
-   * @param index  the index of the JTable relative to the parent
-   * @param parent locator of the parent
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param index     the index of the JTable relative to the parent
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Point rowCol, int index, SwingWidgetLocator parent) {
-    this(JTable.class, rowCol, index, parent);
+  public JTableItemLocator(Point rowCol, String tableName, int index, SwingWidgetLocator parent) {
+    this(JTable.class, rowCol, tableName, index, parent);
   }
 
   /**
    * Creates an instance of a locator to an item in a JTable, relative to the index and parent of
    * the JTable
    *
-   * @param cls      the exact Class of the table
-   * @param rowColum the (row,col) of the item
-   * @param index    the index of the JTable relative to the parent
-   * @param parent   locator of the parent
+   * @param cls       the exact Class of the table
+   * @param rowColum  the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param index     the index of the JTable relative to the parent
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Class<?> cls, Point rowColum, int index, SwingWidgetLocator parent) {
-    super(cls, null, index, parent);
+  public JTableItemLocator(Class<?> cls, Point rowColum, String tableName, int index,
+      SwingWidgetLocator parent) {
+    super(cls, tableName, index, parent);
     rowColumn = rowColum;
-    matcher = createMatcher(cls, index, parent);
+    matcher = createMatcher(cls, tableName, index, parent);
   }
 
-  private IWidgetMatcher<?> createMatcher(Class<?> cls, int index, SwingWidgetLocator parent) {
+  private IWidgetMatcher<?> createMatcher(Class<?> cls, String tableName, int index, SwingWidgetLocator parent) {
     IWidgetMatcher<?> matcher = null;
     if (cls != null) {
       matcher = new ExactClassMatcher(cls);
+    }
+    if (tableName != null && !tableName.isEmpty()) {
+      matcher = new CompoundMatcher(matcher, NameOrTextMatcher.create(tableName));
     }
     if (index != UNASSIGNED) {
       matcher = IndexMatcher.create(matcher, index);

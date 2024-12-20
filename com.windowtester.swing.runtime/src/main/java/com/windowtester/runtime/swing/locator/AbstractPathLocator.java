@@ -69,7 +69,7 @@ public abstract class AbstractPathLocator extends SwingWidgetLocator implements 
     this.matcher = createMatcher(cls, index, parentInfo);
   }
 
-  private IWidgetMatcher<?> createMatcher(
+  protected IWidgetMatcher<?> createMatcher(
       Class<?> cls,
       int index,
       SwingWidgetLocator parent) {

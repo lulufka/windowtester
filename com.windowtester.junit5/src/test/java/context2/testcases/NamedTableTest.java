@@ -33,9 +33,9 @@ class NamedTableTest {
   void testNamedTable(@SwingUIContext IUIContext ui) throws WidgetSearchException {
     ui.wait(new WindowShowingCondition("TableDemo2"), 1_000);
 
-    ui.click(new JTableItemLocator(new Point(1, 1), new NamedWidgetLocator("table1")));
-    ui.click(new JTableItemLocator(new Point(3, 2), new NamedWidgetLocator("table1")));
-    ui.click(new JTableItemLocator(new Point(1, 0), new NamedWidgetLocator("table2")));
-    ui.click(new JTableItemLocator(new Point(3, 1), new NamedWidgetLocator("table2")));
+    ui.click(new JTableItemLocator(new Point(1, 1), "table1"));
+    ui.click(new JTableItemLocator(new Point(3, 2), "table1"));
+    ui.click(new JTableItemLocator(new Point(1, 0), "table2"));
+    ui.click(new JTableItemLocator(new Point(3, 1), "table2"));
   }
 }

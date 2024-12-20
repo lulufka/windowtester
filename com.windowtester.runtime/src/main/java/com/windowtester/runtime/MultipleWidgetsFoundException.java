@@ -10,34 +10,29 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
-import java.io.Serial;
+import com.windowtester.runtime.locator.IWidgetLocator;
+import com.windowtester.runtime.locator.WidgetReference;
+import java.awt.Component;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Thrown when multiple widgets are found.
  */
 public class MultipleWidgetsFoundException extends WidgetSearchException {
 
-  @Serial
-  private static final long serialVersionUID = 4381140981836391058L;
-
-  /**
-   * Create an instance with no specified detail message.
-   */
-  public MultipleWidgetsFoundException() {
-    super();
+  public MultipleWidgetsFoundException(IWidgetLocator[] locators) {
+    super(String.format("Multiple widgets found: %s", createLocatorClassDetails(locators)));
   }
 
-  /**
-   * Create an instance with the specified detail message.
-   */
-  public MultipleWidgetsFoundException(String msg) {
-    super(msg);
+  private static String createLocatorClassDetails(IWidgetLocator[] locators) {
+    return Arrays.stream(locators)
+        .filter(WidgetReference.class::isInstance)
+        .map(WidgetReference.class::cast)
+        .map(ref -> ref.getWidget().getClass().getCanonicalName() + "("
+            + ((Component) ref.getWidget()).getName() + "-" + ref.getWidget()
+            .hashCode() + ")")
+        .collect(Collectors.joining(","));
   }
 
-  /**
-   * Create an instance with the given cause.
-   */
-  public MultipleWidgetsFoundException(Throwable cause) {
-    super(cause);
-  }
 }

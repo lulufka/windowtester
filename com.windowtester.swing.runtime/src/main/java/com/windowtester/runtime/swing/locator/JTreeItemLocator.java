@@ -13,8 +13,7 @@ package com.windowtester.runtime.swing.locator;
 import abbot.tester.JTreeLocation;
 import com.windowtester.internal.runtime.matcher.CompoundMatcher;
 import com.windowtester.internal.swing.UIContextSwing;
-import com.windowtester.internal.swing.matcher.ClassMatcher;
-import com.windowtester.internal.swing.matcher.TreeMatcher;
+import com.windowtester.internal.swing.matcher.NameOrTextMatcher;
 import com.windowtester.runtime.IClickDescription;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
@@ -47,7 +46,17 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
    *             "Root/Parent1/Child10/grandChild102".
    */
   public JTreeItemLocator(String path) {
-    this(path, null);
+    this(path, (String) null);
+  }
+
+  /**
+   * Creates an instance of a locator to a node in a JTree
+   *
+   * @param path a string representing the complete path to the node, such as
+   *             "Root/Parent1/Child10/grandChild102".
+   */
+  public JTreeItemLocator(String path, String treeName) {
+    this(path, treeName, null);
   }
 
   /**
@@ -58,7 +67,18 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
    * @param parent locator of the parent
    */
   public JTreeItemLocator(String path, SwingWidgetLocator parent) {
-    this(path, UNASSIGNED, parent);
+    this(path, null, UNASSIGNED, parent);
+  }
+
+  /**
+   * Creates an instance of a locator to a node in a JTree
+   *
+   * @param path   a string representing the complete path to the node, such as
+   *               "Root/Parent1/Child10/grandChild102".
+   * @param parent locator of the parent
+   */
+  public JTreeItemLocator(String path, String treeName, SwingWidgetLocator parent) {
+    this(path, treeName, UNASSIGNED, parent);
   }
 
   /**
@@ -72,7 +92,21 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
   public JTreeItemLocator(String path, int index, SwingWidgetLocator parent) {
     // to search in the tree, we need the entire path, not just label of node.
     // so pass path as itemText
-    this(JTree.class, path, index, parent);
+    this(JTree.class, path, null, index, parent);
+  }
+
+  /**
+   * Creates an instance of a locator to a node in a JTree
+   *
+   * @param path   a string representing the complete path to the node, such as
+   *               "Root/Parent1/Child10/grandChild102".
+   * @param index  index of the tree relative to it's parent
+   * @param parent locator to the parent
+   */
+  public JTreeItemLocator(String path, String treeName, int index, SwingWidgetLocator parent) {
+    // to search in the tree, we need the entire path, not just label of node.
+    // so pass path as itemText
+    this(JTree.class, path, treeName, index, parent);
   }
 
   /**
@@ -84,16 +118,22 @@ public class JTreeItemLocator extends AbstractPathLocator implements IsSelected 
    * @param index  index of the tree relative to it's parent
    * @param parent locator to the parent
    */
-  public JTreeItemLocator(Class<?> cls, String path, int index, SwingWidgetLocator parent) {
-    super(cls, path, path, index, parent);
-    //matcher = createMatcher(cls, path);
+  public JTreeItemLocator(Class<?> cls, String path, String treeName, int index,
+      SwingWidgetLocator parent) {
+    super(cls, path, index, parent);
+    matcher = createMatcher(cls, treeName, index, parent);
   }
 
-  private IWidgetMatcher<?> createMatcher(Class<?> cls, String path) {
-    if (cls != null) {
-      return new CompoundMatcher(ClassMatcher.create(cls), TreeMatcher.create(path));
+  private IWidgetMatcher<?> createMatcher(
+      Class<?> cls,
+      String treeName,
+      int index,
+      SwingWidgetLocator parent) {
+    var m = super.createMatcher(cls, index, parent);
+    if (treeName != null && !treeName.isEmpty()) {
+      return new CompoundMatcher(m, NameOrTextMatcher.create(treeName));
     }
-    throw new IllegalArgumentException("Unable to create matcher for class null");
+    return m;
   }
 
   @Override

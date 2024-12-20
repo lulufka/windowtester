@@ -34,17 +34,6 @@ public class TxtMatcher extends AbstractMatcher {
    * @param text the text to match.
    */
   public TxtMatcher(String text) {
-    this(text, true);
-  }
-
-  /**
-   * Constructs a Matcher with the text and the visibility given.
-   * <p/>
-   *
-   * @param text          the text to match.
-   * @param mustBeShowing true if the widget must be visible.
-   */
-  public TxtMatcher(String text, boolean mustBeShowing) {
     this.text = text;
   }
 

@@ -248,15 +248,7 @@ public class UIContextSwing extends UIContextCommon {
       throws MultipleWidgetsFoundException {
     takeScreenShot();
 
-    var value = Arrays.stream(locators)
-        .filter(WidgetReference.class::isInstance)
-        .map(WidgetReference.class::cast)
-        .map(ref -> ref.getWidget().getClass().getCanonicalName() + "("
-            + ((Component) ref.getWidget()).getName() + "-" + ref.getWidget()
-            .hashCode() + ")")
-        .collect(Collectors.joining(","));
-
-    throw new MultipleWidgetsFoundException("Multiple Components found: " + value);
+    throw new MultipleWidgetsFoundException(locators);
   }
 
   @Override

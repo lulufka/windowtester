@@ -42,7 +42,7 @@ public class NameOrLabelMatcher extends AbstractMatcher {
   public NameOrLabelMatcher(String nameOrLabel) {
     nameMatcher = new NameMatcher(nameOrLabel);
     labelMatcher =
-        new TxtMatcher(nameOrLabel, false) {
+        new TxtMatcher(nameOrLabel) {
           @Override
           protected boolean stringsMatch(String expected, String actual) {
             if (expected == null || actual == null) {
