@@ -10,7 +10,7 @@
  *******************************************************************************/
 package context2.testcases;
 
-import static abbot.Log.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.windowtester.junit5.SwingUIContext;
 import com.windowtester.junit5.UIUnderTest;
@@ -140,17 +140,11 @@ class JListTest {
     assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"five", "six", "seven"});
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  //
-  // Assertion helpers
-  //
-  ////////////////////////////////////////////////////////////////////////
-
-  private void assertContainsExactly(Collection<?> host, Collection<?> elems) {
-    assertTrue("Host: " + host + " - Elems: " + elems, host.containsAll(elems));
-  }
-
   private void assertContainsExactly(Collection<?> hosts, Object[] elems) {
     assertContainsExactly(hosts, Arrays.asList(elems));
+  }
+
+  private void assertContainsExactly(Collection<?> host, Collection<?> elems) {
+    assertTrue(host.containsAll(elems), "Host: " + host + " - Elems: " + elems);
   }
 }

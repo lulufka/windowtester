@@ -14,6 +14,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,8 +26,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-public class WindowtesterExtension implements ParameterResolver, BeforeTestExecutionCallback,
-    AfterTestExecutionCallback {
+public class WindowtesterExtension
+    implements ParameterResolver, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
   private final SwingUIContextParameterResolver swingUIContextResolver;
 
@@ -36,28 +37,28 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
 
   @Override
   public boolean supportsParameter(
-      ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
+      ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
     return isSwingUIContextParameter(parameterContext, extensionContext);
   }
 
   @Override
   public Object resolveParameter(
-      ParameterContext parameterContext,
-      ExtensionContext extensionContext) throws ParameterResolutionException {
+      ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
     return swingUIContextResolver.resolveParameter(parameterContext, extensionContext);
   }
 
   @Override
   public void beforeTestExecution(ExtensionContext context) {
-    new AnnotationResolver(context).tryToFindAnnotatedField(UIUnderTest.class)
+    new AnnotationResolver(context)
+        .tryToFindAnnotatedField(UIUnderTest.class)
         .filter(fieldInfo -> fieldInfo.result() instanceof Component)
-        .ifPresent(fieldInfo -> showUI(fieldInfo, context));
+        .ifPresentOrElse(
+            fieldInfo -> showUI(fieldInfo, context), UIUnderTestMissingException::new);
   }
 
-  private void showUI(
-      FieldInfo fieldInfo,
-      ExtensionContext context) {
+  private void showUI(FieldInfo fieldInfo, ExtensionContext context) {
     var uiUnderTest = fieldInfo.result();
     var title = getUIUnderTestTitle(fieldInfo);
     var dimension = getUIUnderTestDimension(fieldInfo);
@@ -103,9 +104,7 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     return fieldInfo.dimension();
   }
 
-  private void attachComponentToFrame(
-      JFrame jFrame,
-      Component component) {
+  private void attachComponentToFrame(JFrame jFrame, Component component) {
     var pane = (JPanel) jFrame.getContentPane();
     pane.setBorder(new EmptyBorder(10, 10, 10, 10));
     pane.setLayout(new BorderLayout(5, 5));
@@ -117,10 +116,7 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
     pane.add(component, BorderLayout.CENTER);
   }
 
-  private void showWindow(
-      Window window,
-      Dimension dimension,
-      ExtensionContext context) {
+  private void showWindow(Window window, Dimension dimension, ExtensionContext context) {
     getStorage(context).saveUIComponent(window);
 
     try {
@@ -140,14 +136,18 @@ public class WindowtesterExtension implements ParameterResolver, BeforeTestExecu
 
             window.setVisible(true);
           });
+      pauseForASecond();
     } catch (InvocationTargetException | InterruptedException e) {
       throw new RuntimeException("Fail to close window.", e);
     }
   }
 
+  private void pauseForASecond() throws InterruptedException {
+    TimeUnit.SECONDS.sleep(1);
+  }
+
   private boolean isSwingUIContextParameter(
-      ParameterContext parameterContext,
-      ExtensionContext extensionContext) {
+      ParameterContext parameterContext, ExtensionContext extensionContext) {
     return swingUIContextResolver.supportsParameter(parameterContext, extensionContext);
   }
 
