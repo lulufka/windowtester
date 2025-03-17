@@ -54,8 +54,7 @@ public class WindowtesterExtension
     new AnnotationResolver(context)
         .tryToFindAnnotatedField(UIUnderTest.class)
         .filter(fieldInfo -> fieldInfo.result() instanceof Component)
-        .ifPresentOrElse(
-            fieldInfo -> showUI(fieldInfo, context), UIUnderTestMissingException::new);
+        .ifPresent(fieldInfo -> showUI(fieldInfo, context));
   }
 
   private void showUI(FieldInfo fieldInfo, ExtensionContext context) {
@@ -136,14 +135,9 @@ public class WindowtesterExtension
 
             window.setVisible(true);
           });
-      pauseForASecond();
     } catch (InvocationTargetException | InterruptedException e) {
       throw new RuntimeException("Fail to close window.", e);
     }
-  }
-
-  private void pauseForASecond() throws InterruptedException {
-    TimeUnit.SECONDS.sleep(1);
   }
 
   private boolean isSwingUIContextParameter(

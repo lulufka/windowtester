@@ -13,8 +13,11 @@ package com.windowtester.runtime;
 import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.WidgetReference;
 import java.awt.Component;
+import java.awt.TextComponent;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import javax.swing.AbstractButton;
+import javax.swing.JLabel;
 
 /**
  * Thrown when multiple widgets are found.
@@ -29,10 +32,30 @@ public class MultipleWidgetsFoundException extends WidgetSearchException {
     return Arrays.stream(locators)
         .filter(WidgetReference.class::isInstance)
         .map(WidgetReference.class::cast)
-        .map(ref -> ref.getWidget().getClass().getCanonicalName() + "("
-            + ((Component) ref.getWidget()).getName() + "-" + ref.getWidget()
-            .hashCode() + ")")
+        .map(MultipleWidgetsFoundException::createDetailsText)
         .collect(Collectors.joining(","));
+  }
+
+  private static String createDetailsText(WidgetReference<?> ref) {
+    var canonicalName = ref.getWidget().getClass().getCanonicalName();
+    var name = getName(ref);
+    var hashCode = ref.getWidget().hashCode();
+
+    return canonicalName + "(" + name + "-" + hashCode + ")";
+  }
+
+  private static String getName(WidgetReference<?> ref) {
+    var component = (Component) ref.getWidget();
+    if (component instanceof JLabel label) {
+      return label.getText();
+    }
+    if (component instanceof AbstractButton button) {
+      return button.getText();
+    }
+    if (component instanceof TextComponent textComponent) {
+      return textComponent.getText();
+    }
+    return component.getName();
   }
 
 }

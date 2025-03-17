@@ -3,8 +3,7 @@ package com.windowtester.junit5;
 import java.awt.Component;
 import java.awt.Window;
 import java.util.Arrays;
-import javax.swing.JComponent;
-import javax.swing.JTable;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
@@ -33,8 +32,24 @@ public class WindowtesterExecutionStorage {
   void wipe() {
     wipeUIComponent();
 
-    Arrays.stream(Window.getWindows())
-        .forEach(Window::dispose);
+    Arrays.stream(Window.getWindows()).forEach(Window::dispose);
+    // Ensure disposal is complete
+    while (anyWindowStillVisible()) {
+      try {
+        pauseForASecond();
+      } catch (InterruptedException ex) {
+        Thread.currentThread().interrupt();
+      }
+    }
+  }
+
+  private void pauseForASecond() throws InterruptedException {
+    TimeUnit.SECONDS.sleep(1);
+  }
+
+  // Check if any window is still active
+  private static boolean anyWindowStillVisible() {
+    return Arrays.stream(Window.getWindows()).anyMatch(Window::isVisible);
   }
 
   private void wipeUIComponent() {
@@ -47,5 +62,4 @@ public class WindowtesterExecutionStorage {
     }
     store.remove(UI_CONTEXT_KEY);
   }
-
 }
