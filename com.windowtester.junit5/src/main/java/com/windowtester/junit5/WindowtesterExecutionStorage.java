@@ -1,9 +1,11 @@
 package com.windowtester.junit5;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JDialog;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
@@ -54,12 +56,16 @@ public class WindowtesterExecutionStorage {
 
   private void wipeUIComponent() {
     Object o = store.get(UI_COMPONENT_KEY);
-    if (o instanceof Window window) {
+    if (o instanceof Dialog dialog) {
+      dialog.setVisible(false);
+      dialog.dispose();
+    } else if (o instanceof Window window) {
       window.setVisible(false);
       window.dispose();
     } else if (o instanceof Component component) {
       component.setVisible(false);
     }
+    store.remove(UI_COMPONENT_KEY);
     store.remove(UI_CONTEXT_KEY);
   }
 }
