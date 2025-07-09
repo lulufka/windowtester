@@ -59,7 +59,9 @@ public class SwingWidgetFinder implements IWidgetFinder {
   }
 
   private void addMatchingComponents(Matcher matcher, HashSet<Component> found) {
-    var windows = Window.getWindows();
+    Window[] windows = Arrays.stream(Window.getWindows())
+            .filter(Window::isDisplayable)
+            .toArray(Window[]::new);
     for (Window window : windows) {
       if (isMatchingWindow(window)) {
         findMatches(matcher, window, found);
