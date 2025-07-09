@@ -1,5 +1,7 @@
 package abbot.util;
 
+import static java.awt.Toolkit.*;
+
 import abbot.Log;
 import abbot.Platform;
 import abbot.finder.AWTHierarchy;
@@ -298,7 +300,7 @@ public class AWT {
    * Returns whether the AWT Tree Lock is currently held.
    */
   private static boolean isAWTTreeLockHeld() {
-    return isAWTTreeLockHeld(Toolkit.getDefaultToolkit().getSystemEventQueue());
+    return isAWTTreeLockHeld(getDefaultToolkit().getSystemEventQueue());
   }
 
   /**
@@ -916,7 +918,7 @@ public class AWT {
 
     // On a mac, ALT+BUTTON1 means BUTTON2; META+BUTTON1 means BUTTON3
     int macModifiers =
-        InputEvent.CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK | InputEvent.META_DOWN_MASK;
+        getDefaultToolkit().getMenuShortcutKeyMaskEx() | InputEvent.ALT_DOWN_MASK | InputEvent.META_DOWN_MASK;
     boolean isMacButton = isMouse && Platform.isMacintosh() && (flags & macModifiers) != 0;
     String mods = "";
     String or = "";
@@ -937,10 +939,10 @@ public class AWT {
       flags &= ~InputEvent.ALT_DOWN_MASK;
     }
     // Mac uses ctrl modifier to get MB2
-    if ((flags & InputEvent.CTRL_DOWN_MASK) != 0 && !isMacButton) {
+    if ((flags & getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0 && !isMacButton) {
       mods += or + "CTRL_MASK";
       or = "|";
-      flags &= ~InputEvent.CTRL_DOWN_MASK;
+      flags &= ~getDefaultToolkit().getMenuShortcutKeyMaskEx();
     }
     // Mask for META is the same as MB3
     if ((flags & InputEvent.META_DOWN_MASK) != 0 && !isMacButton && !isMouse) {
@@ -994,53 +996,36 @@ public class AWT {
   }
 
   public static boolean isModifier(int keycode) {
-    switch (keycode) {
-      case KeyEvent.VK_META:
-      case KeyEvent.VK_ALT:
-      case KeyEvent.VK_ALT_GRAPH:
-      case KeyEvent.VK_CONTROL:
-      case KeyEvent.VK_SHIFT:
-        return true;
-      default:
-        return false;
-    }
+    return switch (keycode) {
+      case KeyEvent.VK_META, KeyEvent.VK_ALT, KeyEvent.VK_ALT_GRAPH, KeyEvent.VK_CONTROL,
+           KeyEvent.VK_SHIFT -> true;
+      default -> false;
+    };
   }
 
   public static int keyCodeToMask(int code) {
-    switch (code) {
-      case KeyEvent.VK_META:
-        return InputEvent.META_DOWN_MASK;
-      case KeyEvent.VK_ALT:
-        return InputEvent.ALT_DOWN_MASK;
-      case KeyEvent.VK_ALT_GRAPH:
-        return InputEvent.ALT_GRAPH_DOWN_MASK;
-      case KeyEvent.VK_CONTROL:
-        return InputEvent.CTRL_DOWN_MASK;
-      case KeyEvent.VK_SHIFT:
-        return InputEvent.SHIFT_DOWN_MASK;
-      default:
-        throw new IllegalArgumentException("Keycode is not a modifier: " + code);
-    }
+    return switch (code) {
+      case KeyEvent.VK_META -> InputEvent.META_DOWN_MASK;
+      case KeyEvent.VK_ALT -> InputEvent.ALT_DOWN_MASK;
+      case KeyEvent.VK_ALT_GRAPH -> InputEvent.ALT_GRAPH_DOWN_MASK;
+      case KeyEvent.VK_CONTROL -> getDefaultToolkit().getMenuShortcutKeyMaskEx();
+      case KeyEvent.VK_SHIFT -> InputEvent.SHIFT_DOWN_MASK;
+      default -> throw new IllegalArgumentException("Keycode is not a modifier: " + code);
+    };
   }
 
   /**
    * Convert the given modifier event mask to the equivalent key code.
    */
   public static int maskToKeyCode(int mask) {
-    switch (mask) {
-      case InputEvent.META_DOWN_MASK:
-        return KeyEvent.VK_META;
-      case InputEvent.ALT_DOWN_MASK:
-        return KeyEvent.VK_ALT;
-      case InputEvent.ALT_GRAPH_DOWN_MASK:
-        return KeyEvent.VK_ALT_GRAPH;
-      case InputEvent.CTRL_DOWN_MASK:
-        return KeyEvent.VK_CONTROL;
-      case InputEvent.SHIFT_DOWN_MASK:
-        return KeyEvent.VK_SHIFT;
-      default:
-        throw new IllegalArgumentException("Unrecognized mask '" + mask + "'");
-    }
+    return switch (mask) {
+      case InputEvent.META_DOWN_MASK -> KeyEvent.VK_META;
+      case InputEvent.ALT_DOWN_MASK -> KeyEvent.VK_ALT;
+      case InputEvent.ALT_GRAPH_DOWN_MASK -> KeyEvent.VK_ALT_GRAPH;
+      case InputEvent.CTRL_DOWN_MASK -> KeyEvent.VK_CONTROL;
+      case InputEvent.SHIFT_DOWN_MASK -> KeyEvent.VK_SHIFT;
+      default -> throw new IllegalArgumentException("Unrecognized mask '" + mask + "'");
+    };
   }
 
   // Try to lock the AWT tree lock; returns immediately if it can

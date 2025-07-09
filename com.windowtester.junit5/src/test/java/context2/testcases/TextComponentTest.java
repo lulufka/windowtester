@@ -16,6 +16,7 @@ import com.windowtester.junit5.WindowtesterExtension;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JTextComponentLocator;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.JTextPane;
@@ -37,7 +38,7 @@ class TextComponentTest {
     ui.assertThat(textComponentLocator.isEnabled());
 
     ui.click(textComponentLocator);
-    ui.keyClick(InputEvent.CTRL_DOWN_MASK, 'b');
+    ui.keyClick(Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx(), 'b');
     ui.enterText("the ");
 
     ui.click(new JTextComponentLocator(89, JTextPane.class));

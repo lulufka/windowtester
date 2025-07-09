@@ -22,9 +22,11 @@ import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JListLocator;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -42,16 +44,17 @@ class JListTest {
   @Test
   void testRegularClicks(@SwingUIContext IUIContext ui) throws WidgetSearchException {
     ui.wait(new WindowShowingCondition("Swing List"), 1_000);
-    IWidgetLocator locator = ui.click(
-        new JListLocator(
-            "/three/two/one",
-            new SwingWidgetLocator(
-                JViewport.class,
+    IWidgetLocator locator =
+        ui.click(
+            new JListLocator(
+                "/three/two/one",
                 new SwingWidgetLocator(
-                    JScrollPane.class, 0, new SwingWidgetLocator(Box.class)))));
+                    JViewport.class,
+                    new SwingWidgetLocator(
+                        JScrollPane.class, 0, new SwingWidgetLocator(Box.class)))));
 
     JList<?> jlist = (JList<?>) ((IWidgetReference) locator).getWidget();
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"/three/two/one"});
+    assertContainsExactly(jlist.getSelectedValuesList(), new String[] {"/three/two/one"});
 
     locator =
         ui.click(
@@ -63,7 +66,7 @@ class JListTest {
                         JScrollPane.class, 0, new SwingWidgetLocator(Box.class)))));
 
     jlist = (JList<?>) ((IWidgetReference) locator).getWidget();
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"four"});
+    assertContainsExactly(jlist.getSelectedValuesList(), new String[] {"four"});
 
     ui.click(
         new JListLocator(
@@ -72,7 +75,7 @@ class JListTest {
                 JViewport.class,
                 new SwingWidgetLocator(JScrollPane.class, 0, new SwingWidgetLocator(Box.class)))));
 
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"two"});
+    assertContainsExactly(jlist.getSelectedValuesList(), new String[] {"two"});
 
     ui.click(
         new JListLocator(
@@ -80,18 +83,18 @@ class JListTest {
             new SwingWidgetLocator(
                 JViewport.class,
                 new SwingWidgetLocator(JScrollPane.class, 0, new SwingWidgetLocator(Box.class)))));
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"seven"});
+    assertContainsExactly(jlist.getSelectedValuesList(), new String[] {"seven"});
   }
 
   @Test
-  void notWorking_testCtrlClicks(@SwingUIContext IUIContext ui) throws WidgetSearchException {
+  void testCtrlClicks(@SwingUIContext IUIContext ui) throws Exception {
+    ui.wait(new WindowShowingCondition("Swing List"), 1_000);
     ui.click(
         new JListLocator(
             "one",
             new SwingWidgetLocator(
                 JViewport.class,
-                new SwingWidgetLocator(
-                    JScrollPane.class, 1, new SwingWidgetLocator(Box.class)))));
+                new SwingWidgetLocator(JScrollPane.class, 1, new SwingWidgetLocator(Box.class)))));
 
     ui.click(
         1,
@@ -101,24 +104,30 @@ class JListTest {
                 JViewport.class,
                 new SwingWidgetLocator(
                     JScrollPane.class, 1, new SwingWidgetLocator(Box.class)))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK);
+        InputEvent.BUTTON1_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
-    IWidgetLocator locator = ui.click(
-        1,
-        new JListLocator(
-            "four",
-            new SwingWidgetLocator(
-                JViewport.class,
+    IWidgetLocator locator =
+        ui.click(
+            1,
+            new JListLocator(
+                "four",
                 new SwingWidgetLocator(
-                    JScrollPane.class, 1, new SwingWidgetLocator(Box.class)))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK);
+                    JViewport.class,
+                    new SwingWidgetLocator(
+                        JScrollPane.class, 1, new SwingWidgetLocator(Box.class)))),
+            InputEvent.BUTTON1_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
     JList<?> jlist = (JList<?>) ((IWidgetReference) locator).getWidget();
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"one", "seven", "four"});
+    List<?> selectedValuesList = jlist.getSelectedValuesList();
+
+    System.out.println("JListTest.testCtrlClicks: " + selectedValuesList);
+
+    assertContainsExactly(selectedValuesList, new String[] {"one", "seven", "four"});
   }
 
   @Test
   void testShiftClicks(@SwingUIContext IUIContext ui) throws WidgetSearchException {
+    ui.wait(new WindowShowingCondition("Swing List"), 1_000);
     ui.click(
         new JListLocator(
             "five",
@@ -126,18 +135,23 @@ class JListTest {
                 JViewport.class,
                 new SwingWidgetLocator(JScrollPane.class, 2, new SwingWidgetLocator(Box.class)))));
 
-    IWidgetLocator locator = ui.click(
-        1,
-        new JListLocator(
-            "seven",
-            new SwingWidgetLocator(
-                JViewport.class,
+    IWidgetLocator locator =
+        ui.click(
+            1,
+            new JListLocator(
+                "seven",
                 new SwingWidgetLocator(
-                    JScrollPane.class, 2, new SwingWidgetLocator(Box.class)))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+                    JViewport.class,
+                    new SwingWidgetLocator(
+                        JScrollPane.class, 2, new SwingWidgetLocator(Box.class)))),
+            InputEvent.BUTTON1_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
     JList<?> jlist = (JList<?>) ((IWidgetReference) locator).getWidget();
-    assertContainsExactly(jlist.getSelectedValuesList(), new String[]{"five", "six", "seven"});
+    final List<?> selectedValuesList = jlist.getSelectedValuesList();
+
+    System.out.println("JListTest.testShiftClicks: " + selectedValuesList);
+
+    assertContainsExactly(selectedValuesList, new String[] {"five", "six", "seven"});
   }
 
   private void assertContainsExactly(Collection<?> hosts, Object[] elems) {

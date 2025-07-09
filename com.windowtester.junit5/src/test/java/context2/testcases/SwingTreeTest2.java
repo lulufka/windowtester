@@ -18,6 +18,7 @@ import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.swing.condition.WindowDisposedCondition;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JTreeItemLocator;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -67,7 +68,7 @@ class SwingTreeTest2 {
     ui.click(1, new JTreeItemLocator("Root/Parent1/Child10/grandChild102",
             new SwingWidgetLocator(JViewport.class, new SwingWidgetLocator(
                 JScrollPane.class, "scrollPane1"))),
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK);
+        InputEvent.BUTTON1_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
     ui.wait(new WindowDisposedCondition("Swing Tree Example"));
   }
 }

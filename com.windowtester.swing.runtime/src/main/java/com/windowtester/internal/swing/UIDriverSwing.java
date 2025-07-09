@@ -35,6 +35,7 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -406,7 +407,7 @@ public class UIDriverSwing {
       tester.actionKeyPress(KeyEvent.VK_ALT);
     }
 
-    var ctrl = (modifiers & InputEvent.CTRL_DOWN_MASK) != 0;
+    var ctrl = (modifiers & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0;
     if (ctrl) {
       tester.actionKeyPress(KeyEvent.VK_CONTROL);
     }

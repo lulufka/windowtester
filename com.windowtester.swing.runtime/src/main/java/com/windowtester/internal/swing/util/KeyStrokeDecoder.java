@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.windowtester.internal.swing.util;
 
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -53,11 +54,11 @@ public class KeyStrokeDecoder {
   };
 
   private static final int[] KEY_MODS = {
-    InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK
+    InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()
   };
 
   private static final int MODIFIER_MASK =
-      InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK;
+      InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
   public static int extractModifiers(int compositeKey) {
     int modifiers = 0;

@@ -898,7 +898,7 @@ public class Robot implements AWTConstants {
     boolean altGraph = (modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0;
     boolean shift = (modifiers & InputEvent.SHIFT_DOWN_MASK) != 0;
     boolean alt = (modifiers & InputEvent.ALT_DOWN_MASK) != 0;
-    boolean ctrl = (modifiers & InputEvent.CTRL_DOWN_MASK) != 0;
+    boolean ctrl = (modifiers & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0;
     boolean meta = (modifiers & InputEvent.META_DOWN_MASK) != 0;
     if (press) {
       if (altGraph) {
@@ -954,7 +954,7 @@ public class Robot implements AWTConstants {
         modifiers |= InputEvent.SHIFT_DOWN_MASK;
         break;
       case KeyEvent.VK_CONTROL:
-        modifiers |= InputEvent.CTRL_DOWN_MASK;
+        modifiers |= Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
         break;
       case KeyEvent.VK_META:
         modifiers |= InputEvent.META_DOWN_MASK;

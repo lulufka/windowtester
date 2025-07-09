@@ -119,7 +119,7 @@ class JTreeTest {
         1,
         "Root/Parent1/Child10/grandChild102",
         "tree1",
-        InputEvent.BUTTON1_DOWN_MASK | InputEvent.CTRL_DOWN_MASK,
+        InputEvent.BUTTON1_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx(),
         ui
     );
 

@@ -22,11 +22,8 @@ import java.awt.Window;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-/**
- * A Swing Widget Finder.
- */
+/** A Swing Widget Finder. */
 public class SwingWidgetFinder implements IWidgetFinder {
 
   private static final IWidgetFinder DEFAULT = new SwingWidgetFinder(new AWTHierarchy());
@@ -59,14 +56,10 @@ public class SwingWidgetFinder implements IWidgetFinder {
   }
 
   private void addMatchingComponents(Matcher matcher, HashSet<Component> found) {
-    Window[] windows = Arrays.stream(Window.getWindows())
-            .filter(Window::isDisplayable)
-            .toArray(Window[]::new);
-    for (Window window : windows) {
-      if (isMatchingWindow(window)) {
-        findMatches(matcher, window, found);
-      }
-    }
+    Arrays.stream(Window.getWindows())
+        .filter(Window::isDisplayable)
+        .filter(this::isMatchingWindow)
+        .forEach(window -> findMatches(matcher, window, found));
   }
 
   private boolean isMatchingWindow(Window window) {
@@ -90,20 +83,13 @@ public class SwingWidgetFinder implements IWidgetFinder {
     }
 
     // check to see whether (ALL) frame owns any windows
-    var ownedWindows = window.getOwnedWindows();
-    for (Window ownedWindow : ownedWindows) {
-      if (isMatchingWindow(ownedWindow)) {
-        return true;
-      }
-    }
-
-    return false;
+    return Arrays.stream(window.getOwnedWindows())
+        .anyMatch(this::isMatchingWindow);
   }
 
   private void findMatches(Matcher matcher, Component component, Set<Component> found) {
-    for (Component comp : hierarchy.getComponents(component)) {
-      findMatches(matcher, comp, found);
-    }
+    hierarchy.getComponents(component)
+        .forEach(comp -> findMatches(matcher, comp, found));
 
     if (matcher.matches(component)) {
       found.add(component);
