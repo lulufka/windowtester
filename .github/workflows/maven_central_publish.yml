@@ -24,10 +24,14 @@ jobs:
         uses: coactions/setup-xvfb@v1
         with:
           run: mvn --batch-mode verify
-      - name: Release package
+      - id: publish-to-central
+        name: Publish to Central Repository
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_KEY: ${{ secrets.GPG_SECRET_KEY }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
-        run: mvn --batch-mode -DskipTests=true releaser:release
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        run: |
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
+            clean deploy -Prelease
