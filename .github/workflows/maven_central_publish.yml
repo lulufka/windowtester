@@ -21,7 +21,9 @@ jobs:
           server-username: OSSRH_USERNAME
           server-password: OSSRH_TOKEN
       - name: Verify package
-        run: mvn --batch-mode verify
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: mvn --batch-mode verify
       - name: Release package
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
