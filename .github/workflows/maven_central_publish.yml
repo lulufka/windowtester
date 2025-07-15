@@ -28,6 +28,12 @@ jobs:
         with:
           run: mvn --batch-mode verify
 
+      - name: Remove screenshots
+        run: |
+          if [ -d "com.windowtester.junit5/wintest/" ]; then
+            rm -rf com.windowtester.junit5/wintest/
+          fi
+
       - name: Import GPG key
         run: |
           echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --yes --import
