@@ -322,6 +322,7 @@
                 <arg>--pinentry-mode</arg>
                 <arg>loopback</arg>
               </gpgArguments>
+              <passphraseEnvName>GPG_SECRET_KEY_PASSPHRASE</passphraseEnvName>
             </configuration>
           </plugin>
         </plugins>

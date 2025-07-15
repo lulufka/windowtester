@@ -7,10 +7,12 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
@@ -20,14 +22,23 @@ jobs:
           server-id: ossrh
           server-username: OSSRH_USERNAME
           server-password: OSSRH_TOKEN
+
       - name: Verify package
         uses: coactions/setup-xvfb@v1
         with:
           run: mvn --batch-mode verify
+
+      - name: Import GPG key
+        run: |
+          echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --yes --import
+          KEY_ID=$(gpg --list-secret-keys --with-colons | grep '^sec' | cut -d: -f5)
+          echo "default-key $KEY_ID" >> ~/.gnupg/gpg.conf
+        env:
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+
       - name: Release package
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-          MAVEN_GPG_KEY: ${{ secrets.GPG_SECRET_KEY }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
+          GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
         run: mvn --batch-mode -DskipTests=true releaser:release
