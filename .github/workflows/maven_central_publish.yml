@@ -26,7 +26,7 @@ jobs:
       - name: Verify package
         uses: coactions/setup-xvfb@v1
         with:
-          run: mvn --batch-mode verify
+          run: mvn --batch-mode install
 
       - name: Remove screenshots
         run: |
@@ -47,4 +47,4 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
-        run: mvn --batch-mode -DskipTests=true releaser:release
+        run: mvn clean deploy -P release -DskipTests
