@@ -10,6 +10,8 @@
   </parent>
 
   <artifactId>com.windowtester.junit5</artifactId>
+  <name>Windowtester JUnit5</name>
+  <description>Library provides extension for JUnit5. It is mandatory when running Windowtester on JUnit5.</description>
 
   <dependencies>
     <dependency>
