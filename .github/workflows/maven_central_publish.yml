@@ -42,7 +42,7 @@ jobs:
         env:
           GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
 
-      - name: Release package
+      - name: Prepare settings.xml
         uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |
@@ -51,7 +51,9 @@ jobs:
                 "username": "${{ secrets.OSSRH_USERNAME }}",
                 "password": "${{ secrets.OSSRH_TOKEN }}"
             }]
-          run: mvn clean deploy -P release -DskipTests
+
+      - name: Release package
+        run: mvn clean deploy -P release -DskipTests
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
