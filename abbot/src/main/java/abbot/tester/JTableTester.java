@@ -17,10 +17,6 @@ import javax.swing.*;
 // TODO: multi-select
 public class JTableTester extends JComponentTester {
 
-  /**
-   * Convert the value in the list at the given index into a reasonable string representation, or null if one can not
-   * be obtained.
-   */
   public static String valueToString(JTable table, int row, int col) {
     Object value = table.getValueAt(row, col);
     Component cr =
@@ -41,9 +37,6 @@ public class JTableTester extends JComponentTester {
     return toString == ArgumentParser.DEFAULT_TOSTRING ? null : toString;
   }
 
-  /**
-   * Select the given cell, if not already.
-   */
   public void actionSelectCell(Component c, JTableLocation loc) {
     JTable table = (JTable) c;
     JTableLocation.Cell cell = loc.getCell(table);
@@ -55,23 +48,14 @@ public class JTableTester extends JComponentTester {
     actionClick(c, loc);
   }
 
-  /**
-   * Select the given cell, if not already. Equivalent to actionSelectCell(c, new JTableLocation(row, col)).
-   */
   public void actionSelectCell(Component c, int row, int col) {
     actionSelectCell(c, new JTableLocation(row, col));
   }
 
-  /**
-   * Parse the String representation of a JTableLocation into the actual JTableLocation object.
-   */
   public ComponentLocation parseLocation(String encoded) {
     return new JTableLocation().parse(encoded);
   }
 
-  /**
-   * Return (in order of preference) the location corresponding to value, cell, or coordinate.
-   */
   public ComponentLocation getLocation(Component c, Point p) {
     JTable table = (JTable) c;
     int row = table.rowAtPoint(p);

@@ -5,15 +5,19 @@ import abbot.i18n.Strings;
 import abbot.script.ArgumentParser;
 import abbot.script.Condition;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.InputEvent;
-import javax.swing.*;
+import java.util.Objects;
+import javax.swing.JLabel;
+import javax.swing.JTree;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.TreePath;
 
 /**
- * Provide operations on a JTree component. The JTree substructure is a "row", and JTreeLocation provides different
- * identifiers for a row.
+ * Provide operations on a JTree component. The JTree substructure is a "row", and JTreeLocation
+ * provides different identifiers for a row.
  * <ul>
  * <li>Select an item by row index
  * <li>Select an item by tree path (the string representation of the full
@@ -35,10 +39,9 @@ public class JTreeTester extends JComponentTester {
       row = tree.getClosestRowForLocation(x, y);
       if (row != -1) {
         Rectangle rect = tree.getRowBounds(row);
-        if (row == tree.getRowCount() - 1) {
-          if (y >= rect.y + rect.height) {
-            return false;
-          }
+        if (row == tree.getRowCount() - 1
+            && y >= rect.y + rect.height) {
+          return false;
         }
         // An approximation: use a square area to the left of the row
         // bounds.
@@ -53,12 +56,12 @@ public class JTreeTester extends JComponentTester {
                 BasicTreeUI.class.getDeclaredMethod(
                     "isLocationInExpandControl", TreePath.class, int.class, int.class);
             method.setAccessible(true);
-            Object b = method.invoke(tree.getUI(), path, new Integer(x), new Integer(y));
+            Object b = method.invoke(tree.getUI(), path, x, y);
             return b.equals(Boolean.TRUE);
           } catch (Exception e) {
           }
         }
-        // fall back to a best guess
+        // fall back to best guess
         // return x >= rect.x - rect.height && x < rect.x;
         String msg = "Can't determine location of tree expansion " + "control for " + tree.getUI();
         throw new RuntimeException(msg);
@@ -68,7 +71,8 @@ public class JTreeTester extends JComponentTester {
   }
 
   /**
-   * Return the {@link String} representation of the final component of the given {@link TreePath}, or
+   * Return the {@link String} representation of the final component of the given {@link TreePath},
+   * or
    * <code>null</code> if one can not be obtained.  Assumes the path is visible.
    */
   static String valueToString(JTree tree, TreePath path) {
@@ -86,8 +90,8 @@ public class JTreeTester extends JComponentTester {
                 row,
                 false);
     String string = null;
-    if (cr instanceof JLabel) {
-      String label = ((JLabel) cr).getText();
+    if (cr instanceof JLabel crLabel) {
+      String label = crLabel.getText();
       if (label != null) {
         label = label.trim();
       }
@@ -105,14 +109,14 @@ public class JTreeTester extends JComponentTester {
     }
     if (string == null) {
       String s = ArgumentParser.toString(value);
-      string = s == ArgumentParser.DEFAULT_TOSTRING ? null : s;
+      string = Objects.equals(s, ArgumentParser.DEFAULT_TOSTRING) ? null : s;
     }
     return string;
   }
 
   /**
-   * Return the String representation of the given TreePath, or null if one can not be obtained.  Assumes the path is
-   * visible.
+   * Return the String representation of the given TreePath, or null if one can not be obtained.
+   * Assumes the path is visible.
    */
   public static TreePath pathToStringPath(JTree tree, TreePath path) {
     if (path == null) {
@@ -137,30 +141,31 @@ public class JTreeTester extends JComponentTester {
   /**
    * Click at the given location.  If the location indicates a path, ensure it is visible first.
    */
-  public void actionClick(Component c, ComponentLocation loc) {
-    if (loc instanceof JTreeLocation) {
-      TreePath path = ((JTreeLocation) loc).getPath((JTree) c);
+  @Override
+  public void actionClick(Component c, ComponentLocation location) {
+    if (location instanceof JTreeLocation treeLocation) {
+      TreePath path = treeLocation.getPath((JTree) c);
       if (path != null) {
         makeVisible(c, path);
       }
     }
-    super.actionClick(c, loc);
+    super.actionClick(c, location);
   }
 
   /**
    * Select the given row.  If the row is already selected, does nothing.
    */
-  public void actionSelectRow(Component c, ComponentLocation loc) {
-    JTree tree = (JTree) c;
-    if (loc instanceof JTreeLocation) {
-      TreePath path = ((JTreeLocation) loc).getPath((JTree) c);
+  public void actionSelectRow(Component component, ComponentLocation componentLocation) {
+    JTree tree = (JTree) component;
+    if (componentLocation instanceof JTreeLocation treeLocation) {
+      TreePath path = treeLocation.getPath((JTree) component);
       if (path == null) {
-        String msg = Strings.get("tester.JTree.path_not_found", new Object[] {loc});
+        String msg = Strings.get("tester.JTree.path_not_found", new Object[]{componentLocation});
         throw new LocationUnavailableException(msg);
       }
-      makeVisible(c, path);
+      makeVisible(component, path);
     }
-    Point where = loc.getPoint(c);
+    Point where = componentLocation.getPoint(component);
     int row = tree.getRowForLocation(where.x, where.y);
     if (tree.getLeadSelectionRow() != row || tree.getSelectionCount() != 1) {
       // NOTE: the row bounds *do not* include the expansion handle
@@ -171,8 +176,8 @@ public class JTreeTester extends JComponentTester {
   }
 
   /**
-   * Select the given row.  If the row is already selected, does nothing. Equivalent to actionSelectRow(c, new
-   * JTreeLocation(row)).
+   * Select the given row.  If the row is already selected, does nothing. Equivalent to
+   * actionSelectRow(c, new JTreeLocation(row)).
    */
   public void actionSelectRow(Component tree, int row) {
     actionSelectRow(tree, new JTreeLocation(row));
@@ -190,6 +195,7 @@ public class JTreeTester extends JComponentTester {
    *
    * @deprecated Use the ComponentLocation version.
    */
+  @Deprecated
   public void actionClickRow(Component tree, int row, String modifiers) {
     actionClick(tree, new JTreeLocation(row), AWT.getModifiers(modifiers));
   }
@@ -199,6 +205,7 @@ public class JTreeTester extends JComponentTester {
    *
    * @deprecated Use the ComponentLocation version.
    */
+  @Deprecated
   public void actionClickRow(Component c, int row, String modifiers, int count) {
     actionClick(c, new JTreeLocation(row), AWT.getModifiers(modifiers), count);
   }
@@ -212,8 +219,8 @@ public class JTreeTester extends JComponentTester {
     return makeVisible(c, path, false);
   }
 
-  private boolean makeVisible(Component c, final TreePath path, boolean expandWhenFound) {
-    final JTree tree = (JTree) c;
+  private boolean makeVisible(Component c, TreePath path, boolean expandWhenFound) {
+    JTree tree = (JTree) c;
     // Match, make visible, and expand the path one component at a time,
     // from uppermost ancestor on down, since children may be lazily
     // loaded/created
@@ -225,29 +232,26 @@ public class JTreeTester extends JComponentTester {
       }
     }
 
-    final TreePath realPath = JTreeLocation.findMatchingPath(tree, path);
+    TreePath realPath = JTreeLocation.findMatchingPath(tree, path);
     if (expandWhenFound) {
       if (!tree.isExpanded(realPath)) {
         // Use this method instead of a toggle action to avoid
         // any component visibility requirements
-        invokeAndWait(
-            new Runnable() {
-              public void run() {
-                tree.expandPath(realPath);
-              }
-            });
+        invokeAndWait(() -> tree.expandPath(realPath));
       }
-      final Object o = realPath.getLastPathComponent();
+      Object o = realPath.getLastPathComponent();
       // Wait for a child to show up
       try {
         wait(
             new Condition() {
+              @Override
               public boolean test() {
                 return tree.getModel().getChildCount(o) != 0;
               }
 
+              @Override
               public String toString() {
-                return Strings.get("tester.Component.show_wait", new Object[] {path.toString()});
+                return Strings.get("tester.Component.show_wait", new Object[]{path.toString()});
               }
             },
             componentDelay);
@@ -278,6 +282,7 @@ public class JTreeTester extends JComponentTester {
    *
    * @deprecated Use the ComponentLocation version instead.
    */
+  @Deprecated
   public void actionToggleRow(Component c, int row) {
     actionToggleRow(c, new JTreeLocation(row));
   }
@@ -288,12 +293,13 @@ public class JTreeTester extends JComponentTester {
   // NOTE: a reasonable assumption is that the toggle control is just to the
   // left of the row bounds and is roughly a square the dimensions of the
   // row height.  clicking in the center of that square should work.
-  public void actionToggleRow(Component c, ComponentLocation loc) {
-    JTree tree = (JTree) c;
+  public void actionToggleRow(Component component, ComponentLocation componentLocation) {
+    JTree tree = (JTree) component;
     // Alternatively, we can reflect into the UI and do a single click
     // on the appropriate expand location, but this is safer.
     if (tree.getToggleClickCount() != 0) {
-      actionClick(tree, loc, InputEvent.BUTTON1_DOWN_MASK, tree.getToggleClickCount());
+      actionClick(tree, componentLocation, InputEvent.BUTTON1_DOWN_MASK,
+          tree.getToggleClickCount());
     } else {
       // BasicTreeUI provides this method; punt if we can't find it
       if (!(tree.getUI() instanceof BasicTreeUI)) {
@@ -303,7 +309,7 @@ public class JTreeTester extends JComponentTester {
         java.lang.reflect.Method method =
             BasicTreeUI.class.getDeclaredMethod("toggleExpandState", TreePath.class);
         method.setAccessible(true);
-        Point where = loc.getPoint(tree);
+        Point where = componentLocation.getPoint(tree);
         method.invoke(tree.getUI(), tree.getPathForLocation(where.x, where.y));
       } catch (Exception e) {
         throw new ActionFailedException(e.toString());
@@ -328,27 +334,26 @@ public class JTreeTester extends JComponentTester {
   /**
    * Parse the String representation of a JTreeLocation into the actual JTreeLocation object.
    */
+  @Override
   public ComponentLocation parseLocation(String encoded) {
     return new JTreeLocation().parse(encoded);
   }
 
-  /**
-   * Convert the coordinate into a more meaningful location.  Namely, use a path, row, or coordinate.
-   */
-  public ComponentLocation getLocation(Component c, Point p) {
-    JTree tree = (JTree) c;
+  @Override
+  public ComponentLocation getLocation(Component component, Point point) {
+    JTree tree = (JTree) component;
     if (tree.getRowCount() == 0) {
-      return new JTreeLocation(p);
+      return new JTreeLocation(point);
     }
     Rectangle rect = tree.getRowBounds(tree.getRowCount() - 1);
     int maxY = rect.y + rect.height;
-    if (p.y > maxY) {
-      return new JTreeLocation(p);
+    if (point.y > maxY) {
+      return new JTreeLocation(point);
     }
 
     // TODO: ignore clicks to the left of the expansion control, or maybe
     // embed them in the location.
-    TreePath path = tree.getClosestPathForLocation(p.x, p.y);
+    TreePath path = tree.getClosestPathForLocation(point.x, point.y);
     TreePath stringPath = pathToStringPath(tree, path);
     if (stringPath != null) {
       // if the root is hidden, drop it from the path
@@ -360,10 +365,10 @@ public class JTreeTester extends JComponentTester {
       }
       return new JTreeLocation(stringPath);
     }
-    int row = tree.getClosestRowForLocation(p.x, p.y);
+    int row = tree.getClosestRowForLocation(point.x, point.y);
     if (row != -1) {
       return new JTreeLocation(row);
     }
-    return new JTreeLocation(p);
+    return new JTreeLocation(point);
   }
 }

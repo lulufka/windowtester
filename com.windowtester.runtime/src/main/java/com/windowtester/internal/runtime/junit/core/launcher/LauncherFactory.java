@@ -12,9 +12,7 @@ package com.windowtester.internal.runtime.junit.core.launcher;
 
 import com.windowtester.internal.debug.LogHandler;
 import com.windowtester.internal.runtime.junit.core.ISequenceRunner.IRunnable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,21 +25,18 @@ public class LauncherFactory {
    */
   abstract static class AbstractLauncher implements IApplicationLauncher {
 
-    List _listeners = new ArrayList();
+    private final List<ILaunchListener> listeners = new ArrayList<>();
 
-    /* (non-Javadoc)
-     * @see junit.extensions.core.launcher.IApplicationLauncher#addListener(junit.extensions.core.launcher.ILaunchListener)
-     */
+    @Override
     public void addListener(ILaunchListener listener) {
-      _listeners.add(listener);
+      listeners.add(listener);
     }
 
     /**
      * Notify listeners post launch.
      */
     protected void notifyPostLaunch() {
-      for (Iterator iter = _listeners.iterator(); iter.hasNext(); ) {
-        ILaunchListener listener = (ILaunchListener) iter.next();
+      for (ILaunchListener listener : listeners) {
         listener.postFlight();
       }
     }
@@ -50,53 +45,47 @@ public class LauncherFactory {
      * Notify listeners pre launch.
      */
     protected void notifyPreLaunch() {
-      for (Iterator iter = _listeners.iterator(); iter.hasNext(); ) {
-        ILaunchListener listener = (ILaunchListener) iter.next();
+      for (ILaunchListener listener : listeners) {
         listener.preFlight();
       }
     }
   }
 
   /**
-   * A special launcher that does nothing (presumably because the application is bootstrapped elsewhere).
+   * A special launcher that does nothing (presumably because the application is bootstrapped
+   * elsewhere).
    */
   static class NoOpLauncher extends AbstractLauncher {
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.launcher.IApplicationLauncher#launch()
-     */
+    @Override
     public void launch() {
       // do nothing
     }
   }
 
   /**
-   * A launcher that spawns another thread in which to execute. Note that pre and post launch notifications occur
-   * before and after the thread is started respectively.
+   * A launcher that spawns another thread in which to execute. Note that pre and post launch
+   * notifications occur before and after the thread is started respectively.
    */
   static class SeparateThreadLauncher extends AbstractLauncher {
 
-    private final IRunnable _runnable;
+    private final IRunnable runnable;
 
     public SeparateThreadLauncher(IRunnable runnable) {
-      _runnable = runnable;
+      this.runnable = runnable;
     }
 
-    /* (non-Javadoc)
-     * @see com.windowtester.runtime.test.launcher.LauncherFactory.AbstractLauncher#doLaunch()
-     */
+    @Override
     public void launch() {
       notifyPreLaunch();
       Thread t =
           new Thread(
-              new Runnable() {
-                public void run() {
-                  try {
-                    _runnable.run();
-                  } catch (Throwable e) {
-                    e.printStackTrace();
-                    LogHandler.log(e);
-                  }
+              () -> {
+                try {
+                  runnable.run();
+                } catch (Throwable e) {
+                  e.printStackTrace();
+                  LogHandler.log(e);
                 }
               });
       t.start();
@@ -109,24 +98,21 @@ public class LauncherFactory {
    */
   static class MainRunner extends SeparateThreadLauncher {
 
-    public MainRunner(final Class launchClass, final String[] launchArgs) {
-      super(
-          new IRunnable() {
-            public void run() throws Throwable {
-              Object[] realArgs;
-              String[] nullArgs = new String[0];
-              Method main = launchClass.getMethod("main", String[].class);
+    public MainRunner(Class<?> launchClass, String[] launchArgs) {
+      super(() -> {
+        var nullArgs = new String[0];
+        var main = launchClass.getMethod("main", String[].class);
 
-              // instead pass null string
-              if (launchArgs == null) {
-                realArgs = new Object[] {nullArgs};
-              } else {
-                realArgs = new Object[] {launchArgs};
-              }
-              //	main.setAccessible(true);
-              main.invoke(null, realArgs);
-            }
-          });
+        Object[] realArgs;
+        // instead pass null string
+        if (launchArgs == null) {
+          realArgs = new Object[]{nullArgs};
+        } else {
+          realArgs = new Object[]{launchArgs};
+        }
+
+        main.invoke(null, realArgs);
+      });
     }
   }
 
@@ -134,10 +120,11 @@ public class LauncherFactory {
    * Launcher factory method; creates a launcher appropriate for the given arguments.
    *
    * @param launchClass the class to launch (may be <code>null</code>)
-   * @param launchArgs  the program arguments to pass to the launched class (may be <code>null</code>)
+   * @param launchArgs  the program arguments to pass to the launched class (may be
+   *                    <code>null</code>)
    * @return a launcher appropriate to the given arguments
    */
-  public static IApplicationLauncher create(Class launchClass, String[] launchArgs) {
+  public static IApplicationLauncher create(Class<?> launchClass, String[] launchArgs) {
     if (launchClass == null) {
       return new NoOpLauncher();
     }

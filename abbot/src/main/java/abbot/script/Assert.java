@@ -56,9 +56,6 @@ public class Assert extends PropertyCall {
   private long interval = DEFAULT_INTERVAL;
   private long timeout = DEFAULT_TIMEOUT;
 
-  /**
-   * Construct an assert step from XML.
-   */
   public Assert(Resolver resolver, Map attributes) {
     super(resolver, patchAttributes(attributes));
     wait = attributes.get(TAG_WAIT) != null;
@@ -81,9 +78,6 @@ public class Assert extends PropertyCall {
         (String) attributes.get(TAG_VALUE));
   }
 
-  /**
-   * Assertion provided by the ComponentTester class, or an arbitrary static call.
-   */
   public Assert(
       Resolver resolver,
       String desc,
@@ -101,9 +95,6 @@ public class Assert extends PropertyCall {
     init(invert, expectedResult);
   }
 
-  /**
-   * Assertion provided by a ComponentTester subclass which operates on a Component subclass.
-   */
   public Assert(
       Resolver resolver,
       String desc,
@@ -116,9 +107,6 @@ public class Assert extends PropertyCall {
     init(invert, expectedResult);
   }
 
-  /**
-   * Property assertion on Component subclass.
-   */
   public Assert(
       Resolver resolver,
       String desc,
@@ -210,14 +198,17 @@ public class Assert extends PropertyCall {
     return map;
   }
 
+  @Override
   public String getXMLTag() {
     return wait ? TAG_WAIT : TAG_ASSERT;
   }
 
+  @Override
   public String getUsage() {
     return wait ? WAIT_USAGE : ASSERT_USAGE;
   }
 
+  @Override
   public String getDefaultDescription() {
     String mname = getMethodName();
     // assert/is/get doesn't really add any information, so drop it
@@ -251,6 +242,7 @@ public class Assert extends PropertyCall {
     return Strings.get((wait ? "wait.desc" : "assert.desc"), new Object[] {expression});
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (invert) {
@@ -268,9 +260,6 @@ public class Assert extends PropertyCall {
     return map;
   }
 
-  /**
-   * Check the assertion.
-   */
   protected void evaluateAssertion() throws Throwable {
     Object expected, actual;
     Class type = getMethod().getReturnType();
@@ -331,9 +320,7 @@ public class Assert extends PropertyCall {
     }
   }
 
-  /**
-   * Run this step.
-   */
+  @Override
   protected void runStep() throws Throwable {
     if (!wait) {
       evaluateAssertion();

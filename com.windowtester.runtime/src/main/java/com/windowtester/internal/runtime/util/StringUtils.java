@@ -18,7 +18,7 @@ import java.util.Arrays;
  */
 public class StringUtils {
 
-  public static String NEW_LINE = System.getProperty("line.separator", "\n");
+  public static final String NEW_LINE = System.getProperty("line.separator", "\n");
 
   /**
    * Cloned from {@link Arrays#toString(Object[])} which is new for Java 1.5.
@@ -31,24 +31,23 @@ public class StringUtils {
       return "[]";
     }
 
-    StringBuffer buf = new StringBuffer();
-
+    var builder = new StringBuilder();
     for (int i = 0; i < a.length; i++) {
       if (i == 0) {
-        buf.append('[');
+        builder.append('[');
       } else {
-        buf.append(", ");
+        builder.append(", ");
       }
-
-      buf.append(a[i]);
+      builder.append(a[i]);
     }
 
-    buf.append("]");
-    return buf.toString();
+    builder.append("]");
+    return builder.toString();
   }
 
   /**
-   * Return the count and the quantity label as a properly pluralized string. I.e. (5, "item") ==> "5 items".
+   * Return the count and the quantity label as a properly pluralized string. I.e. (5, "item") ==>
+   * "5 items".
    * <p/>
    */
   public static String pluralize(int count, String single) {
@@ -69,7 +68,8 @@ public class StringUtils {
     if (actual == null) {
       return null;
     }
-    String trimmed = actual;
+
+    var trimmed = actual;
     int index = trimmed.indexOf('\t');
     if (index != -1) {
       trimmed = trimmed.substring(0, index);

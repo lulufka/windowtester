@@ -35,7 +35,7 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 /**
- * Record basic semantic events you might find on any component.  This class handles the following actions:<p>
+ * Record basic semantic events you might find on any component.  This class handles the following actions:
  * <ul>
  * <li>window actions
  * <li>popup menus
@@ -155,6 +155,7 @@ public class ComponentRecorder extends SemanticRecorder {
 
   /**
    * Create a ComponentRecorder for use in capturing the semantics of a GUI action.
+   * @param resolver resolver
    */
   public ComponentRecorder(Resolver resolver) {
     super(resolver);
@@ -162,6 +163,8 @@ public class ComponentRecorder extends SemanticRecorder {
 
   /**
    * Does the given event indicate a window was shown?
+   * @param event event
+   * @return true if open
    */
   protected boolean isOpen(AWTEvent event) {
     int id = event.getID();
@@ -174,9 +177,6 @@ public class ComponentRecorder extends SemanticRecorder {
         || id == ComponentEvent.COMPONENT_SHOWN;
   }
 
-  /**
-   * Does the given event indicate a window was closed?
-   */
   protected boolean isClose(AWTEvent event) {
     int id = event.getID();
     // Window.dispose doesn't generate a HIDDEN event, but it does
@@ -188,6 +188,8 @@ public class ComponentRecorder extends SemanticRecorder {
   /**
    * Returns whether this ComponentRecorder wishes to accept the given event.  If the event is accepted, the recorder
    * must invoke init() with the appropriate semantic event type.
+   * @param event event
+   * @return true if event has been accepted
    */
   public boolean accept(AWTEvent event) {
 
@@ -221,10 +223,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return accepted;
   }
 
-  /**
-   * Test whether the given event is a trigger for a window event. Allow derived classes to change definition of a
-   * click.
-   */
   protected boolean isWindowEvent(AWTEvent event) {
     // Ignore activate and deactivate.  They are unreliable.
     // We only want open/close events on non-tooltip and non-popup windows
@@ -237,9 +235,8 @@ public class ComponentRecorder extends SemanticRecorder {
   /**
    * Return true if the given event source is a tooltip. Such events look like window events, but we check for them
    * before other kinds of window events so as to be able to filter them out.
-   * <p>
+   *
    * TODO: emit steps to confirm value of tooltip?
-   * <p>
    *
    * @param source the object to examine
    * @return true if this event source is a tooltip
@@ -280,10 +277,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return event.getID() == KeyEvent.KEY_TYPED;
   }
 
-  /**
-   * Test whether the given event is a trigger for a mouse button click. Allow derived classes to change definition of
-   * a click.
-   */
   protected boolean isClick(AWTEvent event) {
     if (event.getID() == MouseEvent.MOUSE_PRESSED) {
       MouseEvent me = (MouseEvent) event;
@@ -292,24 +285,15 @@ public class ComponentRecorder extends SemanticRecorder {
     return false;
   }
 
-  /**
-   * Test whether the given event precurses a drop.
-   */
   protected boolean isDragDrop(AWTEvent event) {
     return event.getID() == MouseEvent.MOUSE_DRAGGED;
   }
 
-  /**
-   * Default to recording a drag if it looks like one.
-   */
   // FIXME may be some better detection, like checking for DND interfaces. */
   protected boolean canDrag() {
     return true;
   }
 
-  /**
-   * Default to waiting for multiple clicks.
-   */
   protected boolean canMultipleClick() {
     return true;
   }
@@ -325,9 +309,6 @@ public class ComponentRecorder extends SemanticRecorder {
         || event.getID() == InputMethodEvent.INPUT_METHOD_TEXT_CHANGED;
   }
 
-  /**
-   * Provide standard parsing of mouse button events.
-   */
   protected boolean parseClick(AWTEvent event) {
     boolean consumed = true;
     int id = event.getID();
@@ -466,7 +447,7 @@ public class ComponentRecorder extends SemanticRecorder {
         // the generated characters are not accepted as text input.
         // Add others if you encounter them, but err on the side of
         // accepting input that can later be removed.
-        if ((modifiers & InputEvent.CTRL_DOWN_MASK) == InputEvent.CTRL_DOWN_MASK
+        if ((modifiers & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) == Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()
             || (modifiers & InputEvent.ALT_DOWN_MASK) == InputEvent.ALT_DOWN_MASK) {
           Log.debug("Ignoring modifiers: " + modifiers);
           setRecordingType(SE_NONE);
@@ -499,9 +480,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return consumed;
   }
 
-  /**
-   * Base implementation handles context (popup) menus.
-   */
   protected boolean parseMenuSelection(AWTEvent event) {
     int id = event.getID();
     boolean consumed = true;
@@ -724,9 +702,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return consumed;
   }
 
-  /**
-   * Handle an event.  Return whether the event was consumed.
-   */
   public boolean parse(AWTEvent event) {
     if (Log.isClassDebugEnabled(ComponentRecorder.class)) {
       Log.debug("Parsing " + ComponentTester.toString(event) + " as " + TYPES[getRecordingType()]);
@@ -778,17 +753,10 @@ public class ComponentRecorder extends SemanticRecorder {
     return consumed;
   }
 
-  /**
-   * Provide a hint about the type of the drag.
-   */
   protected void setNativeDrag(boolean n) {
     nativeDrag = n;
   }
 
-  /**
-   * Returns whether the first drag motion event should be consumed. Derived classes may override this to provide
-   * custom drag behavior. Default behavior saves the drag initiation event by itself.
-   */
   protected boolean dragStarted(
       Component target, int x, int y, int modifiers, MouseEvent dragEvent) {
     dragSource = target;
@@ -798,9 +766,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return false;
   }
 
-  /**
-   * Returns the script step generated from the events recorded so far.
-   */
   protected Step createStep() {
     Step step = null;
     int type = getRecordingType();
@@ -870,10 +835,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return step;
   }
 
-  /**
-   * Create a wait for the window show/hide.  Use an appropriate identifier string, which might be the name, title, or
-   * component reference.
-   */
   protected Step createWindowEvent(Window window, boolean isClose) {
     ComponentReference ref = getResolver().addComponent(window);
     String method = "assertComponentShowing";
@@ -975,9 +936,6 @@ public class ComponentRecorder extends SemanticRecorder {
     return step;
   }
 
-  /**
-   * Create a click event with the given event information.
-   */
   protected Step createClick(Component target, int x, int y, int mods, int count) {
     Log.debug("creating click");
     ComponentReference cr = getResolver().addComponent(target);
@@ -1028,9 +986,6 @@ public class ComponentRecorder extends SemanticRecorder {
     imText.delete(0, imText.length());
   }
 
-  /**
-   * Invoke when end of the semantic event has been seen.
-   */
   protected void setFinished(boolean state) {
     MenuListener listener = null;
     synchronized (this) {
@@ -1086,26 +1041,15 @@ public class ComponentRecorder extends SemanticRecorder {
     }
   }
 
-  /**
-   * Obtain the String representation of the Component-specific location.
-   */
   protected String getLocationArgument(Component c, int x, int y) {
     return getLocation(c, x, y).toString();
   }
 
-  /**
-   * Obtain a more precise location than the given coordinate, if possible.
-   */
   protected ComponentLocation getLocation(Component c, int x, int y) {
     ComponentTester tester = ComponentTester.getTester(c);
     return tester.getLocation(c, new Point(x, y));
   }
 
-  /**
-   * add accessors for the private fields needed to generate windowtester semantic events
-   *
-   * @author keertip 10/2/06
-   */
   public Component getTarget() {
     return target;
   }

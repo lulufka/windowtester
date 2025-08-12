@@ -8,17 +8,11 @@ import javax.swing.*;
  */
 public class JPopupMenuTester extends JComponentTester {
 
-  /**
-   * Return an identifying tag for the popup menu.
-   */
   public String deriveTag(Component comp) {
     Component invoker = ((JPopupMenu) comp).getInvoker();
     return invoker == null ? "Popup menu" : "Popup on " + getTag(invoker);
   }
 
-  /**
-   * Return the contents of the popup menu as a String array.
-   */
   public String[] getMenuLabels(Component comp) {
     JPopupMenu menu = (JPopupMenu) comp;
     MenuElement[] els = menu.getSubElements();

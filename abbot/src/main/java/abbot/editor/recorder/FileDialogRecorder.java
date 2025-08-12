@@ -27,6 +27,7 @@ public class FileDialogRecorder extends DialogRecorder {
 
   /**
    * Create a FileDialogRecorder for use in capturing the semantics of a GUI action.
+   * @param resolver resolver
    */
   public FileDialogRecorder(Resolver resolver) {
     super(resolver);
@@ -39,9 +40,6 @@ public class FileDialogRecorder extends DialogRecorder {
     originalDir = null;
   }
 
-  /**
-   * Override the default window parsing to consume everything between dialog open and close.
-   */
   protected boolean parseWindowEvent(AWTEvent event) {
     boolean consumed = true;
     if (event.getSource() instanceof FileDialog) {
@@ -63,10 +61,6 @@ public class FileDialogRecorder extends DialogRecorder {
     return consumed;
   }
 
-  /**
-   * Create one or more steps corresponding to what was done to the file dialog.  If the directory is non-null, the
-   * directory was changed.  If the file is non-null, the file was accepted.
-   */
   protected Step createFileDialogEvents(FileDialog d, String oldDir, String oldFile) {
     ComponentReference ref = getResolver().addComponent(d);
     String file = d.getFile();

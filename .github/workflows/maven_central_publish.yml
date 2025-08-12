@@ -1,0 +1,60 @@
+name: Publish to Maven Central Repository
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
+
+      - name: Verify package
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: mvn --batch-mode install
+
+      - name: Remove screenshots
+        run: |
+          if [ -d "com.windowtester.junit5/wintest/" ]; then
+            rm -rf com.windowtester.junit5/wintest/
+          fi
+
+      - name: Import GPG key
+        run: |
+          echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --yes --import
+          KEY_ID=$(gpg --list-secret-keys --with-colons | grep '^sec' | cut -d: -f5)
+          echo "default-key $KEY_ID" >> ~/.gnupg/gpg.conf
+        env:
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+
+      - name: Prepare settings.xml
+        uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: |
+            [{
+                "id": "maven-central",
+                "username": "${{ secrets.OSSRH_USERNAME }}",
+                "password": "${{ secrets.OSSRH_TOKEN }}"
+            }]
+
+      - name: Release package
+        run: mvn clean deploy -P release -DskipTests
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}

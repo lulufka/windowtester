@@ -15,11 +15,12 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to determine if the underlying object is selected. When
- * the widget is of type <code>CHECK</code> or <code>RADIO</code>, it is selected when it is <em>checked</em>. See
- * {@link IsSelectedCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to determine if the underlying
+ * object is selected. When the widget is of type <code>CHECK</code> or <code>RADIO</code>, it is
+ * selected when it is <em>checked</em>. See {@link IsSelectedCondition} for typical usage.
  */
 public interface IsSelected extends ILocator {
+
   /**
    * Resolve the locator to a single object and determine if that object is selected.
    *

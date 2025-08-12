@@ -35,7 +35,7 @@ public class SemanticTableSelectionEvent extends UISemanticEvent
   private int row, col;
 
   /**
-   * The selection's mouse mask (e.g., InputEvent.CTRL_DOWN_MASK or InputEvent.SHIFT_DOWN_MASK)
+   * The selection's mouse mask (e.g., Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() or InputEvent.SHIFT_DOWN_MASK)
    */
   private String _mask;
 

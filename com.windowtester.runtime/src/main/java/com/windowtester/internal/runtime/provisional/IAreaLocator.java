@@ -13,11 +13,12 @@ package com.windowtester.internal.runtime.provisional;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A locator specifying an area. Any concrete implementation of {@link com.windowtester.runtime2.widget.IWidget} that
- * has bounds should implement this interface so that it can be used when resolving {@link
- * com.windowtester.runtime.locator.XYLocator}
+ * A locator specifying an area. Any concrete implementation of
+ * {@link com.windowtester.runtime2.widget.IWidget} that has bounds should implement this interface
+ * so that it can be used when resolving {@link com.windowtester.runtime.locator.XYLocator}
  */
 public interface IAreaLocator extends ILocator {
+
   int left();
 
   int top();

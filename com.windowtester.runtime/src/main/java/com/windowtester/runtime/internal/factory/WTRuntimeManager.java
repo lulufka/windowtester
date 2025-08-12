@@ -14,6 +14,7 @@ import com.windowtester.internal.runtime.util.StringUtils;
 import com.windowtester.runtime.locator.IWidgetReference;
 
 public class WTRuntimeManager {
+
   /**
    * The WTRuntimeManager singleton
    */
@@ -61,9 +62,6 @@ public class WTRuntimeManager {
     }
   }
 
-  // ==========================================================================
-  // Internal
-
   /**
    * Initialize the receiver for execution such as when testing a Swing application.
    */
@@ -73,8 +71,8 @@ public class WTRuntimeManager {
   }
 
   /**
-   * Cycles through the known widget reference factories until a factory returns instance of {@link IWidgetReference}
-   * for the specified widget.
+   * Cycles through the known widget reference factories until a factory returns instance of
+   * {@link IWidgetReference} for the specified widget.
    *
    * @param widget the widget (not <code>null</code>)
    * @return the widget reference (not <code>null</code>)
@@ -85,17 +83,24 @@ public class WTRuntimeManager {
       throw new IllegalArgumentException("Cannot create a widget reference for null");
     }
     for (WTRuntimeFactoryReference factoryRef : factoryReferences) {
-      IWidgetReference widgetRef = factoryRef.createReference(widget);
+      var widgetRef = factoryRef.createReference(widget);
       if (widgetRef != null) {
         return widgetRef;
       }
     }
-    String errMsg =
-        "Failed to create widget reference for instance of " + widget.getClass().getName();
-    errMsg += StringUtils.NEW_LINE + "   " + getPlatformDebugInfo();
-    for (WTRuntimeFactoryReference factoryRef : factoryReferences)
-      errMsg += StringUtils.NEW_LINE + "   factory: " + factoryRef.getFactory();
-    throw new RuntimeException(errMsg);
+    var errMsg = new StringBuilder(
+        "Failed to create widget reference for instance of " + widget.getClass().getName());
+    errMsg
+        .append(StringUtils.NEW_LINE)
+        .append("   ")
+        .append(getPlatformDebugInfo());
+    for (WTRuntimeFactoryReference factoryRef : factoryReferences) {
+      errMsg
+          .append(StringUtils.NEW_LINE)
+          .append("   factory: ")
+          .append(factoryRef.getFactory());
+    }
+    throw new RuntimeException(errMsg.toString());
   }
 
   /**

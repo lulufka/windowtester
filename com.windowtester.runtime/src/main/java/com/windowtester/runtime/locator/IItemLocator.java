@@ -11,7 +11,8 @@
 package com.windowtester.runtime.locator;
 
 /**
- * A marker interface that marks widgetlocators as being revealable (such as tree items and menu items).
+ * A marker interface that marks widget locators as being revealable (such as tree items and menu
+ * items).
  */
 public interface IItemLocator {
 

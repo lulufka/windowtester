@@ -10,15 +10,16 @@
  *******************************************************************************/
 package com.windowtester.swing.recorder;
 
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 public abstract class AbstractInternalFrameWatcher extends InternalFrameAdapter
     implements ComponentListener {
+
   public AbstractInternalFrameWatcher(JInternalFrame f) {
     f.addInternalFrameListener(this);
     f.addComponentListener(this);
@@ -26,6 +27,7 @@ public abstract class AbstractInternalFrameWatcher extends InternalFrameAdapter
 
   protected abstract void dispatch(AWTEvent e);
 
+  @Override
   public void componentHidden(ComponentEvent e) {
     // Ensure this listener doesn't hang around after the frame goes
     // away.
@@ -33,23 +35,32 @@ public abstract class AbstractInternalFrameWatcher extends InternalFrameAdapter
     ((JInternalFrame) e.getComponent()).removeInternalFrameListener(this);
   }
 
+  @Override
   public void internalFrameClosing(InternalFrameEvent e) {
     dispatch(e);
     e.getInternalFrame().removeInternalFrameListener(this);
     e.getInternalFrame().removeComponentListener(this);
   }
 
+  @Override
   public void internalFrameIconified(InternalFrameEvent e) {
     dispatch(e);
   }
 
+  @Override
   public void internalFrameDeiconified(InternalFrameEvent e) {
     dispatch(e);
   }
 
-  public void componentShown(ComponentEvent e) {}
+  @Override
+  public void componentShown(ComponentEvent e) {
+  }
 
-  public void componentResized(ComponentEvent e) {}
+  @Override
+  public void componentResized(ComponentEvent e) {
+  }
 
-  public void componentMoved(ComponentEvent e) {}
+  @Override
+  public void componentMoved(ComponentEvent e) {
+  }
 }

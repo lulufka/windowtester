@@ -61,7 +61,7 @@ import org.jdom.input.SAXBuilder;
  * already exist and modifiers the Resolver to include it.
  * <li>getReference(Resolver, Component, Map) - create a reference only if a
  * matching one does not exist, but does not modify the Resolver.
- * <li>ComponentReference<init> - create a new reference.
+ * <li>ComponentReference#init - create a new reference.
  * </ul>
  */
 // TODO: lose exact hierarchy match, cf Xt resource specifier, e.g.
@@ -86,7 +86,7 @@ import org.jdom.input.SAXBuilder;
 /*
  Optimization note:  All lookups are cached, so that at most we have to
  traverse the hierarchy once.
- Successful lookups are cached until the referenced ocmponent is GCd,
+ Successful lookups are cached until the referenced component is GCd,
  removed from the hierarchy, or otherwise marked invalid.
  Unsuccessful lookups are cached for the duration of a particular lookup.
  These happen in several places.
@@ -185,24 +185,15 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
    */
   static boolean cacheOnCreation = true;
 
-  /**
-   * For creation from XML.
-   */
   public ComponentReference(Resolver resolver, Element el) throws InvalidScriptException {
     this.resolver = resolver;
     fromXML(el, true);
   }
 
-  /**
-   * Create a reference to an instance of the given class, given an array of name/value pairs of attributes.
-   */
   public ComponentReference(Resolver r, Class cls, String[][] attributes) {
     this(r, cls, createAttributeMap(attributes));
   }
 
-  /**
-   * Create a reference to an instance of the given class, given a Map of attributes.
-   */
   public ComponentReference(Resolver resolver, Class cls, Map attributes) {
     // sort of a hack to provide a 'default' resolver
     this.resolver = resolver;
@@ -216,17 +207,10 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     }
   }
 
-  /**
-   * Create a reference based on the given component.  Will not use or create any ancestor components/references.
-   */
   public ComponentReference(Resolver resolver, Component comp) {
     this(resolver, comp, false, new HashMap<>());
   }
 
-  /**
-   * Create a reference based on the given component.  May recursively create other components required to identify
-   * this one.
-   */
   public ComponentReference(
       Resolver resolver, Component comp, Map<String, ComponentReference> newReferences) {
     this(resolver, comp, true, newReferences);
@@ -391,9 +375,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return -1;
   }
 
-  /**
-   * Return the component in the current Hierarchy that best matches this reference.
-   */
   public Component getComponent()
       throws ComponentNotFoundException, MultipleComponentsFoundException {
 
@@ -403,9 +384,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return getComponent(resolver.getHierarchy());
   }
 
-  /**
-   * Return the component in the given Hierarchy that best matches this reference.
-   */
   public Component getComponent(Hierarchy hierarchy)
       throws ComponentNotFoundException, MultipleComponentsFoundException {
 
@@ -491,10 +469,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     }
   }
 
-  /**
-   * Return a descriptive name for the given component for use in UI text (may be localized if appropriate and need
-   * not be re-usable across locales.
-   */
   public static String getDescriptiveName(Component c) {
     if (AWT.isSharedInvisibleFrame(c)) {
       return Strings.get("component.default_frame");
@@ -513,10 +487,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return name;
   }
 
-  /**
-   * Return a suitably descriptive name for this reference, for use as an ID (returns the ID itself if already set).
-   * Will never return an empty String.
-   */
   public String getDescriptiveName() {
     String id = getAttribute(TAG_ID);
     if (id == null) {
@@ -569,11 +539,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
         || (!Component.class.equals(cls) && isAssignableFrom(refClassName, cls.getSuperclass()));
   }
 
-  /**
-   * Return whether this reference has the same class or is a superclass of the given component's class.  Simply
-   * compare class names to avoid class loader conflicts.  Note that this does not take into account interfaces (which
-   * is okay, since with GUI components we're only concerned with class inheritance).
-   */
   public boolean isAssignableFrom(Class cls) {
     return cls != null
         && Component.class.isAssignableFrom(cls)
@@ -592,9 +557,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return pref;
   }
 
-  /**
-   * Reference ID of this component's parent window (optional).
-   */
   public ComponentReference getWindowReference(Map newReferences) {
     String windowID = getAttribute(TAG_WINDOW);
     ComponentReference wref = null;
@@ -621,7 +583,9 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
 
   /**
    * Set all options based on the given XML.
-   *
+   * @param input input
+   * @throws InvalidScriptException invalid script
+   * @throws IOException I/O error
    * @deprecated
    */
   // This is only used when editing scripts, since we don't want to have to
@@ -678,9 +642,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     }
   }
 
-  /**
-   * Generate an XML representation of this object.
-   */
   public Element toXML() {
     Element el = new Element(TAG_COMPONENT);
     Iterator iter = new TreeMap(attributes).keySet().iterator();
@@ -695,24 +656,19 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return editable string
    * @deprecated Used to be used to edit XML in a text editor.
    */
   public String toEditableString() {
     return toXMLString();
   }
 
-  /**
-   * Two ComponentReferences with identical XML representations should be equal.
-   */
   public boolean equals(Object obj) {
     return this == obj
         || (obj instanceof ComponentReference)
             && toXMLString().equals(((ComponentReference) obj).toXMLString());
   }
 
-  /**
-   * Return a human-readable representation.
-   */
   public String toString() {
     String id = getID();
     String cname = getAttribute(TAG_CLASS);
@@ -1173,10 +1129,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return found;
   }
 
-  /**
-   * Returns a reference to the given component, preferring an existing reference if a matching one is available or
-   * creating a new one if not. The new references are <i>not</i> added to the resolver.
-   */
   // FIXME: keep newly-created ancestors in a collection and let the
   // resolver add them.  (maybe create everything, then let the resolver
   // sort out duplicates when adding).
@@ -1207,9 +1159,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return ref;
   }
 
-  /**
-   * Match the given component against an existing set of references.
-   */
   public static ComponentReference matchExisting(final Component comp, Collection existing) {
 
     Log.debug("Matching " + Robot.toString(comp) + " against existing refs");
@@ -1348,9 +1297,6 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
     return sb.toString();
   }
 
-  /**
-   * Return the cached component match, if any.
-   */
   public Component getCachedLookup(Hierarchy hierarchy) {
     if (cachedLookup != null) {
       Component c = (Component) cachedLookup.get();
@@ -1553,6 +1499,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
       };
 
   /**
+   * @return name
    * @deprecated use getAttribute(TAG_NAME) instead.
    */
   public String getName() {
@@ -1560,6 +1507,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return tag value
    * @deprecated use getAttribute(TAG_TAG) instead.
    */
   public String getTag() {
@@ -1567,6 +1515,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return invoker id
    * @deprecated use getAttribute(TAG_INVOKER) instead.
    */
   public String getInvokerID() {
@@ -1574,6 +1523,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return window id
    * @deprecated use getAttribute(TAG_WINDOW) instead.
    */
   public String getWindowID() {
@@ -1581,6 +1531,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return title
    * @deprecated use getAttribute(TAG_TITLE) instead.
    */
   public String getTitle() {
@@ -1588,6 +1539,7 @@ public class ComponentReference implements XMLConstants, XMLifiable, Comparable 
   }
 
   /**
+   * @return index
    * @deprecated use getAttribute(TAG_INDEX) instead.
    */
   public int getIndex() {

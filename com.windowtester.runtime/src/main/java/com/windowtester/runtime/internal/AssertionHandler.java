@@ -33,16 +33,12 @@ public class AssertionHandler implements IAssertionHandler {
     return ui;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.spike.invariants.IInvariantHandler#assertTrue(com.windowtester.runtime.condition.ICondition)
-   */
+  @Override
   public void assertThat(ICondition condition) {
     waitFor(condition);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.spike.invariants.IInvariantHandler#assertThat(java.lang.String, com.windowtester.runtime.condition.ICondition)
-   */
+  @Override
   public void assertThat(String message, ICondition condition) throws WaitTimedOutException {
     try {
       waitFor(condition);
@@ -51,15 +47,11 @@ public class AssertionHandler implements IAssertionHandler {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.spike.invariants.IInvariantHandler#ensureThat(com.windowtester.runtime.condition.IConditionHandler)
-   */
+  @Override
   public void ensureThat(IConditionHandler conditionHandler) throws Exception {
     if (isTrue(conditionHandler)) {
       return;
     }
-    //		if (becomesTrue(conditionHandler))
-    //			return;
     conditionHandler.handle(getUI());
     assertThat(conditionHandler);
   }
@@ -71,18 +63,4 @@ public class AssertionHandler implements IAssertionHandler {
   private void waitFor(ICondition condition) throws WaitTimedOutException {
     getUI().wait(condition, ASSERTION_WAIT_TIMEOUT);
   }
-
-  //	//test with wait
-  //	private boolean becomesTrue(IConditionHandler condition) {
-  //		boolean isTrue = false;
-  //		try {
-  //			waitFor(condition);
-  //			isTrue = true;
-  //		} catch (WaitTimedOutException e) {
-  //			//exception means isTrue does not get set
-  //			System.out.println("AssertionHandler.isTrue()");
-  //		}
-  //		return isTrue;
-  //	}
-
 }

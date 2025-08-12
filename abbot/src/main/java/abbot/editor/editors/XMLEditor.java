@@ -64,9 +64,6 @@ public class XMLEditor extends AbstractCellEditor implements TableCellEditor, Tr
     clickCountToStart = count;
   }
 
-  /**
-   * ClickCountToStart controls the number of clicks required to start editing.
-   */
   public int getClickCountToStart() {
     return clickCountToStart;
   }

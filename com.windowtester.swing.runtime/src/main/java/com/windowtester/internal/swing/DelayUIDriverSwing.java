@@ -13,11 +13,11 @@ package com.windowtester.internal.swing;
 import abbot.tester.ActionFailedException;
 import abbot.util.AWT;
 import java.awt.Component;
+import java.awt.HeadlessException;
+import java.awt.MouseInfo;
 import java.awt.Point;
-import java.lang.reflect.Method;
 import javax.swing.JComboBox;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JTable;
 
 public class DelayUIDriverSwing extends UIDriverSwing {
@@ -31,102 +31,69 @@ public class DelayUIDriverSwing extends UIDriverSwing {
     // TODO: Load settings from file
   }
 
-  public Component click(Component owner, String labelOrPath) throws ActionFailedException {
-
-    Component c = super.click(owner, labelOrPath);
-    return c;
-  }
-
-  public Component click(int clickCount, Component w, int x, int y, int mask) {
+  @Override
+  public Component click(
+      int clickCount,
+      Component component,
+      int x,
+      int y,
+      int mask) {
     // first move the mouse to the point of interest:
-    mouseMove(w);
-    Component c = super.click(clickCount, w, x, y, mask);
-    return c;
+    mouseMove(component);
+    return super.click(clickCount, component, x, y, mask);
   }
 
-  public Component clickComboBox(JComboBox owner, String labelOrPath, int clickCount)
+  @Override
+  public Component clickComboBox(JComboBox<?> combobox, String labelOrPath, int clickCount)
       throws ActionFailedException {
     // first move the mouse to the point of interest:
-    mouseMove(owner);
-    Component c = super.clickComboBox(owner, labelOrPath, clickCount);
-    return c;
+    mouseMove(combobox);
+    return super.clickComboBox(combobox, labelOrPath, clickCount);
   }
 
-  public Component clickListItem(int clickCount, JList owner, String labelOrPath, int mask)
+  @Override
+  public Component clickListItem(int clickCount, JList<?> list, String labelOrPath, int mask)
       throws ActionFailedException {
     // first move the mouse to the point of interest:
-    mouseMove(owner);
-    Component c = super.clickListItem(clickCount, owner, labelOrPath, mask);
-    return c;
+    mouseMove(list);
+    return super.clickListItem(clickCount, list, labelOrPath, mask);
   }
 
-  public Component clickMenuItem(JMenuItem owner) {
-    Component c = super.clickMenuItem(owner);
-    return c;
+  @Override
+  public Component clickTable(
+      int clickCount,
+      JTable table,
+      int rowIndex,
+      int columnIndex,
+      int mask) {
+    mouseMove(table);
+    return super.clickTable(clickCount, table, rowIndex, columnIndex, mask);
   }
 
-  public Component clickTable(int clickCount, JTable owner, int row, int col, int mask) {
-    mouseMove(owner);
-    Component c = super.clickTable(clickCount, owner, row, col, mask);
-    return c;
-  }
-
-  public Component clickTreeItem(int clickCount, Component owner, String path, int mask) {
-    Component c = super.clickTreeItem(clickCount, owner, path, mask);
-    return c;
-  }
-
-  public void keyClick(char key) {
-    super.keyClick(key);
-  }
-
-  public void keyClick(int ctrl, char c) {
-    super.keyClick(ctrl, c);
-  }
-
-  public void keyClick(int key) {
-    super.keyClick(key);
-  }
-
-  private Point pointT;
-  private Point cursorT;
-
-  public void mouseMove(Component w, int x, int y) {
-    // get location of the widget
-    pointT = AWT.getLocationOnScreen(w);
-    // get current location of the cursor/mouse for jre 1.5 and above
-    //	PointerInfo info = MouseInfo.getPointerInfo();
-    //	cursorT = info.getLocation();
-    // since build system is 1.4, use reflection to make calls
+  @Override
+  public void mouseMove(Component component, int x, int y) {
+    var mouseLocation = AWT.getLocationOnScreen(component);
 
     try {
-      Class c = Class.forName("java.awt.MouseInfo");
-      Method m = c.getMethod("getPointerInfo", null);
-      Object o = m.invoke(null, null);
-      Class cPointer = Class.forName("java.awt.PointerInfo");
-      Method method = cPointer.getMethod("getLocation", null);
-      cursorT = (Point) method.invoke(o, null);
+      var pointerInfo = MouseInfo.getPointerInfo();
+      var cursorLocation = pointerInfo.getLocation();
 
-    } catch (Throwable e) {
+      var target = new Point(mouseLocation.x + x, mouseLocation.y + y);
+      var path = getPath(cursorLocation, target);
+      for (Point point : path) {
+        super.mouseMove(point.x, point.y);
+      }
+    } catch (HeadlessException e) {
       if (!printMessage) {
         System.out.println(
             "Mouse Delay not supported, turn off Mouse Delay in"
                 + " Window->Preferences->WindowTester->Playback");
         printMessage = true;
       }
-      return;
-    }
-
-    Point cursorLocation = cursorT;
-    Point target = new Point(pointT.x + x, pointT.y + y);
-
-    Point[] path = getPath(cursorLocation, target);
-
-    for (int i = 0; i < path.length; i++) {
-      super.mouseMove(path[i].x, path[i].y);
     }
   }
 
+  @Override
   public void enterText(String txt) throws ActionFailedException {
     // enter text one char at a time, pausing as we go
     for (int i = 0; i <= txt.length() - 1; ++i) {
@@ -134,53 +101,44 @@ public class DelayUIDriverSwing extends UIDriverSwing {
     }
   }
 
-  //////////////////////////////////////////////////////////////////////
-  //
-  //
-  // Utility methods
-  //
-  //
-  /////////////////////////////////////////////////////////////////////
-
   public static Point[] getPath(Point p1, Point p2) {
-    int numSteps = getNumSteps(p1, p2);
+    var numSteps = getNumSteps(p1, p2);
     return getPath(p1, p2, numSteps + 3);
   }
 
   private static int getNumSteps(Point p1, Point p2) {
-    int dx = Math.abs(p1.x - p2.x);
-    int dy = Math.abs(p1.y - p2.y);
-    int numSteps = Math.max(dx, dy);
-    return numSteps;
+    var dx = Math.abs(p1.x - p2.x);
+    var dy = Math.abs(p1.y - p2.y);
+    return Math.max(dx, dy);
   }
 
-  public static Point[] getPath(Point p1, Point p2, int numSteps) {
-    int[] xsteps = getSteps(p1.x, p2.x, numSteps);
-    int[] ysteps = getSteps(p1.y, p2.y, numSteps);
+  public static Point[] getPath(Point p1, Point p2, int numOfSteps) {
+    var xSteps = getSteps(p1.x, p2.x, numOfSteps);
+    var ySteps = getSteps(p1.y, p2.y, numOfSteps);
 
-    Point[] points = new Point[xsteps.length];
-
-    for (int i = 0; i < xsteps.length; ++i) points[i] = new Point(xsteps[i], ysteps[i]);
+    var points = new Point[xSteps.length];
+    for (int i = 0; i < xSteps.length; ++i) {
+      points[i] = new Point(xSteps[i], ySteps[i]);
+    }
 
     return points;
   }
 
   static int[] getSteps(int start, int stop, int numOfSteps) {
-    float[] fsteps = new float[numOfSteps];
-    int[] steps = new int[numOfSteps];
-    float delta = stop - start;
-    float increment = delta / numOfSteps;
+    var fSteps = new float[numOfSteps];
+    var steps = new int[numOfSteps];
+    var delta = stop - start;
+    var increment = delta / numOfSteps;
 
-    fsteps[0] = start;
+    fSteps[0] = start;
     for (int i = 1; i < numOfSteps; ++i) {
-      fsteps[i] = fsteps[i - 1] + increment;
+      fSteps[i] = fSteps[i - 1] + increment;
     }
     for (int i = 0; i < numOfSteps; ++i) {
-      steps[i] = Math.round(fsteps[i]);
+      steps[i] = Math.round(fSteps[i]);
     }
     // sanity check last coord:
     steps[numOfSteps - 1] = stop;
-
     return steps;
   }
 }

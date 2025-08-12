@@ -13,15 +13,18 @@ package com.windowtester.runtime.condition;
 import com.windowtester.runtime.IUIContext;
 
 /**
- * Implementers define a condition to test and an associated handler that handles the condition in the event that it
- * evaluates to <code>true</code>.  <code>IUIConditionHandler</code>s behave like {@link IConditionHandler}s but instead
- * of using the {@link ICondition#test()} method to test a condition, the {@link IUICondition#testUI(IUIContext)} is
- * used instead.
+ * Implementers define a condition to test and an associated handler that handles the condition in
+ * the event that it evaluates to <code>true</code>.  <code>IUIConditionHandler</code>s behave like
+ * {@link IConditionHandler}s but instead of using the {@link ICondition#test()} method to test a
+ * condition, the {@link IUICondition#testUI(IUIContext)} is used instead.
  * <p>
  * <p/>
- * Note that conditions should be designed to <em>test</em> and not to <em>modify</em> the User Interface.
+ * Note that conditions should be designed to <em>test</em> and not to <em>modify</em> the User
+ * Interface.
  * <p/>
  *
  * @see IConditionHandler
  */
-public interface IUIConditionHandler extends IConditionHandler, IUICondition {}
+public interface IUIConditionHandler extends IConditionHandler, IUICondition {
+
+}

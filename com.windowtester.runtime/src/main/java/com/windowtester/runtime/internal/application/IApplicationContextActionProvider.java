@@ -13,4 +13,6 @@ package com.windowtester.runtime.internal.application;
 /**
  * Provides implementations of context-specific behavior.
  */
-public interface IApplicationContextActionProvider {}
+public interface IApplicationContextActionProvider {
+
+}

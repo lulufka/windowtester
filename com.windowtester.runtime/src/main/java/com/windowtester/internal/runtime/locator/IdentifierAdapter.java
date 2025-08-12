@@ -14,6 +14,7 @@ import com.windowtester.internal.runtime.Adapter;
 import com.windowtester.internal.runtime.IWidgetIdentifier;
 import com.windowtester.runtime.IAdaptable;
 import com.windowtester.runtime.locator.ILocator;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -21,30 +22,35 @@ import java.io.Serializable;
  */
 public class IdentifierAdapter implements IWidgetIdentifier, IAdaptable, ILocator, Serializable {
 
+  @Serial
   private static final long serialVersionUID = -2449531209586204515L;
 
-  private final ILocator _locator;
+  private final transient ILocator locator;
 
   public IdentifierAdapter(ILocator locator) {
-    _locator = locator;
+    this.locator = locator;
   }
 
+  @Override
   public String getNameOrLabel() {
     return getLocator().toString();
   }
 
+  @Override
   public Class<?> getTargetClass() {
     return null;
   }
 
+  @Override
   public String getTargetClassName() {
     return null;
   }
 
   public ILocator getLocator() {
-    return _locator;
+    return locator;
   }
 
+  @Override
   public Object getAdapter(Class<?> adapter) {
     if (adapter == ILocator.class) {
       return getLocator();
@@ -52,9 +58,7 @@ public class IdentifierAdapter implements IWidgetIdentifier, IAdaptable, ILocato
     return Adapter.adapt(getLocator(), adapter);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return "IdentifierAdapter[" + getLocator() + "]";
   }

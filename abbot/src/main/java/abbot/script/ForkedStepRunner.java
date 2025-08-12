@@ -28,8 +28,8 @@ import java.util.StringTokenizer;
  */
 public class ForkedStepRunner extends StepRunner {
 
-  int LAUNCH_TIMEOUT = Properties.getProperty("abbot.runner.launch_delay", 60000, 0, 300000);
-  int TERMINATE_TIMEOUT = Properties.getProperty("abbot.runner.terminate_delay", 30000, 0, 300000);
+  private static final int LAUNCH_TIMEOUT = Properties.getProperty("abbot.runner.launch_delay", 60000, 0, 300000);
+  private static final int TERMINATE_TIMEOUT = Properties.getProperty("abbot.runner.terminate_delay", 30000, 0, 300000);
 
   private static ServerSocket serverSocket = null;
   private Process process = null;
@@ -85,9 +85,6 @@ public class ForkedStepRunner extends StepRunner {
       }
     }
 
-    /**
-     * Handle running a script as a forked process.
-     */
     public void launchSlave(int port) {
       // make connection back to originating port
       try {
@@ -537,9 +534,6 @@ public class ForkedStepRunner extends StepRunner {
     }
   }
 
-  /**
-   * Provide means to control execution and feedback of a script in a separate process.
-   */
   public static void main(String[] args) {
     args = Log.init(args);
     try {

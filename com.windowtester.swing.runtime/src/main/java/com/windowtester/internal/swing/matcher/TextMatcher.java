@@ -18,7 +18,11 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class TextMatcher {
 
-  public static IWidgetMatcher create(String text) {
+  private TextMatcher() {
+    // hide public constructor
+  }
+
+  public static IWidgetMatcher<?> create(String text) {
     return new AdapterFactory()
         .adapt(new com.windowtester.internal.finder.matchers.swing.TxtMatcher(text));
   }

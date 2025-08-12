@@ -16,7 +16,7 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Record simple clicks on a Button component. <p>
@@ -27,9 +27,7 @@ public class ButtonRecorder extends ComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * Don't need to store any position or modifier information.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
     // windowtester semantic event generation
     IUISemanticEvent semanticEvent =
@@ -37,6 +35,6 @@ public class ButtonRecorder extends ComponentRecorder {
     notify(semanticEvent);
 
     ComponentReference cr = getResolver().addComponent(target);
-    return new Action(getResolver(), null, "actionClick", new String[] {cr.getID()});
+    return new Action(getResolver(), null, "actionClick", new String[]{cr.getID()});
   }
 }

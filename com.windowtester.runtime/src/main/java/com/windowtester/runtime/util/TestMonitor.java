@@ -12,33 +12,31 @@ package com.windowtester.runtime.util;
 
 import com.windowtester.internal.debug.Logger;
 import com.windowtester.internal.runtime.junit.core.ITestIdentifier;
-import com.windowtester.internal.runtime.test.JUnit3TestId;
+import com.windowtester.internal.runtime.test.JUnitTestId;
 import com.windowtester.internal.runtime.test.NoRunningTestId;
 import com.windowtester.internal.runtime.test.TestId;
-import junit.framework.TestCase;
 
 /**
  * Monitors the current test run.
  */
 public class TestMonitor {
 
-  private volatile ITestIdentifier _runningTest = noTest();
+  private static TestMonitor monitor;
 
-  /* Singleton instance */
-  static TestMonitor _monitor;
+  private volatile ITestIdentifier runningTest = noTest();
 
   /**
    * @return Singleton monitor instance
    */
   public static TestMonitor getInstance() {
-    if (_monitor == null) {
-      _monitor = new TestMonitor();
+    if (monitor == null) {
+      monitor = new TestMonitor();
     }
-    return _monitor;
+    return monitor;
   }
 
   private ITestIdentifier getRunningTest() {
-    return _runningTest;
+    return runningTest;
   }
 
   /**
@@ -49,7 +47,7 @@ public class TestMonitor {
   }
 
   private void setRunningTest(ITestIdentifier runningTest) {
-    _runningTest = runningTest;
+    this.runningTest = runningTest;
   }
 
   // NOTE: arguments must not be null
@@ -64,22 +62,23 @@ public class TestMonitor {
   }
 
   /**
-   * Notify the TestMonitor that a new TestCase is starting. Passing <code>null</code> signals that a test has ended
-   * (or that none is running).
+   * Notify the TestMonitor that a new TestCase is starting. Passing <code>null</code> signals that
+   * a test has ended (or that none is running).
    *
    * @deprecated use {@link TestMonitor#beginTest(ITestIdentifier)} instead.
    */
-  public void beginTestCase(TestCase testcase) {
-    if (testcase == null) {
-      endTestCase(); // set test to none
+  public void beginTestCase(String id, String name) {
+    if (id == null) {
+      // set test to none
+      endTestCase();
     } else {
-      beginTest(new JUnit3TestId(testcase));
+      beginTest(new JUnitTestId(id, name));
     }
   }
 
   /**
-   * Notify the TestMonitor that a new Test is starting. Passing <code>null</code> signals that a test has ended (or
-   * that none is running).
+   * Notify the TestMonitor that a new Test is starting. Passing <code>null</code> signals that a
+   * test has ended (or that none is running).
    */
   public void beginTest(ITestIdentifier testId) {
     if (testId == null) {
@@ -103,13 +102,13 @@ public class TestMonitor {
   }
 
   /**
-   * Check to see if a test is running.  This can be used to see whether the runtime is executing in the context of a
-   * test run or a recording session.
+   * Check to see if a test is running. This can be used to see whether the runtime is executing in
+   * the context of a test run or a recording session.
    *
    * @return true if a UITestCase is running
    */
   public boolean isTestRunning() {
-    return _runningTest != noTest();
+    return runningTest != noTest();
   }
 
   private static NoRunningTestId noTest() {

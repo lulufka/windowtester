@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2012 Google, Inc.
+ *  Copyright (component) 2012 Google, Inc.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -30,16 +30,18 @@ import com.windowtester.internal.tester.swing.JListTester;
 import com.windowtester.internal.tester.swing.JTableTester;
 import com.windowtester.internal.tester.swing.JTreeTester;
 import com.windowtester.runtime.WidgetSearchException;
+import com.windowtester.runtime.util.StringComparator;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -62,13 +64,13 @@ public class UIDriverSwing {
   /**
    * Base delay setting.
    */
-  public static int defaultTimeout =
+  private static final int DEFAULT_TIMEOUT =
       Properties.getProperty("abbot.robot.default_delay", 30000, 0, 60000);
 
   private static final int SLEEP_INTERVAL = 10;
 
   public static int getDefaultTimeout() {
-    return defaultTimeout;
+    return DEFAULT_TIMEOUT;
   }
 
   public static int getDefaultSleepInterval() {
@@ -79,147 +81,145 @@ public class UIDriverSwing {
   private int dragSrcX;
   private int dragSrcY;
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Constructor
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
   public UIDriverSwing() {
     ComponentTester.setTester(JList.class, new JListTester());
     ComponentTester.setTester(JTree.class, new JTreeTester());
     ComponentTester.setTester(JTable.class, new JTableTester());
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Click actions
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
-  public Component click(int clickCount, Component w, int x, int y, int mask) {
-    ComponentTester tester = ComponentTester.getTester(w);
-    dragSource = w;
+  public Component click(
+      int clickCount,
+      Component component,
+      int x,
+      int y,
+      int mask) {
+    var tester = ComponentTester.getTester(component);
+    dragSource = component;
     dragSrcX = x;
     dragSrcY = y;
-    tester.actionClick(w, x, y, mask, clickCount);
+    tester.actionClick(component, x, y, mask, clickCount);
 
-    return w;
+    return component;
   }
 
-  public Component click(Component owner, String labelOrPath) throws ActionFailedException {
-
+  public Component click(
+      Component component,
+      String labelOrPath) throws ActionFailedException {
     // not checking for awt.MenuItem, not a subclass of Component
-    ComponentTester tester = ComponentTester.getTester(owner);
-    dragSource = owner;
+    var tester = ComponentTester.getTester(component);
+    dragSource = component;
 
-    if (owner instanceof JTable) {
-      JTableLocation location = new JTableLocation(labelOrPath);
-      Point cellLocation = location.getPoint(owner);
+    if (component instanceof JTable) {
+      var location = new JTableLocation(labelOrPath);
+      var cellLocation = location.getPoint(component);
       dragSrcX = cellLocation.x;
       dragSrcY = cellLocation.y;
-      ((JTableTester) tester).actionSelectCell(owner, new JTableLocation(labelOrPath));
+      ((JTableTester) tester).actionSelectCell(component, new JTableLocation(labelOrPath));
     }
-    if (owner instanceof JTabbedPane) {
-      ((JTabbedPaneTester) tester).actionSelectTab(owner, new JTabbedPaneLocation(labelOrPath));
+    if (component instanceof JTabbedPane) {
+      ((JTabbedPaneTester) tester).actionSelectTab(component, new JTabbedPaneLocation(labelOrPath));
     }
-    return owner;
+    return component;
   }
 
-  public Component clickTreeItem(int clickCount, Component owner, String path, int mask) {
+  public Component clickTreeItem(int clickCount, Component component, String path, int mask) {
     //		 convert string to TreePath
-    String[] nodeNames = path.split("/");
-    TreePath treePath = new TreePath(nodeNames);
-    dragSource = owner;
-    JTreeLocation location = new JTreeLocation(treePath);
+    var nodeNames = path.split("/");
+    var treePath = new TreePath(nodeNames);
+    dragSource = component;
+    var location = new JTreeLocation(treePath);
 
-    ComponentTester tester = ComponentTester.getTester(owner);
-    ((JTreeTester) tester).actionMakeVisible(owner, treePath);
+    var tester = ComponentTester.getTester(component);
+    ((JTreeTester) tester).actionMakeVisible(component, treePath);
     try {
-      Point point = location.getPoint(owner);
+      var point = location.getPoint(component);
       dragSrcX = point.x;
       dragSrcY = point.y;
     } catch (LocationUnavailableException e) {
       // do nothing
-      System.out.println("Caught location unaviable exception");
     }
-    ((JTreeTester) tester).actionSelectPath(clickCount, owner, treePath, mask);
-    return owner;
+    ((JTreeTester) tester).actionSelectPath(clickCount, component, treePath, mask);
+    return component;
   }
 
   /**
    * click on table cell selection based on row and col
    *
-   * @param owner
-   * @param row
-   * @param col
+   * @param table table to click on
+   * @param row   row index
+   * @param col   column index
    * @return TODO: check with given string, if any whether we have the right cell
    */
-  public Component clickTable(int clickCount, JTable owner, int row, int col, int mask) {
-    ComponentTester tester = ComponentTester.getTester(owner);
-    JTableLocation location = new JTableLocation(row, col);
-    Point cellLocation = location.getPoint(owner);
+  public Component clickTable(int clickCount, JTable table, int row, int col, int mask) {
+    var tester = ComponentTester.getTester(table);
+    var location = new JTableLocation(row, col);
+    var cellLocation = location.getPoint(table);
     dragSrcX = cellLocation.x;
     dragSrcY = cellLocation.y;
-    dragSource = owner;
-    ((JTableTester) tester).actionSelectCell(clickCount, owner, new JTableLocation(row, col), mask);
-    return owner;
+    dragSource = table;
+    ((JTableTester) tester).actionSelectCell(clickCount, table, new JTableLocation(row, col), mask);
+    return table;
   }
 
   public Component clickMenuItem(JMenuItem owner) {
-    ComponentTester tester = ComponentTester.getTester(owner);
+    var tester = ComponentTester.getTester(owner);
     tester.actionSelectMenuItem(owner);
     return owner;
   }
 
-  public Component clickListItem(int clickCount, JList owner, String labelOrPath, int mask)
-      throws ActionFailedException {
-    ComponentTester tester = ComponentTester.getTester(owner);
-    dragSource = owner;
-    JListLocation location = new JListLocation(labelOrPath);
-    Point point = location.getPoint(owner);
+  public Component clickListItem(
+      int clickCount,
+      JList<?> list,
+      String labelOrPath,
+      int mask) throws ActionFailedException {
+    var tester = ComponentTester.getTester(list);
+    dragSource = list;
+    var location = new JListLocation(labelOrPath);
+    var point = location.getPoint(list);
     dragSrcX = point.x;
     dragSrcY = point.y;
-    ((JListTester) tester).actionMultipleClick(owner, clickCount, labelOrPath, mask);
-    return owner;
+    ((JListTester) tester).actionMultipleClick(list, clickCount, labelOrPath, mask);
+    return list;
   }
 
-  public Component clickComboBox(JComboBox owner, String labelOrPath, int clickCount)
-      throws ActionFailedException {
-    ComponentTester tester = ComponentTester.getTester(owner);
+  public Component clickComboBox(
+      JComboBox<?> combobox,
+      String labelOrPath,
+      int clickCount) throws ActionFailedException {
+    var tester = ComponentTester.getTester(combobox);
     if (labelOrPath != null) {
-      ((JComboBoxTester) tester).actionSelectItem(owner, labelOrPath);
+      ((JComboBoxTester) tester).actionSelectItem(combobox, labelOrPath);
     } else {
-      tester.actionClick(owner, new ComponentLocation(), InputEvent.BUTTON1_DOWN_MASK, clickCount);
+      tester.actionClick(combobox, new ComponentLocation(), InputEvent.BUTTON1_DOWN_MASK,
+          clickCount);
     }
-    return owner;
+    return combobox;
   }
 
   /**
    * Click at a particular position in a text component
    *
-   * @param owner
-   * @param caret
-   * @return
+   * @param textComponent text component
+   * @param caret         caret position
+   * @return the text component
    */
-  public Component clickTextComponent(JTextComponent owner, int caret) {
-    ComponentTester tester = ComponentTester.getTester(owner);
+  public Component clickTextComponent(JTextComponent textComponent, int caret) {
+    var tester = ComponentTester.getTester(textComponent);
     try {
-      Rectangle rect = owner.modelToView(caret);
-      dragSource = owner;
-      dragSrcX = rect.x + rect.width / 2;
-      dragSrcY = rect.y + rect.height / 2;
+      var rect = textComponent.modelToView2D(caret);
+      dragSource = textComponent;
+      dragSrcX = (int) (rect.getX() + rect.getWidth() / 2);
+      dragSrcY = (int) (rect.getY() + rect.getHeight() / 2);
     } catch (BadLocationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // do nothing
     }
-    ((JTextComponentTester) tester).actionClick(owner, caret);
-    return owner;
+    ((JTextComponentTester) tester).actionClick(textComponent, caret);
+    return textComponent;
   }
 
   public Component contextClick(Component widget, String path)
       throws WidgetSearchException, ActionFailedException {
-    ComponentTester tester = ComponentTester.getTester(widget);
+    var tester = ComponentTester.getTester(widget);
     try {
       tester.actionSelectPopupMenuItem(widget, path);
     } catch (ComponentMissingException e) {
@@ -230,7 +230,7 @@ public class UIDriverSwing {
 
   public Component contextClick(Component widget, int x, int y, String path)
       throws WidgetSearchException, ActionFailedException {
-    ComponentTester tester = ComponentTester.getTester(widget);
+    var tester = ComponentTester.getTester(widget);
     try {
       tester.actionSelectPopupMenuItem(widget, x, y, path);
     } catch (ComponentMissingException e) {
@@ -242,60 +242,58 @@ public class UIDriverSwing {
   /**
    * Context click on tree node
    *
-   * @param widget
-   * @param itemPath
-   * @param menuPath
-   * @return
-   * @throws ComponentMissingException
-   * @throws ActionFailedException
+   * @param tree     tree component
+   * @param itemPath tree item path
+   * @param menuPath menu path
+   * @return tree component
+   * @throws ComponentMissingException in case of error
+   * @throws ActionFailedException     in case of error
    */
-  public Component contextClickTree(JTree widget, String itemPath, String menuPath)
+  public Component contextClickTree(JTree tree, String itemPath, String menuPath)
       throws ComponentMissingException, ActionFailedException {
-    String[] nodeNames = itemPath.split("/");
-    TreePath path = new TreePath(nodeNames);
-    ComponentTester tester = ComponentTester.getTester(widget);
-    ((JTreeTester) tester).actionMakeVisible(widget, path);
-    tester.actionSelectPopupMenuItem(widget, new JTreeLocation(path), menuPath);
-    return widget;
+    var nodeNames = itemPath.split("/");
+    var path = new TreePath(nodeNames);
+    var tester = ComponentTester.getTester(tree);
+    ((JTreeTester) tester).actionMakeVisible(tree, path);
+    tester.actionSelectPopupMenuItem(tree, new JTreeLocation(path), menuPath);
+    return tree;
   }
 
   /**
    * Context click on a table
    *
-   * @param widget
-   * @param row
-   * @param col
-   * @param menuPath
-   * @return
-   * @throws ComponentMissingException
-   * @throws ActionFailedException
+   * @param table       table component
+   * @param rowIndex    row index
+   * @param columnIndex column index
+   * @param menuPath    menu path
+   * @return table component
+   * @throws ComponentMissingException in case of error
+   * @throws ActionFailedException     in case of error
    */
-  public Component contextClickTable(JTable widget, int row, int col, String menuPath)
+  public Component contextClickTable(
+      JTable table,
+      int rowIndex,
+      int columnIndex,
+      String menuPath)
       throws ComponentMissingException, ActionFailedException {
-    ComponentTester tester = ComponentTester.getTester(widget);
-    JTableLocation location = new JTableLocation(row, col);
-    tester.actionShowPopupMenu(widget, location);
-    tester.actionSelectPopupMenuItem(widget, location, menuPath);
-    return widget;
+    var tester = ComponentTester.getTester(table);
+    var location = new JTableLocation(rowIndex, columnIndex);
+    tester.actionShowPopupMenu(table, location);
+    tester.actionSelectPopupMenuItem(table, location, menuPath);
+    return table;
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Primitive mouse action commands
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
-  public void mouseMove(Component w) {
-    mouseMove(w, w.getWidth() / 2, w.getHeight() / 2);
+  public void mouseMove(Component component) {
+    mouseMove(component, component.getWidth() / 2, component.getHeight() / 2);
   }
 
-  public void mouseMove(Component w, int x, int y) {
-    ComponentTester tester = ComponentTester.getTester(w);
-    tester.mouseMove(w, x, y);
+  public void mouseMove(Component component, int x, int y) {
+    var tester = ComponentTester.getTester(component);
+    tester.mouseMove(component, x, y);
   }
 
   public void mouseMove(int x, int y) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.mouseMove(x, y);
   }
 
@@ -306,7 +304,7 @@ public class UIDriverSwing {
    * @since 3.8.1
    */
   public void mouseDown(int accel) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.mousePress(accel);
   }
 
@@ -317,21 +315,15 @@ public class UIDriverSwing {
    * @since 3.8.1
    */
   public void mouseUp(int accel) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.mouseRelease(accel);
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Drag and drop actions
-  //
-  ///////////////////////////////////////////////////////////////////////////
 
   /**
    * @since 3.8.1
    */
   public void doDragTo(Component target, int x, int y) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.drag(dragSource, dragSrcX, dragSrcY, InputEvent.BUTTON1_DOWN_MASK);
     tester.mouseMove(target, x, y);
     tester.drop(target, x, y);
@@ -341,97 +333,85 @@ public class UIDriverSwing {
   /**
    * @since 3.8.1
    */
-  public Point getLocation(Component owner, String path) {
-    if (owner instanceof JList) {
-      JListLocation location = new JListLocation(path);
-      return location.getPoint(owner);
+  public Point getLocation(Component component, String path) {
+    if (component instanceof JList) {
+      var location = new JListLocation(path);
+      return location.getPoint(component);
     }
-    if (owner instanceof JTree) {
-      String[] nodeNames = path.split("/");
-      JTreeLocation location = new JTreeLocation(new TreePath(nodeNames));
-      return location.getPoint(owner);
+    if (component instanceof JTree) {
+      var nodeNames = path.split("/");
+      var location = new JTreeLocation(new TreePath(nodeNames));
+      return location.getPoint(component);
     }
-    ComponentLocation location = new ComponentLocation();
-    return location.getPoint(owner);
+    var location = new ComponentLocation();
+    return location.getPoint(component);
   }
 
   /**
    * @since 3.8.1
    */
-  public Point getLocation(Component owner, int row, int col) {
-    JTableLocation location = new JTableLocation(row, col);
-    return location.getPoint(owner);
+  public Point getLocation(Component component, int rowIndex, int columnIndex) {
+    var location = new JTableLocation(rowIndex, columnIndex);
+    return location.getPoint(component);
   }
 
   /**
    * @since 3.8.1
    */
-  public Point getLocation(Component owner, int index) {
-    JTextComponentTester tester =
-        (JTextComponentTester) ComponentTester.getTester(JTextComponent.class);
-    return tester.scrollToVisible(owner, index);
+  public Point getLocation(Component component, int index) {
+    var tester = (JTextComponentTester) ComponentTester.getTester(JTextComponent.class);
+    return tester.scrollToVisible(component, index);
   }
 
   /**
    * @since 3.8.1
    */
-  public Point getLocation(Component owner) {
-    ComponentLocation location = new ComponentLocation();
-    return location.getPoint(owner);
+  public Point getLocation(Component component) {
+    var location = new ComponentLocation();
+    return location.getPoint(component);
   }
-
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Text entry actions
-  //
-  ///////////////////////////////////////////////////////////////////////////
 
   public void enterText(String txt) throws ActionFailedException {
     // get the component and the tester
-    ComponentTester tester = ComponentTester.getTester(Component.class);
-    Component widget = tester.findFocusOwner();
-    ComponentTester testerw = ComponentTester.getTester(widget);
-    //		if(widget instanceof JTextComponent){
-    //			((JTextComponentTester) testerw).actionEnterText(widget,txt);
-    //		}
-    //		else
+    var tester = ComponentTester.getTester(Component.class);
+    var widget = tester.findFocusOwner();
     tester.actionKeyString(widget, txt);
   }
 
   // TODO: this needs to be fixed
   public void keyClick(int key) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
 
-    int[] keys = KeyStrokeDecoder.extractKeys(key);
-    int modifiers = KeyStrokeDecoder.extractModifiers(key);
-    for (int i = 0; i < keys.length; i++) tester.actionKeyStroke(keys[i], modifiers);
+    var extractedKeys = KeyStrokeDecoder.extractKeys(key);
+    var modifiers = KeyStrokeDecoder.extractModifiers(key);
+    for (int extractedKey : extractedKeys) {
+      tester.actionKeyStroke(extractedKey, modifiers);
+    }
   }
 
   public void keyClick(char key) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.keyStroke(key);
   }
 
   public void keyClick(int modifiers, char c) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
-    boolean shift =
-        (modifiers & InputEvent.SHIFT_DOWN_MASK) != 0
-            || (modifiers & InputEvent.SHIFT_DOWN_MASK) != 0;
-    boolean alt =
-        (modifiers & InputEvent.ALT_DOWN_MASK) != 0 || (modifiers & InputEvent.ALT_DOWN_MASK) != 0;
-    boolean ctrl =
-        (modifiers & InputEvent.CTRL_DOWN_MASK) != 0
-            || (modifiers & InputEvent.CTRL_DOWN_MASK) != 0;
+    var tester = ComponentTester.getTester(Component.class);
 
+    var shift = (modifiers & InputEvent.SHIFT_DOWN_MASK) != 0;
     if (shift) {
       tester.actionKeyPress(KeyEvent.VK_SHIFT);
     }
+
+    var alt = (modifiers & InputEvent.ALT_DOWN_MASK) != 0;
     if (alt) {
       tester.actionKeyPress(KeyEvent.VK_ALT);
     }
+
+    var ctrl = (modifiers & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0;
     if (ctrl) {
       tester.actionKeyPress(KeyEvent.VK_CONTROL);
     }
+
     tester.keyStroke(c);
     waitForIdle();
 
@@ -446,18 +426,12 @@ public class UIDriverSwing {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // "Meta" actions
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
    * Set the focus on to the given component.
    */
-  public void setFocus(Component widget) {
+  public void setFocus(Component component) {
     ComponentTester tester = ComponentTester.getTester(Component.class);
-    tester.actionFocus(widget);
+    tester.actionFocus(component);
   }
 
   public void close(Window window) {
@@ -465,25 +439,20 @@ public class UIDriverSwing {
     tester.close(window);
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Timing
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   public void waitForIdle() {
     ComponentTester tester = ComponentTester.getTester(Component.class);
     tester.actionWaitForIdle();
   }
 
-  public void waitForWindowShowing(final String windowName, final int timeout) {
-
+  public void waitForWindowShowing(String windowName, int timeout) {
     wait(
         new Condition() {
+          @Override
           public boolean test() {
             return assertComponentShowing(windowName);
           }
 
+          @Override
           public String toString() {
             return windowName + " to show";
           }
@@ -493,54 +462,72 @@ public class UIDriverSwing {
 
   boolean boolT;
 
-  private synchronized boolean assertComponentShowing(final String title) {
+  private boolean assertComponentShowing(String title) {
+    var components = collectComponents();
+    for (Component component : components) {
+      if (component instanceof Frame frame
+          && isFrameShowing(title, frame)) {
+        return true;
+      }
+      if (component instanceof Dialog dialog
+          && isDialogShowing(title, dialog)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-    boolT = false;
-    //		Collection f = WindowTracker.getTracker().getRootWindows();
-    ArrayList componentList = new ArrayList();
-    AWTHierarchy h = new AWTHierarchy();
-    final Iterator rootIter = h.getRoots().iterator();
-    while (rootIter.hasNext()) {
-      componentList.addAll(h.getComponents((Component) rootIter.next()));
-    }
-    componentList.addAll(h.getRoots());
-    //		f = h.getRoots();
-    final Iterator compIter = componentList.iterator();
-    while (compIter.hasNext()) {
-      Component c = (Component) compIter.next();
-      if (c instanceof Frame) {
-        Frame w = (Frame) c;
-        if (w.isDisplayable() && (w.getTitle().equals(title))) {
-          boolT = w.isVisible();
-        }
-      }
-      if (c instanceof Dialog) {
-        Dialog d = (Dialog) c;
-        if (d.isDisplayable() && (d.getTitle().equals(title))) {
-          boolT = d.isVisible();
-        }
-      }
-    }
-    return boolT;
+  private boolean isDialogShowing(String expectedTitle, Dialog dialog) {
+    var actualTitle = dialog.getTitle();
+    return isComponentShowing(expectedTitle, actualTitle, dialog);
+  }
+
+  private boolean isFrameShowing(String expectedTitle, Frame window) {
+    var actualTitle = window.getTitle();
+    return isComponentShowing(expectedTitle, actualTitle, window);
+  }
+
+  private boolean isComponentShowing(
+      String expectedTitle,
+      String actualTitle,
+      Window window) {
+    return StringComparator.matches(actualTitle, expectedTitle)
+        && window.isDisplayable()
+        && window.isVisible()
+        && window.isActive();
+  }
+
+  private List<Component> collectComponents() {
+    var hierarchy = new AWTHierarchy();
+    var components = hierarchy.getRoots().stream()
+        .map(hierarchy::getComponents)
+        .flatMap(Collection::stream)
+        .toList();
+
+    return Stream
+        .concat(
+            components.stream(),
+            hierarchy.getRoots().stream())
+        .toList();
   }
 
   public void pause(int ms) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.actionDelay(ms);
   }
 
   public void wait(Condition condition) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.wait(condition);
   }
 
   public void wait(Condition condition, long timeout) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.wait(condition, timeout);
   }
 
   public void wait(Condition condition, long timeout, int interval) {
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+    var tester = ComponentTester.getTester(Component.class);
     tester.wait(condition, timeout, interval);
   }
 }

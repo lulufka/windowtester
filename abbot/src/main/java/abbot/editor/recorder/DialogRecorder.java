@@ -7,7 +7,7 @@ import abbot.script.Step;
 import java.awt.*;
 
 /**
- * Record basic semantic events you might find on an Window. <p>
+ * Record basic semantic events you might find on a Window.
  */
 public class DialogRecorder extends WindowRecorder {
 

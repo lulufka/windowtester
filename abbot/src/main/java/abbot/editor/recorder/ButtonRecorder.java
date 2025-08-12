@@ -7,7 +7,7 @@ import abbot.script.Step;
 import java.awt.*;
 
 /**
- * Record simple clicks on a Button component. <p>
+ * Record simple clicks on a Button component.
  */
 public class ButtonRecorder extends ComponentRecorder {
 

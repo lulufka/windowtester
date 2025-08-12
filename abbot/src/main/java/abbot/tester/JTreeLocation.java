@@ -49,21 +49,10 @@ public class JTreeLocation extends ComponentLocation {
     this.inExpansion = inExpansion;
   }
 
-  /**
-   * Create a JTreeLocation corresponding to the given TreePath.  The TreePath must consist of usable String
-   * representations that can be used in later comparisons.  The default &ltclassname&gt;@&lt;hashcode&gt; returned by
-   * {@link Object#toString()} is not usable; if that is all that is available, refer to the row number instead.
-   */
   public JTreeLocation(TreePath treePath) {
     this(treePath, false);
   }
 
-  /**
-   * Create a JTreeLocation corresponding to the given TreePath.  The TreePath must consist of usable String
-   * representations that can be used in later comparisons.  The default &lt;classname&gt;@&lt;hashcode&gt; format
-   * returned by {@link Object#toString()} is not usable; if that is all that is available, refer to the row number
-   * instead.
-   */
   public JTreeLocation(TreePath treePath, boolean inExpansion) {
     this.treePath = treePath;
     this.inExpansion = inExpansion;
@@ -272,21 +261,25 @@ public class JTreeLocation extends ComponentLocation {
    */
   public static TreePath findMatchingPath(JTree tree, TreePath path) {
     Object[] input = path.getPath();
-    TreeModel model = tree.getModel();
-    Object root = model.getRoot();
+    var model = tree.getModel();
+    var root = model.getRoot();
+
     // If the root is not visible and it doesn't match the first path
     // element, start the path with the invisible root.
     if (!tree.isRootVisible() && !matchesLastComponent(tree, input[0], new TreePath(root))) {
-      Object[] tmp = new Object[input.length + 1];
+      var tmp = new Object[input.length + 1];
       System.arraycopy(input, 0, tmp, 1, input.length);
-      tmp[0] = null; // null always matches root
+      // null always matches root
+      tmp[0] = null;
       input = tmp;
     }
-    TreePath realPath = findMatchingPath(tree, new TreePath(root), input);
+
+    var realPath = findMatchingPath(tree, new TreePath(root), input);
     if (realPath != null) {
       return realPath;
     }
-    String msg = Strings.get("tester.JTree.path_not_found", new Object[] {path});
+
+    var msg = Strings.get("tester.JTree.path_not_found", new Object[] {path});
     throw new LocationUnavailableException(msg);
   }
 

@@ -16,6 +16,7 @@ import com.windowtester.runtime.locator.IWidgetReference;
  * A facade for an instance of {@link WTRuntimeFactory}
  */
 abstract class WTRuntimeFactoryReference {
+
   protected static final String FACTORY_TAG = "factory";
   protected static final String CLASS_TAG = "class";
   protected static final String OS_TAG = "os";
@@ -25,9 +26,11 @@ abstract class WTRuntimeFactoryReference {
   /**
    * Answer true if the values is <code>null</code> or if the values contains the specified key
    *
-   * @param key    the key such as the operation system (e.g. "win32"), the windowing system, or the processor
-   * @param values a comma separated list of operating systems (or windowing systems, or processors) for which the
-   *               factory is valid or <code>null</code> if the factory is valid for all
+   * @param key    the key such as the operation system (e.g. "win32"), the windowing system, or the
+   *               processor
+   * @param values a comma separated list of operating systems (or windowing systems, or processors)
+   *               for which the factory is valid or <code>null</code> if the factory is valid for
+   *               all
    * @return <code>true</code> if the factory is valid for the specified aspect of this
    * execution environment
    */
@@ -35,10 +38,11 @@ abstract class WTRuntimeFactoryReference {
     if (key == null || values == null) {
       return true;
     }
-    for (String value : values.split(","))
+    for (String value : values.split(",")) {
       if (key.equals(value.trim())) {
         return true;
       }
+    }
     return false;
   }
 
@@ -55,11 +59,12 @@ abstract class WTRuntimeFactoryReference {
   private static final Object LOCK = new Object();
 
   /**
-   * Instantiates a new {@link IWidgetReference} for the specified widget if possible, or returns <code>null</code> if
-   * not.
+   * Instantiates a new {@link IWidgetReference} for the specified widget if possible, or returns
+   * <code>null</code> if not.
    *
    * @param widget the widget
-   * @return the widget reference or <code>null</code> if no widget reference can be created for the specified widget.
+   * @return the widget reference or <code>null</code> if no widget reference can be created for the
+   * specified widget.
    */
   IWidgetReference createReference(Object widget) {
     return getFactory().createReference(widget);
@@ -95,8 +100,8 @@ abstract class WTRuntimeFactoryReference {
   abstract WTRuntimeFactory createFactory() throws Exception;
 
   /**
-   * Log the failure to create a factory for the receiver. Default implementation prints a stack trace to standard
-   * error. Subclasses may override or extend.
+   * Log the failure to create a factory for the receiver. Default implementation prints a stack
+   * trace to standard error. Subclasses may override or extend.
    *
    * @param exception the exception (not <code>null</code>)
    */
@@ -107,10 +112,5 @@ abstract class WTRuntimeFactoryReference {
   /**
    * A placeholder used when a factory reference fails to instantiate its factory
    */
-  private static final WTRuntimeFactory NO_OP_FACTORY =
-      new WTRuntimeFactory() {
-        public IWidgetReference createReference(Object widget) {
-          return null;
-        }
-      };
+  private static final WTRuntimeFactory NO_OP_FACTORY = widget -> null;
 }

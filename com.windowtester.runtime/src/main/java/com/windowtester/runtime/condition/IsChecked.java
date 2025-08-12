@@ -15,8 +15,8 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to determine if the underlying object is checked. See
- * {@link IsCheckedCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to determine if the underlying
+ * object is checked. See {@link IsCheckedCondition} for typical usage.
  */
 public interface IsChecked extends ILocator {
 
@@ -29,10 +29,12 @@ public interface IsChecked extends ILocator {
   boolean isChecked(IUIContext ui) throws WidgetSearchException;
 
   /**
-   * Resolve the locator to a single object and determine if the parent tree/table uses the SWT.CHECK style bit
+   * Resolve the locator to a single object and determine if the parent tree/table uses the
+   * SWT.CHECK style bit
    *
    * @param ui the UI context in which to find the widgets
-   * @return <code>true</code> if the SWT.CHECK style bit is set in the parent tree/table, else false
+   * @return <code>true</code> if the SWT.CHECK style bit is set in the parent tree/table, else
+   * false
    */
   boolean isCheckStyleBitSet(IUIContext ui) throws WidgetSearchException;
 }

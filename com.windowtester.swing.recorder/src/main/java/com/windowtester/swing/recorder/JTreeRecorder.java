@@ -17,10 +17,13 @@ import abbot.script.Step;
 import abbot.tester.JTreeTester;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JTree;
 
 /**
  * Record basic semantic events you might find on an JTree. <p>
@@ -30,21 +33,20 @@ import javax.swing.*;
  * Added windowtester semantic event generation
  */
 public class JTreeRecorder extends JComponentRecorder {
+
   public JTreeRecorder(Resolver resolver) {
     super(resolver);
   }
 
-  /**
-   * Normally, a click in a tree results in selection of a given row.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
-
     String mask = null;
 
     JTree tree = (JTree) target;
     ComponentReference cr = getResolver().addComponent(target);
     String methodName = "actionSelectRow";
-    ArrayList args = new ArrayList();
+
+    List<String> args = new ArrayList<>();
     args.add(cr.getID());
     args.add(getLocationArgument(target, x, y));
     if (tree.getRowForLocation(x, y) == -1) {
@@ -54,7 +56,8 @@ public class JTreeRecorder extends JComponentRecorder {
         methodName = "actionClick";
       }
     }
-    if ((mods != 0 && mods != MouseEvent.BUTTON1_MASK) || count > 1) {
+
+    if ((mods != 0 && mods != InputEvent.BUTTON1_MASK) || count > 1) {
       // using methodName as indication for generation
       // of windowtester semantic events
       // methodName = "actionClick";
@@ -68,7 +71,6 @@ public class JTreeRecorder extends JComponentRecorder {
     if (methodName.equals("actionToggleRow")) {
       // do nothing, ignore tree expand/collapse
     } else if (!methodName.equals("actionClick")) {
-      //  else {
       IUISemanticEvent semanticEvent =
           UISemanticEventFactory.createTreeItemSelectionEvent(
               (JTree) target, x, y, mask, count, getButton());
@@ -79,13 +81,11 @@ public class JTreeRecorder extends JComponentRecorder {
         getResolver(),
         null,
         methodName,
-        (String[]) args.toArray(new String[args.size()]),
+        args.toArray(new String[0]),
         javax.swing.JTree.class);
   }
 
-  /**
-   * Override Handle context menu selections
-   */
+  @Override
   protected Step createPopupMenuSelection(Component invoker, int x, int y, Component menuItem) {
 
     IUISemanticEvent semanticEvent =

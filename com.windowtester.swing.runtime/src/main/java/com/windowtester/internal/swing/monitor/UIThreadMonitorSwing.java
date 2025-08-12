@@ -12,50 +12,39 @@ package com.windowtester.internal.swing.monitor;
 
 import com.windowtester.internal.runtime.monitor.UIThreadMonitorCommon;
 import com.windowtester.runtime.IUIContext;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
- * Monitors the UI Thread and notifies listeners if the UI thread is either hung or idle for an extended period of time.
- * This is accomplished by launching a background thread (minimum priority) that checks to see if the UI is responsive
- * and processing input. If the UI becomes unresponsive or idle for a period longer than expected, then the associated
- * {@link com.windowtester.runtime.monitor.IUIThreadMonitorListener} (see {@link #setListener(com.windowtester.runtime.monitor.IUIThreadMonitorListener)})
- * is notified.
+ * Monitors the UI Thread and notifies listeners if the UI thread is either hung or idle for an
+ * extended period of time. This is accomplished by launching a background thread (minimum priority)
+ * that checks to see if the UI is responsive and processing input. If the UI becomes unresponsive
+ * or idle for a period longer than expected, then the associated
+ * {@link com.windowtester.runtime.monitor.IUIThreadMonitorListener} (see
+ * {@link #setListener(com.windowtester.runtime.monitor.IUIThreadMonitorListener)}) is notified.
  */
 public class UIThreadMonitorSwing extends UIThreadMonitorCommon {
 
   /**
    * The types of AWT events that should occur during a test
    */
-  protected static final long EVENT_TYPES = AWTEvent.MOUSE_EVENT_MASK | AWTEvent.KEY_EVENT_MASK;
+  private static final long EVENT_TYPES = AWTEvent.MOUSE_EVENT_MASK | AWTEvent.KEY_EVENT_MASK;
 
   /**
    * An AWT Event Listener
    */
-  public final AWTEventListener _awtEventListener =
-      new AWTEventListener() {
-        public void eventDispatched(AWTEvent event) {
-          markEventProcessed();
-          trace("event processed", event.getID());
-        }
+  private final AWTEventListener awtEventListener =
+      event -> {
+        markEventProcessed();
+        trace("event processed", event.getID());
       };
 
   /**
-   * A runnable to notice responsivenes of the UI thread.
+   * A runnable to notice responsiveness of the UI thread.
    */
-  public final Runnable _threadResponsiveRunnable =
-      new Runnable() {
-        public void run() {
-          markUIThreadResponsive();
-        }
-      };
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Constructor
-  //
-  // //////////////////////////////////////////////////////////////////////////
+  private final Runnable threadResponsiveRunnable = this::markUIThreadResponsive;
 
   /**
    * Construct a new instance to monitor the health of the user interface thread.
@@ -66,24 +55,20 @@ public class UIThreadMonitorSwing extends UIThreadMonitorCommon {
     super(uiContext);
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IUIThreadMonitor Accessors
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
   /**
    * Add event listeners to monitor events being processed by the UI.
    */
+  @Override
   protected void addEventListeners() {
-    Toolkit.getDefaultToolkit().addAWTEventListener(_awtEventListener, EVENT_TYPES);
+    Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, EVENT_TYPES);
   }
 
   /**
    * Remove the event listeners added to monitor events being processed by the UI.
    */
+  @Override
   protected void removeEventListeners() {
-    Toolkit.getDefaultToolkit().removeAWTEventListener(_awtEventListener);
+    Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
   }
 
   /**
@@ -91,25 +76,27 @@ public class UIThreadMonitorSwing extends UIThreadMonitorCommon {
    *
    * @return <code>true</code> if test has ended, else <code>false</code>
    */
+  @Override
   protected boolean hasTestEnded() {
     return getListener() == null;
   }
 
   /**
-   * Wait for up to one second to determine if the user interface thread is responsive and processing new events.
+   * Wait for up to one second to determine if the user interface thread is responsive and
+   * processing new events.
    *
    * @return <code>true</code> if the user interface thread is responsive, or
    * <code>false</code> if it has not processed any new events within the last
    * one second
    */
+  @Override
   protected boolean isUIThreadResponsive() {
-    synchronized (_lock) {
-      _uiThreadResponsive = false;
+    synchronized (lock) {
+      uiThreadResponsive = false;
     }
-    SwingUtilities.invokeLater(_threadResponsiveRunnable);
+    SwingUtilities.invokeLater(threadResponsiveRunnable);
     for (int i = 0; i < 100; i++) {
-      boolean b;
-      b = wasUIThreadResponsive();
+      var b = wasUIThreadResponsive();
       if (b) {
         break;
       }
@@ -119,15 +106,15 @@ public class UIThreadMonitorSwing extends UIThreadMonitorCommon {
         // ignored
       }
     }
-    synchronized (_lock) {
-      return _uiThreadResponsive;
+    synchronized (lock) {
+      return uiThreadResponsive;
     }
   }
 
   protected boolean wasUIThreadResponsive() {
     boolean b;
-    synchronized (_lock) {
-      b = _uiThreadResponsive;
+    synchronized (lock) {
+      b = uiThreadResponsive;
     }
     return b;
   }

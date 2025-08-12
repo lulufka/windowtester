@@ -27,97 +27,94 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
- * Abstract superclass providing common behavior for objects that monitor the UI Thread and notifies listeners if the UI
- * thread is either hung or idle for an extended period of time. Typically this is accomplished by launching a
- * background thread (minimum priority) that checks to see if the UI is responsive and processing input. If the UI
- * becomes unresponsive or idle for a period longer than expected, then the associated {@link
- * com.windowtester.runtime.monitor.IUIThreadMonitorListener} (see {@link com.windowtester.runtime.monitor.IUIThreadMonitor#setListener(com.windowtester.runtime.monitor.IUIThreadMonitorListener)})
+ * Abstract superclass providing common behavior for objects that monitor the UI Thread and notifies
+ * listeners if the UI thread is either hung or idle for an extended period of time. Typically this
+ * is accomplished by launching a background thread (minimum priority) that checks to see if the UI
+ * is responsive and processing input. If the UI becomes unresponsive or idle for a period longer
+ * than expected, then the associated
+ * {@link com.windowtester.runtime.monitor.IUIThreadMonitorListener} (see
+ * {@link
+ * com.windowtester.runtime.monitor.IUIThreadMonitor#setListener(com.windowtester.runtime.monitor.IUIThreadMonitorListener)})
  * is notified.
  */
 public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
+
   // Tracing Constants
   private static final int TRACE_UNINITIALIZED = 0;
   private static final int TRACE_OFF = 1;
   private static final int TRACE_ON = 2;
   private static final int TRACE_CONSOLE = 3;
 
-  private static int _traceMode = TRACE_UNINITIALIZED;
+  private static int traceMode = TRACE_UNINITIALIZED;
 
   /**
-   * The user interface context used by the receiver to handle conditions when the UI thread has been idle too long in
-   * an attempt to get the test running again.
+   * The user interface context used by the receiver to handle conditions when the UI thread has
+   * been idle too long in an attempt to get the test running again.
    */
-  private final IUIContext _uiContext;
+  private final IUIContext uiContext;
 
   /**
-   * The object to synchronize against when accessing the {@link #_listener}, {@link #_defaultExpectedDelay}, {@link
-   * #_uiThreadResponsive}, {@link #_uiEventProcessed} and {@link #_uiBusyUntil} fields.
+   * The object to synchronize against when accessing the {@link #listener},
+   * {@link #defaultExpectedDelay}, {@link #uiThreadResponsive}, {@link #uiEventProcessed} and
+   * {@link #uiBusyUntil} fields.
    */
-  protected final Object _lock = new Object();
+  protected final Object lock = new Object();
 
   /**
-   * The listener associated with the receiver that will be notified if the UI is no longer responsive and processing
-   * input. Synchronize against {@link #_lock} when accessing this field.
+   * The listener associated with the receiver that will be notified if the UI is no longer
+   * responsive and processing input. Synchronize against {@link #lock} when accessing this field.
    */
-  private IUIThreadMonitorListener _listener;
+  private IUIThreadMonitorListener listener;
 
   /**
-   * Default expected delay... 2 minutes unless overridden by a call to {@link #setDefaultExpectedDelay(long)}.
-   * Synchronize against {@link #_lock} when accessing this field.
+   * Default expected delay... 2 minutes unless overridden by a call to
+   * {@link #setDefaultExpectedDelay(long)}. Synchronize against {@link #lock} when accessing this
+   * field.
    */
-  private long _defaultExpectedDelay = 120000;
+  private long defaultExpectedDelay = 120_000;
 
   /**
-   * Flag indicating that the UI is responsive. Synchronize against {@link #_lock} when accessing this field.
+   * Flag indicating that the UI is responsive. Synchronize against {@link #lock} when accessing
+   * this field.
    */
-  protected boolean _uiThreadResponsive;
+  protected boolean uiThreadResponsive;
 
   /**
-   * Flag indicating that the UI is processing events. Synchronize against {@link #_lock} when accessing this field.
+   * Flag indicating that the UI is processing events. Synchronize against {@link #lock} when
+   * accessing this field.
    */
-  private boolean _uiEventProcessed;
+  private boolean uiEventProcessed;
 
   /**
-   * The system time before which the UI thread should have processed a new event. This is set as needed during test
-   * execution by calling {@link #expectDelay(long)}. Synchronize against {@link #_lock} when accessing this field.
+   * The system time before which the UI thread should have processed a new event. This is set as
+   * needed during test execution by calling {@link #expectDelay(long)}. Synchronize against
+   * {@link #lock} when accessing this field.
    */
-  private long _uiBusyUntil;
+  private long uiBusyUntil;
 
   /**
-   * Stack traces at time of UI inactivity generated by {@link #fireUITimeout(boolean)} and consumed by {@link
-   * #writeResults(PrintWriter, boolean)}
+   * Stack traces at time of UI inactivity generated by {@link #fireUITimeout(boolean)} and consumed
+   * by {@link #writeResults(PrintWriter, boolean)}
    */
   private String stackTraces;
 
   /**
-   * Screen capture at time of UI inactivity generated by {@link #fireUITimeout(boolean)} and consumed by {@link
-   * #writeResults(PrintWriter, boolean)}
+   * Screen capture at time of UI inactivity generated by {@link #fireUITimeout(boolean)} and
+   * consumed by {@link #writeResults(PrintWriter, boolean)}
    */
   private File screenCapture;
-
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Constructor
-  //
-  // //////////////////////////////////////////////////////////////////////////
 
   /**
    * Construct a new instance to monitor the health of the user interface thread.
    *
    * @param uiContext the user interface context (not <code>null</code>)
    */
-  public UIThreadMonitorCommon(IUIContext uiContext) {
+  protected UIThreadMonitorCommon(IUIContext uiContext) {
     if (uiContext == null) {
       throw new IllegalArgumentException();
     }
-    _uiContext = uiContext;
+    this.uiContext = uiContext;
   }
-
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Listener
-  //
-  // //////////////////////////////////////////////////////////////////////////
 
   /**
    * Answer the current thread monitor listener.
@@ -125,21 +122,17 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * @return the listener or <code>null</code> if none.
    */
   protected IUIThreadMonitorListener getListener() {
-    synchronized (_lock) {
-      return _listener;
+    synchronized (lock) {
+      return listener;
     }
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.windowtester.runtime2.monitor.IUIThreadMonitor#setListener(com.windowtester.runtime2.monitor.IUIThreadMonitorListener)
-   */
+  @Override
   public void setListener(IUIThreadMonitorListener newListener) {
     com.windowtester.runtime.monitor.IUIThreadMonitorListener oldListener;
-    synchronized (_lock) {
-      oldListener = _listener;
-      _listener = newListener;
+    synchronized (lock) {
+      oldListener = listener;
+      listener = newListener;
     }
     trace("setListener ", newListener);
     if (newListener != null) {
@@ -154,45 +147,38 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.windowtester.runtime2.monitor.IUIThreadMonitor#expectDelay(long)
-   */
+  @Override
   public void expectDelay(long millis) {
     long currentTime = System.currentTimeMillis();
-    synchronized (_lock) {
-      _uiBusyUntil = currentTime + Math.max(millis, _defaultExpectedDelay);
+    synchronized (lock) {
+      uiBusyUntil = currentTime + Math.max(millis, defaultExpectedDelay);
     }
     trace("expect delay ", millis);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.windowtester.runtime2.monitor.IUIThreadMonitor#setDefaultExpectedDelay(long)
-   */
+  @Override
   public void setDefaultExpectedDelay(long millis) {
-    synchronized (_lock) {
+    synchronized (lock) {
       long currentTime = System.currentTimeMillis();
-      synchronized (_lock) {
-        _defaultExpectedDelay = millis;
-        _uiBusyUntil = currentTime + _defaultExpectedDelay;
+      synchronized (lock) {
+        defaultExpectedDelay = millis;
+        uiBusyUntil = currentTime + defaultExpectedDelay;
       }
     }
-    trace("default delay ", _defaultExpectedDelay);
+    trace("default delay ", defaultExpectedDelay);
   }
 
   /**
-   * Notify the listener that the user interface thread has been idle or unresponsive longer than expected.
+   * Notify the listener that the user interface thread has been idle or unresponsive longer than
+   * expected.
    *
    * @param isResponsive <code>true</code> if the UI thread is responsive to new user
    *                     interface events and
    *                     <code>false</code> if the user interface has not processed any new
    *                     events recently as may be hung.
    */
-  private void fireUITimeout(final boolean isResponsive) {
-    final IUIThreadMonitorListener listener = getListener();
+  private void fireUITimeout(boolean isResponsive) {
+    var listener = getListener();
 
     // log current thread state before triggering shutdown
     stackTraces = ThreadUtil.getStackTraces();
@@ -200,8 +186,9 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
     Logger.log("UIThreadMonitor: timeout, current thread state\n", stackTraces);
 
     if (listener != null) {
-      final Thread thread =
+      var thread =
           new Thread("UIThreadMonitor Notify") {
+            @Override
             public void run() {
               listener.uiTimeout(isResponsive);
             }
@@ -216,8 +203,8 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * Attempt to gracefully exit the application
    *
    * @param isResponsive <code>true</code> if the UI thread is responsive to new user
-   *                     input, and <code>false</code> if the user interface has not processed any new events recently
-   *                     and may be hung.
+   *                     input, and <code>false</code> if the user interface has not processed any
+   *                     new events recently and may be hung.
    */
   protected void gracefulExit(boolean isResponsive) {
     generateResults(isResponsive);
@@ -229,28 +216,24 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * When all else fails, exit the system
    *
    * @param isResponsive <code>true</code> if the UI thread is responsive to new user
-   *                     input, and <code>false</code> if the user interface has not processed any new events recently
-   *                     and may be hung.
+   *                     input, and <code>false</code> if the user interface has not processed any
+   *                     new events recently and may be hung.
    */
   protected void forcedExit(boolean isResponsive) {
-    String exitMsg = "monitor system exit, isResponsive=" + isResponsive;
+    var exitMsg = "monitor system exit, isResponsive=" + isResponsive;
     Logger.log(exitMsg);
     trace(exitMsg, null);
     System.exit(9);
   }
 
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Internal
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
   /**
-   * Launch a background thread (minimum priority) that checks to see if the UI is still alive and processing input.
+   * Launch a background thread (minimum priority) that checks to see if the UI is still alive and
+   * processing input.
    */
   private void launchMonitorThread() {
-    final Thread monitorThread =
+    var monitorThread =
         new Thread("UIThreadMonitor") {
+          @Override
           public void run() {
             initExpectedDelay();
             trace("monitor start", null);
@@ -303,13 +286,11 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
                 case 0:
                   fireUITimeout(isResponsive);
                   break;
-
                 case 1:
                   gracefulExit(isResponsive);
                   break;
-
-                default:
                 case 2:
+                default:
                   forcedExit(isResponsive);
               }
               checkEventsCount = 0;
@@ -326,9 +307,9 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * Initialize the expected delay based upon the default expected delay.
    */
   private void initExpectedDelay() {
-    long currentTime = System.currentTimeMillis();
-    synchronized (_lock) {
-      _uiBusyUntil = Math.max(_uiBusyUntil, currentTime + _defaultExpectedDelay);
+    var currentTime = System.currentTimeMillis();
+    synchronized (lock) {
+      uiBusyUntil = Math.max(uiBusyUntil, currentTime + defaultExpectedDelay);
     }
   }
 
@@ -339,9 +320,9 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * interface thread has been idle or unresponsive longer than expected
    */
   private boolean isDelayExpected() {
-    long currentTime = System.currentTimeMillis();
-    synchronized (_lock) {
-      return currentTime < _uiBusyUntil;
+    var currentTime = System.currentTimeMillis();
+    synchronized (lock) {
+      return currentTime < uiBusyUntil;
     }
   }
 
@@ -352,8 +333,8 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    */
   private boolean processConditions() {
     trace("processing conditions", null);
-    IConditionMonitor monitor = (IConditionMonitor) _uiContext.getAdapter(IConditionMonitor.class);
-    return monitor.process(_uiContext) != IConditionMonitor.PROCESS_NONE;
+    var monitor = (IConditionMonitor) uiContext.getAdapter(IConditionMonitor.class);
+    return monitor.process(uiContext) != IConditionMonitor.PROCESS_NONE;
   }
 
   /**
@@ -362,19 +343,19 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * @return <code>true</code> if events were processed, else <code>false</code>
    */
   private boolean wereEventsProcessed() {
-    synchronized (_lock) {
-      return _uiEventProcessed;
+    synchronized (lock) {
+      return uiEventProcessed;
     }
   }
 
   /**
-   * Setup a test to see if the UI thread is still processing events. Assume that event listeners have already been
-   * added to update _uiEventProcessed. Use {@link #wereEventsProcessed()} to determine if events were processed, but
-   * check {@link #hasTestEnded()} first.
+   * Setup a test to see if the UI thread is still processing events. Assume that event listeners
+   * have already been added to update _uiEventProcessed. Use {@link #wereEventsProcessed()} to
+   * determine if events were processed, but check {@link #hasTestEnded()} first.
    */
   private void checkEventsProcessed() {
-    synchronized (_lock) {
-      _uiEventProcessed = false;
+    synchronized (lock) {
+      uiEventProcessed = false;
     }
     try {
       Thread.sleep(1000);
@@ -384,30 +365,26 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
   }
 
   /**
-   * Called by subclasses to indicate that events were processed and to adjust the expected busy time.
+   * Called by subclasses to indicate that events were processed and to adjust the expected busy
+   * time.
    */
   protected void markEventProcessed() {
-    long currentTime = System.currentTimeMillis();
-    synchronized (_lock) {
-      _uiEventProcessed = true;
-      _uiBusyUntil = Math.max(_uiBusyUntil, currentTime + _defaultExpectedDelay);
+    var currentTime = System.currentTimeMillis();
+    synchronized (lock) {
+      uiEventProcessed = true;
+      uiBusyUntil = Math.max(uiBusyUntil, currentTime + defaultExpectedDelay);
     }
   }
 
   /**
-   * Called by subclasses to indicate that the UI thread was responsive for the current period of time.
+   * Called by subclasses to indicate that the UI thread was responsive for the current period of
+   * time.
    */
   protected void markUIThreadResponsive() {
-    synchronized (_lock) {
-      _uiThreadResponsive = true;
+    synchronized (lock) {
+      uiThreadResponsive = true;
     }
   }
-
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Implemented by subclasses
-  //
-  // //////////////////////////////////////////////////////////////////////////
 
   /**
    * Add event listeners to monitor events being processed by the UI.
@@ -420,7 +397,8 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
   protected abstract void removeEventListeners();
 
   /**
-   * Wait for up to one second to determine if the user interface thread is responsive and processing new events.
+   * Wait for up to one second to determine if the user interface thread is responsive and
+   * processing new events.
    *
    * @return <code>true</code> if the user interface thread is responsive, or
    * <code>false</code> if it has not processed any new events within the last
@@ -435,17 +413,15 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    */
   protected abstract boolean hasTestEnded();
 
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Tracing
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
   /**
    * FOR TESTING PURPOSES ONLY! Enable or diable console level tracing for testing.
    */
   public static void setConsoleTracing(boolean enabled) {
-    _traceMode = enabled ? TRACE_CONSOLE : TRACE_UNINITIALIZED;
+    if (enabled) {
+      traceMode = TRACE_CONSOLE;
+    } else {
+      traceMode = TRACE_UNINITIALIZED;
+    }
   }
 
   /**
@@ -455,10 +431,10 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
    * @param value   additional trace information
    */
   protected void trace(String message, long value) {
-    if (_traceMode == TRACE_OFF) {
+    if (traceMode == TRACE_OFF) {
       return;
     }
-    trace(message, new Long(value));
+    trace(message, (Long) value);
   }
 
   /**
@@ -470,65 +446,65 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
   protected void trace(String message, Object value) {
     // TODO [author=Dan] move functionality into new instance of existing Tracer class
     // in debug plugin
-    if (_traceMode == TRACE_OFF) {
+    if (traceMode == TRACE_OFF) {
       return;
     }
-    long currentTime = System.currentTimeMillis();
-    StringBuffer buf = new StringBuffer(100);
-    buf.append("UIThreadMonitor: ");
-    buf.append(currentTime);
-    buf.append(" ");
-    buf.append(_uiBusyUntil);
-    buf.append(" ");
-    buf.append(message);
+    var currentTime = System.currentTimeMillis();
+
+    var buf = new StringBuilder(100);
+    buf.append("UIThreadMonitor: ")
+        .append(currentTime)
+        .append(" ")
+        .append(uiBusyUntil)
+        .append(" ")
+        .append(message);
     if (value != null) {
-      buf.append(" ");
-      buf.append(value);
+      buf
+          .append(" ")
+          .append(value);
     }
-    if (_traceMode == TRACE_CONSOLE) {
+    if (traceMode == TRACE_CONSOLE) {
       System.out.println(buf);
     } else {
       Logger.log(IRuntimePluginTraceOptions.UI_THREAD_MONITOR, buf.toString());
     }
   }
 
-  // //////////////////////////////////////////////////////////////////////////
-  //
-  // Result File Generation
-  //
-  // //////////////////////////////////////////////////////////////////////////
-
   /**
-   * Generate a result file immediately before {@link #gracefulExit(boolean)} terminates the application under test.
+   * Generate a result file immediately before {@link #gracefulExit(boolean)} terminates the
+   * application under test.
    *
    * @param isResponsive <code>true</code> if the UI thread is responsive to new user
-   *                     input, and <code>false</code> if the user interface has not processed any new events recently
-   *                     and may be hung.
+   *                     input, and <code>false</code> if the user interface has not processed any
+   *                     new events recently and may be hung.
    */
   protected void generateResults(boolean isResponsive) {
-    String resultPathKey = "test.result.xml";
-    String resultPath = System.getProperty(resultPathKey);
+    var resultPathKey = "test.result.xml";
+    var resultPath = System.getProperty(resultPathKey);
     if (resultPath == null) {
-      String message =
+      var message =
           "The system property " + resultPathKey + " is undefined, so no XML result file generated";
       Logger.log(message);
       return;
     }
+
     PrintWriter writer;
     try {
       writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultPath))));
     } catch (IOException e) {
-      String message =
+      var message =
           "The system property " + resultPathKey + " is defined, but failed to open " + resultPath;
       Logger.log(message, e);
       return;
     }
+
     try {
       writeResults(writer, isResponsive);
     } finally {
       writer.close();
     }
-    String message =
+
+    var message =
         "The system property "
             + resultPathKey
             + " is defined, and the result file generated: "
@@ -537,31 +513,34 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
   }
 
   /**
-   * Generate a result file immediately before {@link #gracefulExit(boolean)} terminates the application under test.
+   * Generate a result file immediately before {@link #gracefulExit(boolean)} terminates the
+   * application under test.
    *
    * @param isResponsive <code>true</code> if the UI thread is responsive to new user
-   *                     input, and <code>false</code> if the user interface has not processed any new events recently
-   *                     and may be hung.
+   *                     input, and <code>false</code> if the user interface has not processed any
+   *                     new events recently and may be hung.
    */
   protected void writeResults(PrintWriter writer, boolean isResponsive) {
-    String testClassnameKey = "test.classname";
-    String testClassname = System.getProperty(testClassnameKey);
+    var testClassnameKey = "test.classname";
+    var testClassname = System.getProperty(testClassnameKey);
     if (testClassname == null) {
       testClassname = "unknown-test-class";
-      String message =
+      var message =
           "The system property "
               + testClassnameKey
               + " is undefined, so report will show testcase classname as "
               + testClassname;
       Logger.log(message);
     }
-    String errMsg = "UI thread monitor terminated application ";
+
+    var errMsg = "UI thread monitor terminated application ";
     if (isResponsive) {
       errMsg += "because no UI activity";
     } else {
       errMsg += "because UI thread was unresponsive";
     }
-    String errDetails = sanitize(stackTraces);
+
+    var errDetails = sanitize(stackTraces);
 
     writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
     writer.println(
@@ -569,15 +548,16 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
             + testClassname
             + "\" tests=\"1\" time=\"1\">");
     writer.println("  <properties>");
-    for (Iterator iter = new TreeSet(System.getProperties().keySet()).iterator();
-        iter.hasNext(); ) {
-      String key = (String) iter.next();
-      String value = sanitize(System.getProperty(key));
+
+    for (Object o : new TreeSet<>(System.getProperties().keySet())) {
+      var key = (String) o;
+      var value = sanitize(System.getProperty(key));
       writer.println("    <property name=\"" + key + "\" value=\"" + value + "\"/>");
     }
     writer.println("  </properties>");
     writer.println(
         "  <testcase classname=\"" + testClassname + "\" name=\"testUnknown\" time=\"1\">");
+
     if (screenCapture != null) {
       writer.println(
           "    <screencapture"
@@ -602,47 +582,46 @@ public abstract class UIThreadMonitorCommon implements IUIThreadMonitor {
   }
 
   /**
-   * Convert raw strings into strings safe for inclusion in an XML file by replacing specific characters invalid in an
-   * XML file with their expanded counterparts (e.g. replace " with &quot;).
+   * Convert raw strings into strings safe for inclusion in an XML file by replacing specific
+   * characters invalid in an XML file with their expanded counterparts (e.g. replace " with
+   * &quot;).
    *
-   * @param string the original string (not null)
+   * @param value the original value (not null)
    * @return the sanitized string (not null)
    */
-  protected String sanitize(String string) {
-    String result;
-    result = replaceAll(string, "\"", "&quot;");
-    result = replaceAll(string, "<", "&lt;");
+  protected String sanitize(String value) {
+    var result = replaceAll(value, "\"", "&quot;");
+    result = replaceAll(result, "<", "&lt;");
     return result;
   }
 
   /**
-   * Replace every occurance within the given string of a substring that matches the given pattern with the given
-   * replacement string. The pattern cannot contain any wildcards.
+   * Replace every occurance within the given string of a substring that matches the given pattern
+   * with the given replacement string. The pattern cannot contain any wildcards.
    *
    * @param string      the string in which replacements are made
    * @param pattern     the pattern used to find the substrings to be replaced
    * @param replacement the string used to replace matching substrings
    */
   protected static String replaceAll(String string, String pattern, String replacement) {
-    int stringLength, patternLength, index;
-    StringBuffer buffer;
-
-    stringLength = string.length();
-    patternLength = pattern.length();
+    var stringLength = string.length();
+    var patternLength = pattern.length();
     if (stringLength == 0 || patternLength == 0) {
       return string;
     }
-    buffer = new StringBuffer();
-    index = 0;
+
+    var builder = new StringBuilder();
+
+    var index = 0;
     while (index < stringLength) {
       if (string.startsWith(pattern, index)) {
-        buffer.append(replacement);
+        builder.append(replacement);
         index += patternLength;
       } else {
-        buffer.append(string.charAt(index));
+        builder.append(string.charAt(index));
         index++;
       }
     }
-    return buffer.toString();
+    return builder.toString();
   }
 }

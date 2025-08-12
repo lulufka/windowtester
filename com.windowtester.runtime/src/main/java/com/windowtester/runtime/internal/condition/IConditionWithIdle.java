@@ -13,10 +13,10 @@ package com.windowtester.runtime.internal.condition;
 import com.windowtester.runtime.condition.ICondition;
 
 /**
- * Marks conditions that perform a wait for idle post test.  The guaranteed call sequence is for {@link
- * ICondition#test()} to be called first and then {@link #testAndWaitForIdle()}. Clients who wish to simply test the
- * property without the wait, can do so by calling {@link #test()}.  (Ensuring this invariant is the implementer's
- * responsibility.
+ * Marks conditions that perform a wait for idle post test.  The guaranteed call sequence is for
+ * {@link ICondition#test()} to be called first and then {@link #testAndWaitForIdle()}. Clients who
+ * wish to simply test the property without the wait, can do so by calling {@link #test()}.
+ * (Ensuring this invariant is the implementer's responsibility.
  */
 public interface IConditionWithIdle extends ICondition {
 

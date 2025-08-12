@@ -16,6 +16,7 @@ import com.windowtester.internal.swing.UIContextSwing;
 import com.windowtester.internal.swing.matcher.HierarchyMatcher;
 import com.windowtester.internal.swing.matcher.IndexMatcher;
 import com.windowtester.internal.swing.matcher.NameMatcher;
+import com.windowtester.internal.swing.matcher.NameOrTextMatcher;
 import com.windowtester.runtime.IClickDescription;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
@@ -23,20 +24,24 @@ import com.windowtester.runtime.condition.IUICondition;
 import com.windowtester.runtime.condition.IsSelected;
 import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.locator.IWidgetLocator;
+import com.windowtester.runtime.locator.IWidgetMatcher;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.locator.WidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
+import javax.swing.JTable;
 
 /**
  * A locator for JTable items.
  */
 public class JTableItemLocator extends SwingWidgetLocator implements IsSelected {
 
+  @Serial
   private static final long serialVersionUID = 7291989565140551064L;
 
-  private final Point _rowCol;
+  private final Point rowColumn;
 
   /**
    * Creates an instance of a locator to an item in a JTable
@@ -48,102 +53,123 @@ public class JTableItemLocator extends SwingWidgetLocator implements IsSelected 
   }
 
   /**
+   * Creates an instance of a locator to an item in a JTable
+   *
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   */
+  public JTableItemLocator(Point rowCol, String tableName) {
+    this(rowCol, tableName, null);
+  }
+
+  /**
    * Creates an instance of a locator to an item in a JTable, relative to the parent of the JTable.
    *
-   * @param rowCol the (row,col) of the item
-   * @param parent locator of the parent
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Point rowCol, SwingWidgetLocator parent) {
-    this(rowCol, UNASSIGNED, parent);
+  public JTableItemLocator(Point rowCol, String tableName, SwingWidgetLocator parent) {
+    this(rowCol, tableName, UNASSIGNED, parent);
   }
 
   /**
-   * Creates an instance of a locator to an item in a JTable, relative to the index and parent of the JTable
+   * Creates an instance of a locator to an item in a JTable, relative to the index and parent of
+   * the JTable
    *
-   * @param rowCol the (row,col) of the item
-   * @param index  the index of the JTable relative to the parent
-   * @param parent locator of the parent
+   * @param rowCol    the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param index     the index of the JTable relative to the parent
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Point rowCol, int index, SwingWidgetLocator parent) {
-    this(JTable.class, rowCol, index, parent);
+  public JTableItemLocator(Point rowCol, String tableName, int index, SwingWidgetLocator parent) {
+    this(JTable.class, rowCol, tableName, index, parent);
   }
 
   /**
-   * Creates an instance of a locator to an item in a JTable, relative to the index and parent of the JTable
+   * Creates an instance of a locator to an item in a JTable, relative to the index and parent of
+   * the JTable
    *
-   * @param cls    the exact Class of the table
-   * @param rowCol the (row,col) of the item
-   * @param index  the index of the JTable relative to the parent
-   * @param parent locator of the parent
+   * @param cls       the exact Class of the table
+   * @param rowColum  the (row,col) of the item
+   * @param tableName table name or <code>null</code> if not set
+   * @param index     the index of the JTable relative to the parent
+   * @param parent    locator of the parent
    */
-  public JTableItemLocator(Class cls, Point rowCol, int index, SwingWidgetLocator parent) {
-    super(cls, null, index, parent);
-    _rowCol = rowCol;
+  public JTableItemLocator(Class<?> cls, Point rowColum, String tableName, int index,
+      SwingWidgetLocator parent) {
+    super(cls, tableName, index, parent);
+    rowColumn = rowColum;
+    matcher = createMatcher(cls, tableName, index, parent);
+  }
 
-    // create the matcher
-    _matcher = new ExactClassMatcher(cls);
+  private IWidgetMatcher<?> createMatcher(Class<?> cls, String tableName, int index, SwingWidgetLocator parent) {
+    IWidgetMatcher<?> matcher = null;
+    if (cls != null) {
+      matcher = new ExactClassMatcher(cls);
+    }
+    if (tableName != null && !tableName.isEmpty()) {
+      matcher = new CompoundMatcher(matcher, NameOrTextMatcher.create(tableName));
+    }
     if (index != UNASSIGNED) {
-      _matcher = IndexMatcher.create(_matcher, index);
+      matcher = IndexMatcher.create(matcher, index);
     }
-    if (parent != null) {
-      if (parent instanceof com.windowtester.runtime.swing.locator.NamedWidgetLocator) {
-        _matcher = new CompoundMatcher(_matcher, NameMatcher.create(parent.getNameOrLabel()));
-      } else {
-        if (index != UNASSIGNED) {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher(), index);
-        } else {
-          _matcher = HierarchyMatcher.create(_matcher, parent.getMatcher());
-        }
+    if (parent instanceof NamedWidgetLocator) {
+      matcher = new CompoundMatcher(matcher, NameMatcher.create(parent.getNameOrLabel()));
+      if (index != UNASSIGNED) {
+        matcher = HierarchyMatcher.create(matcher, parent.getMatcher(), index);
       }
+      return HierarchyMatcher.create(matcher, parent.getMatcher());
     }
+
+    if (matcher != null) {
+      return matcher;
+    }
+
+    var msg = String.format("Unable to create matcher for class=%s, index=%d, parent=%s",
+        cls, index, parent);
+    throw new IllegalArgumentException(msg);
   }
 
   public int getRow() {
-    return _rowCol.x;
+    return rowColumn.x;
   }
 
   public int getColumn() {
-    return _rowCol.y;
+    return rowColumn.y;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swing.WidgetLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
-   */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
+      IUIContext ui, int clicks, Component component, Point offset, int modifierMask) {
     return ((UIContextSwing) ui)
         .getDriver()
-        .clickTable(clicks, (JTable) c, getRow(), getColumn(), modifierMask);
+        .clickTable(clicks, (JTable) component, getRow(), getColumn(), modifierMask);
   }
 
+  @Override
   public IWidgetLocator contextClick(
-      IUIContext ui, IWidgetReference widget, IClickDescription click, String menuItemPath)
-      throws WidgetSearchException {
-    Component component = (Component) widget.getWidget();
-    Component clicked =
+      IUIContext ui,
+      IWidgetReference widget,
+      IClickDescription click,
+      String menuItemPath) {
+    var component = (Component) widget.getWidget();
+    var clicked =
         ((UIContextSwing) ui)
             .getDriver()
             .contextClickTable((JTable) component, getRow(), getColumn(), menuItemPath);
     return WidgetReference.create(clicked, this);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IsSelected#isSelected(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean isSelected(IUIContext ui) throws WidgetSearchException {
-    JTable table = (JTable) ((IWidgetReference) ui.find(this)).getWidget();
+    var table = (JTable) ((IWidgetReference) ui.find(this)).getWidget();
     return table.isCellSelected(getRow(), getColumn());
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
-   * Create a condition that tests if the given button is selected. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given button is selected. Note that this is a convenience
+   * method, equivalent to:
    * <code>isSelected(true)</code>
    */
   public IUICondition isSelected() {
@@ -153,7 +179,6 @@ public class JTableItemLocator extends SwingWidgetLocator implements IsSelected 
   /**
    * Create a condition that tests if the given button is selected.
    *
-   * @param selected
    * @param expected <code>true</code> if the button is expected to be selected, else
    *                 <code>false</code>
    */

@@ -14,8 +14,8 @@ import java.io.PrintWriter;
 import java.util.Date;
 
 /**
- * Provides logging facilities for jLib and its clients. During setup, initialize the log services used by this class to
- * store/display that log content.
+ * Provides logging facilities for jLib and its clients. During setup, initialize the log services
+ * used by this class to store/display that log content.
  */
 public class Logger {
 
@@ -31,22 +31,11 @@ public class Logger {
         }
       };
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Initialization
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
   /**
    * Disallow the creation of instances of this class.
    */
-  private Logger() {}
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Logging
-  //
-  ////////////////////////////////////////////////////////////////////////////
+  private Logger() {
+  }
 
   /**
    * Log the specified exception.
@@ -74,14 +63,12 @@ public class Logger {
    * Log the specified message and object
    *
    * @param message the message to be logged
-   * @param detail  the object to be logged. If anObject is an exception, then the stack trace is logged. If anObject
-   *                is not null, then anObject's toString() is logged plus (optionally) any reflect information about
-   *                the object.
+   * @param detail  the object to be logged. If anObject is an exception, then the stack trace is
+   *                logged. If anObject is not null, then anObject's toString() is logged plus
+   *                (optionally) any reflect information about the object.
    */
   public static void log(String message, Object detail) {
-    //        if (Tracer.isDebugging()) {
     printLog(sysOut, message, detail);
-    //        }
     IStatus status = createLogStatus(message, detail, "log");
     try {
       // TODO: log status using SLF4J
@@ -157,7 +144,7 @@ public class Logger {
     }
     if (detail instanceof IStatus) {
       return new MultiStatus(
-          PRODUCT_ID, Status.OK, new IStatus[] {(IStatus) detail}, message, null);
+          PRODUCT_ID, Status.OK, new IStatus[]{(IStatus) detail}, message, null);
     }
     if (detail == null) {
       return new Status(Status.INFO, PRODUCT_ID, Status.OK, text, null);

@@ -25,16 +25,22 @@ import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.condition.IsVisible;
 import com.windowtester.runtime.condition.IsVisibleCondition;
 import com.windowtester.runtime.locator.ILocator;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 public class PropertySet implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   // for testing
   public static class TestStub extends PropertySet {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public TestStub() {
@@ -43,11 +49,13 @@ public class PropertySet implements Serializable {
   }
 
   public interface IPropertyProvider {
+
     PropertyMapping[] getProperties(IUIContext ui);
   }
 
   public static class PropertyMapping implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public static final PropertyMapping ENABLED =
@@ -107,14 +115,14 @@ public class PropertySet implements Serializable {
     }
 
     public PropertyMapping withValue(boolean value) {
-      PropertyMapping fresh = withValue(Boolean.toString(value));
+      var fresh = withValue(Boolean.toString(value));
       fresh.isBoolean = true;
       return fresh;
     }
 
     // note: returns fresh mapping
     public PropertyMapping withValue(String value) {
-      PropertyMapping fresh = withKey(key);
+      var fresh = withKey(key);
       fresh.value = value;
       fresh.name = getName();
       return fresh;
@@ -128,11 +136,11 @@ public class PropertySet implements Serializable {
       if (ref == null) {
         return null;
       }
-      String[] split = ref.split("=");
+      var split = ref.split("=");
       if (split.length != 2) {
         return null;
       }
-      boolean value = Boolean.valueOf(split[1]).booleanValue();
+      boolean value = Boolean.parseBoolean(split[1]);
       return withKey(split[0]).withValue(value);
     }
 
@@ -146,15 +154,13 @@ public class PropertySet implements Serializable {
       return this;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString() {
       return "PropertyMapping: " + getKey() + "=" + getValue();
     }
   }
 
-  private final ArrayList mappings = new ArrayList();
+  private final List<PropertyMapping> mappings = new ArrayList<>();
 
   private final transient IUIContext ui;
 
@@ -169,17 +175,15 @@ public class PropertySet implements Serializable {
   }
 
   private void addContributedProperties(ILocator locator, IUIContext ui) {
-    IPropertyProvider pp = (IPropertyProvider) adapt(locator, IPropertyProvider.class);
+    var pp = (IPropertyProvider) adapt(locator, IPropertyProvider.class);
     if (pp == null) {
       return;
     }
-    PropertyMapping[] props = pp.getProperties(ui);
-    for (int i = 0; i < props.length; i++) {
-      mappings.add(props[i]);
-    }
+    var props = pp.getProperties(ui);
+    Collections.addAll(mappings, props);
   }
 
-  public static Object adapt(Object o, Class cls) {
+  public static Object adapt(Object o, Class<?> cls) {
     if (o == null) {
       return null;
     }
@@ -189,10 +193,10 @@ public class PropertySet implements Serializable {
     if (cls.isAssignableFrom(o.getClass())) {
       return o;
     }
-    if (!(o instanceof IAdaptable)) {
-      return null;
+    if (o instanceof IAdaptable adaptable) {
+      return adaptable.getAdapter(cls);
     }
-    return ((IAdaptable) o).getAdapter(cls);
+    return null;
   }
 
   private void addBuiltinProperties(ILocator locator) {
@@ -252,30 +256,28 @@ public class PropertySet implements Serializable {
   }
 
   public PropertyMapping[] toArray() {
-    return (PropertyMapping[]) mappings.toArray(new PropertyMapping[] {});
+    return mappings.toArray(new PropertyMapping[0]);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("PropertySet[");
-    PropertyMapping[] mappings = toArray();
+    var builder = new StringBuilder();
+    builder.append("PropertySet[");
+
+    var mappings = toArray();
     for (int i = 0; i < mappings.length; i++) {
-      sb.append(mappings[i]);
+      builder.append(mappings[i]);
       if (i + 1 < mappings.length) {
-        sb.append(", ");
+        builder.append(", ");
       }
     }
-    sb.append("]");
-    return sb.toString();
+    builder.append("]");
+    return builder.toString();
   }
 
   public PropertySet flagged() {
-    PropertySet set = new PropertySet(null, ui);
-    for (Iterator iter = mappings.iterator(); iter.hasNext(); ) {
-      PropertyMapping mapping = (PropertyMapping) iter.next();
+    var set = new PropertySet(null, ui);
+    for (PropertyMapping mapping : mappings) {
       if (mapping.isFlagged()) {
         set.withMapping(mapping);
       }
@@ -289,8 +291,7 @@ public class PropertySet implements Serializable {
 
   // find the corresponding mapping in this set and flag it
   public void flag(PropertyMapping toFlag) {
-    for (Iterator iterator = mappings.iterator(); iterator.hasNext(); ) {
-      PropertyMapping prop = (PropertyMapping) iterator.next();
+    for (PropertyMapping prop : mappings) {
       if (prop.getKey().equals(toFlag.getKey())) {
         prop.flag();
         return;
@@ -300,8 +301,7 @@ public class PropertySet implements Serializable {
   }
 
   public void unflag(PropertyMapping toUnFlag) {
-    for (Iterator iterator = mappings.iterator(); iterator.hasNext(); ) {
-      PropertyMapping prop = (PropertyMapping) iterator.next();
+    for (PropertyMapping prop : mappings) {
       if (prop.getKey().equals(toUnFlag.getKey())) {
         prop.unflag();
         return;

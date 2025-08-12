@@ -24,7 +24,7 @@ public class SemanticListSelectionEvent extends UISemanticEvent
   private String _item;
 
   /**
-   * The selection's mouse mask (e.g., InputEvent.CTRL_DOWN_MASK or InputEvent.SHIFT_DOWN_MASK)
+   * The selection's mouse mask (e.g., Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() or InputEvent.SHIFT_DOWN_MASK)
    */
   private String _mask;
 

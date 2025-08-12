@@ -34,9 +34,6 @@ public class Event extends Step {
     parseEvent(attributes);
   }
 
-  /**
-   * Create one based on the given event.
-   */
   public Event(Resolver resolver, String desc, AWTEvent event) {
     super(resolver, desc);
     int id = event.getID();
@@ -108,9 +105,6 @@ public class Event extends Step {
     return map;
   }
 
-  /**
-   * Send our event to the component's event queue.
-   */
   public void runStep() throws Throwable {
     ComponentTester.getTester(java.awt.Component.class)
         .sendEvent(createEvent(System.currentTimeMillis()));
@@ -186,9 +180,6 @@ public class Event extends Step {
     }
   }
 
-  /**
-   * Resolve the given name into a component.
-   */
   protected java.awt.Component resolve(String name)
       throws NoSuchReferenceException,
           ComponentNotFoundException,

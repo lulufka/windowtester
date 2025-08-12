@@ -3,9 +3,9 @@ package abbot.editor.actions;
 import java.util.ArrayList;
 
 /**
- * Keep a history of commands, enabling potentially unlimited undo. This class is not synchronized.<p>
- * <p>
- * Note that undo is itself an undoable action.<p>
+ * Keep a history of commands, enabling potentially unlimited undo. This class is not synchronized.
+ *
+ * Note that undo is itself an undoable action.
  */
 public class CommandHistory {
   private final ArrayList list = new ArrayList();
@@ -37,9 +37,6 @@ public class CommandHistory {
     }
   }
 
-  /**
-   * Add the given command to the command history.
-   */
   public void add(Command command) {
     // If the command can't be undone, then clear the undo history
     if (!(command instanceof Undoable)) {

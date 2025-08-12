@@ -18,7 +18,11 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  */
 public class LabeledWidgetMatcher {
 
-  public static IWidgetMatcher create(Class cls, String text) {
+  private LabeledWidgetMatcher() {
+    // hide public constructor
+  }
+
+  public static IWidgetMatcher<?> create(Class<?> cls, String text) {
     return new AdapterFactory()
         .adapt(new com.windowtester.internal.finder.matchers.swing.LabeledWidgetMatcher(cls, text));
   }

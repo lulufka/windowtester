@@ -10,29 +10,52 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import com.windowtester.runtime.locator.IWidgetLocator;
+import com.windowtester.runtime.locator.WidgetReference;
+import java.awt.Component;
+import java.awt.TextComponent;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import javax.swing.AbstractButton;
+import javax.swing.JLabel;
+
 /**
- * Thrown when mutliple widgets are found.
+ * Thrown when multiple widgets are found.
  */
 public class MultipleWidgetsFoundException extends WidgetSearchException {
 
-  private static final long serialVersionUID = 4381140981836391058L;
-
-  /**
-   * Create an instance with no specified detail message.
-   */
-  public MultipleWidgetsFoundException() {}
-
-  /**
-   * Create an instance with the specified detail message.
-   */
-  public MultipleWidgetsFoundException(String msg) {
-    super(msg);
+  public MultipleWidgetsFoundException(IWidgetLocator[] locators) {
+    super(String.format("Multiple widgets found: %s", createLocatorClassDetails(locators)));
   }
 
-  /**
-   * Create an instance with the given cause.
-   */
-  public MultipleWidgetsFoundException(Throwable cause) {
-    super(cause);
+  private static String createLocatorClassDetails(IWidgetLocator[] locators) {
+    return Arrays.stream(locators)
+        .filter(WidgetReference.class::isInstance)
+        .map(WidgetReference.class::cast)
+        .map(MultipleWidgetsFoundException::createDetailsText)
+        .collect(Collectors.joining(","));
   }
+
+  private static String createDetailsText(WidgetReference<?> ref) {
+    var canonicalName = ref.getWidget().getClass().getCanonicalName();
+    var name = getName(ref);
+    var hashCode = ref.getWidget().hashCode();
+
+    return canonicalName + "(" + name + "-" + hashCode + ")";
+  }
+
+  private static String getName(WidgetReference<?> ref) {
+    var component = (Component) ref.getWidget();
+    if (component instanceof JLabel label) {
+      return label.getText();
+    }
+    if (component instanceof AbstractButton button) {
+      return button.getText();
+    }
+    if (component instanceof TextComponent textComponent) {
+      return textComponent.getText();
+    }
+    return component.getName();
+  }
+
 }

@@ -1,14 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>3.8.3-SNAPSHOT</version>
+    <version>5.11.3</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>com.windowtester.swing.runtime</artifactId>
+  <name>Windowtester Swing Runtime</name>
+  <description>The runtime library providing base functionality so Windowtester can operate on Java/Swing.</description>
+
+  <description>The runtime library provides base functionality so WindowTester can operate on Java/Swing.</description>
 
   <scm>
     <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>

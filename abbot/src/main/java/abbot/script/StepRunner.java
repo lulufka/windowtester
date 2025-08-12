@@ -12,77 +12,64 @@ import abbot.util.EDTExceptionCatcher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
- * Provides control and tracking of the execution of a step or series of steps.  By default the runner stops execution
- * on the first encountered failure/error.  The running environment is preserved to the extent possible, which includes
- * discarding any GUI components created by the code under test.<p> If you wish to preserve the application state when
- * there is an error, you can use the method {@link #setTerminateOnError(boolean)}.
+ * Provides control and tracking of the execution of a step or series of steps. By default, the
+ * runner stops execution on the first encountered failure/error.  The running environment is
+ * preserved to the extent possible, which includes discarding any GUI components created by the
+ * code under test.<p> If you wish to preserve the application state when there is an error, you can
+ * use the method {@link #setTerminateOnError(boolean)}.
  */
 public class StepRunner {
 
-  private static UIContext currentContext = null;
+  private UIContext currentContext = null;
 
   private boolean stopOnFailure = true;
   private boolean stopOnError = true;
 
-  /**
-   * Whether to terminate the app after an error/failure.
-   */
+  // Whether to terminate the app after an error/failure.
   private boolean terminateOnError = true;
 
-  /**
-   * Whether to terminate the app after stopping.
-   */
-  private transient boolean terminateOnStop = false;
+  // Whether to terminate the app after stopping.
+  private boolean terminateOnStop = false;
 
-  private final ArrayList listeners = new ArrayList();
-  private final Map errors = new HashMap();
+  private final List<StepListener> listeners = new ArrayList<>();
+  private final Map<Step, Throwable> errors = new HashMap<>();
 
-  /**
-   * Whether to stop running.
-   */
-  private transient boolean stop = false;
-
-  /**
-   * Use this to catch event dispatch exceptions.
-   */
-  private final EDTExceptionCatcher catcher;
+  // Whether to stop running.
+  private boolean stop = false;
 
   protected AWTFixtureHelper helper;
   protected Hierarchy hierarchy;
 
   /**
-   * This ctor uses a new instance of TestHierarchy as the default Hierarchy.  Note that any existing GUI components
-   * at the time of this object's creation will be ignored.
+   * This ctor uses a new instance of TestHierarchy as the default Hierarchy.  Note that any
+   * existing GUI components at the time of this object's creation will be ignored.
    */
   public StepRunner() {
     this(new AWTFixtureHelper());
   }
 
-  /**
-   * Create a new runner.  The given {@link Hierarchy} maintains which GUI components are in or out of scope of the
-   * runner.  The {@link AWTFixtureHelper} will be used to restore state if {@link #terminate()} is called.
-   */
   public StepRunner(AWTFixtureHelper helper) {
     this.helper = helper;
-    this.catcher = new EDTExceptionCatcher();
+    this.hierarchy = new TestHierarchy();
+
+    // Use this to catch event dispatch exceptions.
+    EDTExceptionCatcher catcher = new EDTExceptionCatcher();
     catcher.install();
-    hierarchy = new TestHierarchy();
   }
 
   /**
-   * @return The designated hierarchy for this <code>StepRunner</code>, or <code>null</code> if none.
+   * @return The designated hierarchy for this <code>StepRunner</code>, or <code>null</code> if
+   * none.
    */
   public Hierarchy getHierarchy() {
-    Hierarchy h =
-        currentContext != null && currentContext.isLaunched()
-            ? currentContext.getHierarchy()
-            : hierarchy;
-    return h;
+    return currentContext != null && currentContext.isLaunched()
+        ? currentContext.getHierarchy()
+        : this.hierarchy;
   }
 
   public UIContext getCurrentContext() {
@@ -106,38 +93,36 @@ public class StepRunner {
   }
 
   /**
-   * Stop execution of the script after the current step completes.  The launched application will be left in its
-   * current state.
+   * Stop execution of the script after the current step completes.  The launched application will
+   * be left in its current state.
    */
   public void stop() {
     stop(false);
   }
 
-  /**
-   * Stop execution, indicating whether to terminate the app.
-   */
   public void stop(boolean terminate) {
     stop = true;
     terminateOnStop = terminate;
   }
 
-  /**
-   * Return whether the runner has been stopped.
-   */
   public boolean stopped() {
     return stop;
   }
 
   /**
-   * Create a security manager to use for the duration of this runner's execution.  The default prevents invoked
-   * applications from invoking {@link System#exit(int)} and invokes {@link #terminate()} instead.
+   * Create a security manager to use for the duration of this runner's execution.  The default
+   * prevents invoked applications from invoking {@link System#exit(int)} and invokes
+   * {@link #terminate()} instead.
+   *
+   * @return security manager
    */
   protected SecurityManager createSecurityManager() {
     return new ExitHandler();
   }
 
   /**
-   * Install a security manager to ensure we prevent the AUT from exiting and can clean up when it tries to.
+   * Install a security manager to ensure we prevent the AUT from exiting and can clean up when it
+   * tries to.
    */
   protected synchronized void installSecurityManager() {
     String doInstall = System.getProperty("abbot.use_security_manager");
@@ -156,7 +141,8 @@ public class StepRunner {
   }
 
   /**
-   * If the given context is not the current one, terminate the current one and set this one as current.
+   * If the given context is not the current one, terminate the current one and set this one as
+   * current.
    */
   private void updateContext(UIContext context) {
     if (!context.equivalent(currentContext)) {
@@ -169,13 +155,16 @@ public class StepRunner {
   }
 
   /**
-   * Run the given step, propagating any failures or errors to listeners.  This method should be used for any
-   * execution that should be treated as a single logical action. This method is primarily used to execute a script,
-   * but may be used in other circumstances to execute one or more steps in isolation. The {@link #terminate()} method
-   * will be invoked if the script is stopped for any reason, unless {@link #setTerminateOnError(boolean)} has been
-   * called with a <code>false</code> argument.  Otherwise {@link #terminate()} will only be called if a {@link
-   * Terminate} step is encountered.
+   * Run the given step, propagating any failures or errors to listeners.  This method should be
+   * used for any execution that should be treated as a single logical action. This method is
+   * primarily used to execute a script, but may be used in other circumstances to execute one or
+   * more steps in isolation. The {@link #terminate()} method will be invoked if the script is
+   * stopped for any reason, unless {@link #setTerminateOnError(boolean)} has been called with a
+   * <code>false</code> argument.  Otherwise {@link #terminate()} will only be called if a
+   * {@link Terminate} step is encountered.
    *
+   * @param step step
+   * @throws Throwable in case of error
    * @see #terminate()
    */
   public void run(Step step) throws Throwable {
@@ -198,7 +187,6 @@ public class StepRunner {
     }
 
     installSecurityManager();
-    boolean completed = false;
     clearErrors();
 
     try {
@@ -214,27 +202,19 @@ public class StepRunner {
       } else {
         runStep(step);
       }
-      completed = !stopped();
     } catch (ExitException ee) {
       // application tried to exit
       Log.debug("App tried to exit");
       terminate();
     } finally {
-      if (step instanceof Script) {
-        if (completed && errors.size() == 0) {
-          // Script was run successfully
-        } else if (stopped() && terminateOnStop) {
-          terminate();
-        }
+      if (step instanceof Script
+          && (stopped() && terminateOnStop)) {
+        terminate();
       }
       removeSecurityManager();
     }
   }
 
-  /**
-   * Set whether the application under test should be terminated when an error is encountered and script execution
-   * stopped.  The default implementation always terminates.
-   */
   public void setTerminateOnError(boolean state) {
     terminateOnError = state;
   }
@@ -250,6 +230,8 @@ public class StepRunner {
 
   /**
    * Throw an exception if the file does not exist.
+   *
+   * @param script script
    */
   protected void checkFile(Script script) throws InvalidScriptException {
     File file = script.getFile();
@@ -265,13 +247,15 @@ public class StepRunner {
   }
 
   /**
-   * Main run method, which stores any failures or exceptions for later retrieval.  Any step will fire STEP_START
-   * events to all registered {@link StepListener}s on starting, and exactly one of STEP_END, STEP_FAILURE, or
-   * STEP_ERROR upon termination.  If stopOnFailure/stopOnError is set false, then both STEP_FAILURE/ERROR may be sent
-   * in addition to STEP_END.
+   * Main run method, which stores any failures or exceptions for later retrieval.  Any step will
+   * fire STEP_START events to all registered {@link StepListener}s on starting, and exactly one of
+   * STEP_END, STEP_FAILURE, or STEP_ERROR upon termination.  If stopOnFailure/stopOnError is set
+   * false, then both STEP_FAILURE/ERROR may be sent in addition to STEP_END.
+   *
+   * @param step step
+   * @throws Throwable in case of error
    */
   protected void runStep(final Step step) throws Throwable {
-
     if (step instanceof Script) {
       checkFile((Script) step);
       ((Script) step).setHierarchy(getHierarchy());
@@ -338,10 +322,11 @@ public class StepRunner {
   }
 
   /**
-   * Similar to {@link #run(Step)}, but defers to the {@link Script} to determine what subset of steps should be run
-   * as the UI context.
+   * Similar to {@link #run(Step)}, but defers to the {@link Script} to determine what subset of
+   * steps should be run as the UI context.
    *
-   * @param step
+   * @param step step
+   * @throws Throwable in case of error
    */
   public void launch(Script step) throws Throwable {
     UIContext ctxt = step.getUIContext();
@@ -373,7 +358,7 @@ public class StepRunner {
   }
 
   public Throwable getError(Step step) {
-    return (Throwable) errors.get(step);
+    return errors.get(step);
   }
 
   public void addStepListener(StepListener sl) {
@@ -388,26 +373,14 @@ public class StepRunner {
     }
   }
 
-  /**
-   * If this is used to propagate a failure/error, be sure to invoke setError on the step first.
-   */
   protected void fireStepEvent(StepEvent event) {
-    Iterator iter;
-    synchronized (listeners) {
-      iter = ((ArrayList) listeners.clone()).iterator();
-    }
-    while (iter.hasNext()) {
-      StepListener sl = (StepListener) iter.next();
-      sl.stateChanged(event);
-    }
+    listeners.forEach(sl -> sl.stateChanged(event));
   }
 
   private void fireStepEvent(Step step, String type, int val, Throwable throwable) {
-    synchronized (listeners) {
-      if (listeners.size() != 0) {
-        StepEvent event = new StepEvent(step, type, val, throwable);
-        fireStepEvent(event);
-      }
+    if (!listeners.isEmpty()) {
+      StepEvent event = new StepEvent(step, type, val, throwable);
+      fireStepEvent(event);
     }
   }
 
@@ -434,6 +407,7 @@ public class StepRunner {
   }
 
   private class LaunchListener implements Launch.ThreadedLaunchListener {
+
     public void stepFailure(Launch step, AssertionFailedError afe) {
       fireStepFailure(step, afe);
       if (stopOnFailure) {
@@ -450,10 +424,13 @@ public class StepRunner {
   }
 
   protected class ExitHandler extends NoExitSecurityManager {
+
+    @Override
     public void checkRead(String file) {
       // avoid annoying drive a: bug on w32 VM
     }
 
+    @Override
     protected void exitCalled(int status) {
       Log.debug("Terminating from security manager");
       terminate();

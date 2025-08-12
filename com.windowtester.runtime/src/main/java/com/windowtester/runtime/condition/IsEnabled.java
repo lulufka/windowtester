@@ -15,10 +15,11 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to determine if the underlying object is enabled. See
- * {@link IsEnabledCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to determine if the underlying
+ * object is enabled. See {@link IsEnabledCondition} for typical usage.
  */
 public interface IsEnabled extends ILocator {
+
   /**
    * Resolve the locator to a single object and determine if that object is enabled.
    *

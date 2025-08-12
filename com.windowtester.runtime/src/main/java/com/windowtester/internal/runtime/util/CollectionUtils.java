@@ -22,17 +22,15 @@ public class CollectionUtils {
   /**
    * Create an array list of the given type of size 1.
    */
-  public static <T> ArrayList<T> listOfOne() {
+  public static <T> List<T> listOfOne() {
     return new ArrayList<T>(1);
   }
 
   public static <T> List<T> listWith(T... values) {
-    List<T> list = new ArrayList<T>();
-    list.addAll(Arrays.asList(values));
-    return list;
+    return new ArrayList<T>(Arrays.asList(values));
   }
 
   public static <T> List<T> emptyList() {
-    return new ArrayList<T>();
+    return new ArrayList<>();
   }
 }

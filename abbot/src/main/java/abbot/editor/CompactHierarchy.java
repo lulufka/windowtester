@@ -35,19 +35,19 @@ public class CompactHierarchy implements Hierarchy {
     return hierarchy.getRoots();
   }
 
-  public Container getParent(Component c) {
+  public Container getParent(Component component) {
     // In the component hierarchy, show popup menus directly beneath their
     // invoker
-    if (compact && c instanceof JPopupMenu) {
-      Component invoker = ((JPopupMenu) c).getInvoker();
+    if (compact && component instanceof JPopupMenu) {
+      Component invoker = ((JPopupMenu) component).getInvoker();
       if (invoker instanceof Container) {
         return (Container) invoker;
       }
     }
-    if (compact && c instanceof JToolTip) {
-      return ((JToolTip) c).getComponent();
+    if (compact && component instanceof JToolTip) {
+      return ((JToolTip) component).getComponent();
     }
-    Container parent = hierarchy.getParent(c);
+    Container parent = hierarchy.getParent(component);
     if (compact) {
       while (parent != null && isElided(parent)) {
         parent = getParent(parent);
@@ -56,12 +56,12 @@ public class CompactHierarchy implements Hierarchy {
     return parent;
   }
 
-  public boolean contains(Component c) {
-    return hierarchy.contains(c);
+  public boolean contains(Component component) {
+    return hierarchy.contains(component);
   }
 
-  public void dispose(Window w) {
-    hierarchy.dispose(w);
+  public void dispose(Window window) {
+    hierarchy.dispose(window);
   }
 
   /**
@@ -112,19 +112,19 @@ public class CompactHierarchy implements Hierarchy {
    */
   // heavyweights are subwindows of Window?
   // lightweights are subpanels of Window?
-  public Collection getComponents(Component c) {
-    if (c == null || !(c instanceof Container)) {
+  public Collection getComponents(Component component) {
+    if (component == null || !(component instanceof Container)) {
       return new ArrayList();
     }
 
     ArrayList list = new ArrayList();
     if (compact) {
       // Display menu contents directly beneath menus
-      if (c instanceof JMenu) {
-        return getComponents(((JMenu) c).getPopupMenu());
+      if (component instanceof JMenu) {
+        return getComponents(((JMenu) component).getPopupMenu());
       }
     }
-    Iterator iter = hierarchy.getComponents(c).iterator();
+    Iterator iter = hierarchy.getComponents(component).iterator();
     while (iter.hasNext()) {
       Component k = (Component) iter.next();
       if (compact && isElided(k)) {
@@ -138,7 +138,7 @@ public class CompactHierarchy implements Hierarchy {
       }
     }
 
-    list.addAll(findInvokerPopups(c));
+    list.addAll(findInvokerPopups(component));
 
     return list;
   }

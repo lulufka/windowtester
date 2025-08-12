@@ -28,23 +28,19 @@ import com.windowtester.runtime.swing.locator.LabeledTextLocator;
 public class MatcherFactory {
 
   /**
-   * Generate a Matcher that can be used to identify the widget described by this WidgetLocator object.
+   * Generate a Matcher that can be used to identify the widget described by this WidgetLocator
+   * object.
    *
    * @return a Matcher that matches this object.
    * @see Matcher
    */
-  public static Matcher getMatcher(WidgetLocator wl) {
-
-    Class cls = wl.getTargetClass();
-    String nameOrLabel = wl.getNameOrLabel();
-    WidgetLocator parentInfo = wl.getParentInfo();
-
-    if (wl instanceof LabeledTextLocator) {
-      /*
-       * NOTE: Labeled locators are not indexable
-       *
-       */
-      LabeledWidgetMatcher labelMatcher = new LabeledWidgetMatcher(cls, nameOrLabel);
+  public static Matcher getMatcher(WidgetLocator locator) {
+    var cls = locator.getTargetClass();
+    var nameOrLabel = locator.getNameOrLabel();
+    var parentInfo = locator.getParentInfo();
+    if (locator instanceof LabeledTextLocator) {
+      // NOTE: Labeled locators are not indexable
+      var labelMatcher = new LabeledWidgetMatcher(cls, nameOrLabel);
       if (parentInfo == null) {
         return labelMatcher;
       }
@@ -52,22 +48,21 @@ public class MatcherFactory {
       return new HierarchyMatcher(labelMatcher, getMatcher(parentInfo));
     }
 
-    int index = wl.getIndex();
-
+    var index = locator.getIndex();
     // standard case
     if (parentInfo == null) {
-      return getTargetMatcher(wl);
-    } else {
+      return getTargetMatcher(locator);
+    }
+    if (index != WidgetLocator.UNASSIGNED) {
       // handle indexed case
-      if (index != WidgetLocator.UNASSIGNED) {
-        return (nameOrLabel != null)
-            ? new HierarchyMatcher(cls, nameOrLabel, index, getMatcher(parentInfo))
-            : new HierarchyMatcher(cls, index, getMatcher(parentInfo));
-      } else { // unindexed
-        return (nameOrLabel != null)
-            ? new HierarchyMatcher(cls, nameOrLabel, getMatcher(parentInfo))
-            : new HierarchyMatcher(cls, getMatcher(parentInfo));
-      }
+      return (nameOrLabel != null)
+          ? new HierarchyMatcher(cls, nameOrLabel, index, getMatcher(parentInfo))
+          : new HierarchyMatcher(cls, index, getMatcher(parentInfo));
+    } else {
+      // unindexed
+      return (nameOrLabel != null)
+          ? new HierarchyMatcher(cls, nameOrLabel, getMatcher(parentInfo))
+          : new HierarchyMatcher(cls, getMatcher(parentInfo));
     }
   }
 
@@ -76,28 +71,36 @@ public class MatcherFactory {
    *
    * @return the target matcher
    */
-  private static Matcher getTargetMatcher(WidgetLocator wl) {
-    int index = wl.getIndex();
-    String nameOrLabel = wl.getNameOrLabel();
-    Class cls = wl.getTargetClass();
+  private static Matcher getTargetMatcher(WidgetLocator locator) {
+    var index = locator.getIndex();
+    var nameOrLabel = locator.getNameOrLabel();
+    var cls = locator.getTargetClass();
 
     // FIXME: refactor and centralize (duplicated in HierarchyMatcher constructor); also notice uses
     // of IndexMatcher -- should be removed...
     if (index == WidgetLocator.UNASSIGNED) {
       if (nameOrLabel == null) {
         return new ClassMatcher(cls);
-      } else {
-        return new CompositeMatcher(
-            new Matcher[] {new ClassMatcher(cls), new NameOrLabelMatcher(nameOrLabel)});
       }
+      return new CompositeMatcher(
+          new Matcher[]{
+              new ClassMatcher(cls),
+              new NameOrLabelMatcher(nameOrLabel)
+          }
+      );
     }
+
     if (nameOrLabel == null) {
       return new IndexMatcher(new ClassMatcher(cls), index);
-    } else {
-      return new CompositeMatcher(
-          new Matcher[] {
-            new ClassMatcher(cls), new IndexMatcher(new NameOrLabelMatcher(nameOrLabel), index)
-          });
     }
+    return new CompositeMatcher(
+        new Matcher[]{
+            new ClassMatcher(cls),
+            new IndexMatcher(new NameOrLabelMatcher(nameOrLabel), index)
+        });
+  }
+
+  public MatcherFactory() {
+    // hide public constructor
   }
 }

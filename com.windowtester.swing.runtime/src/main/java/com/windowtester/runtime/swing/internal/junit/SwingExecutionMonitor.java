@@ -17,39 +17,22 @@ import com.windowtester.internal.runtime.junit.core.ITestIdentifier;
 import com.windowtester.internal.swing.UIContextSwingFactory;
 import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.monitor.IUIThreadMonitor;
-import java.awt.*;
-import java.util.Collection;
+import java.awt.Component;
+import java.awt.Window;
 
 /**
  * Monitor for executing Swing tests.
  */
 public class SwingExecutionMonitor extends AbstractExecutionMonitor {
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Instance Creation
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  private IUIContext _ui;
+  private IUIContext uiContext;
 
   public SwingExecutionMonitor() {
-
-    // build cleanup handler
-    //		setCleanupHandler(new SWTCleanupHandler(_environment, getState()));
+    // do nothing
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Test Lifecycle
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarting(com.windowtester.runtime.test.TestIdentifier)
-   */
+  @Override
   public void testStarting(ITestIdentifier identifier) {
-
     // TODO [author=Dan] Race condition workaround... better solution needed...
     // If a Swing test launches an application, but a Swing window is still
     // open from a previous test, then the "notShowing" loop below
@@ -62,8 +45,7 @@ public class SwingExecutionMonitor extends AbstractExecutionMonitor {
     try {
       Thread.sleep(100);
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // ignore
     }
 
     /*
@@ -85,76 +67,32 @@ public class SwingExecutionMonitor extends AbstractExecutionMonitor {
       }
     }
 
-    // update settings scope
-    //		TestSettings.getInstance().push();
-
     // next inform listeners, etc.
     super.testStarting(identifier);
   }
 
-  // @Override
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.AbstractExecutionMonitor#testFinished()
-   */
-  public void testFinished() {
-    // notify listeners
-    super.testFinished();
-    // update settings scope
-    //		TestSettings.getInstance().pop();
+  @Override
+  protected void doWaitForFinish() {
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Wait Loop Management
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // @Override
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.AbstractExecutionMonitor#doWaitForFinish()
-   */
-  protected void doWaitForFinish() {}
-
-  // @Override
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.AbstractExecutionMonitor#terminateWaitForFinish()
-   */
+  @Override
   protected boolean terminateWaitForFinish() {
-    Hierarchy hierarchy = AWTHierarchy.getDefault();
-    Collection c = hierarchy.getRoots();
-    // System.out.println("roots: " + c.size());
-    return (c.size() == 0);
+    var hierarchy = AWTHierarchy.getDefault();
+    return hierarchy.getRoots().isEmpty();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Test Monitor Instantiation
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Answer the user interface thread monitor used to determine if the user interface thread is idle or unresponsive
-   * longer than some expected time.
-   *
-   * @return the user interface thread monitor (not <code>null</code>)
-   */
+  @Override
   protected IUIThreadMonitor getUIThreadMonitor() {
     return (IUIThreadMonitor) getUI().getAdapter(IUIThreadMonitor.class);
   }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Accessors
-  //
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
    * Get the UI Context.
    */
   public IUIContext getUI() {
-    if (_ui == null) {
-      _ui = UIContextSwingFactory.createContext();
+    if (uiContext == null) {
+      uiContext = UIContextSwingFactory.createContext();
     }
-    return _ui;
+    return uiContext;
   }
 }

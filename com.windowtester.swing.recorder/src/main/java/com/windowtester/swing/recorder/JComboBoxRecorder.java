@@ -19,12 +19,13 @@ import abbot.tester.JComboBoxTester;
 import abbot.util.AWT;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JList;
 
 /**
  * Record basic semantic events you might find on an JComboBox. <p>
@@ -38,8 +39,8 @@ import javax.swing.*;
 public class JComboBoxRecorder extends JComponentRecorder {
 
   private final JComboBoxTester tester = new JComboBoxTester();
-  private JComboBox combo = null;
-  private JList list = null;
+  private JComboBox<?> combo = null;
+  private JList<?> list = null;
   private int index = -1;
   private ActionListener listener = null;
 
@@ -47,9 +48,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * Make sure we only operate on a JComboBox.
-   */
+  @Override
   public boolean accept(AWTEvent event) {
     if (isClick(event) && getComboBox(event) == null) {
       return false;
@@ -57,6 +56,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
     return super.accept(event);
   }
 
+  @Override
   protected void init(int recordingType) {
     super.init(recordingType);
     combo = null;
@@ -68,7 +68,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
   /**
    * Return the JComboBox for the given event, or null if none.
    */
-  private JComboBox getComboBox(AWTEvent event) {
+  private JComboBox<?> getComboBox(AWTEvent event) {
     Component comp = (Component) event.getSource();
     // Depends somewhat on LAF; sometimes the combo box is itself the
     // button, sometimes a panel containing the button.
@@ -76,20 +76,18 @@ public class JComboBoxRecorder extends JComponentRecorder {
       comp = comp.getParent();
     }
     if (comp instanceof JComboBox) {
-      return (JComboBox) comp;
+      return (JComboBox<?>) comp;
     }
     return null;
   }
 
+  @Override
   protected boolean canMultipleClick() {
     return false;
   }
 
-  /**
-   * Parse clicks  to cancel the recording if we get a click that's not in the JList (or ESC).
-   */
+  @Override
   protected boolean parseClick(AWTEvent event) {
-
     if (isFinished()) {
       return false;
     }
@@ -98,21 +96,18 @@ public class JComboBoxRecorder extends JComponentRecorder {
     boolean consumed = true;
     if (combo == null) {
       combo = getComboBox(event);
-      listener =
-          new ActionListener() {
-            public void actionPerformed(ActionEvent ev) {
-              index = combo.getSelectedIndex();
-              if (!combo.isPopupVisible()) {
-                combo.removeActionListener(listener);
-                setFinished(true);
-              }
-            }
-          };
+      listener = ev -> {
+        index = combo.getSelectedIndex();
+        if (!combo.isPopupVisible()) {
+          combo.removeActionListener(listener);
+          setFinished(true);
+        }
+      };
       combo.addActionListener(listener);
       setStatus("Waiting for selection");
     } else if (event.getID() == KeyEvent.KEY_RELEASED
         && (((KeyEvent) event).getKeyCode() == KeyEvent.VK_SPACE
-            || ((KeyEvent) event).getKeyCode() == KeyEvent.VK_ENTER)) {
+        || ((KeyEvent) event).getKeyCode() == KeyEvent.VK_ENTER)) {
       index = combo.getSelectedIndex();
       setFinished(true);
     }
@@ -143,6 +138,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
     return consumed;
   }
 
+  @Override
   protected Step createStep() {
     Step step = null;
     if (getRecordingType() == SE_CLICK) {
@@ -153,7 +149,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
     return step;
   }
 
-  protected Step createSelection(JComboBox combo, int index) {
+  protected Step createSelection(JComboBox<?> combo, int index) {
     Step step = null;
     if (combo != null && index != -1) {
       ComponentReference cr = getResolver().addComponent(combo);
@@ -165,7 +161,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
                 getResolver(),
                 null,
                 "actionSelectIndex",
-                new String[] {cr.getID(), String.valueOf(index)},
+                new String[]{cr.getID(), String.valueOf(index)},
                 javax.swing.JComboBox.class);
       } else {
         step =
@@ -173,7 +169,7 @@ public class JComboBoxRecorder extends JComponentRecorder {
                 getResolver(),
                 null,
                 "actionSelectItem",
-                new String[] {cr.getID(), value},
+                new String[]{cr.getID(), value},
                 javax.swing.JComboBox.class);
         // Create semantic event
         IUISemanticEvent semanticEvent =

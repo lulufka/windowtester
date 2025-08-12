@@ -20,8 +20,17 @@ import com.windowtester.runtime.swing.locator.JTextComponentLocator;
 import com.windowtester.runtime.swing.locator.JToggleButtonLocator;
 import com.windowtester.runtime.swing.locator.LabeledTextLocator;
 import com.windowtester.runtime.swing.locator.NamedWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.util.Arrays;
+import java.util.Optional;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -29,111 +38,84 @@ import javax.swing.text.JTextComponent;
  */
 public class WidgetLocatorFactory {
 
-  public static WidgetLocatorFactory _instance = new WidgetLocatorFactory();
-
-  private WidgetLocatorFactory() {}
+  private static final WidgetLocatorFactory INSTANCE = new WidgetLocatorFactory();
 
   public static WidgetLocatorFactory getInstance() {
-    return _instance;
+    return INSTANCE;
   }
 
-  public SwingWidgetLocator create(Component w) {
+  private WidgetLocatorFactory() {
+    // hide public constructor
+  }
 
-    // create named widget locator
-    Class cls = w.getClass();
-    String name = w.getName();
-
-    if (name != null && (name.indexOf("OptionPane") == -1)) {
-      return new NamedWidgetLocator(cls, name);
+  public SwingWidgetLocator create(Component component) {
+    var name = component.getName();
+    if (name != null && !name.contains("OptionPane")) {
+      return new NamedWidgetLocator(component.getClass(), name);
     }
 
-    ///////////////////////////////////////////////////////////////
-    //
-    // Handle special cases
-    //
-    ///////////////////////////////////////////////////////////////
-
-    if (w instanceof JButton) {
-      return new JButtonLocator(((JButton) w).getText());
+    if (component instanceof JButton button) {
+      return new JButtonLocator(button.getText());
     }
-    if (w instanceof JRadioButton) {
-      return new JRadioButtonLocator(((JRadioButton) w).getText());
+    if (component instanceof JRadioButton radioButton) {
+      return new JRadioButtonLocator(radioButton.getText());
     }
-    if (w instanceof JCheckBox) {
-      return new JCheckBoxLocator(((JCheckBox) w).getText());
+    if (component instanceof JCheckBox checkBox) {
+      return new JCheckBoxLocator(checkBox.getText());
     }
-    if (w instanceof JToggleButton) {
-      return new JToggleButtonLocator(((JToggleButton) w).getText());
+    if (component instanceof JToggleButton toggleButton) {
+      return new JToggleButtonLocator(toggleButton.getText());
     }
-
-    if (w instanceof JMenuItem) {
-      JMenuItem item = (JMenuItem) w;
-      String string = ComponentAccessor.extractMenuPath(item);
-      String itemLabel = ComponentAccessor.extractMenuItemLabel(item);
-      String path = string + "/" + itemLabel;
-
-      return new JMenuItemLocator(w.getClass(), path);
+    if (component instanceof JMenuItem item) {
+      return new JMenuItemLocator(component.getClass(), createMenuItemPath(item));
     }
-
-    if (w instanceof JTextField) { // create LabeledTextLocator
-      Component parent = w.getParent();
-      boolean found = false;
-      String labelText = null;
-      int labelIndex = 0;
-
-      if (parent instanceof Container) {
-
-        Component[] children = ((Container) parent).getComponents();
-        Component child;
-        for (int i = 0; i < children.length; i++) {
-          child = children[i];
-          // look for next widget of target class
-          if (labelText != null) {
-            if (child.getClass().equals(cls)) {
-              found = (child == w) && (labelIndex == (i - 1));
-              if (found) {
-                break;
-              }
-            }
-          }
-          // set up for next iteration
-          if (child instanceof JLabel) {
-            labelText = ((JLabel) child).getText();
-            labelIndex = i;
-          }
-        }
-      }
-      if (found) {
-        return new LabeledTextLocator(labelText);
+    if (component instanceof JTextField) {
+      // create LabeledTextLocator
+      var labeledText = getLabeledText(component);
+      if (labeledText.isPresent()) {
+        return new LabeledTextLocator(labeledText.get());
       }
     }
     // widget locators for all other text components
-    if (w instanceof JTextComponent) {
-      return new JTextComponentLocator(w.getClass());
+    if (component instanceof JTextComponent) {
+      return new JTextComponentLocator(component.getClass());
     }
 
     // N.B. tree item locators are built up at codegen time
-
-    ///////////////////////////////////////////////////////////////
-
-    ///////////////////////////////////////////////////////////////
-    //
-    // Fall through case
-    //
-    ///////////////////////////////////////////////////////////////
-
-    return defaultLocator(w);
+    return createDefaultLocator(component);
   }
 
-  private SwingWidgetLocator defaultLocator(Component w) {
-    Class cls = w.getClass();
-    String name = w.getName();
-    /**
-     * Check if the component has a text , set by the setText method
-     * TODO!pq: is this the only component with a button?
-     */
-    if (w instanceof AbstractButton) {
-      String text = ((AbstractButton) w).getText();
+  private String createMenuItemPath(JMenuItem item) {
+    var string = ComponentAccessor.extractMenuPath(item);
+    var itemLabel = ComponentAccessor.extractMenuItemLabel(item);
+    return string + "/" + itemLabel;
+  }
+
+  private Optional<String> getLabeledText(Component component) {
+    var parent = component.getParent();
+    if (parent == null) {
+      return Optional.empty();
+    }
+
+    return Arrays.stream(parent.getComponents())
+        .filter(JLabel.class::isInstance)
+        .map(JLabel.class::cast)
+        .filter(label -> isCorrectComponent(label, component))
+        .map(JLabel::getText)
+        .findFirst();
+  }
+
+  private boolean isCorrectComponent(JLabel label, Component component) {
+    return label.getClass().equals(component.getClass())
+        && label == component;
+  }
+
+  private SwingWidgetLocator createDefaultLocator(Component component) {
+    var cls = component.getClass();
+    var name = component.getName();
+
+    if (component instanceof AbstractButton button) {
+      var text = button.getText();
       if (text != null) {
         return new SwingWidgetLocator(cls, text);
       }
@@ -141,8 +123,7 @@ public class WidgetLocatorFactory {
 
     if (name != null) {
       return new SwingWidgetLocator(cls, name);
-    } else {
-      return new SwingWidgetLocator(cls);
     }
+    return new SwingWidgetLocator(cls);
   }
 }

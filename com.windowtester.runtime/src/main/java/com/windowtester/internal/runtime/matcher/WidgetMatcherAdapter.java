@@ -12,42 +12,32 @@ package com.windowtester.internal.runtime.matcher;
 
 import abbot.finder.Matcher;
 import com.windowtester.runtime.locator.IWidgetMatcher;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * An adapter from an Abbot {@link Matcher} to an {@link IWidgetMatcher}.
  * <p>
  * Created using the {@link AdapterFactory#adapt(Matcher)} creation method.
  */
-public class WidgetMatcherAdapter implements IWidgetMatcher {
+public class WidgetMatcherAdapter implements IWidgetMatcher<Component> {
 
   private final Matcher matcher;
 
   /**
    * Create an instance.
    *
-   * @param wm the matcher to adapt.
+   * @param matcher the matcher to adapt
    */
   public WidgetMatcherAdapter(Matcher matcher) {
     this.matcher = matcher;
   }
 
-  /**
-   * Check to see if this adapted matcher matches.
-   *
-   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-   */
-  public boolean matches(Object widget) {
-    // TODO: does this type check belong in core?
-    if (!(widget instanceof Component)) {
-      return false;
-    }
-    return matcher.matches((Component) widget);
+  @Override
+  public boolean matches(Component widget) {
+    return matcher.matches(widget);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return matcher.toString();
   }

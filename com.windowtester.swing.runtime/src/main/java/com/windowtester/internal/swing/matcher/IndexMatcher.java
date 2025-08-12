@@ -12,13 +12,18 @@ package com.windowtester.internal.swing.matcher;
 
 import com.windowtester.internal.runtime.matcher.AdapterFactory;
 import com.windowtester.runtime.locator.IWidgetMatcher;
+import java.awt.Component;
 
 /**
  * A factory for creating index matchers.
  */
 public class IndexMatcher {
 
-  public static IWidgetMatcher create(IWidgetMatcher matcher, int index) {
+  private IndexMatcher() {
+    // hide public constructor
+  }
+
+  public static IWidgetMatcher<?> create(IWidgetMatcher<?> matcher, int index) {
     return new AdapterFactory()
         .adapt(
             new com.windowtester.internal.finder.matchers.swing.IndexMatcher(

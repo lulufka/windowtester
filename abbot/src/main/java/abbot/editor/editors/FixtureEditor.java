@@ -12,7 +12,7 @@ import abbot.script.Fixture;
  */
 public class FixtureEditor extends ScriptEditor {
   /**
-   * @param script
+   * @param script script
    */
   public FixtureEditor(Fixture script) {
     super(script);

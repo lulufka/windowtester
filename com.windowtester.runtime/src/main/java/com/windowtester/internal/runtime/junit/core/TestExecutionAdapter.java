@@ -11,42 +11,32 @@
 package com.windowtester.internal.runtime.junit.core;
 
 /**
- * This adapter class provides default implementations for the methods described by the {@link ITestExecutionListener}
- * interface.
+ * This adapter class provides default implementations for the methods described by the
+ * {@link ITestExecutionListener} interface.
  */
 public class TestExecutionAdapter implements ITestExecutionListener {
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#exceptionCaught(java.lang.Throwable)
-   */
+  @Override
   public void exceptionCaught(Throwable e) {
     // no-op
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinished()
-   */
+  @Override
   public void testFinished() {
     // no-op
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testFinishing()
-   */
+  @Override
   public void testFinishing() {
     // no-op
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarting(com.windowtester.runtime.test.TestIdentifier)
-   */
+  @Override
   public void testStarting(ITestIdentifier identifier) {
     // no-op
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ITestExecutionListener#testStarted(com.windowtester.runtime.test.TestIdentifier)
-   */
+  @Override
   public void testStarted(ITestIdentifier identifier) {
     // no-op
   }

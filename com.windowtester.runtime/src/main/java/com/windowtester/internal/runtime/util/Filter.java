@@ -17,7 +17,8 @@ import java.util.NoSuchElementException;
 /**
  * A basic implementation of a filtering iterator.
  * <p>
- * Adapted from: http://www.erik-rasmussen.com/blog/2008/01/18/the-filter-pattern-java-conditional-abstraction-with-iterables/
+ * Adapted from:
+ * http://www.erik-rasmussen.com/blog/2008/01/18/the-filter-pattern-java-conditional-abstraction-with-iterables/
  */
 public abstract class Filter<T> {
 
@@ -31,15 +32,12 @@ public abstract class Filter<T> {
     return filter(Arrays.asList(iterable));
   }
 
-  public Iterable<T> filter(final Iterable<T> iterable) {
-    return new Iterable<T>() {
-      public Iterator<T> iterator() {
-        return filter(iterable.iterator());
-      }
-    };
+  public Iterable<T> filter(Iterable<T> iterable) {
+    return () -> filter(iterable.iterator());
   }
 
   private class FilterIterator implements Iterator<T> {
+
     private final Iterator<T> iterator;
     private T next;
 
@@ -48,10 +46,12 @@ public abstract class Filter<T> {
       toNext();
     }
 
+    @Override
     public boolean hasNext() {
       return next != null;
     }
 
+    @Override
     public T next() {
       if (next == null) {
         throw new NoSuchElementException();
@@ -61,6 +61,7 @@ public abstract class Filter<T> {
       return returnValue;
     }
 
+    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }

@@ -18,15 +18,13 @@ import com.windowtester.runtime.condition.IsEnabled;
 import com.windowtester.runtime.condition.IsEnabledCondition;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JButton;
 
 /**
  * A locator for JButtons.
  */
 public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFocus, IsEnabled {
-
-  private static final long serialVersionUID = 3445424001537844748L;
 
   /**
    * Create an instance of a locator that locates a JButton by its text or name
@@ -38,7 +36,8 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
   }
 
   /**
-   * Create an instance of a locator that locates a JButton by its text or name, relative to the given parent
+   * Create an instance of a locator that locates a JButton by its text or name, relative to the
+   * given parent
    *
    * @param label  the text/name of the JButton
    * @param parent the locator for the parent component
@@ -48,7 +47,8 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
   }
 
   /**
-   * Create an instance of a locator that locates a JButton by its text or name, relative to the given parent.
+   * Create an instance of a locator that locates a JButton by its text or name, relative to the
+   * given parent.
    *
    * @param label  the text/name of the JButton
    * @param index  the index relative to it's parent
@@ -58,36 +58,29 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
     super(JButton.class, label, index, parent);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.swing.SWingWidgetLocator#getWidgetText(java.awt.Component)
-   */
+  @Override
   protected String getWidgetText(Component widget) {
     return ((JButton) widget).getText();
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JButtonLocator";
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
    * Create a condition that tests if the given widget has the expected text.
    *
-   * @param expected the expected text (can be a regular expression as described in the {@link StringComparator}
-   *                 utility)
+   * @param expected the expected text (can be a regular expression as described in the
+   *                 {@link StringComparator} utility)
    */
   public IUICondition hasText(String expected) {
     return new HasTextCondition(this, expected);
   }
 
   /**
-   * Create a condition that tests if the given widget is enabled. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given widget is enabled. Note that this is a convenience
+   * method, equivalent to:
    * <code>isEnabled(true)</code>
    */
   public IUICondition isEnabled() {
@@ -97,9 +90,8 @@ public class JButtonLocator extends SwingWidgetLocator implements HasText, HasFo
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   * @param selected
-   * @param expected <code>true</code> if the menu is expected to be enabled, else
-   *                 <code>false</code>
+   * <code>false</code>
+   *
    * @see IsEnabledCondition
    */
   public IUICondition isEnabled(boolean expected) {

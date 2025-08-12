@@ -14,7 +14,9 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Window;
 
 /**
  * Record basic semantic events you might find on an Window. <p>
@@ -35,8 +37,8 @@ public class DialogRecorder extends ComponentRecorder {
               getResolver(),
               null,
               "actionResize",
-              new String[] {
-                ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
+              new String[]{
+                  ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
               },
               Dialog.class);
     }

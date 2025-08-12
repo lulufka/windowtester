@@ -73,6 +73,9 @@ public abstract class EditorAction extends AbstractAction implements EditorConst
   }
 
   /**
+   * Returns the mnemonic of the given key.
+   * @param key key
+   * @return the mnemonic
    * @deprecated Encode the mnemonic into the localized label instead.
    */
   public static int getMnemonic(String key) {

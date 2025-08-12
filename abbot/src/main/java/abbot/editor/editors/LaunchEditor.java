@@ -37,9 +37,6 @@ public class LaunchEditor extends CallEditor {
     thread.setName(TAG_THREADED);
   }
 
-  /**
-   * Display only the public static member functions.
-   */
   protected String[] getMethodNames(Method[] mlist) {
     ArrayList list = new ArrayList();
     int mask = Modifier.PUBLIC | Modifier.STATIC;

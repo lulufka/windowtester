@@ -17,18 +17,22 @@ import com.windowtester.runtime.condition.IsEnabled;
 import com.windowtester.runtime.condition.IsEnabledCondition;
 import com.windowtester.runtime.locator.IMenuItemLocator;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.io.Serial;
+import javax.swing.JMenuItem;
 
 /**
  * A locator for JMenuItems.
  */
 public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLocator, IsEnabled {
 
+  @Serial
   private static final long serialVersionUID = -5514291727454535792L;
 
   /**
-   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as "File/New/Project"
+   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as
+   * "File/New/Project"
    *
    * @param path a String that specifies the complete path to the JMenuItem
    */
@@ -37,8 +41,8 @@ public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLo
   }
 
   /**
-   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as "File/New/Project"
-   * ,relative to a parent
+   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as
+   * "File/New/Project" ,relative to a parent
    *
    * @param path   a String that specifies the complete path to the JMenuItem
    * @param parent locator for the parent
@@ -48,49 +52,47 @@ public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLo
   }
 
   /**
-   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as "File/New/Project"
+   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as
+   * "File/New/Project"
    *
    * @param cls  the exact Class of the menu item
    * @param path a String that specifies the complete path to the JMenuItem
    */
-  public JMenuItemLocator(Class cls, String path) {
+  public JMenuItemLocator(Class<?> cls, String path) {
     this(cls, path, null);
   }
 
   /**
-   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as "File/New/Project",
-   * relative to the parent
+   * Creates an instance of a JMenuItem locator with the menu path indicated by a string such as
+   * "File/New/Project", relative to the parent
    *
    * @param cls    the exact Class of the menu item
    * @param path   a String that specifies the complete path to the JMenuItem
    * @param parent locator of the parent
    */
-  public JMenuItemLocator(Class cls, String path, SwingWidgetLocator parent) {
+  public JMenuItemLocator(Class<?> cls, String path, SwingWidgetLocator parent) {
     super(cls, path, parent);
   }
 
+  @Override
   protected String getWidgetLocatorStringName() {
     return "JMenuItemLocator";
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.swing.locator.AbstractPathLocator#doClick(com.windowtester.runtime2.IUIContext2, int, java.awt.Component, java.awt.Point, int)
-   */
+  @Override
   protected Component doClick(
-      IUIContext ui, int clicks, Component c, Point offset, int modifierMask) {
-    ((UIContextSwing) ui).getDriver().clickMenuItem((JMenuItem) c);
-    return c;
+      IUIContext ui,
+      int clicks,
+      Component component,
+      Point offset,
+      int modifierMask) {
+    ((UIContextSwing) ui).getDriver().clickMenuItem((JMenuItem) component);
+    return component;
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  //
-  // Condition Factories
-  //
-  ///////////////////////////////////////////////////////////////////////////
-
   /**
-   * Create a condition that tests if the given widget is enabled. Note that this is a convenience method, equivalent
-   * to:
+   * Create a condition that tests if the given widget is enabled. Note that this is a convenience
+   * method, equivalent to:
    * <code>isEnabled(true)</code>
    */
   public IUICondition isEnabled() {
@@ -100,7 +102,6 @@ public class JMenuItemLocator extends AbstractPathLocator implements IMenuItemLo
   /**
    * Create a condition that tests if the given widget is enabled.
    *
-   * @param selected
    * @param expected <code>true</code> if the menu is expected to be enabled, else
    *                 <code>false</code>
    * @see IsEnabledCondition

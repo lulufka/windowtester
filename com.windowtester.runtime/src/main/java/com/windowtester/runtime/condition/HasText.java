@@ -15,10 +15,11 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to extract text from the underlying object. See {@link
- * HasTextCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to extract text from the underlying
+ * object. See {@link HasTextCondition} for typical usage.
  */
 public interface HasText {
+
   /**
    * Resolve the locator to a single object and answer the text associated with it.
    *

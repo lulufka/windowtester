@@ -20,21 +20,22 @@ public class JMenuItemMatcher implements Matcher {
   }
 
   private String getPath(JMenuItem item) {
-    Component parent = item.getParent();
-    if (parent instanceof JPopupMenu) {
-      parent = ((JPopupMenu) parent).getInvoker();
+    var parent = (Component) item.getParent();
+    if (parent instanceof JPopupMenu popupMenu) {
+      parent = popupMenu.getInvoker();
     }
-    if (parent instanceof JMenuItem) {
-      return getPath((JMenuItem) parent) + "|" + item.getText();
+    if (parent instanceof JMenuItem menuItem) {
+      return getPath(menuItem) + "|" + item.getText();
     }
     return item.getText();
   }
 
-  public boolean matches(Component c) {
-    if (c instanceof JMenuItem) {
-      JMenuItem mi = (JMenuItem) c;
-      String text = mi.getText();
-      return StringComparator.matches(text, label) || StringComparator.matches(getPath(mi), label);
+  @Override
+  public boolean matches(Component component) {
+    if (component instanceof JMenuItem menuItem) {
+      var text = menuItem.getText();
+      return StringComparator.matches(text, label)
+          || StringComparator.matches(getPath(menuItem), label);
     }
     return false;
   }

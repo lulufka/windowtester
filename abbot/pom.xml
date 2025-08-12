@@ -1,14 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>3.8.3-SNAPSHOT</version>
+    <version>5.11.3</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
   <artifactId>abbot</artifactId>
+  <name>Windowtester Abbot</name>
+  <description>Abbot provides robot functionality to interact with the UI.</description>
+
+  <description>The robot to navigate automatically on the UI.</description>
 
   <scm>
     <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
@@ -17,6 +21,12 @@
   </scm>
 
   <dependencies>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite</artifactId>
+      <version>1.10.1</version>
+    </dependency>
+
     <dependency>
       <groupId>gnu-regexp</groupId>
       <artifactId>gnu-regexp</artifactId>
@@ -34,7 +44,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>

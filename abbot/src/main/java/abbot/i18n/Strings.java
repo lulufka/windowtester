@@ -4,7 +4,6 @@ import abbot.Log;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -14,34 +13,34 @@ import java.util.Set;
 /**
  * Provides i18n support.
  */
-// TODO: auto-format tooltips (".tip") and dialog messages (".dlg.")
 public class Strings {
+
   private static final String BUNDLE = "abbot.i18n.StringsBundle";
 
-  private static final Set bundles = new HashSet();
-  private static final Map formats = new HashMap();
+  private static final Set<ResourceBundle> bundles = new HashSet<>();
+  private static final Map<String, MessageFormat> formats = new HashMap<>();
 
   static {
-    String language = System.getProperty("abbot.locale.language");
+    var language = System.getProperty("abbot.locale.language");
     if (language != null) {
-      String country = System.getProperty("abbot.locale.country", language.toUpperCase());
-      String variant = System.getProperty("abbot.locale.variant", "");
-      Locale locale = new Locale(language, country, variant);
+      var country = System.getProperty("abbot.locale.country", language.toUpperCase());
+      var variant = System.getProperty("abbot.locale.variant", "");
+      var locale = new Locale(language, country, variant);
       Locale.setDefault(locale);
-      System.out.println("Using locale " + locale);
     }
     addBundle(BUNDLE);
   }
 
-  private Strings() {}
+  private Strings() {
+  }
 
   public static void addBundle(String bundle) {
-    Locale locale = Locale.getDefault();
+    var locale = Locale.getDefault();
     try {
       bundles.add(ResourceBundle.getBundle(bundle, locale));
     } catch (MissingResourceException mre) {
-      String msg = "No resource bundle found in " + bundle;
-      if (System.getProperty("java.class.path").indexOf("eclipse") != -1) {
+      var msg = "No resource bundle found in " + bundle;
+      if (System.getProperty("java.class.path").contains("eclipse")) {
         Log.warn(msg + ": copy one into your project output dir or run the ant build");
       } else {
         throw new Error(msg);
@@ -49,48 +48,32 @@ public class Strings {
     }
   }
 
-  /**
-   * Returns the localized String for the given key, or the key surrounded by '#' if no corresponding localized string
-   * is found.
-   */
   public static String get(String key) {
     return get(key, false);
   }
 
-  /**
-   * Returns the localized string for the given key.  If optional is true, return null, otherwise returns the key
-   * surrounded by '#' if no corresponding localized string is found.
-   */
   public static String get(String key, boolean optional) {
-    String defaultValue = "#" + key + "#";
+    var defaultValue = "#" + key + "#";
     String value = null;
-    Iterator iter = bundles.iterator();
-    while (iter.hasNext()) {
-      ResourceBundle local = (ResourceBundle) iter.next();
+
+    for (ResourceBundle local : bundles) {
       try {
         value = local.getString(key);
       } catch (MissingResourceException mre) {
+        // do nothing
       }
     }
-    if (value == null) {
-      if (!optional) {
-        Log.log("Missing resource '" + key + "'");
-        value = defaultValue;
-      }
+
+    if (value == null
+        && !optional) {
+      Log.log("Missing resource '" + key + "'");
+      value = defaultValue;
     }
     return value;
   }
 
-  /**
-   * Returns a formatted localized string for the given key and arguments, or the key if no corresponding localized
-   * string is found.  Use java.text.MessageFormat syntax for the format string and arguments.
-   */
   public static String get(String key, Object[] args) {
-    MessageFormat fmt = (MessageFormat) formats.get(key);
-    if (fmt == null) {
-      fmt = new MessageFormat(get(key));
-      formats.put(key, fmt);
-    }
+    var fmt = formats.computeIfAbsent(key, k -> new MessageFormat(get(k)));
     return fmt.format(args);
   }
 }

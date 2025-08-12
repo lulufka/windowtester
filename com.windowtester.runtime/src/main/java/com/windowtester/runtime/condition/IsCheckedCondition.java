@@ -16,8 +16,8 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 
 /**
- * Tests whether a locator identifies a widget that is checked. For example, this can be used to assert that a {@link
- * TableItem} is checked after a particular sequence of user inputs.
+ * Tests whether a locator identifies a widget that is checked. For example, this can be used to
+ * assert that a {@link TableItem} is checked after a particular sequence of user inputs.
  *
  * <pre>
  * 		IUIContext ui = [obtain IUIContext]
@@ -36,8 +36,8 @@ public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition 
   private WidgetSearchException exception;
 
   /**
-   * Construct a new instance that will test if the widget which is specified by the locator is checked. This is a
-   * convenience constructor that is fully equivalent to
+   * Construct a new instance that will test if the widget which is specified by the locator is
+   * checked. This is a convenience constructor that is fully equivalent to
    *
    * <pre>
    * new IsCheckedCondition(locator, true)
@@ -50,7 +50,8 @@ public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition 
   }
 
   /**
-   * Construct a new instance that will test if the widget which is specified by the locator is checked.
+   * Construct a new instance that will test if the widget which is specified by the locator is
+   * checked.
    *
    * @param locator  the locator for the widget to be tested
    * @param expected <code>true</code> if the widget is expected to be checked, else
@@ -64,9 +65,7 @@ public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition 
     this.expected = expected;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
@@ -74,6 +73,7 @@ public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition 
   /* (non-Javadoc)
    * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
    */
+  @Override
   public boolean testUI(IUIContext ui) {
     try {
       actual = locator.isChecked(ui);
@@ -93,12 +93,7 @@ public class IsCheckedCondition implements IDiagnosticParticipant, IUICondition 
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

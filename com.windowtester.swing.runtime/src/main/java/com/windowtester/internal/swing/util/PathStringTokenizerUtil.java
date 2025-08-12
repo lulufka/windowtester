@@ -18,9 +18,13 @@ import java.util.List;
  */
 public class PathStringTokenizerUtil {
 
+  private PathStringTokenizerUtil() {
+    // do nothing
+  }
+
   /**
    * Take a path string (elements delimited by the '\' character) and break it into tokens. If an element contains the
-   * delimeter, it must be escaped.
+   * delimiter, it must be escaped.
    * <p>
    * <p>
    * For example: "Edit/Find\\/Replace" tokenizes to "Edit", "Find/Replace".
@@ -38,41 +42,41 @@ public class PathStringTokenizerUtil {
   /**
    * A helper class for tokenizing.
    */
-  public static class PathTokenizer {
+  private static class PathTokenizer {
 
-    private final String _pathString;
-    private final char _delimeter;
-    private final char _escape;
-    private StringBuffer _sb = new StringBuffer();
-    private final List _items = new ArrayList();
+    private final String pathString;
+    private final char delimiter;
+    private final char escape;
+    private final StringBuilder builder = new StringBuilder();
+    private final List<String> items = new ArrayList<>();
 
-    public PathTokenizer(String pathString, char delimeter, char escape) {
-      _pathString = pathString;
-      _delimeter = delimeter;
-      _escape = escape;
+    public PathTokenizer(String pathString, char delimiter, char escape) {
+      this.pathString = pathString;
+      this.delimiter = delimiter;
+      this.escape = escape;
     }
 
     public PathTokenizer(String pathString) {
       this(pathString, '/', '\\');
     }
 
-    boolean isDelimeter(char c) {
-      return c == _delimeter;
+    private boolean isDelimiter(char c) {
+      return c == delimiter;
     }
 
-    boolean isEscape(char c) {
-      return c == _escape;
+    private boolean isEscape(char c) {
+      return c == escape;
     }
 
     public String[] tokenize() {
       for (int i = 0; inBounds(i); ++i) {
-        // System.out.println(getChar(i));
-        if (isDelimeter(getChar(i))) {
+        if (isDelimiter(getChar(i))) {
           addItem();
         } else if (isEscapeCase(i)) {
-          addChar(++i); // advance and add escaped char
+          // advance and add escaped char
+          addChar(++i);
         } else {
-          addChar(i); // just add
+          addChar(i);
         }
       }
       // add last item
@@ -82,31 +86,32 @@ public class PathStringTokenizerUtil {
     }
 
     private String[] getItems() {
-      return (String[]) _items.toArray(new String[] {});
+      return items.toArray(new String[0]);
     }
 
     private void addChar(int i) {
-      _sb.append(getChar(i));
+      builder.append(getChar(i));
     }
 
     private boolean isEscapeCase(int i) {
-      return inBounds(i + 1) && isEscape(getChar(i)) && isDelimeter(getChar(i + 1));
+      return inBounds(i + 1) && isEscape(getChar(i)) && isDelimiter(getChar(i + 1));
     }
 
     private void addItem() {
-      if (_sb.length() == 0) {
+      if (builder.isEmpty()) {
         return;
       }
-      _items.add(_sb.toString());
-      _sb = new StringBuffer(); // would be nice if we could just clear it...
+      items.add(builder.toString());
+
+      builder.delete(0, builder.length());
     }
 
     private char getChar(int i) {
-      return _pathString.charAt(i);
+      return pathString.charAt(i);
     }
 
     private boolean inBounds(int i) {
-      return i < _pathString.length();
+      return i < pathString.length();
     }
   }
 }

@@ -2,6 +2,7 @@ package abbot.tester;
 
 import abbot.Log;
 import abbot.Platform;
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -121,7 +122,7 @@ public class KeyStrokeMap implements KeyStrokeMapProvider {
     int shift = InputEvent.SHIFT_DOWN_MASK;
     // int alt = InputEvent.ALT_DOWN_MASK;
     // int altg = InputEvent.ALT_GRAPH_DOWN_MASK;
-    int ctrl = InputEvent.CTRL_DOWN_MASK;
+    int ctrl = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     // int meta = InputEvent.META_DOWN_MASK;
     // These are assumed to be standard across all keyboards (?)
     int[][] universalMappings = {

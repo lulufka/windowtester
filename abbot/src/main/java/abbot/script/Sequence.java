@@ -16,9 +16,6 @@ public class Sequence extends Step {
   private static final String USAGE = "<sequence ...>...</sequence>";
   private final ArrayList<Step> sequence = new ArrayList<>();
 
-  /**
-   * Construct a <code>Sequence</code> from XML data.
-   */
   public Sequence(Resolver resolver, Element el, Map atts) {
     super(resolver, atts);
     try {
@@ -36,9 +33,6 @@ public class Sequence extends Step {
     this(resolver, desc, null);
   }
 
-  /**
-   * Create an aggregate from a list of existing <code>Step</code>s.
-   */
   public Sequence(Resolver resolver, String desc, List steps) {
     super(resolver, desc);
     if (steps != null) {
@@ -96,30 +90,18 @@ public class Sequence extends Step {
     return el;
   }
 
-  /**
-   * Returns a string describing the proper XML usage for this class.
-   */
   public String getUsage() {
     return USAGE;
   }
 
-  /**
-   * Only thing directly editable on a sequence is its description.
-   */
   public String toEditableString() {
     return getDescription();
   }
 
-  /**
-   * Process each event in our list.
-   */
   protected void runStep() throws Throwable {
     runStep(null);
   }
 
-  /**
-   * Process each event in our list, using the given runner.
-   */
   protected void runStep(StepRunner runner) throws Throwable {
     Iterator iter;
     synchronized (sequence) {
@@ -136,9 +118,6 @@ public class Sequence extends Step {
     }
   }
 
-  /**
-   * Returns the number of steps contained in this one.
-   */
   public int size() {
     synchronized (sequence) {
       return sequence.size();
@@ -154,70 +133,46 @@ public class Sequence extends Step {
     }
   }
 
-  /**
-   * Returns a list of the steps contained in this one.
-   */
   public List<Step> steps() {
     return sequence;
   }
 
-  /**
-   * Returns the index of the given step in the sequence, or -1 if the step is not in the sequence.
-   */
   public int indexOf(Step step) {
     synchronized (sequence) {
       return sequence.indexOf(step);
     }
   }
 
-  /**
-   * Return the step at the given index in the sequence.
-   */
   public Step getStep(int index) {
     synchronized (sequence) {
       return (Step) sequence.get(index);
     }
   }
 
-  /**
-   * Inserts a step at the given index in the sequence.
-   */
   public void addStep(int index, Step step) {
     synchronized (sequence) {
       sequence.add(index, step);
     }
   }
 
-  /**
-   * Adds a step to the end of the sequence.
-   */
   public void addStep(Step step) {
     synchronized (sequence) {
       sequence.add(step);
     }
   }
 
-  /**
-   * Replaces the step at the given index.
-   */
   public void setStep(int index, Step step) {
     synchronized (sequence) {
       sequence.set(index, step);
     }
   }
 
-  /**
-   * Removes the step if it exists in the sequence.
-   */
   public void removeStep(Step step) {
     synchronized (sequence) {
       sequence.remove(step);
     }
   }
 
-  /**
-   * Removes the step at the given index in the sequence.
-   */
   public void removeStep(int index) {
     synchronized (sequence) {
       sequence.remove(index);

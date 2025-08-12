@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * Record basic semantic events you might find on an JTree. <p>
+ * Record basic semantic events you might find on an JTree.
  * <ul>
  * <li>Click one or more times in a cell
  * </ul>

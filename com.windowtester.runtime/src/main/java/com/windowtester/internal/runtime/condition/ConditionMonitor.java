@@ -94,6 +94,7 @@ public class ConditionMonitor implements IConditionMonitor {
    * @param condition the condition to be tested (not <code>null</code>)
    * @param handler   the handler to be activated if the condition is satisfied
    */
+  @Override
   public void add(ICondition condition, IHandler handler) {
     if (condition == null || handler == null) {
       throw new IllegalArgumentException("Arguments cannot be null");
@@ -107,6 +108,7 @@ public class ConditionMonitor implements IConditionMonitor {
   /**
    * @see IConditionMonitor#add(com.windowtester.runtime.condition.IConditionHandler)
    */
+  @Override
   public void add(IConditionHandler conditionhandler) {
     add(conditionhandler, conditionhandler);
   }
@@ -114,6 +116,7 @@ public class ConditionMonitor implements IConditionMonitor {
   /**
    * @see IConditionMonitor#removeAll()
    */
+  @Override
   public void removeAll() {
     synchronized (_mappings) {
       _mappings.clear();
@@ -191,6 +194,7 @@ public class ConditionMonitor implements IConditionMonitor {
    * least on condition was satisfied, {@link #PROCESS_RECURSIVE} if conditions were already being processed and no
    * additional action was taken.
    */
+  @Override
   public int process(IUIContext ui) {
 
     // Prevent recursion and make a copy of the current condition mappings

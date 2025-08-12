@@ -18,16 +18,20 @@ public class WidgetSelectorService implements IWidgetSelectorService {
 
   private static final WidgetSelectorService INSTANCE = new WidgetSelectorService();
 
-  Map _map = new HashMap();
+  private final Map<Class<?>, IWidgetSelectorDelegate> map = new HashMap<>();
 
-  private WidgetSelectorService() {}
-
-  public void set(Class widgetClass, IWidgetSelectorDelegate selector) {
-    _map.put(widgetClass, selector);
+  private WidgetSelectorService() {
+    // hide public constructor
   }
 
-  public IWidgetSelectorDelegate get(Class widgetClass) {
-    return (IWidgetSelectorDelegate) _map.get(widgetClass);
+  @Override
+  public void set(Class<?> widgetClass, IWidgetSelectorDelegate selector) {
+    map.put(widgetClass, selector);
+  }
+
+  @Override
+  public IWidgetSelectorDelegate get(Class<?> widgetClass) {
+    return map.get(widgetClass);
   }
 
   public static IWidgetSelectorService getInstance() {

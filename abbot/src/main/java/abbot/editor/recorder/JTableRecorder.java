@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * Record basic semantic events you might find on an JTable. <p>
+ * Record basic semantic events you might find on an JTable.
  * <ul>
  * <li>Click one or more times in a cell
  * </ul>

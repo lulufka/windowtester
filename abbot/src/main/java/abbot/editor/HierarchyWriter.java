@@ -20,9 +20,6 @@ public class HierarchyWriter {
     this.hierarchy = h;
   }
 
-  /**
-   * Write to the given writer the GUI hierarchy represented by the given set of root windows.
-   */
   public void writeHierarchy(Writer writer) throws IOException {
     Resolver r = new Script(hierarchy);
     writer.write("<awtHierarchy>\r\n");

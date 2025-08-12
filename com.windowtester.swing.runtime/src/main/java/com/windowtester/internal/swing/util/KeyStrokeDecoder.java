@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.windowtester.internal.swing.util;
 
+import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class KeyStrokeDecoder {
 
-  public static int[] KEY_CONSTANTS = {
+  private static final int[] KEY_CONSTANTS = {
     KeyEvent.VK_DOWN,
     KeyEvent.VK_UP,
     KeyEvent.VK_LEFT,
@@ -52,19 +53,18 @@ public class KeyStrokeDecoder {
     KeyEvent.VK_END
   };
 
-  // modifiers
-  public static int[] KEY_MODS = {
-    InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK
+  private static final int[] KEY_MODS = {
+    InputEvent.ALT_DOWN_MASK, InputEvent.SHIFT_DOWN_MASK, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()
   };
 
-  public static final int MODIFIER_MASK =
-      InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK;
+  private static final int MODIFIER_MASK =
+      InputEvent.ALT_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
   public static int extractModifiers(int compositeKey) {
     int modifiers = 0;
     int candidate;
-    for (int i = 0; i < KEY_MODS.length; i++) {
-      candidate = KEY_MODS[i];
+    for (int keyMod : KEY_MODS) {
+      candidate = keyMod;
       if ((compositeKey & candidate) == candidate) {
         modifiers |= candidate;
       }
@@ -73,23 +73,22 @@ public class KeyStrokeDecoder {
   }
 
   public static int[] extractKeys(int compositeKey) {
-    int candidate;
-    List keys = new ArrayList();
-    for (int i = 0; i < KEY_CONSTANTS.length; i++) {
-      candidate = KEY_CONSTANTS[i];
-      if ((compositeKey | MODIFIER_MASK) == (candidate | MODIFIER_MASK)) {
-        keys.add(new Integer(candidate));
+    var keys = new ArrayList<Integer>();
+    for (int keyConstant : KEY_CONSTANTS) {
+      if ((compositeKey | MODIFIER_MASK) == (keyConstant | MODIFIER_MASK)) {
+        keys.add(keyConstant);
       }
     }
     return toIntArray(keys);
   }
 
-  private static int[] toIntArray(List keys) {
-    int size = keys.size();
-    int[] intArray = new int[size];
-    for (int i = 0; i < size; ++i) {
-      intArray[i] = ((Integer) keys.get(i)).intValue();
-    }
-    return intArray;
+  private static int[] toIntArray(List<Integer> keys) {
+    return keys.stream()
+        .mapToInt(i -> i)
+        .toArray();
+  }
+
+  private KeyStrokeDecoder() {
+    // do nothing
   }
 }
