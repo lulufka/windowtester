@@ -6,12 +6,12 @@
 
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>5.11.3</version>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-  <name>WindowTester</name>
-  <description>WindowTester is a library for Java/Swing UI test automation.</description>
-  <url>https://github.com/r4fterman/windowtester</url>
+    <name>WindowTester</name>
+    <description>WindowTester is a library for Java/Swing UI test automation.</description>
+    <url>https://github.com/r4fterman/windowtester</url>
 
     <developers>
         <developer>
@@ -44,8 +44,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version>17</java.version>
-        <maven.version>3.5.4</maven.version>
+        <java.version>21</java.version>
+        <maven.version>3.9.3</maven.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
