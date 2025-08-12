@@ -12,6 +12,8 @@
   <name>Windowtester Abbot</name>
   <description>Abbot provides robot functionality to interact with the UI.</description>
 
+  <description>The robot to navigate automatically on the UI.</description>
+
   <scm>
     <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
     <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git</developerConnection>

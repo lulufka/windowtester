@@ -12,6 +12,8 @@
   <name>Windowtester Runtime</name>
   <description>The runtime library providing base functionality so Windowtester can operate on a screen.</description>
 
+  <description>The runtime library provides base functionality so Windowtester can operate on a screen.</description>
+
   <scm>
     <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
     <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git</developerConnection>
