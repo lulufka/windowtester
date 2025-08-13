@@ -27,12 +27,4 @@ class MyCodeStressTest {
     return new File(url.toURI());
   }
 
-//  public static Test suite() {
-//    final int ITERATIONS = 10;
-//    TestSuite suite = new TestSuite();
-//    for (int i = 0; i < ITERATIONS; i++) {
-//      suite.addTest(new ScriptFixture("target/test-classes/example/StressMyCode.xml"));
-//    }
-//    return suite;
-//  }
 }

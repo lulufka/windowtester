@@ -125,7 +125,7 @@ public class StepRunner {
    * tries to.
    */
   protected synchronized void installSecurityManager() {
-    String doInstall = System.getProperty("abbot.use_security_manager");
+    String doInstall = System.getProperty("abbot.use_security_manager", "false");
     if (System.getSecurityManager() == null && !"false".equals(doInstall)) {
       // When the application tries to exit, throw control back to the
       // step runner to dispose of it
