@@ -2,7 +2,7 @@
 
 [![Build WindowTester](https://github.com/r4fterman/windowtester/actions/workflows/maven.yml/badge.svg)](https://github.com/r4fterman/windowtester/actions/workflows/maven.yml)
 ![Static Badge](https://img.shields.io/badge/Java-v21-blue)
-![Static Badge](https://img.shields.io/badge/Maven-v3.9.3-blue)
+![Static Badge](https://img.shields.io/badge/Maven-v3.8.8-blue)
 ![GitHub License](https://img.shields.io/github/license/r4fterman/windowtester?color=green)
 ![Maven Central Version](https://img.shields.io/maven-central/v/io.github.r4fterman/com.windowtester.runtime?strategy=highestVersion&filter=5*)
 
