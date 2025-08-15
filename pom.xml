@@ -24,6 +24,14 @@
         <url>https://github.com/r4fterman/windowtester</url>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/r4fterman/windowtester</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>Eclipse Public License, Version 1.0</name>
