@@ -24,6 +24,7 @@ public interface ISequenceRunner {
    * A runnable to be run in the test thread.
    */
   interface IRunnable {
+
     void run() throws Throwable;
   }
 }

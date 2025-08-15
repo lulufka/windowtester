@@ -14,7 +14,7 @@ import javax.swing.*;
 /**
  * Provide an editor for call steps.
  *
- * @author Blake Christensen <bchristen@users.sourceforge.net>
+ * @author Blake Christensen bchristen@users.sourceforge.net
  * @author twall@users.sourceforge.net
  */
 // TODO: add a help button for the selected method
@@ -45,10 +45,6 @@ public class CallEditor extends StepEditor {
     return call;
   }
 
-  /**
-   * Provide a list of method names corresponding to the current target class.  Be careful overloading this method,
-   * since it is called from the Constructor.
-   */
   protected String[] getMethodNames() {
     try {
       Class cls = call.getTargetClass();
@@ -68,9 +64,6 @@ public class CallEditor extends StepEditor {
     }
   }
 
-  /**
-   * Return all public member and static methods.
-   */
   protected Map getMethods(Class cls, int mask) {
     HashMap processed = new HashMap();
     while (cls != null) {
@@ -85,9 +78,6 @@ public class CallEditor extends StepEditor {
     return processed;
   }
 
-  /**
-   * Convert the given array of methods into an array of strings. Subclasses can do additional filtering here.
-   */
   protected String[] getMethodNames(Map methods) {
     return (String[]) methods.keySet().toArray(new String[methods.size()]);
   }
@@ -139,9 +129,6 @@ public class CallEditor extends StepEditor {
     fieldChanging = false;
   }
 
-  /**
-   * Sychronize the UI with the Call data.
-   */
   protected void targetClassChanged() {
     fieldChanging = true;
     target.setText(call.getTargetClassName());
@@ -151,9 +138,6 @@ public class CallEditor extends StepEditor {
     validateMethod();
   }
 
-  /**
-   * Sychronize the UI with the Call data.
-   */
   protected void methodChanged() {
     if (!call.getMethodName().equals(method.getSelectedItem())) {
       method.setSelectedItem(call.getMethodName());
@@ -161,9 +145,6 @@ public class CallEditor extends StepEditor {
     validateMethod();
   }
 
-  /**
-   * Sychronize the UI with the Call data.
-   */
   protected void argumentsChanged() {
     arguments.setValues(call.getArguments());
     validateMethod();

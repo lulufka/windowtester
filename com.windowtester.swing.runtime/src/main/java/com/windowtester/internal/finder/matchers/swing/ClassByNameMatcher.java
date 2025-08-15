@@ -27,10 +27,11 @@ public class ClassByNameMatcher extends AbstractMatcher {
     _className = className;
   }
 
-  public boolean matches(Component toTest) {
-    if (toTest == null) {
+  @Override
+  public boolean matches(Component component) {
+    if (component == null) {
       return false;
     }
-    return toTest.getClass().getName().equals(_className);
+    return component.getClass().getName().equals(_className);
   }
 }

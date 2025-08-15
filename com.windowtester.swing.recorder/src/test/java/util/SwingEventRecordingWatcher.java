@@ -14,6 +14,7 @@ import abbot.finder.AWTHierarchy;
 import abbot.finder.Hierarchy;
 import abbot.util.EventNormalizer;
 import abbot.util.SingleThreadedEventListener;
+import com.windowtester.recorder.event.ISemanticEvent;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.user.SemanticEventAdapter;
 import com.windowtester.swing.event.recorder.ConsoleReportingListener;
@@ -73,7 +74,7 @@ public class SwingEventRecordingWatcher {
   }
 
   public void codegen() {
-    IUISemanticEvent[] events = getEvents();
+    ISemanticEvent[] events = getEvents();
     System.out.println("cached events: ");
     for (int i = 0; i < events.length; i++) {
       System.out.println("\t" + events[i]);
@@ -86,7 +87,7 @@ public class SwingEventRecordingWatcher {
     // System.out.println(src);
   }
 
-  public IUISemanticEvent[] getEvents() {
+  public ISemanticEvent[] getEvents() {
     return cache.getEvents();
   }
 

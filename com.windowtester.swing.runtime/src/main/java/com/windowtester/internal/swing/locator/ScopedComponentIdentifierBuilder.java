@@ -52,10 +52,10 @@ public class ScopedComponentIdentifierBuilder implements IWidgetIdentifierStrate
    * hierarchy.  If no uniquely identifying locator is found
    * <code>null</code> is returned.
    */
-  public SwingWidgetLocator identify(Component w) {
+  public SwingWidgetLocator identify(Component component) {
 
     // get locator describing the target widget itself
-    SwingWidgetLocator locator = getLocator(w);
+    SwingWidgetLocator locator = getLocator(component);
     // get the top level frame/dailog for the component
     //		WidgetLocator scope = findTopLevelScope(w);
     //		locator.setParentInfo(scope); //note: it can be null
@@ -67,7 +67,7 @@ public class ScopedComponentIdentifierBuilder implements IWidgetIdentifierStrate
     // been implemented this way.
     //	while(!isUniquelyIdentifying(matcher, _activeWindow) && locator != null) {
     while (!isUniquelyIdentifying(matcher) && locator != null) {
-      locator = elaborate(locator, w);
+      locator = elaborate(locator, component);
       if (locator != null) {
         matcher = MatcherFactory.getMatcher(locator);
       }

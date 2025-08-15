@@ -11,7 +11,8 @@
 package com.windowtester.internal.runtime;
 
 /**
- * This interface marks classes that can be used to uniquely identify widgets in a Widget hierarchy.
+ * This interface marks classes that can be used to uniquely identify widgets in a Widget
+ * hierarchy.
  */
 public interface IWidgetIdentifier {
 

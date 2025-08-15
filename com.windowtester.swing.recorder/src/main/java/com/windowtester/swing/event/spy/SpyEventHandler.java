@@ -28,11 +28,10 @@ import javax.swing.JTree;
 public class SpyEventHandler {
 
   // FOR TESTING
-  public static boolean FORCE_ENABLE = false;
-
+  private static boolean FORCE_ENABLE = false;
   private static boolean inSpyMode = FORCE_ENABLE;
 
-  public UISemanticEvent interepretHover(AWTEvent event) {
+  public UISemanticEvent interpretHover(AWTEvent event) {
     if (!inSpyMode) {
       return null;
     }
@@ -57,11 +56,10 @@ public class SpyEventHandler {
     component = getMostSpecificWidgetForEvent(component, event);
 
     EventInfo info = extractInfo(event, component);
-    SemanticWidgetInspectionEvent wEvent =
+    return
         new SemanticWidgetInspectionEvent(info, UIContextSwingFactory.createContext())
             .withWidgetHash(component.hashCode())
             .atHoverPoint(getCursorPosition());
-    return wEvent;
   }
 
   private Point getCursorPosition() {
@@ -88,33 +86,11 @@ public class SpyEventHandler {
   }
 
   private IWidgetIdentifier sanityCheck(IWidgetIdentifier id, AWTEvent event) {
-    if (id instanceof JListLocator) {
-      JListLocator listItem = (JListLocator) id;
-      return listItem;
-    }
     return id;
   }
 
   static Component getMostSpecificWidgetForEvent(Component w, AWTEvent event) {
-    if (w instanceof JTree) {
-      JTree tree = (JTree) w;
-      return tree;
-    }
-    if (w instanceof JTable) {
-      JTable table = (JTable) w;
-      return table;
-    }
-
-    // TODO: are there more cases?
     return w;
   }
 
-  private static Point pointFor(AWTEvent event) {
-    int id = event.getID();
-    if (id == MouseEvent.MOUSE_ENTERED || id == MouseEvent.MOUSE_MOVED) {
-      MouseEvent me = (MouseEvent) event;
-      return new Point(me.getX(), me.getY());
-    }
-    return null;
-  }
 }

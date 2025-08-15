@@ -22,17 +22,17 @@ public class AbstractButtonTester extends JComponentTester {
   /**
    * AbstractButton click action.
    */
-  public void actionClick(final Component c) {
+  public void actionClick(final Component component) {
     /*
     if (getEventMode() == EM_PROG) {
         invokeAndWait(new Runnable() {
             public void run() {
-                ((JButton)c).doClick();
+                ((JButton)component).doClick();
             }
         });
     }
     */
-    click(c);
+    click(component);
     waitForIdle();
   }
 }

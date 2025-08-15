@@ -10,7 +10,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 
 /**
- * Record basic semantic events you might find on an Window. <p>
+ * Record basic semantic events you might find on a Window.
  */
 public class WindowRecorder extends ContainerRecorder {
 

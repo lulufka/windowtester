@@ -32,9 +32,6 @@ public abstract class PropertyCallEditor extends CallEditor {
     component.setName(TAG_COMPONENT);
   }
 
-  /**
-   * Get the class of the current component target, if any.
-   */
   protected Class getComponentTargetClass(Class cls) {
     String[] args = getCall().getArguments();
     if (args.length == 1) {
@@ -50,9 +47,6 @@ public abstract class PropertyCallEditor extends CallEditor {
     return null;
   }
 
-  /**
-   * If the target is Component or ComponentTester, provide a merge of property-like methods from both.
-   */
   protected Map getMethods(Class cls, int mask) {
     boolean isTester = ComponentTester.class.isAssignableFrom(cls);
     boolean isComponent = Component.class.isAssignableFrom(cls);
@@ -100,9 +94,6 @@ public abstract class PropertyCallEditor extends CallEditor {
     return Arrays.asList(tester.getPropertyMethods());
   }
 
-  /**
-   * Synchronize the component selector with the PropertyCall data.
-   */
   protected void componentChanged() {
     component.setSelectedItem(call.getComponentID());
   }

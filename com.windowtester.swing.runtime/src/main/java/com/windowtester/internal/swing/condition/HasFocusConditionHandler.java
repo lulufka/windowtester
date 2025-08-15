@@ -17,7 +17,7 @@ import com.windowtester.runtime.condition.IUIConditionHandler;
 import com.windowtester.runtime.condition.UICondition;
 import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.IWidgetReference;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Has Focus condition handler.
@@ -30,16 +30,12 @@ public class HasFocusConditionHandler extends UICondition implements IUIConditio
     this.locator = locator;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IHandler#handle(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public void handle(IUIContext ui) throws Exception {
     setFocus(ui);
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean testUI(IUIContext ui) {
     try {
       return hasFocus(ui);
@@ -49,41 +45,41 @@ public class HasFocusConditionHandler extends UICondition implements IUIConditio
   }
 
   /**
-   * @param ui
-   * @return
-   * @throws WidgetSearchException
+   * @param ui ui context
+   * @return true if the component has the focus, false otherwise
+   * @throws WidgetSearchException in case of error
    */
   public boolean hasFocus(IUIContext ui) throws WidgetSearchException {
-    IWidgetLocator found = ui.find(locator);
+    var found = ui.find(locator);
     if (!(found instanceof IWidgetReference)) {
       return false;
     }
-    final Object widget = ((IWidgetReference) found).getWidget();
-    boolean result = ((Component) widget).isFocusOwner();
-    return result;
+
+    var widget = ((IWidgetReference) found).getWidget();
+    return ((Component) widget).isFocusOwner();
   }
 
   private void setFocus(IUIContext ui) throws WidgetSearchException {
-    Component widget = findWidget(ui, locator);
+    var widget = findWidget(ui, locator);
     setFocus(widget);
   }
 
-  /* TODO MAY NEED TO CHECK THAT THE CONTROL DOES INDEED HAVE FOCUS */
-  private void setFocus(Component widget) throws WidgetSearchException {
-
-    ComponentTester tester = ComponentTester.getTester(Component.class);
+  private void setFocus(Component widget) {
+    var tester = ComponentTester.getTester(Component.class);
     tester.actionFocus(widget);
   }
 
   private Component findWidget(IUIContext ui, IWidgetLocator locator) throws WidgetSearchException {
-    IWidgetReference ref = (IWidgetReference) ui.find(locator);
-    Object target = ref.getWidget();
+    var ref = (IWidgetReference) ui.find(locator);
+    var target = ref.getWidget();
     if (target == null) {
       throw new IllegalArgumentException("widget reference must not be null");
     }
-    if (!(target instanceof Component)) {
-      return null; // NULL is now a sentinel
+
+    if (target instanceof Component component) {
+      return component;
     }
-    return (Component) target;
+    // NULL is now a sentinel
+    return null;
   }
 }

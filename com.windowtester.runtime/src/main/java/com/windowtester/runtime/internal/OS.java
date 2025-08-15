@@ -13,11 +13,13 @@ package com.windowtester.runtime.internal;
 public final class OS {
 
   private static boolean isLinux;
-  private static final boolean isMac = System.getProperty("mrj.version") != null;
+  private static final boolean IS_MAC = System.getProperty("mrj.version") != null;
   private static final String OS_NAME = System.getProperty("os.name");
-  private static final boolean isOSX = isMac && OS_NAME.indexOf("OS X") != -1;
+  private static final boolean IS_OSX = IS_MAC && OS_NAME.contains("OS X");
 
-  private OS() {}
+  private OS() {
+    // hide public constructor
+  }
 
   static {
     String property = System.getProperty("os.name");
@@ -32,20 +34,17 @@ public final class OS {
   }
 
   /**
-   * @return
    * @since 3.8.1
    */
   public static boolean isOSX() {
-    return isOSX;
+    return IS_OSX;
   }
-
-  // moved from abbot.Platform
 
   /**
    * @since 3.9.1
    */
   public static boolean isMacCocoa() {
-    return isMac && OS_NAME.contains("cocoa");
+    return IS_MAC && OS_NAME.contains("cocoa");
   }
 
   /**

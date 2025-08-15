@@ -188,6 +188,7 @@ class WTRuntimeFactoryReferenceJava extends WTRuntimeFactoryReference {
    * @return the factory (not <code>null</code>)
    * @throws Exception if the factory could not be instantiated
    */
+  @Override
   WTRuntimeFactory createFactory() throws Exception {
     return (WTRuntimeFactory) getClass().getClassLoader().loadClass(className).newInstance();
   }

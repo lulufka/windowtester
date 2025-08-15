@@ -11,13 +11,20 @@
 package com.windowtester.internal.finder.matchers.swing;
 
 import abbot.finder.matchers.AbstractMatcher;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Button;
+import java.awt.Checkbox;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.TextComponent;
+import javax.swing.AbstractButton;
+import javax.swing.JLabel;
 
 public class TxtMatcher extends AbstractMatcher {
 
   private final String text;
-  private String ctext = null;
+  private String componentText = null;
 
   /**
    * Constructs a Matcher for the text given.
@@ -27,63 +34,48 @@ public class TxtMatcher extends AbstractMatcher {
    * @param text the text to match.
    */
   public TxtMatcher(String text) {
-    this(text, true);
-  }
-
-  /**
-   * Constructs a Matcher with the text and the visibility given.
-   * <p/>
-   *
-   * @param text          the text to match.
-   * @param mustBeShowing true if the widget must be visible.
-   */
-  public TxtMatcher(String text, boolean mustBeShowing) {
     this.text = text;
   }
 
-  public boolean matches(final Component w) {
-
+  @Override
+  public boolean matches(Component component) {
     // AWT Components
-    if (w instanceof Button) {
-      ctext = ((Button) w).getLabel();
+    if (component instanceof Button button) {
+      componentText = button.getLabel();
     }
-    if (w instanceof Checkbox) {
-      ctext = ((Checkbox) w).getLabel();
+    if (component instanceof Checkbox checkbox) {
+      componentText = checkbox.getLabel();
     }
-    if (w instanceof Label) {
-      ctext = ((Label) w).getText();
+    if (component instanceof Label label) {
+      componentText = label.getText();
     }
-    if (w instanceof TextComponent) {
-      ctext = ((TextComponent) w).getText();
+    if (component instanceof TextComponent textComponent) {
+      componentText = textComponent.getText();
     }
-    if (w instanceof Dialog) {
-      ctext = ((Dialog) w).getTitle();
+    if (component instanceof Dialog dialog) {
+      componentText = dialog.getTitle();
     }
-    if (w instanceof Frame) {
-      ctext = ((Frame) w).getTitle();
+    if (component instanceof Frame frame) {
+      componentText = frame.getTitle();
     }
 
     // Swing Components
-    if (w instanceof AbstractButton) // button,menuitem,togglebutton
-    {
-      ctext = ((AbstractButton) w).getText();
+    if (component instanceof AbstractButton abstractButton) {
+      // button, menuitem, toggle button
+      componentText = (abstractButton).getText();
     }
-    if (w instanceof JLabel) {
-      ctext = ((JLabel) w).getText();
+    if (component instanceof JLabel jLabel) {
+      componentText = jLabel.getText();
     }
-    // popupmenu getLabel ?
 
-    //	if (w instanceof JTextComponent)
-    //		ctext = ((JTextComponent)w).getText();
-
-    if (ctext == null) {
+    if (componentText == null) {
       return false;
     }
     if (text == null) {
-      return ctext == null;
+      return false;
     }
 
-    return stringsMatch(text, ctext);
+    return stringsMatch(text, componentText);
   }
 
   /**

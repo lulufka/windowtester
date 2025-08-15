@@ -12,34 +12,26 @@ package com.windowtester.internal.runtime;
 
 public class DefaultCodeGenerator implements ICodeGenerator {
 
-  private final StringBuffer buffer = new StringBuffer();
+  private final StringBuilder builder = new StringBuilder();
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.ICodeGenerator#getJavaVersion()
-   */
+  @Override
   public JavaVersion getJavaVersion() {
     return ICodeGenerator.JAVA4;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.ICodeGenerator#append(java.lang.String)
-   */
+  @Override
   public ICodeGenerator append(String body) {
-    buffer.append(body);
+    builder.append(body);
     return this;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.ICodeGenerator#addImport(java.lang.String)
-   */
+  @Override
   public ICodeGenerator addImport(String importString) {
     return this;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.ICodeGenerator#toCodeString()
-   */
+  @Override
   public String toCodeString() {
-    return buffer.toString();
+    return builder.toString();
   }
 }

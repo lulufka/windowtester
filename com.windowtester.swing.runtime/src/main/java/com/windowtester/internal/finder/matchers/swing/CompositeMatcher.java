@@ -27,12 +27,13 @@ public class CompositeMatcher extends AbstractMatcher {
     this.matchers = matchers;
   }
 
-  public boolean matches(final Component w) {
+  @Override
+  public boolean matches(final Component component) {
     boolean result = true; /* ANDing things together, so start true */
     boolean atLeastOneMatcherPresent = false; /* If that construction this should be checked! */
     for (int i = 0; i < matchers.length; i++) {
       if (matchers[i] != null) {
-        result = result && matchers[i].matches(w);
+        result = result && matchers[i].matches(component);
         atLeastOneMatcherPresent = true;
       }
     }

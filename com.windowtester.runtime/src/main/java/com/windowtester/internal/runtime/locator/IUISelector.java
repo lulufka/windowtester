@@ -17,8 +17,8 @@ import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.IWidgetReference;
 
 /**
- * Interface for the implementation of widget selection behavior. The widget locators can implement this interface to
- * define the behavior specific to that widget.
+ * Interface for the implementation of widget selection behavior. The widget locators can implement
+ * this interface to define the behavior specific to that widget.
  */
 public interface IUISelector {
 

@@ -11,15 +11,17 @@
 package com.windowtester.internal.runtime;
 
 /**
- * A collector of diagnostic information via the {@link IDiagnosticParticipant#diagnose(IDiagnostic)} method.
+ * A collector of diagnostic information via the
+ * {@link IDiagnosticParticipant#diagnose(IDiagnostic)} method.
  */
 public interface IDiagnostic {
+
   /**
    * Output diagnostic information.
    *
    * @param key   the diagnostic key associated with this value
-   * @param value the diagnostic value to be collected. If value implements IDiagnosticWriter, then its {@link
-   *              IDiagnosticParticipant#diagnose(IDiagnostic)} method will be called
+   * @param value the diagnostic value to be collected. If value implements IDiagnosticWriter, then
+   *              its {@link IDiagnosticParticipant#diagnose(IDiagnostic)} method will be called
    */
   void diagnose(String key, Object value);
 

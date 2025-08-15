@@ -22,22 +22,17 @@ import java.util.Map;
  * A widget locator that directly references a widget.  (Used to adapt widgets to widget locators.)
  */
 public class WidgetReference<T> implements IWidgetReference, IAdaptable {
+
   /**
    * The referenced widget
    */
   private final T widget;
 
   /**
-   * Adapters for the receiver indexed by class or <code>null</code> if not initialized by {@link #addAdapter(Class,
-   * Object)}.
+   * Adapters for the receiver indexed by class or <code>null</code> if not initialized by
+   * {@link #addAdapter(Class, Object)}.
    */
   private Map<Class<?>, Object> adapters;
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Construction
-  //
-  ////////////////////////////////////////////////////////////////////////////
 
   /**
    * Create a widget reference locator for this widget.
@@ -46,18 +41,18 @@ public class WidgetReference<T> implements IWidgetReference, IAdaptable {
    * @return an <code>IWidgetLocator</code> instance that wraps this widget
    */
   public static <T> WidgetReference<T> create(T widget) {
-    return new WidgetReference<T>(widget);
+    return new WidgetReference<>(widget);
   }
 
   /**
    * Create a widget reference locator for this widget.
    *
-   * @param widget the widget
-   * @param the    selector for use in selecting the widget
+   * @param widget   the widget
+   * @param selector selector for use in selecting the widget
    * @return an <code>IWidgetLocator</code> instance that wraps this widget
    */
-  public static <T> WidgetReference<T> create(T widget, final IUISelector selector) {
-    WidgetReference<T> result = create(widget);
+  public static <T> WidgetReference<T> create(T widget, IUISelector selector) {
+    var result = create(widget);
     result.addAdapter(IUISelector.class, selector);
     if (selector instanceof IUISelector2) {
       result.addAdapter(IUISelector2.class, selector);
@@ -65,46 +60,26 @@ public class WidgetReference<T> implements IWidgetReference, IAdaptable {
     return result;
   }
 
-  /**
-   * Create an instance.
-   */
-  /* default */
   public WidgetReference(T widget) {
     this.widget = widget;
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Public accessors for IWidgetReference and IAdaptable
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.locator.IWidgetLocator#findAll(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public IWidgetLocator[] findAll(IUIContext ui) {
-    return new IWidgetLocator[] {this};
+    return new IWidgetLocator[]{this};
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-   */
+  @Override
   public boolean matches(Object widget) {
     return this.widget == widget;
   }
 
-  /**
-   * Get the referenced widget.
-   *
-   * @return the widget
-   */
+  @Override
   public T getWidget() {
     return widget;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.IAdaptable#getAdapter(java.lang.Class)
-   */
+  @Override
   public Object getAdapter(Class<?> adapter) {
     if (adapters != null) {
       Object result = adapters.get(adapter);
@@ -115,26 +90,21 @@ public class WidgetReference<T> implements IWidgetReference, IAdaptable {
     if (IUISelector.class == adapter) {
       return WidgetSystem.getDefaultSelector(this);
     }
-    // next ask the IUISelector (if there is one)
-    Object selector = adapters.get(IUISelector.class);
-    if (selector instanceof IAdaptable) {
-      return ((IAdaptable) selector).getAdapter(adapter);
+
+    if (adapters != null) {
+      // next ask the IUISelector (if there is one)
+      var selector = adapters.get(IUISelector.class);
+      if (selector instanceof IAdaptable adaptable) {
+        return adaptable.getAdapter(adapter);
+      }
     }
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return "WidgetReference(" + widget + ")";
   }
-
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // Internal methods
-  //
-  ////////////////////////////////////////////////////////////////////////////
 
   /**
    * Add an adapter to be returned by {@link #getAdapter(Class)}
@@ -144,7 +114,7 @@ public class WidgetReference<T> implements IWidgetReference, IAdaptable {
    */
   public void addAdapter(Class<?> adapter, Object value) {
     if (adapters == null) {
-      adapters = new HashMap<Class<?>, Object>();
+      adapters = new HashMap<>();
     }
     adapters.put(adapter, value);
   }

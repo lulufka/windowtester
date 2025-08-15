@@ -14,39 +14,41 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * A collector of diagnostic information via the {@link IDiagnosticParticipant#diagnose(IDiagnostic)} method.
+ * A collector of diagnostic information via the
+ * {@link IDiagnosticParticipant#diagnose(IDiagnostic)} method.
  */
 public class DiagnosticWriter implements IDiagnostic {
+
   private final StringWriter stringWriter = new StringWriter();
   private final PrintWriter printWriter = new PrintWriter(stringWriter);
   private int depth = 0;
 
-  /**
-   * Output diagnostic information.
-   *
-   * @param key   the diagnostic key associated with this value
-   * @param value the diagnostic value to be collected. If value implements IDiagnosticWriter, then its {@link
-   *              IDiagnosticParticipant#diagnose(IDiagnostic)} method will be called
-   */
+  @Override
   public void diagnose(String key, Object value) {
-    if (stringWriter.getBuffer().length() > 0) {
+    if (!stringWriter.getBuffer().isEmpty()) {
       printWriter.println();
-      for (int i = 0; i < depth; i++) printWriter.print("  ");
+      for (int i = 0; i < depth; i++) {
+        printWriter.print("  ");
+      }
     }
+
+    printWriter.print("DiagnosticWriter ");
     printWriter.print(key);
     printWriter.print(": ");
+
     if (value == null) {
       printWriter.println("null");
-    } else if (value instanceof IDiagnosticParticipant) {
+    } else if (value instanceof IDiagnosticParticipant participant) {
       depth++;
-      ((IDiagnosticParticipant) value).diagnose(this);
+      participant.diagnose(this);
       depth--;
     } else {
-      attribute("toString", String.valueOf(value));
-      attribute("class", value.getClass().getName());
+      attribute("DiagnosticWriter: toString", String.valueOf(value));
+      attribute("DiagnosticWriter: class", value.getClass().getName());
     }
   }
 
+  @Override
   public void attribute(String key, String value) {
     printWriter.println();
     printWriter.print(key);
@@ -54,14 +56,17 @@ public class DiagnosticWriter implements IDiagnostic {
     printWriter.print(value);
   }
 
+  @Override
   public void attribute(String key, int value) {
     attribute(key, String.valueOf(value));
   }
 
+  @Override
   public void attribute(String key, boolean value) {
     attribute(key, String.valueOf(value));
   }
 
+  @Override
   public String toString() {
     return stringWriter.toString();
   }

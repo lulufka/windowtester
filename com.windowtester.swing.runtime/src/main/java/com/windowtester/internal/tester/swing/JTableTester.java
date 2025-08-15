@@ -11,12 +11,12 @@
 package com.windowtester.internal.tester.swing;
 
 import abbot.tester.JTableLocation;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JTable;
 
 /**
- * Provide user actions on a JTable. The JTable substructure is a "Cell", and JTableLocation provides different
- * identifiers for a cell.
+ * Provide user actions on a JTable. The JTable substructure is a "Cell", and JTableLocation
+ * provides different identifiers for a cell.
  * <ul>
  * <li>Select a cell by row, column index
  * <li>Select a cell by value (its string representation)
@@ -31,35 +31,44 @@ public class JTableTester extends abbot.tester.JTableTester {
   /**
    * Select the given cell, if not already.
    */
-  public void actionSelectCell(Component c, JTableLocation loc, int mask) {
-    JTable table = (JTable) c;
-    JTableLocation.Cell cell = loc.getCell(table);
+  public void actionSelectCell(Component component, JTableLocation location, int mask) {
+    var table = (JTable) component;
+    var cell = location.getCell(table);
     if (table.isRowSelected(cell.row)
         && table.isColumnSelected(cell.col)
         && table.getSelectedRowCount() == 1) {
       return;
     }
-    actionClick(c, loc, mask);
+    actionClick(component, location, mask);
   }
 
   /**
-   * double click the given cell, if not already.
+   * double-click the given cell, if not already.
    */
-  public void actionSelectCell(int count, Component c, JTableLocation loc, int mask) {
-    JTable table = (JTable) c;
-    JTableLocation.Cell cell = loc.getCell(table);
+  public void actionSelectCell(
+      int count,
+      Component component,
+      JTableLocation location,
+      int mask) {
+    var table = (JTable) component;
+    var cell = location.getCell(table);
     if (table.isRowSelected(cell.row)
         && table.isColumnSelected(cell.col)
         && table.getSelectedRowCount() == 1) {
       return;
     }
-    actionClick(c, loc, mask, count);
+    actionClick(component, location, mask, count);
   }
 
   /**
-   * Select the given cell, if not already. Equivalent to actionSelectCell(c, new JTableLocation(row, col)).
+   * Select the given cell, if not already. Equivalent to actionSelectCell(component, new
+   * JTableLocation(rowIndex, columnIndex)).
    */
-  public void actionSelectCell(Component c, int row, int col, int mask) {
-    actionSelectCell(c, new JTableLocation(row, col), mask);
+  public void actionSelectCell(
+      Component component,
+      int rowIndex,
+      int columnIndex,
+      int mask) {
+    actionSelectCell(component, new JTableLocation(rowIndex, columnIndex), mask);
   }
 }

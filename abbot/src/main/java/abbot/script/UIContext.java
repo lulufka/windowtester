@@ -14,6 +14,8 @@ public interface UIContext {
   /**
    * Launch this context.  If any <code>UIContext</code> is extant, this <code>UIContext</code> should terminate it
    * before launching. If this context is already launched, this method should do nothing.
+   * @param runner runner
+   * @throws Throwable in case of any error
    */
   void launch(StepRunner runner) throws Throwable;
 
@@ -29,12 +31,14 @@ public interface UIContext {
   void terminate();
 
   /**
+   * @param context ui context
    * @return Whether this <code>UIContext</code> is equivalent to another.
    */
   boolean equivalent(UIContext context);
 
   /**
    * A context must maintain the same {@link Hierarchy} for the lifetime of the fixture.
+   * @return hierarchy
    */
   Hierarchy getHierarchy();
 }

@@ -42,8 +42,9 @@ public class LabeledWidgetMatcher extends AbstractMatcher {
     _labelText = labelText;
   }
 
-  public boolean matches(final Component w) {
-    Component parent = w.getParent();
+  @Override
+  public boolean matches(final Component component) {
+    Component parent = component.getParent();
     if (parent == null) {
       return false;
     }
@@ -65,7 +66,7 @@ public class LabeledWidgetMatcher extends AbstractMatcher {
 
       // if (children[i].getClass().equals(_cls)) {
       if (_cls.isAssignableFrom(children[i].getClass())) {
-        return children[i] == w; // either way return
+        return children[i] == component; // either way return
       }
     }
     return false;

@@ -25,43 +25,41 @@ public class RecorderTraceEvent implements IRecorderSemanticEvent {
    *
    * @serial
    */
-  private final String _traceOption;
+  private final String traceOption;
 
   /**
    * The associated trace message.
    *
    * @serial
    */
-  private final String _msg;
+  private final String msg;
 
   /**
    * Create an instance.
    *
-   * @param traceOption
-   * @param msg
+   * @param traceOption trace option
+   * @param msg         message
    */
   public RecorderTraceEvent(String traceOption, String msg) {
-    _traceOption = traceOption;
-    _msg = msg;
+    this.traceOption = traceOption;
+    this.msg = msg;
   }
 
   /**
    * @return Returns the msg.
    */
   public String getMsg() {
-    return _msg;
+    return msg;
   }
 
   /**
    * @return Returns the traceOption.
    */
   public String getTraceOption() {
-    return _traceOption;
+    return traceOption;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.recorder.event.ISemanticEvent#accept(com.windowtester.recorder.event.ISemanticEventHandler)
-   */
+  @Override
   public void accept(ISemanticEventHandler handler) {
     handler.handleTrace(this);
   }

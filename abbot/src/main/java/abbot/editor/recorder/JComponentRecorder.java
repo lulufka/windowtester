@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 /**
- * Record basic semantic events you might find on an JComponent. <p>
- * <p>
+ * Record basic semantic events you might find on an JComponent.
+ *
  * Watches for events that trigger an action from the component's action map. As of 1.3.1, KEY_TYPED and KEY_RELEASED
  * events can trigger an action.
  */
@@ -31,9 +31,6 @@ public class JComponentRecorder extends ContainerRecorder {
     actionKey = null;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
   public boolean accept(AWTEvent event) {
     boolean accepted;
     if ((event instanceof KeyEvent)
@@ -58,9 +55,6 @@ public class JComponentRecorder extends ContainerRecorder {
     return getAction(ke) != null;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
   public boolean parse(AWTEvent event) {
     boolean consumed = true;
     switch (getRecordingType()) {
@@ -74,9 +68,6 @@ public class JComponentRecorder extends ContainerRecorder {
     return consumed;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
   protected boolean parseActionMapEvent(AWTEvent event) {
     if (target == null) {
       target = (JComponent) event.getSource();
@@ -103,9 +94,6 @@ public class JComponentRecorder extends ContainerRecorder {
     return true;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
   protected Step createStep() {
     Step step;
     switch (getRecordingType()) {
@@ -119,9 +107,6 @@ public class JComponentRecorder extends ContainerRecorder {
     return step;
   }
 
-  /**
-   * Create a JComponent input-mapped action invocation.
-   */
   protected Step createActionMap(JComponent target, String actionKey) {
     ComponentReference cr = getResolver().addComponent(target);
     return new abbot.script.Action(

@@ -16,10 +16,14 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JTable;
 
 /**
  * Record basic semantic events you might find on an JTable. <p>
@@ -35,9 +39,7 @@ public class JTableRecorder extends JComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createPopupMenuSelection(Component invoker, int x, int y, Component menuItem) {
     // create windowtester semantic event
 
@@ -52,9 +54,7 @@ public class JTableRecorder extends JComponentRecorder {
     return super.createPopupMenuSelection(invoker, x, y, menuItem);
   }
 
-  /**
-   * Normally, a click in a table results in selection of a given cell.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
     JTable table = (JTable) target;
     Point where = new Point(x, y);
@@ -65,13 +65,14 @@ public class JTableRecorder extends JComponentRecorder {
 
     ComponentReference cr = getResolver().addComponent(target);
     String methodName = "actionSelectCell";
-    ArrayList args = new ArrayList();
+
+    List<String> args = new ArrayList<>();
     args.add(cr.getID());
     args.add(getLocationArgument(table, x, y));
     if (row == -1 || col == -1) {
       methodName = "actionClick";
     }
-    if ((mods != 0 && mods != MouseEvent.BUTTON1_MASK) || count > 1) {
+    if ((mods != 0 && mods != InputEvent.BUTTON1_MASK) || count > 1) {
       methodName = "actionClick";
       mask = abbot.util.AWT.getMouseModifiers(mods);
       args.add(mask);
@@ -90,7 +91,7 @@ public class JTableRecorder extends JComponentRecorder {
         getResolver(),
         null,
         methodName,
-        (String[]) args.toArray(new String[args.size()]),
+        args.toArray(new String[0]),
         javax.swing.JTable.class);
   }
 }

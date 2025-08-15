@@ -5,15 +5,19 @@ import abbot.Platform;
 import abbot.i18n.Strings;
 import abbot.tester.KeyStrokeMap;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 
 /**
- * Provide access to mnemonics appropriate for the current platform and locale.  Encapsulates displayed text, a
- * KeyEvent.VK_ constant, and a displayed mnemonic index.  All instances are obtained through the factory method, {@link
- * #getMnemonic(String)}.
+ * Provide access to mnemonics appropriate for the current platform and locale.  Encapsulates
+ * displayed text, a KeyEvent.VK_ constant, and a displayed mnemonic index.  All instances are
+ * obtained through the factory method, {@link #getMnemonic(String)}.
  *
  * @see java.awt.event.KeyEvent
  * @see javax.swing.AbstractButton#setMnemonic(int)
@@ -30,14 +34,14 @@ public class Mnemonic {
   public String text;
 
   /**
-   * The keycode to use as an argument to {@link AbstractButton#setMnemonic(int)}.  Returns KeyEvent.VK_UNDEFINED if
-   * no mnemonic was found.
+   * The keycode to use as an argument to {@link AbstractButton#setMnemonic(int)}.  Returns
+   * KeyEvent.VK_UNDEFINED if no mnemonic was found.
    */
   public int keycode;
 
   /**
-   * The index to use as an argument to {@link AbstractButton#setDisplayedMnemonicIndex(int)}.  Returns -1 if the
-   * default value should be used.
+   * The index to use as an argument to {@link AbstractButton#setDisplayedMnemonicIndex(int)}.
+   * Returns -1 if the default value should be used.
    */
   public int index;
 
@@ -47,9 +51,6 @@ public class Mnemonic {
     this.index = index;
   }
 
-  /**
-   * Set the displayed mnemonic index, if doing so is supported.
-   */
   public static void setDisplayedMnemonicIndex(Component c, int index) {
     if (index == -1) {
       return;
@@ -70,27 +71,18 @@ public class Mnemonic {
         + (index != -1 ? ("displayed index=" + index) : "");
   }
 
-  /**
-   * Apply this mnemonic to the given AbstractButton.
-   */
   public void setMnemonic(AbstractButton button) {
     button.setText(text);
     button.setMnemonic(keycode);
     setDisplayedMnemonicIndex(button, index);
   }
 
-  /**
-   * Apply this mnemonic to the given JLabel.
-   */
   public void setMnemonic(JLabel label) {
     label.setText(text);
     label.setDisplayedMnemonic(keycode);
     setDisplayedMnemonicIndex(label, index);
   }
 
-  /**
-   * Apply this mnemonic to the given JLabel.
-   */
   public void setMnemonic(JTabbedPane tabbedPane, int tabIndex) {
     tabbedPane.setTitleAt(tabIndex, text);
     // NOTE: 1.4-only
@@ -106,9 +98,6 @@ public class Mnemonic {
     }
   }
 
-  /**
-   * Apply this mnemonic to the given Action.
-   */
   public void setMnemonic(Action action) {
     action.putValue(Action.NAME, text);
     if (keycode != KeyEvent.VK_UNDEFINED) {
@@ -165,39 +154,6 @@ public class Mnemonic {
     return KeyEvent.VK_UNDEFINED;
   }
 
-  /**
-   * Create a Mnemonic instance with the mnemonic information from the given encoded String.  Unencoded text, the
-   * mnemonic keycode, and the display index are encapsulated in the returned Mnemonic object. Encoding consists of
-   * placing an ampersand (&) prior to the character designated as the mnemonic.
-   * <p>
-   * Mnemonics may be encoded as follows:
-   * <table border=1>
-   * <tr><td><i>Original Text</i></td><td><i>Visible Text</i></td><td><i>Mnemonic</i></td></tr>
-   * <tr><td>&File</td><td><u>F</u>ile</td><td><b>VK_F</b></td></tr>
-   * <tr><td>Save &As...</td><td>Save <u>A</u>s...</td><td><b>VK_A</b> second instance</td></tr>
-   * <tr><td>Me&&&You</td><td>Me&<u>Y</u>ou</td><td><b>VK_Y</b> ambiguous ampersands
-   * must be escaped</td></tr>
-   * <tr><td>Sugar & Spice</td><td>Sugar & Spice</td><td><b>None</b> ampersand is unambiguous,
-   * whitespace is not allowed as a mnemonic</td></tr>
-   * </table>
-   * <p>
-   * Swing restricts mnemonics to available KeyEvent VK_ constants, so
-   * there must exist a mapping between text characters and said
-   * constants.  If the obvious mappings (A-Z, a-z, 0-9) don't hold, lookup
-   * falls back to other methods.  Whitespace, quotes, and ampersand are
-   * disallowed as mnemonics.
-   * <p>
-   * Mappings from arbitrary characters to mnemonic keys may be defined
-   * by providing a property
-   * MNEMONIC_{unicode char}={KeyEvent.VK_ constant name} within a bundle
-   * accessible by <code>abbot.i18n.Strings</code>.  If no such
-   * mapping is defined, a VK_ code is guessed by checking if there can be
-   * found a keystroke mapping for the original character.
-   * <p>
-   *
-   * @see abbot.tester.KeyStrokeMap
-   * @see abbot.i18n.Strings
-   */
   public static Mnemonic getMnemonic(String input) {
     String text = input;
     int mnemonicIndex = -1;

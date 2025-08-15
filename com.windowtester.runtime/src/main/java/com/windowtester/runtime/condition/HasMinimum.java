@@ -15,10 +15,11 @@ import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.locator.ILocator;
 
 /**
- * A specialized {@link ILocator} providing a convenience method to extract the minimum value from the underlying
- * object. See {@link HasMinimumCondition} for typical usage.
+ * A specialized {@link ILocator} providing a convenience method to extract the minimum value from
+ * the underlying object. See {@link HasMinimumCondition} for typical usage.
  */
 public interface HasMinimum {
+
   /**
    * Resolve the locator to a single object and answer the minimum value associated with it.
    *

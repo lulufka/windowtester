@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
  * </p>
  * specifies a wait of 1 second.
  * <p/>
- * Note that as a general rule, time periods should be replaced with conditions that test more specific properties of
- * the application under test.
+ * Note that as a general rule, time periods should be replaced with conditions that test more
+ * specific properties of the application under test.
  * <p>
  * <p/>
  */
@@ -76,6 +76,7 @@ public class TimeElapsedCondition implements ICondition {
    *
    * @see com.windowtester.runtime.condition.ICondition#test()
    */
+  @Override
   public boolean test() {
     if (start == UNSET) {
       start = currentTimeMillis();

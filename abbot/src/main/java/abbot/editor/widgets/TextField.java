@@ -117,10 +117,6 @@ public class TextField extends JTextField {
     return size;
   }
 
-  /**
-   * The default value will be inserted when the field is blank and ENTER is pressed.  This behavior is disabled if
-   * the value is null.
-   */
   public void setDefaultValue(String value) {
     decorator.setDefaultValue(value);
   }

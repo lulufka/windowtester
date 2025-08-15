@@ -16,8 +16,8 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 
 /**
- * Tests whether a locator identifies a widget that is enabled. For example, this can be used to assert that a button is
- * enabled after a particular sequence of user input.
+ * Tests whether a locator identifies a widget that is enabled. For example, this can be used to
+ * assert that a button is enabled after a particular sequence of user input.
  *
  * <pre>
  * 		IUIContext ui = [obtain IUIContext]
@@ -29,14 +29,15 @@ import com.windowtester.runtime.WidgetSearchException;
  * Any locator that implements {@link IsEnabled} can be used with this condition.
  */
 public class IsEnabledCondition implements IDiagnosticParticipant, IUICondition {
+
   private final IsEnabled locator;
   private final boolean expected;
   private boolean actual;
   private WidgetSearchException exception;
 
   /**
-   * Construct a new instance that will test for enablement of the widget specified by the locator. This is a
-   * convenience constructor that is fully equivalent to
+   * Construct a new instance that will test for enablement of the widget specified by the locator.
+   * This is a convenience constructor that is fully equivalent to
    *
    * <pre>
    * new IsEnabledCondition(locator, true)
@@ -63,16 +64,12 @@ public class IsEnabledCondition implements IDiagnosticParticipant, IUICondition 
     this.expected = expected;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean testUI(IUIContext ui) {
     try {
       actual = locator.isEnabled(ui);
@@ -83,12 +80,7 @@ public class IsEnabledCondition implements IDiagnosticParticipant, IUICondition 
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

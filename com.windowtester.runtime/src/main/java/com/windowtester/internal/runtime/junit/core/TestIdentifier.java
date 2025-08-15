@@ -15,7 +15,7 @@ package com.windowtester.internal.runtime.junit.core;
  */
 public class TestIdentifier implements ITestIdentifier {
 
-  private final String _id;
+  private final String id;
 
   /**
    * Create an instance with the given id.
@@ -24,24 +24,20 @@ public class TestIdentifier implements ITestIdentifier {
     if (id == null) {
       throw new AssertionError("id must not be null");
     }
-    _id = id;
+    this.id = id;
   }
 
-  /**
-   * Get this test's id string.
-   */
+  @Override
   public String getName() {
     return getId();
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return getId();
   }
 
   private String getId() {
-    return _id;
+    return id;
   }
 }

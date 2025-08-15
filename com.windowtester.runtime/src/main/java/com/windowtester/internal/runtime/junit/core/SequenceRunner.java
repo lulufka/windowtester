@@ -24,8 +24,6 @@ public class SequenceRunner implements ISequenceRunner {
 
   /**
    * Create an instance using the given execution monitor.
-   *
-   * @param monitor
    */
   public SequenceRunner(IExecutionMonitor monitor) {
     this.monitor = monitor;
@@ -35,27 +33,24 @@ public class SequenceRunner implements ISequenceRunner {
     return monitor;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.test.exec.ISequenceRunner#exec(java.lang.Runnable)
-   */
-  public void exec(final IRunnable runnable) throws Throwable {
-
-    // _environment.update(); //TODO: make cleanup handler a listener?
+  @Override
+  public void exec(IRunnable runnable) throws Throwable {
     runStarting();
-    Thread runThread =
+    var runThread =
         new Thread(getTestThreadName()) {
+          @Override
           public void run() {
             try {
               runnable.run();
             } catch (Throwable e) {
-              // e.printStackTrace();
-              Throwable toReport = (e instanceof InvocationTargetException) ? e.getCause() : e;
+              var toReport = (e instanceof InvocationTargetException) ? e.getCause() : e;
               exceptionCaught(toReport);
             } finally {
               runFinishing();
             }
           }
         };
+
     try {
       runThread.setDaemon(true);
       runThread.start();
@@ -71,8 +66,6 @@ public class SequenceRunner implements ISequenceRunner {
 
   /**
    * Ask the monitor to wait until the execution is finished.
-   *
-   * @throws Throwable
    */
   private void waitUntilFinished() throws Throwable {
     getMonitor().waitUntilFinished();
@@ -112,7 +105,7 @@ public class SequenceRunner implements ISequenceRunner {
    * Get the current running test in a (legacy) format familiar to test life-cycle listeners.
    */
   protected static TestIdentifier getCurrentTest() {
-    final String currentTestCaseID = TestMonitor.getInstance().getCurrentTestCaseID();
+    var currentTestCaseID = TestMonitor.getInstance().getCurrentTestCaseID();
     return new TestIdentifier(currentTestCaseID);
   }
 }

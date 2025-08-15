@@ -17,23 +17,22 @@ import com.windowtester.internal.runtime.finder.IWidgetFinder;
 import com.windowtester.internal.runtime.matcher.AdapterFactory;
 import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.WidgetReference;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Window;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-/**
- * A Swing Widget Finder.
- */
+/** A Swing Widget Finder. */
 public class SwingWidgetFinder implements IWidgetFinder {
-
-  private final Hierarchy hierarchy;
 
   private static final IWidgetFinder DEFAULT = new SwingWidgetFinder(new AWTHierarchy());
 
   public static IWidgetFinder getDefault() {
     return DEFAULT;
   }
+
+  private final Hierarchy hierarchy;
 
   public SwingWidgetFinder() {
     this(AWTHierarchy.getDefault());
@@ -43,63 +42,57 @@ public class SwingWidgetFinder implements IWidgetFinder {
     hierarchy = h;
   }
 
+  @Override
   public IWidgetLocator[] findAll(IWidgetLocator locator) {
+    var matcher = new AdapterFactory().adapt(locator);
 
-    Set found = new HashSet();
-    Iterator iter = hierarchy.getRoots().iterator();
-    Matcher m = new AdapterFactory().adapt(locator);
-    while (iter.hasNext()) {
-      // match only if window has focus
-      Component c = (Component) iter.next();
-      //  System.out.println(c);
-      if (((Window) c).isActive()) {
-        findMatches(m, c, found);
-      } else if (((Window) c).getOwnedWindows().length != 0) {
-        // check to see whether (ALL) frame owns any windows
+    var matchingComponents = new HashSet<Component>();
+    addMatchingComponents(matcher, matchingComponents);
 
-        // if(c.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame")){
-        Window[] windows = ((Window) c).getOwnedWindows();
-        for (int i = 0; i < windows.length; i++) {
-          if (windows[i].isActive()) {
-            findMatches(m, windows[i], found);
-          }
-          // fix for Verify text in tooltip
-          else if (windows[i].isShowing()
-              && (c.getClass().getName().equals("javax.swing.SwingUtilities$SharedOwnerFrame"))) {
-            findMatches(m, windows[i], found);
-          }
-        }
-      }
-
-      // Embedded Frames are not accessible in Apple's Java5+
-      // 12/3/09 : added WEmbeddedFrame
-      else if (c.getClass().getName().equals("sun.awt.EmbeddedFrame")
-          || (c.getClass().getName().equals("sun.awt.windows.WEmbeddedFrame"))) {
-        findMatches(m, c, found);
-      }
-    }
-
-    WidgetReference[] locators = new WidgetReference[found.size()];
-    int i = 0;
-    Iterator foundIterator = found.iterator();
-    while (foundIterator.hasNext()) {
-      locators[i] = new WidgetReference(foundIterator.next());
-      i++;
-    }
-
-    return locators;
+    return matchingComponents.stream()
+        .map(WidgetReference::new)
+        .map(IWidgetLocator.class::cast)
+        .toArray(IWidgetLocator[]::new);
   }
 
-  protected void findMatches(Matcher m, Component c, Set found) {
+  private void addMatchingComponents(Matcher matcher, HashSet<Component> found) {
+    Arrays.stream(Window.getWindows())
+        .filter(Window::isDisplayable)
+        .filter(this::isMatchingWindow)
+        .forEach(window -> findMatches(matcher, window, found));
+  }
 
-    Iterator iter = hierarchy.getComponents(c).iterator();
-    while (iter.hasNext()) {
-      Component component = (Component) iter.next();
-      findMatches(m, component, found);
+  private boolean isMatchingWindow(Window window) {
+    if (window.isActive()) {
+      // match only if window has focus
+      return true;
+    }
+    if (window.isVisible()) {
+      return true;
     }
 
-    if (m.matches(c)) {
-      found.add(c);
+    if (window.getOwnedWindows().length > 0) {
+      return true;
+    }
+
+    if (window.getClass().getName().equals("sun.awt.EmbeddedFrame")
+        || (window.getClass().getName().equals("sun.awt.windows.WEmbeddedFrame"))) {
+      // Embedded Frames are not accessible in Apple's Java5+
+      // 12/3/09 : added WEmbeddedFrame
+      return true;
+    }
+
+    // check to see whether (ALL) frame owns any windows
+    return Arrays.stream(window.getOwnedWindows())
+        .anyMatch(this::isMatchingWindow);
+  }
+
+  private void findMatches(Matcher matcher, Component component, Set<Component> found) {
+    hierarchy.getComponents(component)
+        .forEach(comp -> findMatches(matcher, comp, found));
+
+    if (matcher.matches(component)) {
+      found.add(component);
     }
   }
 }

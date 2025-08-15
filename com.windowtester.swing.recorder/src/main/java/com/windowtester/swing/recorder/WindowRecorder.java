@@ -17,7 +17,10 @@ import abbot.script.Step;
 import abbot.tester.WindowTracker;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 
@@ -34,6 +37,7 @@ public class WindowRecorder extends ContainerRecorder {
     super(resolver);
   }
 
+  @Override
   protected void init(int recordingType) {
     super.init(recordingType);
     window = null;
@@ -41,21 +45,21 @@ public class WindowRecorder extends ContainerRecorder {
     size = null;
   }
 
+  @Override
   protected boolean isWindowEvent(AWTEvent event) {
-
     return (event.getSource() instanceof Window
-            // Checking for window ready avoids picking up
-            // spurious resize events on first window show
-            && ((Window) event.getSource()).isShowing()
-            && WindowTracker.getTracker().isWindowReady((Window) event.getSource())
-            && (event.getID() == ComponentEvent.COMPONENT_MOVED
-                || event.getID() == ComponentEvent.COMPONENT_RESIZED))
+        // Checking for window ready avoids picking up
+        // spurious resize events on first window show
+        && ((Window) event.getSource()).isShowing()
+        && WindowTracker.getTracker().isWindowReady((Window) event.getSource())
+        && (event.getID() == ComponentEvent.COMPONENT_MOVED
+        || event.getID() == ComponentEvent.COMPONENT_RESIZED))
         || event.getID() == WindowEvent.WINDOW_CLOSING
         || super.isWindowEvent(event);
   }
 
+  @Override
   protected boolean parseWindowEvent(AWTEvent event) {
-
     int id = event.getID();
     boolean consumed = true;
     if (id == ComponentEvent.COMPONENT_MOVED) {
@@ -75,6 +79,7 @@ public class WindowRecorder extends ContainerRecorder {
     return consumed;
   }
 
+  @Override
   protected Step createStep() {
     Step step;
     if (getRecordingType() == SE_WINDOW && window != null) {
@@ -97,14 +102,9 @@ public class WindowRecorder extends ContainerRecorder {
     IUISemanticEvent semanticEvent = UISemanticEventFactory.createShellDisposedEvent(window);
     notify(semanticEvent);
 
-    return new Action(getResolver(), null, "actionClose", new String[] {ref.getID()}, Window.class);
+    return new Action(getResolver(), null, "actionClose", new String[]{ref.getID()}, Window.class);
   }
 
-  /**
-   * @param window
-   * @param where
-   * @return
-   */
   protected Step createMove(Window window, Point where) {
     // If the window is not yet showing, ignore it
     if (!WindowTracker.getTracker().isWindowReady(window)) {
@@ -116,7 +116,7 @@ public class WindowRecorder extends ContainerRecorder {
         getResolver(),
         null,
         "actionMove",
-        new String[] {ref.getID(), String.valueOf(where.x), String.valueOf(where.y)},
+        new String[]{ref.getID(), String.valueOf(where.x), String.valueOf(where.y)},
         Window.class);
   }
 
@@ -131,8 +131,8 @@ public class WindowRecorder extends ContainerRecorder {
         getResolver(),
         null,
         "actionResize",
-        new String[] {
-          ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
+        new String[]{
+            ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
         },
         Window.class);
   }

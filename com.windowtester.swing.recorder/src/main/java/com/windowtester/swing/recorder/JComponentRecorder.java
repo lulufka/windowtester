@@ -16,25 +16,26 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  * Record basic semantic events you might find on an JComponent. <p>
  * <p>
- * Watches for events that trigger an action from the component's action map. As of 1.3.1, KEY_TYPED and KEY_RELEASED
- * events can trigger an action.
+ * Watches for events that trigger an action from the component's action map. As of 1.3.1, KEY_TYPED
+ * and KEY_RELEASED events can trigger an action.
  * <p>
  * added generation of windowtester semantic event
  */
 public class JComponentRecorder extends ContainerRecorder {
+
   private JComponent target;
   private String actionKey;
   // keystroke used to generate semantic event
-  private KeyStroke ks;
-  int code;
-  char ch;
+  private int code;
+  private char ch;
 
   public static final int SE_ACTION_MAP = 20;
 
@@ -42,15 +43,14 @@ public class JComponentRecorder extends ContainerRecorder {
     super(resolver);
   }
 
+  @Override
   protected void init(int rtype) {
     super.init(rtype);
     target = null;
     actionKey = null;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
+  @Override
   public boolean accept(AWTEvent event) {
     boolean accepted;
     if ((event instanceof KeyEvent)
@@ -75,20 +75,12 @@ public class JComponentRecorder extends ContainerRecorder {
     return getAction(ke) != null;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
+  @Override
   public boolean parse(AWTEvent event) {
-    boolean consumed = true;
-    switch (getRecordingType()) {
-      case SE_ACTION_MAP:
-        consumed = parseActionMapEvent(event);
-        break;
-      default:
-        consumed = super.parse(event);
-        break;
+    if (getRecordingType() == SE_ACTION_MAP) {
+      return parseActionMapEvent(event);
     }
-    return consumed;
+    return super.parse(event);
   }
 
   /**
@@ -123,20 +115,12 @@ public class JComponentRecorder extends ContainerRecorder {
     return true;
   }
 
-  /**
-   * Add handling for JComponent input-mapped actions.
-   */
+  @Override
   protected Step createStep() {
-    Step step;
-    switch (getRecordingType()) {
-      case SE_ACTION_MAP:
-        step = createActionMap(target, actionKey);
-        break;
-      default:
-        step = super.createStep();
-        break;
+    if (getRecordingType() == SE_ACTION_MAP) {
+      return createActionMap(target, actionKey);
     }
-    return step;
+    return super.createStep();
   }
 
   /**
@@ -152,7 +136,7 @@ public class JComponentRecorder extends ContainerRecorder {
         getResolver(),
         null,
         "actionActionMap",
-        new String[] {cr.getID(), actionKey},
+        new String[]{cr.getID(), actionKey},
         JComponent.class);
   }
 }

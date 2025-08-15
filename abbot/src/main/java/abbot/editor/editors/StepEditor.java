@@ -57,27 +57,18 @@ public abstract class StepEditor extends JPanel
     }
   }
 
-  /**
-   * Keep a reasonable minimum width.
-   */
   public Dimension getMinimumSize() {
     Dimension min = super.getMinimumSize();
     min.width = 200;
     return min;
   }
 
-  /**
-   * Keep a reasonable minimum width.
-   */
   public Dimension getPreferredSize() {
     Dimension size = super.getPreferredSize();
     size.width = 200;
     return size;
   }
 
-  /**
-   * We don't want to become infinitely wide due to text fields.
-   */
   public Dimension getMaximumSize() {
     Dimension max = super.getMaximumSize();
     max.width = 400;
@@ -117,10 +108,6 @@ public abstract class StepEditor extends JPanel
       super.addImpl(c, constraints, index);
     }
 
-    /**
-     * Disallow recursive calls, which occur when someone sets the combo box contents in response to the combo box
-     * selection.
-     */
     public void configureEditor(ComboBoxEditor editor, Object item) {
       // Avoids IllegalStateExceptions from the text field ("Attempt to
       // mutate in notification" errors).
@@ -131,18 +118,12 @@ public abstract class StepEditor extends JPanel
       }
     }
 
-    /**
-     * Sets the foreground color of the editor text.
-     */
     public void setForeground(Color c) {
       if (editor != null) {
         editor.setForeground(c);
       }
     }
 
-    /**
-     * Overridden to prevent recursive calls.
-     */
     public void fireActionEvent() {
       if (!fieldChanging) {
         fieldChanging = true;
@@ -151,9 +132,6 @@ public abstract class StepEditor extends JPanel
       }
     }
 
-    /**
-     * Overridden to prevent recursive calls.
-     */
     public void fireItemStateChanged(ItemEvent e) {
       if (!fieldChanging) {
         fieldChanging = true;
@@ -289,9 +267,6 @@ public abstract class StepEditor extends JPanel
     return text;
   }
 
-  /**
-   * Automatically remove the strut spacing and the component.
-   */
   public void remove(Component comp) {
     if (getLayout() == layout) {
       Component[] children = super.getComponents();
@@ -305,9 +280,6 @@ public abstract class StepEditor extends JPanel
     super.remove(comp);
   }
 
-  /**
-   * Auto-add a label with a component.
-   */
   public Component add(String name, Component comp) {
     if (name != null) {
       JLabel label = new JLabel(name);
@@ -317,9 +289,6 @@ public abstract class StepEditor extends JPanel
     return add(comp);
   }
 
-  /**
-   * Automatically add a vertical struct with a component.
-   */
   public Component add(Component comp) {
     if (getLayout() == layout) {
       super.add(Box.createVerticalStrut(MARGIN));
@@ -330,9 +299,6 @@ public abstract class StepEditor extends JPanel
     return super.add(comp);
   }
 
-  /**
-   * Respond to UI changes by updating the step data.
-   */
   public void actionPerformed(ActionEvent ev) {
     Object src = ev.getSource();
     if (src == description) {
@@ -393,11 +359,6 @@ public abstract class StepEditor extends JPanel
     }
   }
 
-  /**
-   * Return the appropriate editor panel for the given Step. Custom editors must be named after the step class name,
-   * and be defined in the abbot.editor.editors package, e.g. abbot.script.Launch expects
-   * abbot.editor.editors.LaunchEditor, abbot.script.Assert expects abbot.editor.editors.AssertEditor.
-   */
   public static StepEditor getEditor(Step step) {
     Class stepClass = step.getClass();
     Log.debug("Looking up editor for " + step + " using " + stepClass);
@@ -418,9 +379,6 @@ public abstract class StepEditor extends JPanel
     return null;
   }
 
-  /**
-   * Always maintain the minimum width.
-   */
   public Dimension getPreferredScrollableViewportSize() {
     return getPreferredSize();
   }

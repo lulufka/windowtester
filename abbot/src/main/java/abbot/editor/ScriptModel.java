@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.table.AbstractTableModel;
 import org.jdom.Element;
 
@@ -20,19 +22,19 @@ import org.jdom.Element;
  * brute-force implementation with no attempts at optimization.   But it's a very simple tree+table implementation.
  */
 class ScriptModel extends AbstractTableModel {
-  private final HashSet openSequences = new HashSet();
-  private final HashMap parents = new HashMap();
+  private final Set<Step> openSequences = new HashSet<>();
+  private final Map<Step, Sequence> parents = new HashMap<>();
   private Script script = null;
-  private final ArrayList rows = new ArrayList();
+  private final List<Entry> rows = new ArrayList<>();
 
   /**
    * Encapsulate information we need to manipulate a row.  Note that Entry objects exist only for those steps which
    * are "visible", i.e. children of closed sequences have no Entry.
    */
-  private class Entry implements XMLifiable {
-    public Step step;
-    public Sequence parent;
-    public int nestingDepth;
+  private static class Entry implements XMLifiable {
+    private final Step step;
+    private final Sequence parent;
+    private final int nestingDepth;
 
     public Entry(Step step, Sequence parent, int nestingDepth) {
       this.step = step;
@@ -95,15 +97,16 @@ class ScriptModel extends AbstractTableModel {
   /**
    * Remove all the given steps.  If any are not found, an exception is thrown before any changes are made.
    */
-  public synchronized void removeSteps(List steps) {
-    Iterator iter = steps.iterator();
+  public synchronized void removeSteps(List<Step> steps) {
+    Iterator<Step> iter = steps.iterator();
     while (iter.hasNext()) {
-      Step step = (Step) iter.next();
+      Step step = iter.next();
       getParent(step);
     }
+
     iter = steps.iterator();
     while (iter.hasNext()) {
-      Step step = (Step) iter.next();
+      Step step = iter.next();
       getParent(step).removeStep(step);
       openSequences.remove(step);
     }
@@ -121,10 +124,9 @@ class ScriptModel extends AbstractTableModel {
   /**
    * Insert the steps into the given sequence at the given index.
    */
-  public synchronized void insertSteps(Sequence parent, List steps, int index) {
-    Iterator iter = steps.iterator();
-    while (iter.hasNext()) {
-      parent.addStep(index++, (Step) iter.next());
+  public synchronized void insertSteps(Sequence parent, List<Step> steps, int index) {
+    for (Step step : steps) {
+      parent.addStep(index++, step);
     }
     layout(true);
   }
@@ -134,7 +136,7 @@ class ScriptModel extends AbstractTableModel {
       throw new IllegalArgumentException(
           "Row " + row + " out of bounds (" + rows.size() + " available)");
     }
-    return (Entry) rows.get(row);
+    return rows.get(row);
   }
 
   /**
@@ -233,6 +235,7 @@ class ScriptModel extends AbstractTableModel {
    */
   // FIXME: I don't think this is used any longer now that editors are
   // available for all script steps.
+  @Override
   public synchronized void setValueAt(Object value, int row, int col) {
     validate(row, col);
     if (col == 0) {

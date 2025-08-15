@@ -52,17 +52,10 @@ public class ComponentLocation {
    */
   public ComponentLocation() {}
 
-  /**
-   * Create a simple location.
-   */
   public ComponentLocation(Point where) {
     this.where = new Point(where);
   }
 
-  /**
-   * Convert the abstract location into a concrete one.  Returns a {@link Point} relative to the given {@link
-   * Component}.
-   */
   public Point getPoint(Component c) throws LocationUnavailableException {
     if (where != null) {
       return new Point(where);
@@ -70,10 +63,6 @@ public class ComponentLocation {
     return new Point(c.getWidth() / 2, c.getHeight() / 2);
   }
 
-  /**
-   * Convert the abstract location into a concrete area, relative to the given <code>Component</code>.  If a point has
-   * been specified, returns a 1x1 rectangle, otherwise returns the rectangle at (0, 0) of the Component's size.
-   */
   public Rectangle getBounds(Component c) throws LocationUnavailableException {
     if (where == null) {
       return new Rectangle(0, 0, c.getWidth(), c.getHeight());
@@ -81,10 +70,6 @@ public class ComponentLocation {
     return new Rectangle(where.x, where.y, 1, 1);
   }
 
-  /**
-   * Returns whether the given object is an equivalent
-   * <code>ComponentLocation</code>.
-   */
   public boolean equals(Object o) {
     if (o instanceof ComponentLocation) {
       ComponentLocation loc = (ComponentLocation) o;
@@ -108,16 +93,10 @@ public class ComponentLocation {
     return "[" + index + "]";
   }
 
-  /**
-   * Returns whether the given (trimmed) <code>String</code> is an encoded index.
-   */
   protected boolean isIndex(String encoded) {
     return encoded.startsWith("[") && encoded.endsWith("]");
   }
 
-  /**
-   * Extract the encoded index.
-   */
   protected int parseIndex(String encoded) {
     try {
       return Integer.parseInt(encoded.substring(1, encoded.length() - 1).trim());
@@ -130,24 +109,14 @@ public class ComponentLocation {
     return "\"" + value + "\"";
   }
 
-  /**
-   * Returns whether the given (trimmed) <code>String</code> is an encoded value.
-   */
   protected boolean isValue(String encoded) {
     return encoded.startsWith("\"") && encoded.endsWith("\"");
   }
 
-  /**
-   * Extract the encoded value.
-   */
   protected String parseValue(String encoded) {
     return encoded.substring(1, encoded.length() - 1);
   }
 
-  /**
-   * Convert the given encoding into the proper location. Allowed formats: (x, y)
-   * <p>
-   */
   public ComponentLocation parse(String encoded) {
     encoded = encoded.trim();
     if (encoded.equals(CENTER)) {

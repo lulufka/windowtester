@@ -70,41 +70,26 @@ public class JScrollBarTester extends JComponentTester {
     scroll(bar, value);
   }
 
-  /**
-   * Scroll up (or right) one unit (usually a line).
-   */
   public void actionScrollUnitUp(Component c) {
     scroll((JScrollBar) c, 1, false);
     waitForIdle();
   }
 
-  /**
-   * Scroll down (or left) one unit (usually a line).
-   */
   public void actionScrollUnitDown(Component c) {
     scroll((JScrollBar) c, -1, false);
     waitForIdle();
   }
 
-  /**
-   * Scroll up (or right) one block (usually a page).
-   */
   public void actionScrollBlockUp(Component c) {
     scroll((JScrollBar) c, 1, true);
     waitForIdle();
   }
 
-  /**
-   * Scroll down (or left) one block (usually a page).
-   */
   public void actionScrollBlockDown(Component c) {
     scroll((JScrollBar) c, -1, true);
     waitForIdle();
   }
 
-  /**
-   * Scroll to the given scroll position.
-   */
   public void actionScrollTo(Component c, final int position) {
     JScrollBar bar = (JScrollBar) c;
     int min = bar.getMinimum();

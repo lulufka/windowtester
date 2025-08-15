@@ -9,10 +9,13 @@ import javax.swing.*;
  * Provides encapsulation of the location of a row on a JList (a coordinate, item index or value).
  */
 public class JListLocation extends ComponentLocation {
+
   private String value = null;
   private int row = -1;
 
-  public JListLocation() {}
+  public JListLocation() {
+    // do nothing
+  }
 
   public JListLocation(String value) {
     this.value = value;
@@ -20,7 +23,7 @@ public class JListLocation extends ComponentLocation {
 
   public JListLocation(int row) {
     if (row < 0) {
-      String msg = Strings.get("tester.JList.invalid_index", new Object[] {new Integer(row)});
+      String msg = Strings.get("tester.JList.invalid_index", new Object[] {row});
       throw new LocationUnavailableException(msg);
     }
     this.row = row;
@@ -30,6 +33,7 @@ public class JListLocation extends ComponentLocation {
     super(where);
   }
 
+  @Override
   protected String badFormat(String encoded) {
     return Strings.get("location.list.bad_format", new Object[] {encoded});
   }
@@ -37,9 +41,9 @@ public class JListLocation extends ComponentLocation {
   /**
    * Convert the given index into a coordinate.
    */
-  protected Point indexToPoint(JList list, int index) {
+  protected Point indexToPoint(JList<String> list, int index) {
     if (index < 0 || index >= list.getModel().getSize()) {
-      String msg = Strings.get("tester.JList.invalid_index", new Object[] {new Integer(index)});
+      String msg = Strings.get("tester.JList.invalid_index", new Object[] {index});
       throw new LocationUnavailableException(msg);
     }
     Rectangle rect = list.getCellBounds(index, index);
@@ -49,7 +53,7 @@ public class JListLocation extends ComponentLocation {
   /**
    * Find the first String match in the list and return the index.
    */
-  private int valueToIndex(JList list, String value) {
+  private int valueToIndex(JList<?> list, String value) {
     int size = list.getModel().getSize();
     for (int i = 0; i < size; i++) {
       String str = JListTester.valueToString(list, i);
@@ -60,7 +64,7 @@ public class JListLocation extends ComponentLocation {
     return -1;
   }
 
-  public int getIndex(JList list) {
+  public int getIndex(JList<?> list) {
     if (value != null) {
       return valueToIndex(list, value);
     }
@@ -70,27 +74,27 @@ public class JListLocation extends ComponentLocation {
     return list.locationToIndex(super.getPoint(list));
   }
 
-  /**
-   * Return a concrete point for the abstract location.
-   */
-  public Point getPoint(Component c) {
-    JList list = (JList) c;
+  @Override
+  public Point getPoint(Component component) {
+    JList<String> list = (JList<String>) component;
     if (value != null || row != -1) {
       return indexToPoint(list, getIndex(list));
     }
     return super.getPoint(list);
   }
 
-  public Rectangle getBounds(Component c) {
-    JList list = (JList) c;
+  @Override
+  public Rectangle getBounds(Component component) {
+    JList<String> list = (JList<String>) component;
     int index = getIndex(list);
     if (index == -1) {
-      String msg = Strings.get("tester.JList.invalid_index", new Object[] {new Integer(index)});
+      String msg = Strings.get("tester.JList.invalid_index", new Object[] {index});
       throw new LocationUnavailableException(msg);
     }
     return list.getCellBounds(index, index);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof JListLocation) {
       JListLocation loc = (JListLocation) o;
@@ -104,6 +108,7 @@ public class JListLocation extends ComponentLocation {
     return super.equals(o);
   }
 
+  @Override
   public String toString() {
     if (value != null) {
       return encodeValue(value);
@@ -114,6 +119,7 @@ public class JListLocation extends ComponentLocation {
     return super.toString();
   }
 
+  @Override
   public ComponentLocation parse(String encoded) {
     encoded = encoded.trim();
     if (isValue(encoded)) {

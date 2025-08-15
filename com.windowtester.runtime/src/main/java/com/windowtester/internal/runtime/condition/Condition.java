@@ -19,8 +19,8 @@ import com.windowtester.runtime.condition.IUICondition;
 public class Condition {
 
   public static ICondition not(ICondition condition) {
-    if (condition instanceof IUICondition) {
-      return new NotUICondition((IUICondition) condition);
+    if (condition instanceof IUICondition iuiCondition) {
+      return new NotUICondition(iuiCondition);
     }
     return new NotCondition(condition);
   }

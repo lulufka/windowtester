@@ -23,7 +23,6 @@ import com.windowtester.swing.event.spy.SpyEventHandler;
 import com.windowtester.swing.recorder.ComponentRecorder;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /***
@@ -36,17 +35,17 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
   /**
    * A flag to indicate record state
    */
-  protected boolean _isRecording;
+  protected boolean isRecording;
 
   /**
    * A flag to indicate pause state
    */
-  protected boolean _isPaused;
+  protected boolean isPaused;
 
   /**
    * A list of primitive event filters
    */
-  private List /*<ISemanticEventListener>*/ _filters;
+  private List<IEventFilter> filters;
 
   private final SpyEventHandler spyHandler = new SpyEventHandler();
 
@@ -54,52 +53,47 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
     super(resolver, captureMotion);
   }
 
-  /**
-   * Add the given semantic event listener to this recorder.  Event listeners are notified of all semantic events.
-   */
+  @Override
   public void addListener(ISemanticEventListener listener) {
-
     // Install existing semantic recorders
-    for (int i = 0; i < recorderClasses.length; i++) {
-      ((ComponentRecorder) getSemanticRecorder(recorderClasses[i])).addListener(listener);
+    for (Class<?> recorderClass : recorderClasses) {
+      ((ComponentRecorder) getSemanticRecorder(recorderClass)).addListener(listener);
     }
   }
 
-  /**
-   * Override point recorders to windowtester classes
-   */
-  protected String getRecoderName(String cname) {
+  @Override
+  protected String getRecorderName(String cname) {
     return "com.windowtester.swing.recorder." + cname + "Recorder";
   }
 
-  /**
-   * Override notify listeners that recording has terminated
-   */
+  @Override
   public void terminate() throws RecordingFailedException {
-    _isRecording = false;
+    isRecording = false;
     super.terminate();
     // get the list of listeners
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyDispose();
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyDispose();
+    }
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.recorder.IEventRecorder#toggleSpyMode()
-   */
+  @Override
   public void toggleSpyMode() {
-    for (Iterator iter = getListeners().iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifySpyModeToggle();
+    for (ISemanticEventListener iSemanticEventListener : getListeners()) {
+      iSemanticEventListener.notifySpyModeToggle();
+    }
   }
 
+  @Override
   public void stop() {
     //	System.out.println("Stopping recorder");
     try {
-      _isRecording = false;
+      isRecording = false;
       super.terminate();
-      List listeners = getListeners();
-      for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-        ((ISemanticEventListener) iter.next()).notifyStop();
+      List<ISemanticEventListener> listeners = getListeners();
+      for (ISemanticEventListener listener : listeners) {
+        listener.notifyStop();
+      }
     } catch (RecordingFailedException e) {
       Throwable error = e.getReason();
       System.out.println("Recording stop failure: " + error.toString());
@@ -108,65 +102,81 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
     Step step = getStep();
   }
 
+  @Override
   public void start() {
     super.start();
-    _isRecording = true;
-    _isPaused = false;
+    isRecording = true;
+    isPaused = false;
     //	get the list of listeners
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyStart();
-  }
-
-  public void write() {
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyWrite();
-  }
-
-  public void restart() {
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyRestart();
-  }
-
-  public void pause() {
-    _isRecording = false;
-    _isPaused = true;
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyPause();
-  }
-
-  public void removeListener(ISemanticEventListener listener) {
-    // remove listener from semantic recorders
-    for (int i = 0; i < recorderClasses.length; i++) {
-      ((ComponentRecorder) getSemanticRecorder(recorderClasses[i])).removeListener(listener);
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyStart();
     }
   }
 
+  @Override
+  public void write() {
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyWrite();
+    }
+  }
+
+  @Override
+  public void restart() {
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyRestart();
+    }
+  }
+
+  @Override
+  public void pause() {
+    isRecording = false;
+    isPaused = true;
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyPause();
+    }
+  }
+
+  @Override
+  public void removeListener(ISemanticEventListener listener) {
+    // remove listener from semantic recorders
+    for (Class<?> recorderClass : recorderClasses) {
+      ((ComponentRecorder) getSemanticRecorder(recorderClass)).removeListener(listener);
+    }
+  }
+
+  @Override
   public void record(IUISemanticEvent semanticEvent) {
     //	get the list of listeners
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notify(semanticEvent);
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notify(semanticEvent);
+    }
   }
 
+  @Override
   public void reportError(RecorderErrorEvent event) {
     // get the list of listeners
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyError(event);
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyError(event);
+    }
   }
 
+  @Override
   public void trace(RecorderTraceEvent event) {
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyTrace(event);
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyTrace(event);
+    }
   }
 
+  @Override
   public void addEventFilter(IEventFilter filter) {
-    List filters = getEventFilters();
+    List<IEventFilter> filters = getEventFilters();
     if (filters.contains(filter)) {
       debug("multiple adds of filter: : " + filter);
     } else {
@@ -174,8 +184,9 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
     }
   }
 
+  @Override
   public void removeEventFilter(IEventFilter filter) {
-    List filters = getEventFilters();
+    List<IEventFilter> filters = getEventFilters();
     if (filters.contains(filter)) {
       debug("filter removed that was not registered: " + filter);
     } else {
@@ -183,32 +194,35 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
     }
   }
 
+  @Override
   public void addHook(String hookName) {
-    List listeners = getListeners();
-    for (Iterator iter = listeners.iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notifyAssertionHookAdded(hookName);
+    List<ISemanticEventListener> listeners = getListeners();
+    for (ISemanticEventListener listener : listeners) {
+      listener.notifyAssertionHookAdded(hookName);
+    }
   }
 
   /**
    * @return list of listeners attached to the recorder
    */
-  private List getListeners() {
+  private List<ISemanticEventListener> getListeners() {
     return ((ComponentRecorder) getSemanticRecorder(recorderClasses[0])).getListeners();
   }
 
   public void notify(IUISemanticEvent semanticEvent) {
-    for (Iterator iter = getListeners().iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notify(semanticEvent);
+    for (ISemanticEventListener listener : getListeners()) {
+      listener.notify(semanticEvent);
+    }
   }
 
   /**
    * @return the list of event filters
    */
-  private List getEventFilters() {
-    if (_filters == null) {
-      _filters = new ArrayList /*<IEventFilter>*/();
+  private List<IEventFilter> getEventFilters() {
+    if (filters == null) {
+      filters = new ArrayList<>();
     }
-    return _filters;
+    return filters;
   }
 
   /**
@@ -218,20 +232,16 @@ public class SwingEventRecorder extends abbot.editor.recorder.EventRecorder
     //        DebugHandler.trace(TRACE_OPTION, msg);
   }
 
-  /**
-   * @return true if this recorder is currently recording
-   */
+  @Override
   public boolean isRecording() {
-    return _isRecording;
+    return isRecording;
   }
 
-  /**
-   * Override to generate spy events
-   */
+  @Override
   public void insertStep(Step step) {
     super.insertStep(step);
     if (capturedEvent != null && capturedEvent.getID() == MouseEvent.MOUSE_ENTERED) {
-      IUISemanticEvent event = spyHandler.interepretHover(capturedEvent);
+      IUISemanticEvent event = spyHandler.interpretHover(capturedEvent);
       if (event != null) {
         notify(event);
       }

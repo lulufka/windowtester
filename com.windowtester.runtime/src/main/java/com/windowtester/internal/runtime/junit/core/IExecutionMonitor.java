@@ -11,8 +11,8 @@
 package com.windowtester.internal.runtime.junit.core;
 
 /**
- * Monitors the execution of a test, informing associated {@link ITestExecutionListener}s along the way.  In addition,
- * monitors are responsible for providing waitForFinished Logic.
+ * Monitors the execution of a test, informing associated {@link ITestExecutionListener}s along the
+ * way.  In addition, monitors are responsible for providing waitForFinished Logic.
  */
 public interface IExecutionMonitor extends ITestExecutionListener {
 

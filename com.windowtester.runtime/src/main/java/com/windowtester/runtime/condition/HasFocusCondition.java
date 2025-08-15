@@ -19,14 +19,15 @@ import com.windowtester.runtime.WidgetSearchException;
  * Tests whether a locator identifies a widget that has keyboard focus.
  */
 public class HasFocusCondition implements IDiagnosticParticipant, IUICondition {
+
   private final HasFocus locator;
   private final boolean expected;
   private boolean actual;
   private WidgetSearchException exception;
 
   /**
-   * Construct a new instance that will test for the focus of the widget specified by the locator. This is a
-   * convenience constructor that is fully equivalent to
+   * Construct a new instance that will test for the focus of the widget specified by the locator.
+   * This is a convenience constructor that is fully equivalent to
    *
    * <pre>
    * new HasFocusCondition(locator, true)
@@ -53,9 +54,7 @@ public class HasFocusCondition implements IDiagnosticParticipant, IUICondition {
     this.expected = expected;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
@@ -63,6 +62,7 @@ public class HasFocusCondition implements IDiagnosticParticipant, IUICondition {
   /* (non-Javadoc)
    * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
    */
+  @Override
   public boolean testUI(IUIContext ui) {
     try {
       actual = locator.hasFocus(ui);
@@ -73,12 +73,7 @@ public class HasFocusCondition implements IDiagnosticParticipant, IUICondition {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

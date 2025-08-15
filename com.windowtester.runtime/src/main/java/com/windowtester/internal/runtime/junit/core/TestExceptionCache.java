@@ -18,8 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 public class TestExceptionCache {
 
   // Cached exceptions for re-throwing
-  private InvocationTargetException _ite;
-  private IllegalAccessException _iae;
+  private InvocationTargetException ite;
+  private IllegalAccessException iae;
 
   /**
    * Check if there is an exception cached.
@@ -27,25 +27,21 @@ public class TestExceptionCache {
    * @return <code>true</code> if there is a cached exception, <code>false</code> otherwise
    */
   public boolean hasException() {
-    return _ite != null || _iae != null;
+    return ite != null || iae != null;
   }
 
   /**
    * Cache the given exception for later throwing.
    */
   public void cache(Throwable e) {
-    if (e instanceof InvocationTargetException) {
-      // e.printStackTrace();
+    if (e instanceof InvocationTargetException ex) {
       e.fillInStackTrace();
-      _ite = (InvocationTargetException) e;
-    } else if (e instanceof IllegalAccessException) {
-      // e.printStackTrace();
+      ite = ex;
+    } else if (e instanceof IllegalAccessException ex) {
       e.fillInStackTrace();
-      _iae = (IllegalAccessException) e;
+      iae = ex;
     } else {
-      // e.printStackTrace();
-      // e.fillInStackTrace();
-      _ite = new InvocationTargetException(e);
+      ite = new InvocationTargetException(e);
     }
   }
 
@@ -53,15 +49,15 @@ public class TestExceptionCache {
    * Throw the cached exception (if there is one).
    */
   public void throwException() throws Throwable {
-    if (_ite != null) {
-      // Extract the wrappered exception as appropriate
-      if (_ite.getCause() != null) {
-        throw _ite.getCause();
+    if (ite != null) {
+      // Extract the wrapped exception as appropriate
+      if (ite.getCause() != null) {
+        throw ite.getCause();
       }
-      throw _ite;
+      throw ite;
     }
-    if (_iae != null) {
-      throw _iae;
+    if (iae != null) {
+      throw iae;
     }
   }
 
@@ -69,7 +65,7 @@ public class TestExceptionCache {
    * Clear the exception cache.
    */
   public void clear() {
-    _iae = null;
-    _ite = null;
+    iae = null;
+    ite = null;
   }
 }

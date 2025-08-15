@@ -14,5 +14,6 @@ package com.windowtester.runtime.locator;
  * Marks locators that have a Path.
  */
 public interface IPathLocator {
+
   String getPath();
 }

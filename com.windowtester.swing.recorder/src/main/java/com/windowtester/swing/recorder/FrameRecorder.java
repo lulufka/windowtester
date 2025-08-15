@@ -15,7 +15,10 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.WindowEvent;
 
 /**
@@ -34,21 +37,20 @@ public class FrameRecorder extends WindowRecorder {
 
   private final int WINDOW_STATE_CHANGED = 9 + WindowEvent.WINDOW_FIRST;
 
+  @Override
   protected synchronized void init(int recordingType) {
     super.init(recordingType);
     frame = null;
   }
 
-  /**
-   * Additionally handle state change events (1.4 and later).
-   */
+  @Override
   protected boolean isWindowEvent(AWTEvent event) {
     return ((event.getSource() instanceof Frame) && event.getID() == WINDOW_STATE_CHANGED)
         || super.isWindowEvent(event);
   }
 
+  @Override
   protected boolean parseWindowEvent(AWTEvent event) {
-
     int id = event.getID();
     boolean consumed = true;
     if (id == WINDOW_STATE_CHANGED) {
@@ -61,6 +63,7 @@ public class FrameRecorder extends WindowRecorder {
     return consumed;
   }
 
+  @Override
   protected Step createStep() {
     if (getRecordingType() == SE_WINDOW && frame != null) {
       return createFrameStateChange(frame, newState);
@@ -75,10 +78,11 @@ public class FrameRecorder extends WindowRecorder {
         getResolver(),
         null,
         newState == Frame.NORMAL ? "actionNormalize" : "actionMaximize",
-        new String[] {ref.getID()},
+        new String[]{ref.getID()},
         Frame.class);
   }
 
+  @Override
   protected Step createResize(Window window, Dimension size) {
     Step step = null;
     if (((Frame) window).isResizable()) {
@@ -88,8 +92,8 @@ public class FrameRecorder extends WindowRecorder {
               getResolver(),
               null,
               "actionResize",
-              new String[] {
-                ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
+              new String[]{
+                  ref.getID(), String.valueOf(size.width), String.valueOf(size.height),
               },
               Frame.class);
     }
@@ -99,9 +103,9 @@ public class FrameRecorder extends WindowRecorder {
   protected int getExtendedState(Frame frame) {
     try {
       Integer state =
-          (Integer) Frame.class.getMethod("getExtendedState").invoke(frame, new Object[] {});
+          (Integer) Frame.class.getMethod("getExtendedState").invoke(frame);
       Log.debug("State is " + state);
-      return state.intValue();
+      return state;
     } catch (Exception e) {
       return frame.getState();
     }

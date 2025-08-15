@@ -14,6 +14,7 @@ package com.windowtester.runtime.locator;
  * A locator specifying a x,y position.
  */
 public interface IXYLocator extends ILocator {
+
   int x();
 
   int y();

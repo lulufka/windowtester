@@ -1,7 +1,13 @@
 package example;
 
 import java.applet.Applet;
-import java.awt.*;
+import java.awt.Button;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Label;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -9,11 +15,9 @@ import java.awt.event.WindowEvent;
 
 /**
  * A very simple AWT-based applet.  See applet.xml and applet.hmlt.<p>
- * <blockquote><code><pre>
- * &lt;applet code="example.SimpleApplet" width=250 height&gt;
- * &lt;/applet&gt;
- * </pre></code></blockquote>
- * <p>
+ * <code>
+ * &lt;applet code="example.SimpleApplet" width=250 height&gt; &lt;/applet&gt;
+ * </code>
  *
  * @author kelvinr@users.sourceforge.net, twall@users.sourceforge.net
  */

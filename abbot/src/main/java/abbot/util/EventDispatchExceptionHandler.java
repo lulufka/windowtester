@@ -1,21 +1,22 @@
 package abbot.util;
 
 import abbot.Log;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.EventQueue;
+import javax.swing.SwingUtilities;
 
 /**
- * Handler for uncaught exceptions on any event dispatch thread. Once this has been installed, the class must be
- * accessible by any subsequently launched dispatch thread.<p>
- * <p>
- * This handler is installed by setting the System property sun.awt.exception.handler.  See javadoc for
- * java.awt.EventDispatchThread for details.  This is sort of a patch to Sun's implementation, which only checks the
- * property once and caches the result ever after.  This implementation will always chain to the handler indicated by
- * the current value of the property.<p>
- * <p>
+ * Handler for uncaught exceptions on any event dispatch thread. Once this has been installed, the
+ * class must be accessible by any subsequently launched dispatch thread.
+ *
+ * This handler is installed by setting the System property sun.awt.exception.handler.  See javadoc
+ * for java.awt.EventDispatchThread for details.  This is sort of a patch to Sun's implementation,
+ * which only checks the property once and caches the result ever after.  This implementation will
+ * always chain to the handler indicated by the current value of the property.
+ *
  * It is most definitely NOT safe to try to install several of these on different threads.
  */
 public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHandler {
+
   /**
    * See javadoc for java.awt.EventDispatchThread.
    */
@@ -25,18 +26,20 @@ public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHa
   private static boolean canInstall = true;
 
   /**
-   * Install a handler for event dispatch exceptions.  This is kind of a hack, but it's Sun's hack. See the javadoc
-   * for java.awt.EventDispatchThread for details. NOTE: we throw an exception immediately, which ensures that our
-   * handler is installed, since otherwise someone might set this property later. java.awt.EventDispatchThread doesn't
-   * actually load the handler specified by the property until an exception is caught by the event dispatch thread.
-   * SwingSet2 in 1.4.1 installs its own. Note that a new instance is created for each exception thrown.
+   * Install a handler for event dispatch exceptions.  This is kind of a hack, but it's Sun's hack.
+   * See the javadoc for java.awt.EventDispatchThread for details. NOTE: we throw an exception
+   * immediately, which ensures that our handler is installed, since otherwise someone might set
+   * this property later. java.awt.EventDispatchThread doesn't actually load the handler specified
+   * by the property until an exception is caught by the event dispatch thread. SwingSet2 in 1.4.1
+   * installs its own. Note that a new instance is created for each exception thrown.
    *
    * @throws RuntimeException         if the handler cannot be installed.
    * @throws IllegalStateException    if this method is invoked from an event dispatch thread.
    * @throws IllegalArgumentException if the given class is not derived from this one.
    *                                  <p>
-   *                                  // TODO: read the private static field // String EventDispatchThread.handlerClassName
-   *                                  and override it if // necessary.
+   *                                  // TODO: read the private static field // String
+   *                                  EventDispatchThread.handlerClassName and override it if //
+   *                                  necessary.
    */
   public void install() {
     if (SwingUtilities.isEventDispatchThread()) {
@@ -65,6 +68,7 @@ public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHa
       Log.log("Attempting to install handler " + className);
       Thread.setDefaultUncaughtExceptionHandler(new EventDispatchExceptionHandler());
       class PropertiesHolder {
+
         /** Preserve the system properties state. */
         public java.util.Properties properties = null;
       }
@@ -85,7 +89,8 @@ public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHa
       // Does nothing but wait for the previous invocation to finish
       AWT.invokeAndWait(
           new Runnable() {
-            public void run() {}
+            public void run() {
+            }
           });
       System.setProperties(holder.properties);
       String oldHandler = System.getProperty(PROP_NAME);
@@ -110,9 +115,6 @@ public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHa
     }
   }
 
-  /**
-   * Define this to handle the exception as needed. Default prints a warning to System.err.
-   */
   protected void exceptionCaught(Throwable thrown) {
     System.err.println("Exception caught on event dispatch thread: " + thrown);
   }
@@ -122,9 +124,6 @@ public class EventDispatchExceptionHandler implements Thread.UncaughtExceptionHa
     handleException(thread.getName(), thrown);
   }
 
-  /**
-   * Handle exceptions thrown on the event dispatch thread.
-   */
   public void handle(Throwable thrown) {
     handleException(Thread.currentThread().getName(), thrown);
   }

@@ -62,8 +62,9 @@ public class AppClassLoader extends NonDelegatingClassLoader {
 
   /**
    * Constructs a AppClassLoader with a custom classpath, indicating whether the class loader should delegate to its
-   * parent class loader prior to searching for a given resource.<p> The class path argument may use either a colon or
-   * semicolon to separate its elements.<p>
+   * parent class loader prior to searching for a given resource. The class path argument may use either a colon or
+   * semicolon to separate its elements.
+   * @param classPath class path
    */
   public AppClassLoader(String classPath) {
     super(classPath, AppClassLoader.class.getClassLoader());
@@ -94,9 +95,6 @@ public class AppClassLoader extends NonDelegatingClassLoader {
         || (eventQueue == null && SwingUtilities.isEventDispatchThread());
   }
 
-  /**
-   * Should the parent class loader try to load this class first?
-   */
   // FIXME we should only need the delegate flag if stuff in the classpath
   // is also found on the system classpath, e.g. the framework itself
   // Maybe just set it internally in case the classpaths overlap?

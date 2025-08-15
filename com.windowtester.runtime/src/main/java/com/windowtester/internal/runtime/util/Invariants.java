@@ -15,12 +15,16 @@ package com.windowtester.internal.runtime.util;
  */
 public class Invariants {
 
+  private Invariants() {
+    // hide public constructor
+  }
+
   public static <T> void notNull(T... o) {
     if (o == null) {
       throw new IllegalArgumentException("array argument must not be null");
     }
-    for (int i = 0; i < o.length; i++) {
-      if (o[i] == null) {
+    for (T t : o) {
+      if (t == null) {
         throw new IllegalArgumentException("array argument cannot contain nulls");
       }
     }

@@ -27,18 +27,12 @@ public class Sample extends PropertyCall {
     propertyName = (String) attributes.get(TAG_PROPERTY);
   }
 
-  /**
-   * Component property sample.
-   */
   public Sample(
       Resolver resolver, String description, String methodName, String id, String propName) {
     super(resolver, description, methodName, id);
     propertyName = propName;
   }
 
-  /**
-   * Static method property sample.
-   */
   public Sample(
       Resolver resolver,
       String description,
@@ -50,6 +44,7 @@ public class Sample extends PropertyCall {
     propertyName = propName;
   }
 
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     if (propertyName != null) {
@@ -58,14 +53,17 @@ public class Sample extends PropertyCall {
     return map;
   }
 
+  @Override
   public String getDefaultDescription() {
     return getPropertyName() + "=" + super.getDefaultDescription();
   }
 
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
+  @Override
   public String getXMLTag() {
     return TAG_SAMPLE;
   }
@@ -78,9 +76,7 @@ public class Sample extends PropertyCall {
     return propertyName;
   }
 
-  /**
-   * Store the results of the invocation in the designated property as a String-encoded value.
-   */
+  @Override
   protected Object invoke() throws Throwable {
     Object obj = super.invoke();
     if (propertyName != null) {

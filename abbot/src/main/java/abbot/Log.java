@@ -10,57 +10,57 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * Various logging, assertion, and debug routines.  Typical usage is to include the following code
- * <blockquote><code><pre>
+ * <pre>
  * public static void main(String[] args) {
  * &nbsp; args = Log.init(args)
  * &nbsp; ...
  * }
- * </pre></code></blockquote>
- * at an application's main entry point.  This way the Log class can remove its options from the full set passed into
- * the application.  See the {@link #init(String[]) Log.init} method for initialization options. <p>
- * <p>
- * General usage notes on public functions:<p>
+ * </pre>
+ * at an application's main entry point.  This way the Log class can remove its options from the
+ * full set passed into the application.  See the {@link #init(String[]) Log.init} method for
+ * initialization options.
+ * General usage notes on public functions:
  *
  * <ul>
  * <li><b>warn</b><br>
  * Programmer warnings; things that you think shouldn't be happening or
  * indicate something might be wrong.  Warnings typically mean "Something
- * happened that I didn't expect would happen".<p>
+ * happened that I didn't expect would happen".
  * <li><b>log</b><br>
  * Important information that might be needed for later reference; things the
  * user or debugger might be interested in.  By default, all messages go
  * here.  Logs are made available so that the customer may provide us with an
  * accurate record of software activity.<br>
  * All warnings and failed assertions are written to the log.  Debug
- * statements are also written to log in non-release code.<p>
+ * statements are also written to log in non-release code.
  * <li><b>debug</b><br>
  * Any messages which might be useful for debugging (non-release code
- * only).<p>
+ * only).
  * <li><b>assertTrue</b><br>
  * Assumed preconditions for proper execution, also referred to as
- * invariants.<p>
+ * invariants.
  * </ul>
- * <p>
- * <p>
  * Per-class stack trace depth can be specified when adding a class, e.g.
- * classname[:stack-depth].<p>
+ * classname[:stack-depth].
  *
  * @author twall
  * @version $Revision: 1.1 $
  */
 public final class Log {
+
   /**
    * No instantiations.
    */
-  private Log() {}
+  private Log() {
+  }
 
   /**
-   * Global final to determine whether debugging code is generated.  This should be changed to false to build
-   * production code.
+   * Global final to determine whether debugging code is generated.  This should be changed to false
+   * to build production code.
    */
   public static final boolean DEBUG_BUILD = true;
 
@@ -75,10 +75,13 @@ public final class Log {
   private static final int CLASS_STACK_DEPTH = -1;
 
   /**
-   * Basic warning categories.  FIXME use these. public static final int ERROR   = 0x0001; public static final int
-   * WARNING = 0x0002; public static final int DEBUG   = 0x0004; public static final int INFO    = 0x0008;
+   * Basic warning categories.  FIXME use these. public static final int ERROR   = 0x0001; public
+   * static final int WARNING = 0x0002; public static final int DEBUG   = 0x0004; public static
+   * final int INFO    = 0x0008;
    */
-  private static class LogSynchronizer extends Object {}
+  private static class LogSynchronizer extends Object {
+
+  }
 
   /**
    * Synchronize message output.
@@ -101,8 +104,8 @@ public final class Log {
   private static final boolean exitOnAssertionFailure = false;
 
   /**
-   * Whether to log messages. Default on so that we capture output until the log file has been set or not set in
-   * {@link #init(String[])}.
+   * Whether to log messages. Default on so that we capture output until the log file has been set
+   * or not set in {@link #init(String[])}.
    */
   private static boolean logMessages = true;
 
@@ -135,13 +138,15 @@ public final class Log {
       new java.text.SimpleDateFormat("yyMMdd HH:mm:ss:SSS ");
 
   /**
-   * Strip this out of output, since it doesn't add information to see it repeatedly.  Some projects have
+   * Strip this out of output, since it doesn't add information to see it repeatedly.  Some projects
+   * have
    * <i>really</i> long prefixes.
    */
   private static final String COMMON_PREFIX = null;
 
   /**
-   * Store which classes we want to see debug info for.  FIXME make it a map and make the value the debug level.
+   * Store which classes we want to see debug info for.  FIXME make it a map and make the value the
+   * debug level.
    */
   private static final HashMap<Class<?>, Integer> debugged = new HashMap<>();
 
@@ -174,13 +179,15 @@ public final class Log {
    * <pre>
    * --debug all | className[:depth] | *.partialClassName[:depth]
    * --no-debug className | *.partialClassName
-   * --log <log file name>
+   * --log log file name
    * --no-timestamp
    * --enable-warnings
    * --show-threads
-   * --stack-depth <depth>
-   * --exception-depth <depth>
+   * --stack-depth depth
+   * --exception-depth depth
    * </pre>
+   * @param args command line arguments
+   * @return result
    */
   public static String[] init(String[] args) {
 
@@ -190,7 +197,8 @@ public final class Log {
           new PrintStream(
               new OutputStream() {
                 @Override
-                public void write(int b) {}
+                public void write(int b) {
+                }
               });
       System.setErr(nullStream);
       System.setOut(nullStream);
@@ -257,15 +265,14 @@ public final class Log {
     return result;
   }
 
-  /**
-   * Is log output enabled?
-   */
   public static boolean loggingEnabled() {
     return logMessages && log != null;
   }
 
   /**
-   * Enable log output to the given file.  If the filename given is "-", stdout is used instead of a file.
+   * Enable log output to the given file.  If the filename given is "-", stdout is used instead of a
+   * file.
+   * @param filename file name
    */
   public static void enableLogging(String filename) {
     logMessages = true;
@@ -304,23 +311,14 @@ public final class Log {
     }
   }
 
-  /**
-   * Sets the debug stack depth to the given amount
-   */
   public static void setDebugStackDepth(int depth) {
     debugStackDepth = depth;
   }
 
-  /**
-   * Indicate the class name to exclude from debug output.
-   */
   public static void removeDebugClass(String id) {
     setDebugClass(id, false);
   }
 
-  /**
-   * Indicate that the given class should NOT be debugged (assuming --debug all)
-   */
   public static void removeDebugClass(Class<?> c) {
     notdebugged.add(c);
     debugged.remove(c);
@@ -328,23 +326,14 @@ public final class Log {
     expectDebugOutput = !debugged.isEmpty() || debugAll;
   }
 
-  /**
-   * Indicate the class name[:depth] to add to debug output.
-   */
   public static void addDebugClass(String id) {
     setDebugClass(id, true);
   }
 
-  /**
-   * Indicate the class to add to debug output.
-   */
   public static void addDebugClass(Class<?> c) {
     addDebugClass(c, CLASS_STACK_DEPTH);
   }
 
-  /**
-   * Indicate that debug messages should be output for the given class.
-   */
   public static void addDebugClass(Class<?> c, int depth) {
     expectDebugOutput = true;
     debugged.put(c, new Integer(depth));
@@ -352,9 +341,6 @@ public final class Log {
     Log.debug("Debugging enabled for " + c);
   }
 
-  /**
-   * Parse the given string, which may should be of the format "class[:depth]"
-   */
   private static void setDebugClass(String id, boolean enable) {
     if (id.equals("all")) {
       debugAll = enable;
@@ -391,29 +377,21 @@ public final class Log {
   }
 
   /**
-   * Returns class from given name/descriptor.  Descriptor can be either a fully qualified classname, or a classname
-   * beginning with *. with client-specific package and classname following.
+   * Returns class from given name/descriptor.  Descriptor can be either a fully qualified
+   * classname, or a classname beginning with *. with client-specific package and classname
+   * following.
+   * @param className class name
+   * @return class
+   * @throws ClassNotFoundException if class was not found
    */
   private static Class<?> getClassFromDescriptor(String className) throws ClassNotFoundException {
     return Class.forName(className);
   }
 
-  /**
-   * Return the requested number of levels of stack trace, not including this call.   Returns the full stack trace if
-   * LINES is FULL_STACK. Skip the first POP frames of the trace, which is for excluding the innermost stack frames
-   * when debug functions make nested calls. The outermost call of getStackTrace itself is always removed from the
-   * trace.
-   */
   private static String getStackTrace(int pop, int lines) {
     return getStackTrace(pop, lines, new Throwable("--debug--"));
   }
 
-  /**
-   * Return the requested number of levels of stack trace, not including this call.   Returns the full stack trace if
-   * LINES is FULL_STACK. Skip the first POP frames of the trace, which is for excluding the innermost stack frames
-   * when debug functions make nested calls. The outermost call of getStackTrace itself is always removed from the
-   * trace.   Provide an exception to use for the stack trace, rather than using the current program location.
-   */
   private static String getStackTrace(int pop, int lines, Throwable thr) {
     String stack = getStackTrace(pop, thr);
     if (lines == FULL_STACK) {
@@ -422,11 +400,6 @@ public final class Log {
     return trimStackTrace(stack, lines);
   }
 
-  /**
-   * Return the stack trace contained in the given Throwable. Skip the first POP frames of the trace, which is for
-   * excluding the innermost stack frames when debug functions make nested calls. The outermost call of getStackTrace
-   * itself is always removed from the trace.
-   */
   private static String getStackTrace(int pop, Throwable thr) {
     OutputStream os = new ByteArrayOutputStream();
     PrintStream newStream = new PrintStream(os, true);
@@ -450,9 +423,6 @@ public final class Log {
     return trace;
   }
 
-  /**
-   * Trim the given trace to LINES levels.
-   */
   private static String trimStackTrace(String trace, int lines) {
     // Keep just as many lines as were requested
     int end = trace.indexOf(")") + 1;
@@ -467,10 +437,6 @@ public final class Log {
     return trace.substring(0, end);
   }
 
-  /**
-   * Return the class corresponding to the first line in the give stack trace.  Treat inner/anonymous classes as the
-   * enclosing class.
-   */
   // FIXME with JIT enabled, stack trace sometimes has spurious junk on the
   // stack, which will indicate the wrong class...
   private static Class<?> extractClass(String trace) {
@@ -513,45 +479,30 @@ public final class Log {
     }
   }
 
-  /**
-   * Use this version for performance-critical/high traffic areas
-   */
   public static void debug(Class<?> c, String event) {
     if (expectDebugOutput) {
       internalDebug(c, event, CLASS_STACK_DEPTH);
     }
   }
 
-  /**
-   * Print a debug message.
-   */
   public static void debug(String event) {
     if (expectDebugOutput) {
       internalDebug(null, event, CLASS_STACK_DEPTH);
     }
   }
 
-  /**
-   * Print a debug message with the given number of stack lines.
-   */
   public static void debug(String event, int lines) {
     if (expectDebugOutput) {
       internalDebug(null, event, lines);
     }
   }
 
-  /**
-   * Print an empty debug message.
-   */
   public static void debug() {
     if (expectDebugOutput) {
       internalDebug(null, "", CLASS_STACK_DEPTH);
     }
   }
 
-  /**
-   * Similar to warn(Throwable).
-   */
   public static void debug(Throwable thr) {
     if (expectDebugOutput) {
       String where = getStackTrace(0, excStackDepth, thr);
@@ -566,18 +517,12 @@ public final class Log {
     }
   }
 
-  /**
-   * Print a debug message using the object given stringified as the message.
-   */
   public static void debug(Object obj) {
     if (expectDebugOutput) {
       internalDebug(null, obj == null ? "(null)" : obj.toString(), CLASS_STACK_DEPTH);
     }
   }
 
-  /**
-   * Replace all occurrences of a given expresion with a different string.
-   */
   private static String abbreviate(String msg, String expr, String sub) {
     StringBuilder sb = new StringBuilder(msg);
     int index = sb.toString().indexOf(expr);
@@ -589,16 +534,10 @@ public final class Log {
     return sb.toString();
   }
 
-  /**
-   * Strip out stuff we don't want showing in the message.
-   */
   private static String abbreviate(String msg) {
     return msg;
   }
 
-  /**
-   * Issue a warning.  All warnings go to the log file and the error stream.
-   */
   private static void internalWarn(String message) {
     synchronized (synchronizer) {
       internalLog(message);
@@ -608,16 +547,10 @@ public final class Log {
     }
   }
 
-  /**
-   * Retrieve the given number of lines of the current stack, as a string.
-   */
   public static String getStack(int lines) {
     return getStackTrace(1, lines);
   }
 
-  /**
-   * Retrieve the given number of lines of stack from the given Throwable, as a string.
-   */
   public static String getStack(int lines, Throwable thr) {
     return getStackTrace(1, lines, thr);
   }
@@ -626,26 +559,16 @@ public final class Log {
     return getStack(FULL_STACK, thrown);
   }
 
-  /**
-   * Issue a programmer warning, which will include the source line of the warning.
-   */
   public static void warn(String message) {
     String stack = getStackTrace(1, debugStackDepth);
     internalWarn(stack + ": " + message);
   }
 
-  /**
-   * Issue a programmer warning, which will include the source line of the warning, and a stack trace with up to the
-   * given number of lines.
-   */
   public static void warn(String message, int lines) {
     String stack = getStackTrace(1, lines);
     internalWarn(stack + ": " + message);
   }
 
-  /**
-   * Issue a programmer warning, which will include the source line of the original thrown object.
-   */
   public static void warn(Throwable thr) {
     String where = getStackTrace(0, excStackDepth, thr);
     String here = getStackTrace(1, debugStackDepth);
@@ -658,10 +581,6 @@ public final class Log {
     }
   }
 
-  /**
-   * Base assert method, for use by all others.  The description should be a description of the condiction if the test
-   * is false.
-   */
   private static void assertTrue(String desc, boolean test, int pop) {
     if (assertChecks && !test) {
       String stack = getStackTrace(pop + 1, excStackDepth);
@@ -674,55 +593,34 @@ public final class Log {
     }
   }
 
-  /**
-   * Standard assert, with a message provided since java can't easily stringify a boolean expression.
-   */
   public static void assertTrue(String desc, boolean test) {
     assertTrue(desc, test, 1);
   }
 
-  /**
-   * Basic assertion.  Not very useful without a description, though.
-   */
   public static void assertTrue(boolean test) {
     assertTrue(null, test, 1);
   }
 
-  /**
-   * Assert that the current thread is the swing thread.
-   */
   public static void assertSwing() {
     assertTrue("Must be invoked in Swing Thread", SwingUtilities.isEventDispatchThread(), 1);
   }
 
-  /**
-   * print warning if not invoked on Swing thread, with given number of lines of stack trace.
-   */
   public static void warnIfNotSwing(int lines) {
     if (!SwingUtilities.isEventDispatchThread()) {
       warn("Warning:  Not running on Swing Thread.  Thread=" + Thread.currentThread(), lines);
     }
   }
 
-  /**
-   * print warning if not invoked on Swing thread
-   */
   public static void warnIfNotSwing() {
     if (!SwingUtilities.isEventDispatchThread()) {
       warn("Warning:  Not running on Swing Thread.  Thread=" + Thread.currentThread());
     }
   }
 
-  /**
-   * Assert that the current thread is NOT the swing thread.
-   */
   public static void assertNotSwing() {
     assertTrue("Must not be invoked in Swing Thread", !SwingUtilities.isEventDispatchThread(), 1);
   }
 
-  /**
-   * Log an exception.
-   */
   public static void log(Throwable thr) {
     if (loggingEnabled()) {
       String stack = getStackTrace(0, excStackDepth, thr);
@@ -737,9 +635,6 @@ public final class Log {
     }
   }
 
-  /**
-   * Log a message.
-   */
   public static void log(String message) {
     if (loggingEnabled()) {
       if (debugStackDepth != 1) {

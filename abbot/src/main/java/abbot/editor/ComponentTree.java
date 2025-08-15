@@ -27,14 +27,8 @@ public class ComponentTree extends JTree {
   private final DefaultTreeModel model;
   private transient boolean ignoreSelectionChanges;
 
-  /**
-   * Hash of class name to icon.
-   */
   private final ComponentTreeIcons icons = new ComponentTreeIcons();
 
-  /**
-   * Supports optionally suppressing selection notifications while the hierarchy is reloading.
-   */
   private class SelectionModel extends DefaultTreeSelectionModel {
     private transient boolean settingSelection;
 
@@ -148,9 +142,6 @@ public class ComponentTree extends JTree {
     reload();
   }
 
-  /**
-   * Set the current selection path, ensuring that it is visible.
-   */
   public void setSelectionPath(TreePath path) {
     super.setSelectionPath(path);
     makeVisible(path);
@@ -160,24 +151,14 @@ public class ComponentTree extends JTree {
     }
   }
 
-  /**
-   * Returns the path to the given component.  If the component does not exist in the current hierarchy, returns as
-   * much of its parent path as does exist.
-   */
   public TreePath getPath(Component comp) {
     return root.getPath(comp);
   }
 
-  /**
-   * Reloads the entire hierarchy.
-   */
   public void reload() {
     reload(null);
   }
 
-  /**
-   * Reloads the hierarchy starting at the given component.
-   */
   public void reload(Component comp) {
     ComponentNode node = comp != null ? root.getNode(comp) : root;
     TreePath path = getSelectionPath();

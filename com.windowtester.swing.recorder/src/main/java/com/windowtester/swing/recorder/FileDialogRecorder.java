@@ -15,12 +15,14 @@ import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Sequence;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.FileDialog;
 import java.awt.event.WindowEvent;
+import java.util.Objects;
 
 /**
- * Recorder for the java.awt.FileDialog.  Since this is a native component and no java events are generated other than
- * window open/close, the only things to take note of are the following:<br>
+ * Recorder for the java.awt.FileDialog.  Since this is a native component and no java events are
+ * generated other than window open/close, the only things to take note of are the following:<br>
  * <ul>
  * <li>Changes to the directory
  * <li>Changes to the file
@@ -42,6 +44,7 @@ public class FileDialogRecorder extends DialogRecorder {
     super(resolver);
   }
 
+  @Override
   protected void init(int type) {
     super.init(type);
     dialog = null;
@@ -49,9 +52,7 @@ public class FileDialogRecorder extends DialogRecorder {
     originalDir = null;
   }
 
-  /**
-   * Override the default window parsing to consume everything between dialog open and close.
-   */
+  @Override
   protected boolean parseWindowEvent(AWTEvent event) {
     boolean consumed = true;
     if (event.getSource() instanceof FileDialog) {
@@ -74,8 +75,8 @@ public class FileDialogRecorder extends DialogRecorder {
   }
 
   /**
-   * Create one or more steps corresponding to what was done to the file dialog.  If the directory is non-null, the
-   * directory was changed.  If the file is non-null, the file was accepted.
+   * Create one or more steps corresponding to what was done to the file dialog.  If the directory
+   * is non-null, the directory was changed.  If the file is non-null, the file was accepted.
    */
   protected Step createFileDialogEvents(FileDialog d, String oldDir, String oldFile) {
     ComponentReference ref = getResolver().addComponent(d);
@@ -83,7 +84,7 @@ public class FileDialogRecorder extends DialogRecorder {
     boolean accepted = file != null;
     boolean fileChanged = accepted && !file.equals(oldFile);
     String dir = d.getDirectory();
-    boolean dirChanged = dir != oldDir && (dir == null || !dir.equals(oldDir));
+    boolean dirChanged = !Objects.equals(dir, oldDir);
 
     String desc = d.getMode() == FileDialog.SAVE ? "Save File" : "Load File";
     if (accepted) {
@@ -98,20 +99,20 @@ public class FileDialogRecorder extends DialogRecorder {
               getResolver(),
               null,
               "actionSetDirectory",
-              new String[] {ref.getID(), dir},
+              new String[]{ref.getID(), dir},
               FileDialog.class));
     }
     if (accepted) {
       Step accept =
           new Action(
-              getResolver(), null, "actionAccept", new String[] {ref.getID()}, FileDialog.class);
+              getResolver(), null, "actionAccept", new String[]{ref.getID()}, FileDialog.class);
       if (fileChanged) {
         seq.addStep(
             new Action(
                 getResolver(),
                 null,
                 "actionSetFile",
-                new String[] {ref.getID(), file},
+                new String[]{ref.getID(), file},
                 FileDialog.class));
         seq.addStep(accept);
       } else {
@@ -120,7 +121,7 @@ public class FileDialogRecorder extends DialogRecorder {
     } else {
       Step cancel =
           new Action(
-              getResolver(), null, "actionCancel", new String[] {ref.getID()}, FileDialog.class);
+              getResolver(), null, "actionCancel", new String[]{ref.getID()}, FileDialog.class);
       if (dirChanged) {
         seq.addStep(cancel);
       } else {
@@ -130,6 +131,7 @@ public class FileDialogRecorder extends DialogRecorder {
     return seq;
   }
 
+  @Override
   protected Step createStep() {
     if (getRecordingType() == SE_WINDOW) {
       return createFileDialogEvents(dialog, originalDir, originalFile);
@@ -139,6 +141,7 @@ public class FileDialogRecorder extends DialogRecorder {
   }
 
   private class FileDialogTerminator extends WindowEvent {
+
     public FileDialogTerminator(FileDialog fd, int id) {
       super(fd, id);
     }

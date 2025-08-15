@@ -23,13 +23,12 @@ public class NotCondition implements ICondition {
     this.toNegate = toNegate;
   }
 
+  @Override
   public boolean test() {
     return !toNegate.test();
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+  @Override
   public String toString() {
     return toNegate.toString() + " to be FALSE";
   }

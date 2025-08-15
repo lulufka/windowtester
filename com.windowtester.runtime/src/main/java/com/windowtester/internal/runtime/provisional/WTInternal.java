@@ -13,7 +13,8 @@ package com.windowtester.internal.runtime.provisional;
 import com.windowtester.runtime.WT;
 
 /**
- * A place-holder for constants that are not API.  If they become API, they should be moved to {@link WT}.
+ * A place-holder for constants that are not API.  If they become API, they should be moved to
+ * {@link WT}.
  */
 public interface WTInternal {
 

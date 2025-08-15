@@ -205,9 +205,9 @@ public class UISemanticEventFactory {
       parent = new NamedWidgetLocator(name);
       index = WidgetLocator.UNASSIGNED;
     }
-    JTreeItemLocator itemLocator = new JTreeItemLocator(nodePath, index, parent);
+
     // swap in our item locator
-    info.hierarchyInfo = itemLocator;
+    info.hierarchyInfo = new JTreeItemLocator(nodePath, index, parent);
 
     SemanticTreeItemSelectionEvent treeItemSelect;
     if (clkCount == 1) {
@@ -328,7 +328,6 @@ public class UISemanticEventFactory {
    * @param invoker
    * @param x
    * @param y
-   * @param mods
    * @param clkCount
    * @param button
    * @return
@@ -353,7 +352,7 @@ public class UISemanticEventFactory {
       parentInfo = new NamedWidgetLocator(name);
       index = WidgetLocator.UNASSIGNED;
     }
-    info.hierarchyInfo = new JTableItemLocator(new Point(row, col), index, parentInfo);
+    info.hierarchyInfo = new JTableItemLocator(new Point(row, col), null, index, parentInfo);
 
     SemanticTableSelectionEvent tableSelect = new SemanticTableSelectionEvent(info);
 

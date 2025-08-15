@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A (somewhat) smart key generator that generates keys based on widget type and label. These generated keys are
- * intended to simulate the kinds of keys users might themselves choose to identify widgets. For example, suppose we
- * have a Button labeled "on".  The first generated key for such a button would be "on.button".  The second generated
- * key for such a button would be "on.button1" and so on.
+ * A (somewhat) smart key generator that generates keys based on widget type and label. These
+ * generated keys are intended to simulate the kinds of keys users might themselves choose to
+ * identify widgets. For example, suppose we have a Button labeled "on".  The first generated key
+ * for such a button would be "on.button".  The second generated key for such a button would be
+ * "on.button1" and so on.
  * <br><br>
  * Each instance of this generator will create unique keys for each call to generate.
  */
@@ -27,14 +28,12 @@ public class SmartKeyGenerator implements IKeyGenerator {
   /**
    * A map of witnessed keys to their counts
    */
-  private final Map /*<StringBuffer,Integer>*/ _seen = new HashMap();
+  private final Map<String, Integer> seen = new HashMap<>();
 
-  /**
-   * @see com.windowtester.swt.mapper.IKeyGenerator#generate(com.windowtester.swt.WidgetLocator)
-   */
+  @Override
   public String generate(WidgetLocator info) {
-    StringBuffer base = getBase(info);
-    int index = getIndex(base.toString());
+    var base = getBase(info);
+    var index = getIndex(base.toString());
     if (index != 0) {
       base.append(index);
     }
@@ -48,14 +47,14 @@ public class SmartKeyGenerator implements IKeyGenerator {
    * @return an index that describes how many such keys have been encountered
    */
   private int getIndex(String base) {
-    Integer index = (Integer) _seen.get(base);
+    var index = seen.get(base);
     if (index == null) {
-      index = new Integer(0);
+      index = 0;
     } else {
-      index = new Integer(index.intValue() + 1);
+      index = index + 1;
     }
-    _seen.put(base, index);
-    return index.intValue();
+    seen.put(base, index);
+    return index;
   }
 
   /**
@@ -64,19 +63,20 @@ public class SmartKeyGenerator implements IKeyGenerator {
    * @param info - the info to describe
    * @return a base StringBuffer for use in key generation
    */
-  private StringBuffer getBase(WidgetLocator info) {
-    StringBuffer sb = new StringBuffer();
-    String label = info.getNameOrLabel();
-    if (label != null && !label.equals("")) {
-      sb.append(label).append('.');
+  private StringBuilder getBase(WidgetLocator info) {
+    var builder = new StringBuilder();
+
+    var label = info.getNameOrLabel();
+    if (label != null && !label.isEmpty()) {
+      builder.append(label).append('.');
     }
 
     // get the simple name of the class
-    String className = info.getTargetClass().getName();
-    int lastPeriod = className.lastIndexOf('.');
-    String simpleName = (lastPeriod >= 0) ? className.substring(lastPeriod + 1) : className;
+    var className = info.getTargetClass().getName();
+    var lastPeriod = className.lastIndexOf('.');
+    var simpleName = (lastPeriod >= 0) ? className.substring(lastPeriod + 1) : className;
+    builder.append(simpleName.toLowerCase());
 
-    sb.append(simpleName.toLowerCase());
-    return sb;
+    return builder;
   }
 }

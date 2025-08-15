@@ -12,13 +12,15 @@ package util;
 
 import abbot.finder.AWTHierarchy;
 import abbot.finder.Hierarchy;
+import com.windowtester.junit5.WindowtesterExtension;
 import com.windowtester.runtime.WidgetSearchException;
-import com.windowtester.runtime.swing.UITestCaseSwing;
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Iterator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 // import contactmanager.ContactManagerSwing;
 
@@ -34,13 +36,14 @@ import java.util.Iterator;
  * @author Phil Quitslund
  * @author keertip
  */
-public class SwingEventRecordingJig extends UITestCaseSwing {
+@ExtendWith(WindowtesterExtension.class)
+class SwingEventRecordingJig {
 
   // private static final boolean DISPLAY_EVENTS = true;
   private static final Object lock = new Object();
   private SwingEventRecordingWatcher watcher;
 
-  WindowListener listener =
+  private WindowListener listener =
       new WindowAdapter() {
         public void windowClosing(WindowEvent w) {
           // remove lock
@@ -51,7 +54,7 @@ public class SwingEventRecordingJig extends UITestCaseSwing {
         }
       };
 
-  public SwingEventRecordingJig() {
+//  public SwingEventRecordingJig() {
 
     // super(DialogDemo.class);
     //	super(ContactManagerSwing.class);
@@ -75,9 +78,10 @@ public class SwingEventRecordingJig extends UITestCaseSwing {
     //	super(TextComponentDemo.class);
     //	super(swing.samples.UseTheSampleDialog.class);
     //	super(swing.samples.JListRendererDemo.class);
-    System.out.println("Application opened");
-  }
+//    System.out.println("Application opened");
+//  }
 
+  @Test
   public void testDrive() throws WidgetSearchException {
     // get the application frame and attach listener
     System.out.println("Checking for app");

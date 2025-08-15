@@ -35,8 +35,9 @@ public class JFileChooserTester extends JComponentTester {
             find(
                 chooser,
                 new ClassMatcher(JButton.class) {
-                  public boolean matches(Component c) {
-                    return super.matches(c) && text.equals(((JButton) c).getText());
+                  @Override
+                  public boolean matches(Component component) {
+                    return super.matches(component) && text.equals(((JButton) component).getText());
                   }
                 });
     return button;

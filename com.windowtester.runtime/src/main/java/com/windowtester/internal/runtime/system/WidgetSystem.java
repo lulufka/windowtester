@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class WidgetSystem {
 
-  static transient List _factories = new ArrayList();
+  private static final List<IDefaultUISelectorFactory> factories = new ArrayList<>();
 
   /**
    * Add a widget reference factory that generates widget references for appropriate widgets.
@@ -30,14 +30,12 @@ public class WidgetSystem {
     if (factory == null) {
       throw new IllegalArgumentException("factory must not be null");
     }
-    _factories.add(factory);
+    factories.add(factory);
   }
 
   public static IUISelector getDefaultSelector(Object widget) {
-    IUISelector selector;
-    for (Iterator iter = _factories.iterator(); iter.hasNext(); ) {
-      IDefaultUISelectorFactory factory = (IDefaultUISelectorFactory) iter.next();
-      selector = factory.create(widget);
+    for (IDefaultUISelectorFactory factory : factories) {
+      var selector = factory.create(widget);
       if (selector != null) {
         return selector;
       }

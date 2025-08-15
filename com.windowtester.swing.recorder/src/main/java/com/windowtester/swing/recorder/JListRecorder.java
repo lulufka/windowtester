@@ -16,10 +16,12 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import java.util.List;
+import javax.swing.JList;
 
 /**
  * Record basic semantic events you might find on an JList. <p>
@@ -34,11 +36,8 @@ public class JListRecorder extends JComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * Create a click referencing the String value that was clicked.
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
-
     // create windowtester semantic event
     IUISemanticEvent semanticEvent =
         UISemanticEventFactory.createListSelectionEvent(
@@ -46,10 +45,11 @@ public class JListRecorder extends JComponentRecorder {
     notify(semanticEvent);
 
     // abbot code
-    JList list = (JList) target;
+    JList<?> list = (JList<?>) target;
     ComponentReference cr = getResolver().addComponent(target);
     String methodName = "actionSelectRow";
-    ArrayList args = new ArrayList();
+
+    List<String> args = new ArrayList<>();
     args.add(cr.getID());
     args.add(getLocationArgument(list, x, y));
     if (list.locationToIndex(new Point(x, y)) == -1) {
@@ -66,7 +66,7 @@ public class JListRecorder extends JComponentRecorder {
         getResolver(),
         null,
         methodName,
-        (String[]) args.toArray(new String[args.size()]),
+        args.toArray(new String[0]),
         javax.swing.JList.class);
   }
 }

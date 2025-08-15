@@ -9,9 +9,6 @@ public class TextFormat {
   public static final int TOOLTIP_WRAP = 50;
   public static final int DIALOG_WRAP = 60;
 
-  /**
-   * Turns "SomeRunTogetherWords" into "Some Run Together Words".
-   */
   public static String wordBreak(String phrase) {
     StringBuffer words = new StringBuffer(phrase);
     for (int i = 0; i < words.length() - 1; i++) {
@@ -24,9 +21,6 @@ public class TextFormat {
     return words.toString();
   }
 
-  /**
-   * Wrap the given text at the given number of characters per line. Whitespace may be compressed.
-   */
   public static String wordWrap(String msg, int wrapAt, String lineSep) {
     if (msg == null) {
       return null;
@@ -97,9 +91,6 @@ public class TextFormat {
     return sb.toString();
   }
 
-  /**
-   * Emit html, suitably line-wrapped and formatted for a tool tip.
-   */
   public static String tooltip(String tip) {
     if (tip.startsWith("<html>")) {
       tip = tip.substring(6, tip.length() - 7);
@@ -109,9 +100,6 @@ public class TextFormat {
     return Strings.get("TooltipFormat", new Object[] {tip});
   }
 
-  /**
-   * Emit html, suitably line-wrapped and formatted for a dialog.
-   */
   public static String dialog(String msg) {
     if (msg.startsWith("<html>")) {
       msg = msg.substring(6, msg.length() - 7);

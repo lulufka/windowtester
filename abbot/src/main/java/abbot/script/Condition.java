@@ -6,6 +6,7 @@ package abbot.script;
 public interface Condition {
   /**
    * Return the condition state.
+   * @return true if successful
    */
   boolean test();
 

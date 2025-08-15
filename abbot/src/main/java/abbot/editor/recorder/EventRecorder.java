@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
@@ -73,10 +74,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     Window.class,
   };
 
-  /**
-   * Create a Recorder for use in capturing raw AWTEvents.  Indicate whether mouse motion should be captured, and what
-   * semantic event type to capture.
-   */
   public EventRecorder(Resolver resolver, boolean captureMotion) {
     super(resolver);
     this.captureMotion = captureMotion;
@@ -86,9 +83,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Return the name of the type of GUI action to be recorded.
-   */
   public String toString() {
     return captureMotion ? Strings.get("actions.capture-all") : Strings.get("actions.capture");
   }
@@ -366,9 +360,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Insert an arbitrary script step into the currently recorded stream.
-   */
   public void insertStep(Step step) {
     steps.add(step);
     if ((step instanceof Assert) && ((Assert) step).getMethodName().equals("assertFrameShowing")) {
@@ -384,6 +375,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
 
   /**
    * Return a sequence containing all the semantic and basic events captured thus far.
+   * @return step
    */
   protected Step createStep() {
     removeTerminalShift();
@@ -444,6 +436,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
    * semantic recorder is active, select one based on the event's component.  If the semantic recorder accepts the
    * event, then it is used to consume each subsequent event, until its recordEvent method returns true, indicating
    * that the semantic event has completed.
+   * @param event event
    */
   protected void recordEvent(java.awt.AWTEvent event) throws RecordingFailedException {
 
@@ -569,9 +562,6 @@ public class EventRecorder extends Recorder implements SemanticEvents {
           // required to capture MenuItem actions
           | AWTEvent.ACTION_EVENT_MASK;
 
-  /**
-   * Return the events of interest to this Recorder.
-   */
   public long getEventMask() {
     return RECORDING_EVENT_MASK;
   }
@@ -579,7 +569,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
   /**
    * Maps component classes to corresponding semantic recorders.
    */
-  private final HashMap semanticRecorders = new HashMap();
+  private final Map<Class<?>, SemanticRecorder> semanticRecorders = new HashMap<>();
 
   /**
    * Return the semantic recorder for the given component.
@@ -598,17 +588,14 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     return getSemanticRecorder(comp.getClass());
   }
 
-  /**
-   * Return the semantic recorder for the given component class.
-   */
-  protected SemanticRecorder getSemanticRecorder(Class cls) {
+  protected SemanticRecorder getSemanticRecorder(Class<?> cls) {
     // 	System.out.println("getting recorder for: " + cls);
     if (!(Component.class.isAssignableFrom(cls))) {
       throw new IllegalArgumentException("Class (" + cls + ") must derive from " + "Component");
     }
-    SemanticRecorder sr = (SemanticRecorder) semanticRecorders.get(cls);
+    SemanticRecorder sr = semanticRecorders.get(cls);
     if (sr == null) {
-      Class ccls = Robot.getCanonicalClass(cls);
+      Class<?> ccls = Robot.getCanonicalClass(cls);
       if (ccls != cls) {
         sr = getSemanticRecorder(ccls);
         // Additionally cache the mapping from the non-canonical class
@@ -618,20 +605,15 @@ public class EventRecorder extends Recorder implements SemanticEvents {
       String cname = Robot.simpleClassName(cls);
       try {
         // cname = "abbot.editor.recorder." + cname + "Recorder";
-        cname = getRecoderName(cname);
-        Class recorderClass = Class.forName(cname);
-        Constructor ctor = recorderClass.getConstructor(Resolver.class);
-        sr = (SemanticRecorder) ctor.newInstance(new Object[] {getResolver()});
+        cname = getRecorderName(cname);
+        Class<?> recorderClass = Class.forName(cname);
+        Constructor<?> ctor = recorderClass.getConstructor(Resolver.class);
+        sr = (SemanticRecorder) ctor.newInstance(getResolver());
         sr.addActionListener(getListener());
       } catch (InvocationTargetException e) {
         Log.warn(e);
-      } catch (NoSuchMethodException e) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (InstantiationException e) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (IllegalAccessException iae) {
-        sr = getSemanticRecorder(cls.getSuperclass());
-      } catch (ClassNotFoundException cnf) {
+      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+               ClassNotFoundException e) {
         sr = getSemanticRecorder(cls.getSuperclass());
       }
       // Cache the results for future reference
@@ -653,12 +635,7 @@ public class EventRecorder extends Recorder implements SemanticEvents {
     }
   }
 
-  /**
-   * Extracted the generation of recorder name, so as to override
-   *
-   * @author keertip 10/11/06
-   */
-  protected String getRecoderName(String cname) {
+  protected String getRecorderName(String cname) {
     return "abbot.editor.recorder." + cname + "Recorder";
   }
 }

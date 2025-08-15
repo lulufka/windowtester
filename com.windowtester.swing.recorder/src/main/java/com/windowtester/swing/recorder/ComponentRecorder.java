@@ -16,12 +16,16 @@ import abbot.util.AWT;
 import com.windowtester.recorder.event.ISemanticEventListener;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JTable;
+import javax.swing.JTree;
 
 /***
  * Override the createStep methods and call the WindowTester semantic
@@ -30,10 +34,8 @@ import javax.swing.*;
  */
 public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
 
-  /**
-   * A list of semantic event listeners
-   */
-  private List _listenerList;
+  // A list of semantic event listeners
+  private List<ISemanticEventListener> listenerList;
 
   protected boolean doneEventGeneration = false;
 
@@ -41,9 +43,7 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     super(resolver);
   }
 
-  /**
-   * override to capture window opening event
-   */
+  @Override
   protected boolean parseWindowEvent(AWTEvent event) {
     if (event.getID() == ComponentEvent.COMPONENT_SHOWN) {
       // create semantic event
@@ -54,24 +54,17 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     return super.parseWindowEvent(event);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createStep() {
     return super.createStep();
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createAWTMenuSelection(Component parent, MenuItem menuItem, boolean isPopup) {
-    // TODO Auto-generated method
     return super.createAWTMenuSelection(parent, menuItem, isPopup);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createClick(Component target, int x, int y, int mods, int count) {
     // windowtester semantic event generation
     IUISemanticEvent semanticEvent =
@@ -81,33 +74,22 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     return super.createClick(target, x, y, mods, count);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createDrag(Component comp, int x, int y) {
-    // TODO Auto-generated method stub
     return super.createDrag(comp, x, y);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createDrop(Component comp, int x, int y) {
-    // TODO Auto-generated method stub
     return super.createDrop(comp, x, y);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createInputMethod(ArrayList codes, String text) {
-    // TODO Auto-generated method stub
     return super.createInputMethod(codes, text);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createKey(Component comp, char keychar, int mods) {
     // Create semantic event and notify listener
     IUISemanticEvent semanticEvent = UISemanticEventFactory.createKeyDownEvent(comp, keychar, mods);
@@ -116,9 +98,7 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     return super.createKey(comp, keychar, mods);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createMenuSelection(Component menuItem) {
     // Create semantic event and notify listener
     IUISemanticEvent semanticEvent =
@@ -128,9 +108,7 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     return super.createMenuSelection(menuItem);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createPopupMenuSelection(Component invoker, int x, int y, Component menuItem) {
     // Create semantic event and notify listener
     if (!doneEventGeneration) {
@@ -144,7 +122,6 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
         Component popup = null;
         popup = menuItem.getParent();
         parent = AWT.getInvoker(popup);
-        //	System.out.println(parent);
 
         if (parent instanceof JTree) {
           int row = ((JTree) parent).getMinSelectionRow();
@@ -165,9 +142,7 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
     return super.createPopupMenuSelection(invoker, x, y, menuItem);
   }
 
-  /**
-   * Override
-   */
+  @Override
   protected Step createWindowEvent(Window window, boolean isClose) {
     // create semantic event and notify listener
     if (isClose) {
@@ -179,7 +154,7 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
   }
 
   public void addListener(ISemanticEventListener listener) {
-    List listeners = getListeners();
+    List<ISemanticEventListener> listeners = getListeners();
     if (listeners.contains(listener)) {
       System.out.println("multiple adds of listener: " + listener);
     } else {
@@ -190,17 +165,17 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
   /**
    * Get the registered event listeners.
    *
-   * @return a list of resgistered listeners
+   * @return a list of registered listeners
    */
-  public List getListeners() {
-    if (_listenerList == null) {
-      _listenerList = new ArrayList();
+  public List<ISemanticEventListener> getListeners() {
+    if (listenerList == null) {
+      listenerList = new ArrayList<>();
     }
-    return _listenerList;
+    return listenerList;
   }
 
   public void removeListener(ISemanticEventListener listener) {
-    List listeners = getListeners();
+    List<ISemanticEventListener> listeners = getListeners();
     if (listeners.contains(listener)) {
       System.out.println("listener removed that was not registered: " + listener);
     } else {
@@ -209,7 +184,8 @@ public class ComponentRecorder extends abbot.editor.recorder.ComponentRecorder {
   }
 
   public void notify(IUISemanticEvent semanticEvent) {
-    for (Iterator iter = getListeners().iterator(); iter.hasNext(); )
-      ((ISemanticEventListener) iter.next()).notify(semanticEvent);
+    for (ISemanticEventListener iSemanticEventListener : getListeners()) {
+      iSemanticEventListener.notify(semanticEvent);
+    }
   }
 }

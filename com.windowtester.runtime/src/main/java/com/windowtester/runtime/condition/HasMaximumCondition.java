@@ -17,8 +17,8 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 
 /**
- * Tests whether a locator identifies a widget that has the specified maximum value. For example, this can be used to
- * assert that a SWT slider widget has a particular maximum value.
+ * Tests whether a locator identifies a widget that has the specified maximum value. For example,
+ * this can be used to assert that a SWT slider widget has a particular maximum value.
  *
  * <pre>
  * 		IUIContext ui = [obtain IUIContext]
@@ -45,16 +45,12 @@ public class HasMaximumCondition implements IUICondition, IDiagnosticParticipant
     this.expected = expected;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.ICondition#test()
-   */
+  @Override
   public boolean test() {
     throw new RuntimeException("unsupported method - should call testUI(IUIContext) instead");
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.condition.IUICondition#testUI(com.windowtester.runtime.IUIContext)
-   */
+  @Override
   public boolean testUI(IUIContext ui) {
     actual = 0;
     exception = null;
@@ -72,12 +68,7 @@ public class HasMaximumCondition implements IUICondition, IDiagnosticParticipant
     return "expected: " + expected + " actual: " + actual;
   }
 
-  ////////////////////////////////////////////////////////////////////////////
-  //
-  // IDiagnosticParticipant
-  //
-  ////////////////////////////////////////////////////////////////////////////
-
+  @Override
   public void diagnose(IDiagnostic diagnostic) {
     diagnostic.attribute("class", getClass().getName());
     diagnostic.attribute("expected", expected);

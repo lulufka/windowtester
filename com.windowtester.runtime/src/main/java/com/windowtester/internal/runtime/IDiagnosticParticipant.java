@@ -11,10 +11,11 @@
 package com.windowtester.internal.runtime;
 
 /**
- * An experimental interface used by the UI context to request diagnostic information over and above the normal {@link
- * #toString()} method.
+ * An experimental interface used by the UI context to request diagnostic information over and above
+ * the normal {@link #toString()} method.
  */
 public interface IDiagnosticParticipant {
+
   /**
    * A request for more diagnostic information
    *

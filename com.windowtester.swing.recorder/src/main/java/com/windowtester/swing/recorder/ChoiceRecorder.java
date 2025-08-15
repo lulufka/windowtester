@@ -15,7 +15,8 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Choice;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -38,6 +39,7 @@ public class ChoiceRecorder extends ComponentRecorder {
     super(resolver);
   }
 
+  @Override
   protected void init(int recordingType) {
     super.init(recordingType);
     choice = null;
@@ -45,9 +47,7 @@ public class ChoiceRecorder extends ComponentRecorder {
     listener = null;
   }
 
-  /**
-   * Also accept ItemEvents, since the ChoiceTester will not generate any explicit clicks to control the component.
-   */
+  @Override
   protected boolean isClick(AWTEvent e) {
     if (e instanceof ItemEvent) {
       return true;
@@ -55,11 +55,7 @@ public class ChoiceRecorder extends ComponentRecorder {
     return super.isClick(e);
   }
 
-  /**
-   * Track click -> select ->click, cancelable by ESC or by clicking away from the component.<p> NOTE:
-   * press->drag->release produces an identical set of events<br> OSX 1.3.1:<br> MOUSE_PRESSED<br>
-   * (ITEM_STATE_CHANGED)|MOUSE_RELEASED|KEY_RELEASED<br> The ItemEvent never makes it to the AWT listener.
-   */
+  @Override
   protected boolean parseClick(AWTEvent event) {
     // Have to check here since we handle the ItemEvent artificially
     if (isFinished()) {
@@ -78,6 +74,7 @@ public class ChoiceRecorder extends ComponentRecorder {
         choice = (Choice) event.getSource();
         listener =
             new ItemListener() {
+              @Override
               public void itemStateChanged(ItemEvent ev) {
                 Log.debug("item event");
                 if (ev.getStateChange() == ItemEvent.SELECTED) {
@@ -93,7 +90,7 @@ public class ChoiceRecorder extends ComponentRecorder {
       }
     } else if (event.getID() == KeyEvent.KEY_RELEASED
         && (((KeyEvent) event).getKeyCode() == KeyEvent.VK_SPACE
-            || ((KeyEvent) event).getKeyCode() == KeyEvent.VK_ENTER)) {
+        || ((KeyEvent) event).getKeyCode() == KeyEvent.VK_ENTER)) {
       Log.debug("enter");
       setFinished(true);
     } else if (event.getID() == KeyEvent.KEY_RELEASED
@@ -114,6 +111,7 @@ public class ChoiceRecorder extends ComponentRecorder {
     return true;
   }
 
+  @Override
   protected Step createStep() {
     Step step = null;
     if (getRecordingType() == SE_CLICK) {
@@ -127,14 +125,13 @@ public class ChoiceRecorder extends ComponentRecorder {
   }
 
   protected Step createSelection(Choice target, String selection) {
-
     // TODO : add windowtester event generation
     ComponentReference cr = getResolver().addComponent(choice);
     return new Action(
         getResolver(),
         null,
         "actionSelectItem",
-        new String[] {cr.getID(), selection},
+        new String[]{cr.getID(), selection},
         java.awt.Choice.class);
   }
 }

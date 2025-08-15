@@ -11,8 +11,8 @@
 package com.windowtester.internal.runtime;
 
 /**
- * A class whose primary job is to keep track of whether the runtime is being run in the context of the platform or
- * not.
+ * A class whose primary job is to keep track of whether the runtime is being run in the context of
+ * the platform or not.
  */
 public final class Platform {
 

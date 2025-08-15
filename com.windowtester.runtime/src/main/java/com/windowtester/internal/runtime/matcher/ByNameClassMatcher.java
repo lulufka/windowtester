@@ -16,21 +16,19 @@ import com.windowtester.runtime.locator.IWidgetMatcher;
  * A matcher that matches instances by class name.  This has the advantage of not requiring that classes be on the
  * classpath...
  */
-public class ByNameClassMatcher implements IWidgetMatcher {
+public class ByNameClassMatcher implements IWidgetMatcher<Object> {
 
-  private final String _className;
+  private final String className;
 
   public ByNameClassMatcher(String fullyQualifiedName) {
-    _className = fullyQualifiedName;
+    className = fullyQualifiedName;
   }
 
   protected final String getClassName() {
-    return _className;
+    return className;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.runtime.locator.IWidgetMatcher#matches(java.lang.Object)
-   */
+  @Override
   public boolean matches(Object widget) {
     return widget.getClass().getName().equals(getClassName());
   }

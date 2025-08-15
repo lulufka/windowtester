@@ -25,7 +25,6 @@ import com.windowtester.runtime.locator.IWidgetLocator;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.locator.XYLocator;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,65 +32,53 @@ import java.util.List;
  */
 public class ClickHelper implements IClickDriver {
 
-  private final IUIContext _ui;
-
-  // for click listeners
-  private List _listeners;
+  private final IUIContext ui;
+  private List<Listener> listeners;
 
   public ClickHelper(IUIContext ui) {
-    _ui = ui;
+    this.ui = ui;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.selector.IClickDriver#click(int, com.windowtester.runtime2.locator.ILocator, int)
-   */
-  public IWidgetLocator click(int clickCount, ILocator locator, int buttonMask)
-      throws WidgetSearchException {
-    // extract widget reference
-    IWidgetLocator wl = getWidgetLocator(locator); // might be wrapped in an XYLocator
-    //		if (wl == null)
-    //			return absoluteClick(..)
-
-    IWidgetReference widget = null; // should be a null object
-
-    /*
-     * Don't look for path based widgets...
-     */
-    if (!(wl instanceof IItemLocator)) {
-      widget = doFind(wl); // if no WL is found, it's an absolute click?
+  @Override
+  public IWidgetLocator click(
+      int clickCount,
+      ILocator locator,
+      int buttonMask) throws WidgetSearchException {
+    var widgetLocator = getWidgetLocator(locator);
+    IWidgetReference widget = null;
+    if (!(widgetLocator instanceof IItemLocator)) {
+      widget = doFind(widgetLocator);
     }
 
     // create click description
-    IClickDescription click = createClickDescription(clickCount, locator, buttonMask);
+    var click = createClickDescription(clickCount, locator, buttonMask);
 
-    IUISelector selector = getSelector(wl);
-    IWidgetLocator clicked = doClick(widget, click, selector);
+    var selector = getSelector(widgetLocator);
+    var clicked = doClick(widget, click, selector);
+
     informClick(click, clicked);
+
     return clicked;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.selector.IClickDriver#contextClick(com.windowtester.runtime2.locator.ILocator, com.windowtester.runtime2.locator.IMenuItemLocator)
-   */
+  @Override
   public IWidgetLocator contextClick(ILocator locator, IMenuItemLocator menuItem)
       throws WidgetSearchException {
+    var wl = getWidgetLocator(locator);
 
-    IWidgetLocator wl = getWidgetLocator(locator);
-    IWidgetReference widget = null; // should be a null object
-
-    /*
-     * Don't look for path based widgets...
-     */
+    IWidgetReference widget = null;
     if (!(wl instanceof IItemLocator)) {
-      widget = doFind(wl); // if no WL is found, it's an absolute click?
+      widget = doFind(wl);
     }
 
     // create click description
-    IClickDescription click = createClickDescription(1 /*clickCount*/, locator, WT.BUTTON3);
+    var click = createClickDescription(1, locator, WT.BUTTON3);
 
-    IUISelector selector = getSelector(wl);
-    IWidgetLocator clicked = doContextClick(menuItem, widget, click, selector);
+    var selector = getSelector(wl);
+    var clicked = doContextClick(menuItem, widget, click, selector);
+
     informContextClick(click, clicked);
+
     return clicked;
   }
 
@@ -99,19 +86,21 @@ public class ClickHelper implements IClickDriver {
    * Get the selector associated with this locator.
    */
   private IUISelector getSelector(ILocator locator) {
-    if (locator instanceof IUISelector) {
-      return (IUISelector) locator;
+    if (locator instanceof IUISelector l) {
+      return l;
     }
-    IUISelector selector = null;
-    if (locator instanceof IAdaptable) {
-      selector = (IUISelector) ((IAdaptable) locator).getAdapter(IUISelector.class);
+
+    if (locator instanceof IAdaptable adaptable) {
+      var selector = (IUISelector) adaptable.getAdapter(IUISelector.class);
+      if (selector != null) {
+        return selector;
+      }
     }
-    if (selector != null) {
-      return selector;
+
+    if (locator instanceof IWidgetReference reference) {
+      return WidgetSystem.getDefaultSelector(reference.getWidget());
     }
-    if (locator instanceof IWidgetReference) {
-      return WidgetSystem.getDefaultSelector(((IWidgetReference) locator).getWidget());
-    }
+
     throw new IllegalStateException();
   }
 
@@ -119,93 +108,61 @@ public class ClickHelper implements IClickDriver {
    * Get the WidgetLocator associated with this ILocator.
    */
   public static IWidgetLocator getWidgetLocator(ILocator locator) {
-    if (locator instanceof IWidgetLocator) {
-      return (IWidgetLocator) locator;
+    if (locator instanceof IWidgetLocator widgetLocator) {
+      return widgetLocator;
     }
-    if (locator instanceof XYLocator) {
-      // notice that arbitrary nesting is suported here -- should it be?
-      return getWidgetLocator(((XYLocator) locator).locator());
+
+    if (locator instanceof XYLocator xyLocator) {
+      return getWidgetLocator(xyLocator.locator());
     }
+
     // SHOULD THROW EXCEPTION HERE?
     return null;
   }
 
   private IClickDescription createClickDescription(
-      int clickCount, ILocator locator, int buttonMask) {
+      int clickCount,
+      ILocator locator,
+      int buttonMask) {
     // TODO properly handle nested XYLocators
     return ClickDescription.create(clickCount, locator, buttonMask);
   }
 
   private IUIContext getUIContext() {
-    return _ui;
+    return ui;
   }
 
-  /* (non-Javadoc)
-   * @see com.windowtester.internal.runtime.selector.IClickDriver#addClickListener(com.windowtester.internal.runtime.selector.IClickDriver.Listener)
-   */
+  @Override
   public void addClickListener(Listener listener) {
     getListeners().add(listener);
   }
 
-  private void informClick(IClickDescription click, IWidgetLocator clicked) {
-    for (Iterator iter = getListeners().iterator(); iter.hasNext(); ) {
-      Listener listener = (Listener) iter.next();
-      listener.clicked(click, clicked);
-    }
+  private void informClick(IClickDescription click, IWidgetLocator widgetLocator) {
+    getListeners()
+        .forEach(listener -> listener.clicked(click, widgetLocator));
   }
 
-  private void informContextClick(IClickDescription click, IWidgetLocator clicked) {
-    for (Iterator iter = getListeners().iterator(); iter.hasNext(); ) {
-      Listener listener = (Listener) iter.next();
-      listener.contextClicked(click, clicked);
-    }
+  private void informContextClick(IClickDescription click, IWidgetLocator widgetLocator) {
+    getListeners()
+        .forEach(listener -> listener.contextClicked(click, widgetLocator));
   }
 
-  private List getListeners() {
-    if (_listeners == null) {
-      _listeners = new ArrayList();
+  private List<Listener> getListeners() {
+    if (listeners == null) {
+      listeners = new ArrayList<>();
     }
-    return _listeners;
+    return listeners;
   }
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Wrappers that adapt legacy exceptions appropriately.
-  //
-  ///////////////////////////////////////////////////////////////////////////////////////
 
   private IWidgetLocator doClick(
-      IWidgetReference widget, IClickDescription click, IUISelector selector)
-      throws WidgetSearchException {
-    //		try {
+      IWidgetReference widget,
+      IClickDescription click,
+      IUISelector selector) throws WidgetSearchException {
     return selector.click(getUIContext(), widget, click);
-    // TODO [Dan] Not a single subclass of WidgetSearchException implements IAdaptable, so I
-    // commented this out
-    //		} catch (WidgetSearchException e) {
-    //			if (e instanceof IAdaptable) {
-    //				WidgetSearchException adapted = (WidgetSearchException)
-    // ((IAdaptable)e).getAdapter(WidgetSearchException.class);
-    //				if (adapted != null)
-    //					throw adapted;
-    //			}
-    //			throw e;
-    //		}
   }
 
-  private IWidgetReference doFind(IWidgetLocator wl) throws WidgetSearchException {
-    //		try {
-    return (IWidgetReference) getUIContext().find(wl);
-    // TODO [Dan] Not a single subclass of WidgetSearchException implements IAdaptable, so I
-    // commented this out
-    //		} catch (WidgetSearchException e) {
-    //			if (e instanceof IAdaptable) {
-    //				WidgetSearchException adapted = (WidgetSearchException)
-    // ((IAdaptable)e).getAdapter(WidgetSearchException.class);
-    //				if (adapted != null)
-    //					throw adapted;
-    //			}
-    //			throw e;
-    //		}
+  private IWidgetReference doFind(IWidgetLocator widgetLocator) throws WidgetSearchException {
+    return (IWidgetReference) getUIContext().find(widgetLocator);
   }
 
   private IWidgetLocator doContextClick(
@@ -214,18 +171,6 @@ public class ClickHelper implements IClickDriver {
       IClickDescription click,
       IUISelector selector)
       throws WidgetSearchException {
-    //		try {
     return selector.contextClick(getUIContext(), widget, click, menuItem.getPath());
-    // TODO [Dan] Not a single subclass of WidgetSearchException implements IAdaptable, so I
-    // commented this out
-    //		} catch (WidgetSearchException e) {
-    //			if (e instanceof IAdaptable) {
-    //				WidgetSearchException adapted = (WidgetSearchException)
-    // ((IAdaptable)e).getAdapter(WidgetSearchException.class);
-    //				if (adapted != null)
-    //					throw adapted;
-    //			}
-    //			throw e;
-    //		}
   }
 }

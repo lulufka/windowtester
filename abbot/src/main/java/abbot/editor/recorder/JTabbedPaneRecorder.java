@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.plaf.TabbedPaneUI;
 
 /**
- * Record basic semantic events you might find on an JTabbedPane. <p>
+ * Record basic semantic events you might find on an JTabbedPane.
  * <ul>
  * <li>Select a tab.
  * </ul>

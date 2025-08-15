@@ -12,20 +12,19 @@ import java.util.Set;
 
 /**
  * Encapsulate an action. Usage:<br>
- * <blockquote><code>
+ * <pre>
  * &lt;action method="..." args="..."&gt;<br> &lt;action method="..." args="component_id[,...]" class="..."&gt;<br>
- * </code></blockquote>
+ * </pre>
  * An Action reproduces a user semantic action (such as a mouse click, menu selection, or drag/drop action) on a
  * particular component.  The id of the component being operated on must be the first argument, and the class of that
  * component must be identified by the class tag if the action is not provided by the base {@link
- * abbot.tester.ComponentTester} class<p> Note that the method name is the name of the actionXXX method, e.g. to click a
- * button (actionClick on AbstractButtonTester), the XML would appear thus:<p>
- * <blockquote><code>
+ * abbot.tester.ComponentTester} class Note that the method name is the name of the actionXXX method, e.g. to click a
+ * button (actionClick on AbstractButtonTester), the XML would appear thus:
+ * <pre>
  * &lt;action method="actionClick" args="My Button" class=javax.swing.AbstractButton&gt;<br>
- * </code></blockquote>
+ * </pre>
  * Note that if the first argument is a Component, the class tag is required. Note also that the specified class is the
  * <i>tested</i> class, not the target class for the method invocation.
- * <p>
  * The target class for the method invocation is always a ComponentTester-derived class.
  */
 // Any reason for the tested class to be saved and not the target class?  the
@@ -65,9 +64,6 @@ public class Action extends Call {
     patchMethodName();
   }
 
-  /**
-   * Action for a method in the ComponentTester base class.
-   */
   public Action(Resolver resolver, String description, String methodName, String[] args) {
     super(resolver, description, DEFAULT_CLASS_NAME, methodName, args);
     patchMethodName();
@@ -87,10 +83,7 @@ public class Action extends Call {
     }
   }
 
-  /**
-   * Ensure the default class name is DEFAULT_CLASS_NAME The target class <i>must</i> be a subclass of
-   * java.awt.Component.
-   */
+  @Override
   public void setTargetClassName(String cn) {
     if (cn == null || "".equals(cn)) {
       cn = DEFAULT_CLASS_NAME;
@@ -98,16 +91,12 @@ public class Action extends Call {
     super.setTargetClassName(cn);
   }
 
-  /**
-   * Return the XML tag for this step.
-   */
+  @Override
   public String getXMLTag() {
     return TAG_ACTION;
   }
 
-  /**
-   * Return custom attributes for an Action.
-   */
+  @Override
   public Map getAttributes() {
     Map map = super.getAttributes();
     // Only save the class attribute if it's not the default
@@ -118,16 +107,12 @@ public class Action extends Call {
     return map;
   }
 
-  /**
-   * Return the proper XML usage for this step.
-   */
+  @Override
   public String getUsage() {
     return USAGE;
   }
 
-  /**
-   * Return a default description for this action.
-   */
+  @Override
   public String getDefaultDescription() {
     // strip off "action", if it's there
     String name = getMethodName();
@@ -137,13 +122,12 @@ public class Action extends Call {
     return name + getArgumentsDescription();
   }
 
+  @Override
   public Class getTargetClass() throws ClassNotFoundException {
     return resolveTester(getTargetClassName()).getClass();
   }
 
-  /**
-   * Convert the String representation of the arguments into actual arguments.
-   */
+  @Override
   protected Object evaluateParameter(Method m, String param, Class type) throws Exception {
     // Convert ComponentLocation arguments
     if (ComponentLocation.class.isAssignableFrom(type)) {
@@ -162,16 +146,12 @@ public class Action extends Call {
     }
   }
 
-  /**
-   * Return the target of the invocation.
-   */
+  @Override
   protected Object getTarget(Method m) throws ClassNotFoundException {
     return resolveTester(getTargetClassName());
   }
 
-  /**
-   * Remove deprecated methods from those looked up.
-   */
+  @Override
   protected Method[] resolveMethods(String name, Class cls, Class returnType)
       throws NoSuchMethodException {
     Method[] methods = super.resolveMethods(name, cls, returnType);
@@ -194,13 +174,12 @@ public class Action extends Call {
     return methods;
   }
 
-  /**
-   * Resolve the method name into its final form.
-   */
+  @Override
   public Method getMethod() throws ClassNotFoundException, NoSuchMethodException {
     return resolveMethod(getMethodName(), getTargetClass(), void.class);
   }
 
+  @Override
   protected Method disambiguateMethod(Method[] methods) {
     // Try to find the right one by examining some of the parameters
     // Nothing fancy, just explicitly picks between the variants.

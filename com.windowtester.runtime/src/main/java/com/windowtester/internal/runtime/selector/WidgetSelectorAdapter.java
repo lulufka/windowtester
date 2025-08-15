@@ -21,49 +21,59 @@ import java.awt.*;
  */
 public class WidgetSelectorAdapter implements IWidgetSelectorDelegate {
 
-  public Object click(Object w, int x, int y, int mask) {
+  @Override
+  public Object click(Object widget, int x, int y, int mask) {
     throw new UnsupportedOperationException();
   }
 
-  public Object click(Object w, String path)
+  @Override
+  public Object click(Object widget, String path)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Object click(Object w, String itemLabelOrPath, int mask)
+  @Override
+  public Object click(Object widget, String itemLabelOrPath, int mask)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Object doubleClick(Object w, String itemLabel)
+  @Override
+  public Object doubleClick(Object widget, String itemLabel)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Object doubleClick(Object w, int x, int y, int mask) {
+  @Override
+  public Object doubleClick(Object widget, int x, int y, int mask) {
     throw new UnsupportedOperationException();
   }
 
-  public Object doubleClick(Object w, String itemLabelOrPath, int mask) {
+  @Override
+  public Object doubleClick(Object widget, String itemLabelOrPath, int mask) {
     throw new UnsupportedOperationException();
   }
 
-  public Object contextClick(Object w, String path)
+  @Override
+  public Object contextClick(Object widget, String path)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Object contextClick(Object w, String itemPath, String menuPath)
+  @Override
+  public Object contextClick(Object widget, String itemPath, String menuPath)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Object contextClick(Object w, int x, int y, String path)
+  @Override
+  public Object contextClick(Object widget, int x, int y, String path)
       throws WidgetNotFoundException, MultipleWidgetsFoundException {
     throw new UnsupportedOperationException();
   }
 
-  public Point getClickOffset(Object w) {
+  @Override
+  public Point getClickOffset(Object widget) {
     throw new UnsupportedOperationException();
   }
 }

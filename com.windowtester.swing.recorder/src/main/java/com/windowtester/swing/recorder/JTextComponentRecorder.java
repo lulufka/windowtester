@@ -17,7 +17,10 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.text.JTextComponent;
@@ -28,6 +31,7 @@ import javax.swing.text.JTextComponent;
  * Added windowtester semantic event generation
  */
 public class JTextComponentRecorder extends JComponentRecorder {
+
   private JTextComponent target;
   private int startIndex;
   private int endIndex;
@@ -38,6 +42,7 @@ public class JTextComponentRecorder extends JComponentRecorder {
     super(resolver);
   }
 
+  @Override
   protected void init(int rtype) {
     super.init(rtype);
     target = null;
@@ -45,9 +50,7 @@ public class JTextComponentRecorder extends JComponentRecorder {
     endIndex = -1;
   }
 
-  /**
-   * Don't store the action "default-typed"; store the key event instead.
-   */
+  @Override
   protected boolean isMappedEvent(KeyEvent ev) {
     if (super.isMappedEvent(ev)) {
       javax.swing.Action action = getAction(ev);
@@ -56,9 +59,7 @@ public class JTextComponentRecorder extends JComponentRecorder {
     return false;
   }
 
-  /**
-   * Coalesce initial click with subsequent drags to produce a selection.
-   */
+  @Override
   protected boolean dragStarted(
       Component target, int x, int y, int modifiers, MouseEvent dragEvent) {
     Log.debug("Tracking text selection");
@@ -69,6 +70,7 @@ public class JTextComponentRecorder extends JComponentRecorder {
     return true;
   }
 
+  @Override
   protected boolean parseDrop(AWTEvent event) {
     boolean consumed = super.parseDrop(event);
     if (event.getID() == MouseEvent.MOUSE_DRAGGED) {
@@ -81,6 +83,7 @@ public class JTextComponentRecorder extends JComponentRecorder {
     return consumed;
   }
 
+  @Override
   protected Step createStep() {
     Step step;
     if (getRecordingType() == SE_DROP) {
@@ -91,11 +94,9 @@ public class JTextComponentRecorder extends JComponentRecorder {
     return step;
   }
 
-  /**
-   * The text component click should click on the text index instead of a mouse coordinate.
-   */
+  @Override
   protected Step createClick(Component comp, int x, int y, int mods, int count) {
-    if (mods == MouseEvent.BUTTON1_MASK && count == 1) {
+    if (mods == InputEvent.BUTTON1_MASK && count == 1) {
 
       // create windowtester semantic event
       //	IUISemanticEvent semanticEvent =
@@ -117,8 +118,8 @@ public class JTextComponentRecorder extends JComponentRecorder {
           getResolver(),
           null,
           "actionClick",
-          new String[] {
-            cr.getID(), String.valueOf(index),
+          new String[]{
+              cr.getID(), String.valueOf(index),
           },
           JTextComponent.class);
     } else {
@@ -126,13 +127,14 @@ public class JTextComponentRecorder extends JComponentRecorder {
     }
   }
 
+  @Override
   protected Step createDrop(Component comp, int start, int end) {
     ComponentReference cr = getResolver().addComponent(comp);
     return new Action(
         getResolver(),
         null,
         "actionSelectText",
-        new String[] {cr.getID(), String.valueOf(start), String.valueOf(end)},
+        new String[]{cr.getID(), String.valueOf(start), String.valueOf(end)},
         JTextComponent.class);
   }
 }

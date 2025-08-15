@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.windowtester.runtime;
 
+import java.io.Serial;
+
 /**
  * Base type of all widget search exceptions.
  */
 public class WidgetSearchException extends Exception {
 
+  @Serial
   private static final long serialVersionUID = 450468979445524082L;
 
   /**
