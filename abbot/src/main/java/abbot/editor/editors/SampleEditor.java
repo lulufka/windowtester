@@ -3,7 +3,7 @@ package abbot.editor.editors;
 import abbot.i18n.Strings;
 import abbot.script.Sample;
 import java.awt.event.ActionEvent;
-import javax.swing.*;
+import javax.swing.JTextField;
 
 /**
  * Provide convenient editing of a Sample step.

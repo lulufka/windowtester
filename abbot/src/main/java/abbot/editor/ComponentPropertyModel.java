@@ -4,7 +4,7 @@ import abbot.Log;
 import abbot.i18n.Strings;
 import abbot.script.PropertyCall;
 import abbot.tester.ComponentTester;
-import java.awt.*;
+import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

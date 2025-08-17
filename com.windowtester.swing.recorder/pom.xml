@@ -5,14 +5,12 @@
   <parent>
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>5.11.3</version>
+    <version>5.11.4</version>
   </parent>
 
   <artifactId>com.windowtester.swing.recorder</artifactId>
   <name>Windowtester Recorder</name>
   <description>The recorder library provides functionality to record a manual UI interaction and replay it automatically.</description>
-
-  <description>The artifact to control the recorder and replay recorded scenarios.</description>
 
   <scm>
     <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>

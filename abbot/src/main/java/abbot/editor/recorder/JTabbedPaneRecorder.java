@@ -7,9 +7,12 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.ComponentLocation;
 import abbot.tester.JTabbedPaneLocation;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
 import javax.swing.plaf.TabbedPaneUI;
 
 /**

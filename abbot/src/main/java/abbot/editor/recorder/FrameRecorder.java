@@ -5,7 +5,10 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.WindowEvent;
 
 /**

@@ -1,7 +1,9 @@
 package abbot.tester;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Insets;
+import java.awt.Point;
+import javax.swing.JSlider;
 
 /**
  * Provides access to all user actions on a JSlider.

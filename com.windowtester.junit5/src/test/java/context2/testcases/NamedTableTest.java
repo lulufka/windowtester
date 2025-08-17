@@ -17,7 +17,6 @@ import com.windowtester.runtime.IUIContext;
 import com.windowtester.runtime.WidgetSearchException;
 import com.windowtester.runtime.swing.condition.WindowShowingCondition;
 import com.windowtester.runtime.swing.locator.JTableItemLocator;
-import com.windowtester.runtime.swing.locator.NamedWidgetLocator;
 import java.awt.Point;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

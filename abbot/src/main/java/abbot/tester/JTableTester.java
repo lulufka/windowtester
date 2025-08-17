@@ -1,8 +1,9 @@
 package abbot.tester;
 
 import abbot.script.ArgumentParser;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import javax.swing.JTable;
 
 /**
  * Provide user actions on a JTable. The JTable substructure is a "Cell", and JTableLocation provides different

@@ -15,7 +15,6 @@ import abbot.tester.ComponentLocation;
 import abbot.tester.JTreeLocation;
 import abbot.tester.LocationUnavailableException;
 import java.awt.Component;
-import java.awt.Rectangle;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 

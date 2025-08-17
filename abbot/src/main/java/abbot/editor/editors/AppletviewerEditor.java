@@ -3,12 +3,15 @@ package abbot.editor.editors;
 import abbot.editor.widgets.ArrayEditor;
 import abbot.i18n.Strings;
 import abbot.script.Appletviewer;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Provide convenient editing of an applet launch step.

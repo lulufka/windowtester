@@ -10,8 +10,6 @@
  *******************************************************************************/
 package context2.testcases;
 
-import static com.windowtester.internal.runtime.junit.core.ExecutionMonitor.getUI;
-
 import com.windowtester.junit5.SwingUIContext;
 import com.windowtester.junit5.UIUnderTest;
 import com.windowtester.junit5.WindowtesterExtension;

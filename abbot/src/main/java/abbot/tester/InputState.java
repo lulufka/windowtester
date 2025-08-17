@@ -4,13 +4,16 @@ import abbot.Log;
 import abbot.util.AWT;
 import abbot.util.EventNormalizer;
 import abbot.util.SingleThreadedEventListener;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.IllegalComponentStateException;
+import java.awt.Point;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.util.Stack;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * Class to keep track of a given input state.  Includes mouse/pointer position and keyboard modifier key state.<p>

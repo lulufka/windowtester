@@ -4,7 +4,7 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Record basic click a Checkbox component.

@@ -2,9 +2,11 @@ package abbot.tester;
 
 import abbot.i18n.Strings;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.StringTokenizer;
-import javax.swing.*;
+import javax.swing.JTable;
 
 /**
  * Provides encapsulation of a location on a JTable (notably a row). Use the JTableLocation#JTableLocation(Point) ctor

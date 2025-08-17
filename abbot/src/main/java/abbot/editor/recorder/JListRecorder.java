@@ -4,10 +4,11 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JList;
 
 /**
  * Record basic semantic events you might find on an JList.

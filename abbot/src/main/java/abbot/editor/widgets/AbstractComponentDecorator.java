@@ -1,8 +1,14 @@
 package abbot.editor.widgets;
 
 import abbot.Log;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.JViewport;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 /**
  * Provide a method for consistently painting over a given component. This implementation uses an invisible, added

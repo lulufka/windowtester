@@ -3,9 +3,10 @@ package abbot.tester;
 import abbot.finder.BasicFinder;
 import abbot.finder.matchers.ClassMatcher;
 import abbot.i18n.Strings;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JSpinner;
 import javax.swing.text.JTextComponent;
 
 /**

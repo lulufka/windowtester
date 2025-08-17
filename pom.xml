@@ -6,12 +6,12 @@
 
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>5.11.3</version>
+    <version>5.11.4</version>
     <packaging>pom</packaging>
 
-  <name>WindowTester</name>
-  <description>WindowTester is a library for Java/Swing UI test automation.</description>
-  <url>https://github.com/r4fterman/windowtester</url>
+    <name>WindowTester</name>
+    <description>WindowTester is a library for Java/Swing UI test automation.</description>
+    <url>https://github.com/r4fterman/windowtester</url>
 
     <developers>
         <developer>
@@ -50,20 +50,21 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.3</version>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.11.4</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.11.3</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.11.4</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

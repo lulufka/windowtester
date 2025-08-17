@@ -1,6 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dialog;
 
 public class DialogTester extends WindowTester {
 

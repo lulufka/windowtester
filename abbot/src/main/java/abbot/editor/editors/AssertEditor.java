@@ -3,12 +3,15 @@ package abbot.editor.editors;
 import abbot.i18n.Strings;
 import abbot.script.Assert;
 import abbot.tester.ComponentTester;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Provide convenient editing of an Assert step.

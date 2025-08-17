@@ -2,8 +2,9 @@ package abbot.finder.matchers;
 
 import abbot.finder.Matcher;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 /**
  * Matches a {@link JMenuItem} given a simple label or a menu path of the format "menu|submenu|menuitem", for example

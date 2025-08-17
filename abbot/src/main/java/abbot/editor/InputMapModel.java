@@ -1,7 +1,8 @@
 package abbot.editor;
 
 import abbot.i18n.Strings;
-import javax.swing.*;
+import javax.swing.InputMap;
+import javax.swing.KeyStroke;
 import javax.swing.table.AbstractTableModel;
 
 public class InputMapModel extends AbstractTableModel {

@@ -1,8 +1,9 @@
 package abbot.tester;
 
 import abbot.i18n.Strings;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import javax.swing.JScrollBar;
 
 /**
  * Provides user actions on a JScrollPane.

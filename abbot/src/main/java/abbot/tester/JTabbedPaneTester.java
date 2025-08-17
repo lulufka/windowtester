@@ -1,9 +1,10 @@
 package abbot.tester;
 
 import abbot.tester.JTabbedPaneLocation.TabNotVisibleException;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JTabbedPane;
 import javax.swing.plaf.TabbedPaneUI;
 
 /**

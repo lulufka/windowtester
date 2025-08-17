@@ -4,7 +4,7 @@ import abbot.i18n.Strings;
 import abbot.script.ComponentReference;
 import abbot.script.PropertyCall;
 import abbot.tester.ComponentTester;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.*;
+import javax.swing.JComboBox;
 
 /**
  * Provide convenient editing of a PropertyCall step.

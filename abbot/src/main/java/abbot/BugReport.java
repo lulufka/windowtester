@@ -4,7 +4,8 @@ import abbot.i18n.Strings;
 import abbot.tester.Robot;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.swing.*;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
 
 /**
  * Exception for reporting unexpected situations in the program. Automatically generates a message suitable for posting

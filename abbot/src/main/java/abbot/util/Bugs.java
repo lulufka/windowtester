@@ -8,7 +8,7 @@ import abbot.Log;
 import abbot.Platform;
 import abbot.i18n.Strings;
 import abbot.tester.Robot;
-import java.awt.*;
+import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

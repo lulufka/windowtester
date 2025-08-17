@@ -2,13 +2,20 @@ package abbot.editor;
 
 import abbot.util.AWT;
 import abbot.util.WeakAWTEventListener;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ContainerEvent;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Preserves the current LAF for a given component hierarchy.

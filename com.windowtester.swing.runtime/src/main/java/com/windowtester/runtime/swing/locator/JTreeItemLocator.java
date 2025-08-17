@@ -21,7 +21,6 @@ import com.windowtester.runtime.condition.IUICondition;
 import com.windowtester.runtime.condition.IsSelected;
 import com.windowtester.runtime.condition.IsSelectedCondition;
 import com.windowtester.runtime.locator.IWidgetLocator;
-import com.windowtester.runtime.locator.IWidgetMatcher;
 import com.windowtester.runtime.locator.IWidgetReference;
 import com.windowtester.runtime.locator.WidgetReference;
 import com.windowtester.runtime.swing.SwingWidgetLocator;

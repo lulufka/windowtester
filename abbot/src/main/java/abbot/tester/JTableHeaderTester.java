@@ -1,6 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
 import javax.swing.table.JTableHeader;
 
 /**

@@ -11,7 +11,7 @@
 package com.windowtester.internal.finder.matchers.swing;
 
 import abbot.finder.matchers.AbstractMatcher;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Provides matching of components by class.

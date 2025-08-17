@@ -1,7 +1,7 @@
 package abbot.script;
 
 import abbot.finder.Hierarchy;
-import java.awt.*;
+import java.awt.Component;
 import java.io.File;
 import java.util.Collection;
 

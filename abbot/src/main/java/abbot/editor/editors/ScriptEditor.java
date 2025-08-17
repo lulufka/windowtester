@@ -8,7 +8,8 @@ import abbot.script.Fixture;
 import abbot.script.Script;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JTextField;
 
 /**
  * Provide convenient editing of a Script step.
