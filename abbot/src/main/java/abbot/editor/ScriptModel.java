@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.table.AbstractTableModel;
-import org.jdom.Element;
+import org.dom4j.Element;
 
 /**
  * Formats a Script for display in a table.  Keeps track of "open" nodes to create a tree-like display NOTE: this is a
@@ -261,12 +261,7 @@ class ScriptModel extends AbstractTableModel {
           Sequence parent = entry.parent != null ? entry.parent : script;
           parent.setStep(parent.indexOf(entry.step), step);
           layout(true);
-        } catch (IllegalArgumentException e) {
-          Log.warn(e);
-        } catch (InvalidScriptException e) {
-          // Edit rejected
-          Log.warn(e);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException | InvalidScriptException e) {
           Log.warn(e);
         }
       }
@@ -277,7 +272,7 @@ class ScriptModel extends AbstractTableModel {
     return "";
   }
 
-  public Class getColumnClass(int col) {
+  public Class<?> getColumnClass(int col) {
     if (col == 0) {
       return Entry.class;
     }
@@ -304,7 +299,7 @@ class ScriptModel extends AbstractTableModel {
    * Return the parent sequence of the given step.
    */
   public synchronized Sequence getParent(Step step) {
-    Sequence seq = (Sequence) parents.get(step);
+    Sequence seq = parents.get(step);
     if (seq == null) {
       throw new IllegalArgumentException("Step " + step + " not found in " + getScript());
     }
@@ -320,9 +315,7 @@ class ScriptModel extends AbstractTableModel {
     } else if (seq == getScript()) {
       parents.clear();
     }
-    Iterator iter = seq.steps().iterator();
-    while (iter.hasNext()) {
-      Step step = (Step) iter.next();
+    for (Step step : seq.steps()) {
       parents.put(step, seq);
       if (step instanceof Sequence) {
         mapParents((Sequence) step);
@@ -335,11 +328,7 @@ class ScriptModel extends AbstractTableModel {
    */
   private void addSubRows(Sequence seq, int level) {
     if (openSequences.contains(seq)) {
-      // Log.debug("Adding " + seq.steps().size() + " rows");
-      Iterator iter = seq.steps().iterator();
-      while (iter.hasNext()) {
-        Step step = (Step) iter.next();
-        // Log.debug("Adding " + step);
+      for (Step step : seq.steps()) {
         rows.add(new Entry(step, seq, level));
         if (step instanceof Sequence) {
           addSubRows((Sequence) step, level + 1);
@@ -352,19 +341,19 @@ class ScriptModel extends AbstractTableModel {
    * Move the given steps and all between them to the new location. If the steps are being moved later in the same
    * sequence, the index represents the target index <i>before</i> the move.
    */
-  public synchronized void moveSteps(Sequence parent, List steps, int index) {
+  public synchronized void moveSteps(Sequence parent, List<Step> steps, int index) {
     Step indexStep = index < parent.size() ? parent.getStep(index) : null;
     // Remove all, then insert all; otherwise moving steps down in a
     // sequence would fail
-    Iterator iter = steps.iterator();
+    Iterator<Step> iter = steps.iterator();
     while (iter.hasNext()) {
-      Step step = (Step) iter.next();
+      Step step = iter.next();
       getParent(step).removeStep(step);
     }
     iter = steps.iterator();
     index = indexStep != null ? parent.indexOf(indexStep) : parent.size();
     while (iter.hasNext()) {
-      Step step = (Step) iter.next();
+      Step step = iter.next();
       parent.addStep(index++, step);
     }
     layout(true);
