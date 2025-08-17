@@ -1,7 +1,9 @@
 package abbot.tester;
 
 import abbot.util.Bugs;
-import java.awt.*;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import javax.swing.event.MouseInputAdapter;
 

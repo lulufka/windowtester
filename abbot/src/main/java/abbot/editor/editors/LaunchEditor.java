@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JCheckBox;
 
 /**
  * Provide convenient editing of a launch step.

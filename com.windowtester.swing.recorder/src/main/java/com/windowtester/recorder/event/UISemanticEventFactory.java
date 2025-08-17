@@ -45,9 +45,18 @@ import com.windowtester.runtime.swing.locator.JTableItemLocator;
 import com.windowtester.runtime.swing.locator.JTextComponentLocator;
 import com.windowtester.runtime.swing.locator.JTreeItemLocator;
 import com.windowtester.runtime.swing.locator.NamedWidgetLocator;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 
 /***

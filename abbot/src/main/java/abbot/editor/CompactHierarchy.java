@@ -2,12 +2,27 @@ package abbot.editor;
 
 import abbot.finder.Hierarchy;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JToolTip;
+import javax.swing.JViewport;
+import javax.swing.JWindow;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 /**
  * Provides a condensed, more easily readable version of the original hierarchy.

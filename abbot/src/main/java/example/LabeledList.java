@@ -1,9 +1,9 @@
 package example;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 
 /**
  * Source code for Tutorial 2.

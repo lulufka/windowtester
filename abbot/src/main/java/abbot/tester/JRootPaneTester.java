@@ -1,6 +1,6 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * Hierarchy placeholder for JRootPane.  There are no specific user actions.

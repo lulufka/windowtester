@@ -1,7 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JLabel;
 
 /**
  * Provides action methods and assertions for {@link JLabel}s.

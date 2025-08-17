@@ -1,9 +1,9 @@
 package abbot.editor.recorder;
 
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 

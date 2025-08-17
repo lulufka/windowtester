@@ -3,7 +3,9 @@ package abbot.tester;
 import abbot.util.Properties;
 import abbot.util.WeakAWTEventListener;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Choice;
+import java.awt.Component;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ItemEvent;
 

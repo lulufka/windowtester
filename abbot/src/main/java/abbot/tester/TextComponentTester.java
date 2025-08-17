@@ -1,7 +1,8 @@
 package abbot.tester;
 
 import abbot.util.Bugs;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.TextComponent;
 
 /**
  * Provides user actions for TextComponent-derived components.

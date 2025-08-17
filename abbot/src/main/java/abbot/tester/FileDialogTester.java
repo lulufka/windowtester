@@ -2,7 +2,10 @@ package abbot.tester;
 
 import abbot.Log;
 import abbot.Platform;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.event.KeyEvent;
 
 /**

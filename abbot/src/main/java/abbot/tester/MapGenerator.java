@@ -2,8 +2,11 @@ package abbot.tester;
 
 import abbot.Log;
 import abbot.Platform;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.Robot;
+import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -21,7 +24,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import javax.swing.*;
+import javax.swing.InputMap;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 /**

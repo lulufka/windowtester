@@ -1,6 +1,6 @@
 package abbot.script.parsers;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Convert a {@link String} into a {@link Color}.

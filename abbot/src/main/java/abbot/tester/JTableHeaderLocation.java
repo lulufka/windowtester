@@ -2,7 +2,9 @@ package abbot.tester;
 
 import abbot.i18n.Strings;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
 import javax.swing.table.JTableHeader;
 
 /**

@@ -12,7 +12,7 @@ package com.windowtester.internal.finder.matchers.swing;
 
 import abbot.Log;
 import abbot.finder.Matcher;
-import java.awt.*;
+import java.awt.Component;
 
 public class IndexMatcher implements Matcher {
 

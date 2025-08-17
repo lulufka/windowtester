@@ -15,12 +15,15 @@ import abbot.finder.ComponentFinder;
 import abbot.finder.Hierarchy;
 import abbot.finder.Matcher;
 import com.windowtester.runtime.swing.SwingWidgetLocator;
-import java.awt.*;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 /***
  *  To build the WidgetLocator based on the hierarchy of the widget.

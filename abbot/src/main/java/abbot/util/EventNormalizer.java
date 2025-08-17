@@ -1,6 +1,8 @@
 package abbot.util;
 
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -11,7 +13,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.swing.*;
+import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 
 /**

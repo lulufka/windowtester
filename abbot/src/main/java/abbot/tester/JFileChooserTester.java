@@ -6,9 +6,12 @@ import abbot.finder.ComponentSearchException;
 import abbot.finder.Matcher;
 import abbot.finder.matchers.ClassMatcher;
 import abbot.i18n.Strings;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
 import java.io.File;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JTextField;
 
 /**
  * Tester for the javax.swing.JFileChooser. Note: many more user actions/assertions could be supported, such as the

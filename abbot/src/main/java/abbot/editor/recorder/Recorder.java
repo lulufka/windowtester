@@ -5,7 +5,7 @@ import abbot.Log;
 import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.Robot;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

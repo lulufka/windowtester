@@ -1,6 +1,6 @@
 package abbot.tester;
 
-import javax.swing.*;
+import javax.swing.JButton;
 
 /**
  * Provides action methods and assertions for {@link JButton}s.

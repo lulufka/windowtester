@@ -2,7 +2,10 @@ package abbot.tester;
 
 import abbot.i18n.Strings;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.List;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * Provides encapsulation of the location of a row on a List (a coordinate, item index or value).

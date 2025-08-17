@@ -12,10 +12,10 @@ package com.windowtester.internal.finder.matchers.swing;
 
 import abbot.finder.AWTHierarchy;
 import abbot.finder.matchers.AbstractMatcher;
-import java.awt.*;
+import java.awt.Component;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.swing.*;
+import javax.swing.JLabel;
 
 /**
  * Matches a widget that is immediately adjacent to (e.g., following) a Label widget with the given label text.

@@ -3,7 +3,10 @@ package abbot.tester;
 import abbot.i18n.Strings;
 import abbot.util.Properties;
 import abbot.util.WeakAWTEventListener;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.List;
+import java.awt.Point;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ItemEvent;
 

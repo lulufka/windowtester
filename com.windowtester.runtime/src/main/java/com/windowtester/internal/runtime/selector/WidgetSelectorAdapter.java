@@ -13,7 +13,7 @@ package com.windowtester.internal.runtime.selector;
 import com.windowtester.runtime.IWidgetSelectorDelegate;
 import com.windowtester.runtime.MultipleWidgetsFoundException;
 import com.windowtester.runtime.WidgetNotFoundException;
-import java.awt.*;
+import java.awt.Point;
 
 /**
  * A base <code>IWidgetSelectorDelegate</code> implementation that defaults to throwing an UnsupportedOperationException

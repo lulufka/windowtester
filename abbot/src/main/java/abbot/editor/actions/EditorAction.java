@@ -8,7 +8,9 @@ import abbot.editor.widgets.TextFormat;
 import abbot.i18n.Strings;
 import java.awt.event.KeyEvent;
 import java.net.URL;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 
 /**
  * Encapsulate GUI attributes for an editor action.

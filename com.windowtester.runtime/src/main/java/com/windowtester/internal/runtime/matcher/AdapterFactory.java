@@ -12,7 +12,6 @@ package com.windowtester.internal.runtime.matcher;
 
 import abbot.finder.Matcher;
 import com.windowtester.runtime.locator.IWidgetMatcher;
-import java.awt.Component;
 
 /**
  * A service for adapting {@link IWidgetMatcher}s to Abbot {@link Matcher}s and vice versa.

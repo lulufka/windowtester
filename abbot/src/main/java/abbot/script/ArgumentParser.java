@@ -8,7 +8,7 @@ import abbot.finder.MultipleComponentsFoundException;
 import abbot.i18n.Strings;
 import abbot.script.parsers.Parser;
 import abbot.tester.ComponentTester;
-import java.awt.*;
+import java.awt.Component;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;

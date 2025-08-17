@@ -1,35 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.github.r4fterman</groupId>
-    <artifactId>com.windowtester</artifactId>
-    <version>5.11.4</version>
-  </parent>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.r4fterman</groupId>
+        <artifactId>com.windowtester</artifactId>
+        <version>5.11.4</version>
+    </parent>
 
-  <artifactId>com.windowtester.swing.runtime</artifactId>
-  <name>Windowtester Swing Runtime</name>
-  <description>The runtime library providing base functionality so Windowtester can operate on Java/Swing.</description>
+    <artifactId>com.windowtester.swing.runtime</artifactId>
+    <name>Windowtester Swing Runtime</name>
+    <description>The runtime library providing base functionality so Windowtester can operate on
+        Java/Swing.
+    </description>
 
-  <description>The runtime library provides base functionality so WindowTester can operate on Java/Swing.</description>
+    <scm>
+        <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
+        <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git
+        </developerConnection>
+        <url>https://github.com/r4fterman/windowtester</url>
+    </scm>
 
-  <scm>
-    <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
-    <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git</developerConnection>
-    <url>https://github.com/r4fterman/windowtester</url>
-  </scm>
-
-  <dependencies>
-    <dependency>
-      <groupId>io.github.r4fterman</groupId>
-      <artifactId>abbot</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.r4fterman</groupId>
-      <artifactId>com.windowtester.runtime</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.r4fterman</groupId>
+            <artifactId>abbot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.r4fterman</groupId>
+            <artifactId>com.windowtester.runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

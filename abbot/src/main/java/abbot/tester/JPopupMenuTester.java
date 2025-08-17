@@ -1,7 +1,9 @@
 package abbot.tester;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.MenuElement;
 
 /**
  * Provides access to JPopupMenu contents.  No special user actions.

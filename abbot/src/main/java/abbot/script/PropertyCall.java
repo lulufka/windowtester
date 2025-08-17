@@ -1,7 +1,7 @@
 package abbot.script;
 
 import abbot.tester.ComponentTester;
-import java.awt.*;
+import java.awt.Component;
 import java.lang.reflect.Method;
 import java.util.Map;
 

@@ -4,9 +4,10 @@ import abbot.Log;
 import abbot.i18n.Strings;
 import abbot.util.AWT;
 import abbot.util.NonDelegatingClassLoader;
-import java.awt.*;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.util.EmptyStackException;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * A custom class loader which installs itself as if it were the application class loader.  A classpath of null is

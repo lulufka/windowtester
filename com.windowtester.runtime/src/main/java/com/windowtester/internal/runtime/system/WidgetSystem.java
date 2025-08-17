@@ -13,7 +13,6 @@ package com.windowtester.internal.runtime.system;
 import com.windowtester.internal.runtime.locator.IDefaultUISelectorFactory;
 import com.windowtester.internal.runtime.locator.IUISelector;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**

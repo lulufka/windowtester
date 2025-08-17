@@ -3,8 +3,10 @@ package abbot.editor;
 /**
  * Provides the abbot/costello logo.
  */
+
 import abbot.i18n.Strings;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
 class LogoLabel extends JLabel {

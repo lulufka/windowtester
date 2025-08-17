@@ -10,7 +10,8 @@ import abbot.finder.matchers.ClassMatcher;
 import abbot.i18n.Strings;
 import abbot.tester.ComponentTester;
 import java.applet.Applet;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * Provides applet launch capability.  Usage:<br>

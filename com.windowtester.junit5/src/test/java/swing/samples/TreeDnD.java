@@ -11,7 +11,6 @@
 package swing.samples;
 
 import java.awt.BorderLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -42,7 +41,6 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;

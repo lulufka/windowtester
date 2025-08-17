@@ -1,7 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JTextField;
 
 /**
  * Provides actions and assertions {@link JTextField}-based components.

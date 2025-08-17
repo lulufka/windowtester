@@ -4,7 +4,8 @@ import abbot.Log;
 import abbot.script.Event;
 import abbot.script.Resolver;
 import abbot.script.XMLConstants;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 /**
  * Edit a raw AWTEvent.
