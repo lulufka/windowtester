@@ -13,15 +13,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Maven Central Repository
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_TOKEN
 
       - name: Verify package
         uses: coactions/setup-xvfb@v1
@@ -42,19 +39,18 @@ jobs:
         env:
           GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
 
-      - name: Prepare settings.xml
+      - name: Prepare settings.xml for Maven Central
         uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |
             [{
-                "id": "maven-central",
-                "username": "${{ secrets.OSSRH_USERNAME }}",
+                "id": "central",
+                "username": "token",
                 "password": "${{ secrets.OSSRH_TOKEN }}"
             }]
 
       - name: Release package
         run: mvn clean deploy -P release -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
