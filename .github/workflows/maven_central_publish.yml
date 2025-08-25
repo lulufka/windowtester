@@ -2,7 +2,7 @@ name: Publish to Maven Central Repository
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
 
 jobs:
   publish:
@@ -52,6 +52,4 @@ jobs:
       - name: Release package
         run: mvn clean deploy -Prelease,maven-central -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
