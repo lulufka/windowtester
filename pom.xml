@@ -26,15 +26,10 @@
 
     <distributionManagement>
         <repository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <url>https://central.sonatype.com/service/local/staging/deploy/maven2/</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/r4fterman/windowtester</url>
         </repository>
-        <snapshotRepository>
-            <id>central</id>
-            <name>Maven Central Snapshots</name>
-            <url>https://central.sonatype.com/content/repositories/snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <licenses>
@@ -277,7 +272,7 @@
                         <version>0.8.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <publishingServerId>central</publishingServerId>
+                            <publishingServerId>maven-central</publishingServerId>
                             <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
