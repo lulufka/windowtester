@@ -224,7 +224,6 @@ class DndTree extends JTree implements Autoscroll {
     private void addElement(TreePath path, Object element) {
       DefaultMutableTreeNode parent = (DefaultMutableTreeNode) path.getLastPathComponent();
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(element);
-      System.out.println("Added: " + node + " to " + parent);
       DefaultTreeModel model = (DefaultTreeModel) (DndTree.this.getModel());
       model.insertNodeInto(node, parent, parent.getChildCount());
     }
@@ -233,12 +232,7 @@ class DndTree extends JTree implements Autoscroll {
   private static class MyDragSourceListener implements DragSourceListener {
 
     public void dragDropEnd(DragSourceDropEvent dragSourceDropEvent) {
-      if (dragSourceDropEvent.getDropSuccess()) {
-        int dropAction = dragSourceDropEvent.getDropAction();
-        if (dropAction == DnDConstants.ACTION_MOVE) {
-          System.out.println("MOVE: remove node");
-        }
-      }
+      // do nothing
     }
 
     public void dragEnter(DragSourceDragEvent dragSourceDragEvent) {
