@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.r4fterman</groupId>
         <artifactId>com.windowtester</artifactId>
-        <version>5.11.4</version>
+        <version>5.12.0</version>
     </parent>
 
     <artifactId>com.windowtester.junit5</artifactId>
@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
