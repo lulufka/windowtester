@@ -31,12 +31,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 /**
  * Provide a structure to encapsulate actions invoked on GUI components and tests performed on those
@@ -87,9 +87,9 @@ public class Script extends Sequence implements Resolver {
     String defValue = Platform.JAVA_VERSION < Platform.JAVA_1_4 ? "false" : "true";
   }
 
-  private static Map<String, File> createDefaultMap(File file) {
-    Map<String, File> map = new HashMap<>();
-    map.put(TAG_FILENAME, file);
+  private static Map<String, String> createDefaultMap(File file) {
+    Map<String, String> map = new HashMap<>();
+    map.put(TAG_FILENAME, file.getAbsolutePath());
     return map;
   }
 
@@ -141,10 +141,10 @@ public class Script extends Sequence implements Resolver {
     setHierarchy(hierarchy);
   }
 
-  public Script(Resolver parent, Map<String, File> attributes) {
+  public Script(Resolver parent, Map<String, String> attributes) {
     super(parent, attributes);
 
-    setFile(attributes.get(TAG_FILENAME));
+    setFile(Optional.ofNullable(attributes.get(TAG_FILENAME)).map(File::new).orElse(null));
     if (parent != null) {
       setRelativeTo(parent.getDirectory());
     }
@@ -285,9 +285,8 @@ public class Script extends Sequence implements Resolver {
     formatForSave = false;
     el.setName(TAG_AWTTESTSCRIPT);
 
-    Document doc = new Document(el);
-    XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-    outputter.output(doc, writer);
+    Document doc = DocumentHelper.createDocument(el);
+    doc.write(writer);
   }
 
   @Override
@@ -469,8 +468,8 @@ public class Script extends Sequence implements Resolver {
     if (formatForSave) {
       synchReferenceIDs();
       Collection<ComponentReference> values = refs.values();
-      for (ComponentReference cref : (Iterable<ComponentReference>) new TreeSet(values)) {
-        el.addContent(cref.toXML());
+      for (ComponentReference cref : new TreeSet<>(values)) {
+        el.add(cref.toXML());
       }
       // Now collect our child steps
       return super.addContent(el);
@@ -640,7 +639,7 @@ public class Script extends Sequence implements Resolver {
   }
 
   public Collection<ComponentReference> getComponentReferences() {
-    return new TreeSet(refs.values());
+    return new TreeSet<>(refs.values());
   }
 
   public void addComponentReference(ComponentReference ref) {
@@ -677,7 +676,7 @@ public class Script extends Sequence implements Resolver {
   /**
    * Add a new component reference to the script.  For use only when parsing a script.
    */
-  ComponentReference addComponentReference(Element el) throws InvalidScriptException {
+  private ComponentReference addComponentReference(Element el) throws InvalidScriptException {
     synchReferenceIDs();
     ComponentReference ref = new ComponentReference(this, el);
     Log.debug("adding " + el);

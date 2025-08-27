@@ -12,24 +12,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 /**
  * Provides access to one step (line) from a script.  A Step is the basic unit of execution.
  * <b>Custom Step classes</b><p>
@@ -54,8 +50,8 @@ import org.jdom.output.XMLOutputter;
  */
 public abstract class Step implements XMLConstants, XMLifiable, Serializable {
 
-  private String description = null;
-  private final transient Resolver resolver;
+  private String description;
+  private final Resolver resolver;
 
   /**
    * Error encountered on parse.
@@ -66,8 +62,7 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     this(resolver, "");
     Log.debug("Instantiating " + getClass());
     if (Log.expectDebugOutput) {
-      attributes.entrySet()
-          .forEach(entry -> Log.debug(entry.getKey() + "=" + entry.getValue()));
+      attributes.forEach((key, value) -> Log.debug(key + "=" + value));
     }
     parseStepAttributes(attributes);
   }
@@ -167,7 +162,7 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
             Log.warn("Attribute '" + key + "' value was null in step " + getXMLTag());
             value = "";
           }
-          el.setAttribute(key, value);
+          el.addAttribute(key, value);
         });
     return el;
   }
@@ -184,8 +179,7 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
     Element el = obj.toXML();
     StringWriter writer = new StringWriter();
     try {
-      XMLOutputter outputter = new XMLOutputter();
-      outputter.output(el, writer);
+      el.write(writer);
     } catch (IOException io) {
       Log.warn(io);
     }
@@ -193,25 +187,24 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
   }
 
   public Element toXML() {
-    return addAttributes(addContent(new Element(getXMLTag())));
+    Element el = DocumentHelper.createElement(getXMLTag());
+    return addAttributes(addContent(el));
   }
 
   public static Step createStep(Resolver resolver, String str)
       throws InvalidScriptException, IOException {
-    StringReader reader = new StringReader(str);
     try {
-      SAXBuilder builder = new SAXBuilder();
-      Document doc = builder.build(reader);
+      Document doc = DocumentHelper.parseText(str);
       Element el = doc.getRootElement();
       return createStep(resolver, el);
-    } catch (JDOMException e) {
+    } catch (DocumentException e) {
       throw new InvalidScriptException(e.getMessage());
     }
   }
 
   protected static Map<String, String> createAttributeMap(Element el) {
     Log.debug("Creating attribute map for " + el);
-    return ((List<Attribute>) el.getAttributes()).stream()
+    return el.attributes().stream()
         .collect(toMap(
             Attribute::getName,
             Attribute::getValue
@@ -278,9 +271,9 @@ public abstract class Step implements XMLConstants, XMLifiable, Serializable {
   }
 
   /**
-   * Look up an appropriate ComponentTester given an arbitrary Component-derived class. If the class
-   * is derived from abbot.tester.ComponentTester, instantiate one; if it is derived from
-   * java.awt.Component, return a matching Tester. Otherwise return abbot.tester.ComponentTester.
+   * Look up an appropriate ComponentTester given an arbitrary Component-derived class. If the class is derived from
+   * abbot.tester.ComponentTester, instantiate one; if it is derived from java.awt.Component, return a matching
+   * Tester. Otherwise, return abbot.tester.ComponentTester.
    *
    * @param className class name
    * @return component tester
