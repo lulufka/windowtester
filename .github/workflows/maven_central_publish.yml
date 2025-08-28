@@ -20,17 +20,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Verify package
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: mvn --batch-mode install
-
-      - name: Remove screenshots
-        run: |
-          if [ -d "com.windowtester.junit5/wintest/" ]; then
-            rm -rf com.windowtester.junit5/wintest/
-          fi
-
       - name: Import GPG key
         run: |
           echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --yes --import
