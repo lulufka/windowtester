@@ -6,7 +6,7 @@
 
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>5.12.2</version>
+    <version>5.13.0</version>
     <packaging>pom</packaging>
 
     <name>WindowTester</name>
