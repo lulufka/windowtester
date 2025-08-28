@@ -6,7 +6,7 @@
 
     <groupId>io.github.r4fterman</groupId>
     <artifactId>com.windowtester</artifactId>
-    <version>5.13.4</version>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WindowTester</name>
@@ -52,8 +52,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version>17</java.version>
-        <maven.version>3.5.4</maven.version>
+        <java.version>21</java.version>
+        <maven.version>3.9.3</maven.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
