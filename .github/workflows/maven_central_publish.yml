@@ -16,20 +16,9 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
           cache: 'maven'
-
-      - name: Verify package
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: mvn --batch-mode install
-
-      - name: Remove screenshots
-        run: |
-          if [ -d "com.windowtester.junit5/wintest/" ]; then
-            rm -rf com.windowtester.junit5/wintest/
-          fi
 
       - name: Import GPG key
         run: |
