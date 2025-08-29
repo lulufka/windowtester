@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import javax.swing.*;
+import javax.swing.KeyStroke;
 
 /**
  * Provides read of local-specific mappings for virtual keycode-based KeyStrokes to characters and vice versa. The map

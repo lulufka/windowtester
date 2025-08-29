@@ -4,9 +4,10 @@ import abbot.Log;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  * Record basic semantic events you might find on an JComponent.

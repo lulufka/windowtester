@@ -15,13 +15,14 @@ import abbot.finder.Hierarchy;
 import abbot.util.EventNormalizer;
 import abbot.util.SingleThreadedEventListener;
 import com.windowtester.recorder.event.ISemanticEvent;
-import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.user.SemanticEventAdapter;
 import com.windowtester.swing.event.recorder.ConsoleReportingListener;
 import com.windowtester.swing.event.recorder.EventCachingListener;
 import com.windowtester.swing.event.recorder.SwingGuiTestRecorder;
 import com.windowtester.swing.recorder.RecordingFailedException;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.MenuComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

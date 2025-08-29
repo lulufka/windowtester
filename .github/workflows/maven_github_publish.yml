@@ -2,7 +2,7 @@ name: Publish package to GitHub Packages
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
 
 jobs:
   publish:
@@ -19,7 +19,26 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Publish package
-        run: mvn --batch-mode deploy -P release -DskipTests
+      - name: Import GPG key
+        run: |
+          echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --yes --import
+          KEY_ID=$(gpg --list-secret-keys --with-colons | grep '^sec' | cut -d: -f5)
+          echo "default-key $KEY_ID" >> ~/.gnupg/gpg.conf
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+
+      - name: Prepare settings.xml
+        uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: |
+            [{
+                "id": "github",
+                "username": "r4fterman",
+                "password": "${{ secrets.GH_TOKEN }}"
+            }]
+
+      - name: Publish package
+        run: mvn --batch-mode deploy -Prelease -DskipTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}

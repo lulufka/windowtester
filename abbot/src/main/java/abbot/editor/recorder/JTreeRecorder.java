@@ -5,10 +5,10 @@ import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.JTreeTester;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.JTree;
 
 /**
  * Record basic semantic events you might find on an JTree.

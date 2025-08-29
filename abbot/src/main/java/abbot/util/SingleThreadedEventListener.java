@@ -2,10 +2,10 @@ package abbot.util;
 
 import abbot.Log;
 import abbot.tester.Robot;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.AWTEventListener;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 /**
  * Provide an AWTEventListener which ensures all events are handled on the event dispatch thread.  This allows the

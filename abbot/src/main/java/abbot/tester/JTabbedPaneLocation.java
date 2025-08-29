@@ -3,8 +3,10 @@ package abbot.tester;
 import abbot.Log;
 import abbot.i18n.Strings;
 import com.windowtester.runtime.util.StringComparator;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Rectangle;
+import javax.swing.JTabbedPane;
 import javax.swing.plaf.TabbedPaneUI;
 
 /**

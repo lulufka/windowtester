@@ -1,10 +1,11 @@
 package abbot.editor;
 
-import java.awt.*;
+import java.awt.Component;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * Provides JTree icons for different Components.

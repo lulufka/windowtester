@@ -14,7 +14,6 @@ import abbot.util.AbbotTimerTask;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 

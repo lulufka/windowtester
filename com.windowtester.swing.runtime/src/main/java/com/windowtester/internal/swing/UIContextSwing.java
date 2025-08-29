@@ -42,9 +42,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.InputEvent;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Concrete implementation of {@link com.windowtester.runtime.IUIContext}

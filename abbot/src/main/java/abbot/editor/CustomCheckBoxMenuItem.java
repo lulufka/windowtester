@@ -6,7 +6,9 @@ import abbot.editor.actions.EditorToggleAction;
 import abbot.editor.widgets.Mnemonic;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  * A custom JCheckBoxMenuItem that listens to the selected state of its toggle action, reflecting its state when the

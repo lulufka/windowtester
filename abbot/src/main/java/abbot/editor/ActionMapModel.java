@@ -1,7 +1,7 @@
 package abbot.editor;
 
 import abbot.i18n.Strings;
-import javax.swing.*;
+import javax.swing.ActionMap;
 import javax.swing.table.AbstractTableModel;
 
 public class ActionMapModel extends AbstractTableModel {

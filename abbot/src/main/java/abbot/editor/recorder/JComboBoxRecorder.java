@@ -7,12 +7,14 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.JComboBoxTester;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JList;
 
 /**
  * Record basic semantic events you might find on an JComboBox.

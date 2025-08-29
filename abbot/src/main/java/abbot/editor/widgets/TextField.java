@@ -1,12 +1,17 @@
 package abbot.editor.widgets;
 
 import abbot.Log;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 

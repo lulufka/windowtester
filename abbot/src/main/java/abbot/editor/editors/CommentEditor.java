@@ -2,7 +2,7 @@ package abbot.editor.editors;
 
 import abbot.script.Comment;
 import java.awt.event.ActionEvent;
-import javax.swing.*;
+import javax.swing.JTextArea;
 
 /**
  * A Comment only has its description available for editing.

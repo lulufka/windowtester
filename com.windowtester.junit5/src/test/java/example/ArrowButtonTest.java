@@ -3,7 +3,6 @@ package example;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import abbot.tester.ComponentTester;
-import abbot.tester.Robot;
 import com.windowtester.junit5.UIUnderTest;
 import com.windowtester.junit5.WindowtesterExtension;
 import java.awt.FlowLayout;

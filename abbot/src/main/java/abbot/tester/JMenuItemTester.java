@@ -1,7 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.JMenuItem;
 
 /**
  * Provide action methods and assertions for {@link JMenuItem}s.

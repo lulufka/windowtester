@@ -12,7 +12,7 @@ package com.windowtester.internal.finder.matchers.swing;
 
 import abbot.finder.Matcher;
 import abbot.finder.matchers.AbstractMatcher;
-import java.awt.*;
+import java.awt.Component;
 
 /**
  * This matcher does not have anything to do with org.eclipse.swt.widgets.Composite; rather, it allows searches for

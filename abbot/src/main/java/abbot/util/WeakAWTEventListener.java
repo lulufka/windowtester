@@ -1,6 +1,7 @@
 package abbot.util;
 
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.lang.ref.WeakReference;
 

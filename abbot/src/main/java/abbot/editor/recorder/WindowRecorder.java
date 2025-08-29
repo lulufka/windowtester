@@ -5,7 +5,10 @@ import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.WindowTracker;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 

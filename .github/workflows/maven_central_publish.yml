@@ -2,7 +2,7 @@ name: Publish to Maven Central Repository
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
 
 jobs:
   publish:
@@ -19,20 +19,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_TOKEN
-
-      - name: Verify package
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: mvn --batch-mode install
-
-      - name: Remove screenshots
-        run: |
-          if [ -d "com.windowtester.junit5/wintest/" ]; then
-            rm -rf com.windowtester.junit5/wintest/
-          fi
 
       - name: Import GPG key
         run: |
@@ -53,8 +39,6 @@ jobs:
             }]
 
       - name: Release package
-        run: mvn clean deploy -P release -DskipTests
+        run: mvn clean deploy -Prelease,maven-central -DskipTests
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}

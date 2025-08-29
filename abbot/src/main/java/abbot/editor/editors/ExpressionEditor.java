@@ -2,12 +2,15 @@ package abbot.editor.editors;
 
 import abbot.i18n.Strings;
 import abbot.script.Expression;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
 
 /**
  * A Expression only has its description available for editing.

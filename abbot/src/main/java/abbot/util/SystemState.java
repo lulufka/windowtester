@@ -1,11 +1,13 @@
 package abbot.util;
 
 import abbot.Log;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.PrintStream;
 import java.util.Properties;
-import javax.swing.*;
+import javax.swing.UIManager;
 
 /**
  * Preserve and restore system state. This includes the following:

@@ -14,29 +14,28 @@
         replay it automatically.
     </description>
 
-    <scm>
-        <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
-        <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git
-        </developerConnection>
-        <url>https://github.com/r4fterman/windowtester</url>
-    </scm>
+  <scm>
+    <connection>scm:git:https://github.com/r4fterman/windowtester.git</connection>
+    <developerConnection>scm:git:https://github.com/r4fterman/windowtester.git</developerConnection>
+    <url>https://github.com/r4fterman/windowtester</url>
+  </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.r4fterman</groupId>
-            <artifactId>abbot</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.r4fterman</groupId>
-            <artifactId>com.windowtester.swing.runtime</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.r4fterman</groupId>
-            <artifactId>com.windowtester.junit5</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.r4fterman</groupId>
+      <artifactId>abbot</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.r4fterman</groupId>
+      <artifactId>com.windowtester.swing.runtime</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.r4fterman</groupId>
+      <artifactId>com.windowtester.junit5</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

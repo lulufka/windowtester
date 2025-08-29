@@ -1,9 +1,16 @@
 package abbot.tester;
 
 import abbot.Log;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Window;
 import java.lang.reflect.Field;
-import javax.swing.*;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.ToolBarUI;
 import javax.swing.plaf.basic.BasicToolBarUI;
 

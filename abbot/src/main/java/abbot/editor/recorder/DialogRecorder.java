@@ -4,7 +4,9 @@ import abbot.script.Action;
 import abbot.script.ComponentReference;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Window;
 
 /**
  * Record basic semantic events you might find on a Window.

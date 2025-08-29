@@ -1,8 +1,8 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.InputEvent;
-import javax.swing.*;
+import javax.swing.JSplitPane;
 
 /**
  * Provides user actions on a JSplitPane.

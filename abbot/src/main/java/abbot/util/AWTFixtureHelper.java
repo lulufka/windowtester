@@ -2,7 +2,7 @@ package abbot.util;
 
 import abbot.Log;
 import abbot.tester.Robot;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.AWTEventListener;
 
 /**

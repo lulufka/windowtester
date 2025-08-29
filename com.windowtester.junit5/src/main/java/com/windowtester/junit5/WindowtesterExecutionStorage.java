@@ -5,7 +5,6 @@ import java.awt.Dialog;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import javax.swing.JDialog;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;

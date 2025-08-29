@@ -1,8 +1,10 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
 import java.beans.PropertyVetoException;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 
 public class JInternalFrameTester extends JComponentTester {
 

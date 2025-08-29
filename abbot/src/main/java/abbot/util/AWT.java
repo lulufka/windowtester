@@ -1,6 +1,6 @@
 package abbot.util;
 
-import static java.awt.Toolkit.*;
+import static java.awt.Toolkit.getDefaultToolkit;
 
 import abbot.Log;
 import abbot.Platform;
@@ -39,7 +39,6 @@ import java.awt.ScrollPane;
 import java.awt.Scrollbar;
 import java.awt.TextArea;
 import java.awt.TextField;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;

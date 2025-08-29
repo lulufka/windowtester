@@ -2,7 +2,6 @@ package example;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import abbot.finder.BasicFinder;
 import abbot.finder.ComponentFinder;

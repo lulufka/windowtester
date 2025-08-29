@@ -16,14 +16,11 @@ import com.windowtester.internal.swing.WidgetLocatorService;
 import com.windowtester.recorder.event.user.SemanticWidgetInspectionEvent;
 import com.windowtester.recorder.event.user.UISemanticEvent;
 import com.windowtester.recorder.event.user.UISemanticEvent.EventInfo;
-import com.windowtester.runtime.swing.locator.JListLocator;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import javax.swing.JTable;
-import javax.swing.JTree;
 
 public class SpyEventHandler {
 

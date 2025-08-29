@@ -1,6 +1,7 @@
 package abbot.tester;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Frame;
 
 public class FrameTester extends WindowTester {
 

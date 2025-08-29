@@ -2,8 +2,13 @@ package abbot.tester;
 
 import abbot.Log;
 import abbot.i18n.Strings;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Rectangle;
+import javax.swing.CellRendererPane;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;

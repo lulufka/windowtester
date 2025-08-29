@@ -3,7 +3,7 @@ package abbot.editor.recorder;
 import abbot.BugReport;
 import abbot.script.Resolver;
 import abbot.script.Step;
-import java.awt.*;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

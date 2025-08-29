@@ -1,7 +1,9 @@
 package abbot.tester;
 
 import abbot.i18n.Strings;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Window;
 import javax.accessibility.AccessibleContext;
 
 /**

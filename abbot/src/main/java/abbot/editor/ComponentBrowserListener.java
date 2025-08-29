@@ -1,7 +1,7 @@
 package abbot.editor;
 
 import abbot.script.ComponentReference;
-import java.awt.*;
+import java.awt.Component;
 
 public interface ComponentBrowserListener {
   void selectionChanged(ComponentBrowser src, Component comp, ComponentReference ref);

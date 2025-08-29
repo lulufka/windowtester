@@ -19,7 +19,6 @@ import com.windowtester.recorder.event.IUISemanticEvent;
 import com.windowtester.recorder.event.UISemanticEventFactory;
 import java.awt.Component;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenuItem;

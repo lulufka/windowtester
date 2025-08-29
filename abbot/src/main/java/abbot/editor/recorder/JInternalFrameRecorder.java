@@ -8,9 +8,12 @@ import abbot.script.Resolver;
 import abbot.script.Step;
 import abbot.tester.ComponentTester;
 import abbot.util.AWT;
-import java.awt.*;
+import java.awt.AWTEvent;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 
 /**
