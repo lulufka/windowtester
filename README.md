@@ -1,10 +1,11 @@
 # WindowTester Pro
 
-[![Build WindowTester](https://github.com/r4fterman/windowtester/actions/workflows/maven.yml/badge.svg)](https://github.com/r4fterman/windowtester/actions/workflows/maven.yml)
-![Static Badge](https://img.shields.io/badge/Java-v21-blue)
-![Static Badge](https://img.shields.io/badge/Maven-v3.8.8-blue)
-![GitHub License](https://img.shields.io/github/license/r4fterman/windowtester?color=green)
-![Maven Central Version](https://img.shields.io/maven-central/v/io.github.r4fterman/com.windowtester.runtime?strategy=highestVersion&filter=5*)
+![GitHub release (v5.*)](https://img.shields.io/github/v/release/r4fterman/windowtester?filter=v5.*&display_name=tag)
+[![Maven Central Version](https://img.shields.io/maven-central/v/io.github.r4fterman/com.windowtester.runtime?strategy=highestVersion&filter=5*)](https://mvnrepository.com/search?q=windowtester)
+![Static Badge](https://img.shields.io/badge/Java-v17-blue)
+![Static Badge](https://img.shields.io/badge/Maven-v3.5.4-blue)
+[![License](https://img.shields.io/badge/License-EPL--1.0-green.svg)](LICENSE.md)
+[![Build WindowTester](https://github.com/r4fterman/windowtester/actions/workflows/maven.yml/badge.svg)]( https://github.com/r4fterman/windowtester/actions/workflows/maven.yml)
 
 ## Disclaimer
 
